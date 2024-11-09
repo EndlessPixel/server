@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>近原探险 1.20.1 服务器官方网站</title>
+    <link rel="icon" href="server-icon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="logo">
+            <h1 class="title">SystemMiniX Minecraft服务器科技</h1>
+        </div>
+        <div class="nav-links">
+        </div>
+        <div class="title"> 近原探险 1.20.1 服务器官方网站 </div>
+    </div>
+    <img src="server-icon.png"><img src="logo.png" class="width:64px ; height:64px" ;>
+    <div class="main-content">
+        <div class="announcement">
+            <div class="announcement-header">
+                <h2>最新公告</h2>
+            </div>
+            <div class="announcement-content">
+                <p>我们很高兴地宣布，我们的服务器已经成功迁移到了阿里云！虽然目前来看，性能似乎并没有显著的改变，但这次迁移为我们带来了一个重要的好处：</p>
+                <p>我们现在已经能够实现 <strong>24小时不间断</strong> 的服务器运行！</p>
+                <p>不过，需要注意的是，目前我们只能持续运行 <strong>25天</strong>。我们正在积极努力，争取在不久的将来实现更长时间的稳定运行。</p>
+                <p>感谢您一直以来的支持与理解！</p>
+                <p class="update-date">更新日期：2024/11/7</p>
+            </div>
+        </div>
+        <br><br><br><br><br>
+        <div class="server-promo">
+            <div class="promo-box">
+                <h2>探索无尽的可能</h2>
+                <p>体验纯粹的我的世界乐趣！欢迎踏入我们的1.20.1版生存服务器，这里为你精心准备了多样化的模组和插件，无需繁琐操作，一键进入即刻享受。</p>
+            </div>
+
+            <div class="promo-box">
+                <h2>模组盛宴</h2>
+                <p>我们专注于为游戏世界增添更多结构，让每个角落都充满惊喜。精选模组，只为给你最丰富的游戏体验。</p>
+            </div>
+
+            <div class="promo-box">
+                <h2>插件助力</h2>
+                <p>反作弊、优化和辅助功能一应俱全，我们致力于提升游戏的公平性与流畅度，让每位玩家都能公平竞技。</p>
+            </div>
+
+            <div class="promo-box">
+                <h2>联系我们</h2>
+                <p><a href="https://qm.qq.com/q/kCXMS8IhlC">服主QQ:2267848501</a></p><br>
+                <p><a href="https://qm.qq.com/q/kVaWTIjRWU">服务器交流群:870594910</a></p>
+            </div>
+
+            <div class="promo-box">
+                <h2>加入我们</h2>
+                <p>服务器IP地址: <span class="ip-address">cd.frp.one:25566</span></p>
+            </div>
+        </div><br><br><br><br><br>
+        <div class="server-status-container">
+            <h2>服务器状态</h2>
+            <div class="server-info">
+                <p><strong>服务器名称:</strong> 近原探险</p>
+                <p id="status"><i class="fas fa-spinner fa-spin"></i> 正在获取状态...</p>
+                <p><strong>玩家人数:</strong> <span id="player-count">0</span> / <span id="max-players">0</span></p>
+                <p><strong>服务器版本:</strong> 1.20.1</p>
+                <p><strong>服务器IP:</strong> cd.frp.one:25566</p>
+                <p><strong>延迟:</strong> <span id="latency">0</span> ms <span id="latency-status"></span></p>
+            </div>
+        </div><br><br><br><br><br>
+        <div class="announcement">
+            <div class="rule">
+                <p><strong>请所有人遵守服务器规则</strong></p>
+                <ol>
+                    <li><strong class="highlight">严禁DDOS</strong>，查到<strong class="highlight">永久踢出服务器</strong>。</li>
+                    <li><strong class="highlight">禁止炸图</strong>，虽然服务器存档每天都有备份，但是如果遇到炸图行为将会<strong class="highlight">封禁7天</strong>，第2次<strong class="highlight">30天</strong>，第3次<strong class="highlight">12个月</strong>，第4次<strong class="highlight">永久</strong>。</li>
+                    <li><strong class="highlight">禁止故意弄崩服务器</strong>，如果你是在正常游玩的过程中服务器突然关闭，可能是服务器崩了，这要么就是有人故意崩，要么就是服务器过载，等待服务器自动重启就行，如果是人为弄崩的将会<strong class="highlight">永久踢出服务器</strong>。</li>
+                    <li><strong class="highlight">严禁开挂</strong>，包括材质包开挂模组开挂，第三方软件开挂，如果被查到将<strong class="highlight">永久踢出服务器</strong>。</li>
+                    <li><strong class="highlight">适当使用ai插件</strong>，插件可以适当使用，比如跑图，挂机挖方块等等，但是禁止使用插件完成获取资源，攻击他人的行为，如果被查到将<strong class="highlight">永久踢出服务器</strong>。</li>
+                </ol>
+            </div>
+        </div><br><br><br><br><br>
+        <div class="list-container">
+            <div class="list">
+                <h2>模组列表</h2>
+                <ul>
+                    <li>AdLods.jar</li>
+                    <li>antixray-forge.jar</li>
+                    <li>anvilrestoration.jar</li>
+                    <li>BetterBurning-Forge.jar</li>
+                    <li>BetterThanMending.jar</li>
+                    <li>blossom.jar</li>
+                    <li>collective.jar</li>
+                    <li>cristellib.jar</li>
+                    <li>dimensionviewer.jar</li>
+                    <li>ForgeEndertech.jar</li>
+                    <li>infinitetrading.jar</li>
+                    <li>ships.jar</li>
+                    <li>SkyVillages.jar</li>
+                    <li>Towns-and-Towers.jar</li>
+                    <li>villagespawnpoint.jar</li>
+                    <li>YungsApi.jar</li>
+                    <li>YungsBetterDesertTemples.jar</li>
+                    <li>YungsBetterDungeons.jar</li>
+                    <li>YungsBetterEndIsland.jar</li>
+                    <li>YungsBetterJungleTemples.jar</li>
+                    <li>YungsBetterMineshafts.jar</li>
+                    <li>YungsBetterNetherFortresses.jar</li>
+                    <li>YungsBetterOceanMonuments.jar</li>
+                    <li>YungsBetterStrongholds.jar</li>
+                    <li>YungsBetterWitchHuts.jar</li>
+                    <li>McBot.jar</li>
+                </ul>
+            </div>
+            <div class="list">
+                <h2>插件列表</h2>
+                <ul>
+                    <li>ClickHarvest.jar</li>
+                    <li>LagFixer.jar</li>
+                    <li>minimotd.jar</li>
+                    <li>OneBot-Mirai.jar</li>
+                    <li>SimpleTpa.jar</li>
+                    <li>sit.jar</li>
+                    <li>SkinsRestorer.jar</li>
+                </ul>
+            </div>
+        </div><br><br><br><br><br>
+    </div>
+    <div class="footer-bar"> [C] 2024 SystemMiniX </div>
+</body>
+<script src="script.js"></script>
+
+</html>
