@@ -4,37 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>近原探险 1.20.1 服务器官方网站</title>
-    <link rel="icon" href="server-icon.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>近原探险 1.20.1 服务器官网</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-    <div class="top-bar">
-        <div class="logo">
-            <h1 class="title">SystemMiniX Minecraft服务器科技</h1>
-        </div>
-        <div class="nav-links">
-        </div>
-        <div class="title"> 近原探险 1.20.1 服务器官方网站 </div>
-    </div>
-    <img src="server-icon.png"><img src="logo.png" class="width:64px ; height:64px" ;>
-    <div class="main-content">
-        <div class="announcement">
-            <div class="announcement-header">
-                <h2>最新公告</h2>
+    <div class="container">
+        <header>
+            <h1>近原探险 1.20.1</h1>
+            <p>探索、建造、冒险 - 属于您的Minecraft世界</p>
+        </header>
+        <div class="card server-status">
+            <h2><i class="fas  fa-bell"></i> 最新的公告</h2>
+            <div class="card server-status">
+                <p>服主正在考虑服务器加上群服互联的ai，但是试了好久都没成功</p>
+                <p>2024/11/10 03:00</p>
             </div>
-            <div class="announcement-content">
-                <p>我们很高兴地宣布，我们的服务器已经成功迁移到了阿里云！虽然目前来看，性能似乎并没有显著的改变，但这次迁移为我们带来了一个重要的好处：</p>
-                <p>我们现在已经能够实现 <strong>24小时不间断</strong> 的服务器运行！</p>
-                <p>不过，需要注意的是，目前我们只能持续运行 <strong>25天</strong>。我们正在积极努力，争取在不久的将来实现更长时间的稳定运行。</p>
-                <p>感谢您一直以来的支持与理解！</p>
-                <p class="update-date">更新日期：2024/11/7</p>
+            <h2><i class="fas  fa-bell"></i> 以前的公告[仅展示最近5条]</h2>
+            <div class="card server-status">
+                <p>为了让服务器24小时运行，服主将服务器迁移到了阿里云，性能没有变化</p>
+                <p>2024/11/8 20:00</p>
             </div>
         </div>
-        <br><br><br><br><br>
-        <div class="server-promo">
+        <div class="card server-status">
+            <h2><i class="fas fa-book"></i> 服务器简介</h2>
             <div class="promo-box">
                 <h2>探索无尽的可能</h2>
                 <p>体验纯粹的我的世界乐趣！欢迎踏入我们的1.20.1版生存服务器，这里为你精心准备了多样化的模组和插件，无需繁琐操作，一键进入即刻享受。</p>
@@ -52,7 +46,7 @@
 
             <div class="promo-box">
                 <h2>联系我们</h2>
-                <p><a href="https://qm.qq.com/q/kCXMS8IhlC">服主QQ:2267848501</a></p><br>
+                <p><a href="https://qm.qq.com/q/kCXMS8IhlC">服主QQ:2267848501</a></p>
                 <p><a href="https://qm.qq.com/q/kVaWTIjRWU">服务器交流群:870594910</a></p>
             </div>
 
@@ -60,78 +54,122 @@
                 <h2>加入我们</h2>
                 <p>服务器IP地址: <span class="ip-address">cd.frp.one:25566</span></p>
             </div>
-        </div><br><br><br><br><br>
-        <div class="server-status-container">
-            <h2>服务器状态</h2>
-            <div class="server-info">
-                <p><strong>服务器名称:</strong> 近原探险</p>
-                <p id="status"><i class="fas fa-spinner fa-spin"></i> 正在获取状态...</p>
-                <p><strong>玩家人数:</strong> <span id="player-count">0</span> / <span id="max-players">0</span></p>
-                <p><strong>服务器版本:</strong> 1.20.1</p>
-                <p><strong>服务器IP:</strong> cd.frp.one:25566</p>
-                <p><strong>延迟:</strong> <span id="latency">0</span> ms <span id="latency-status"></span></p>
+        </div>
+        <div class="card server-status">
+            <h2><i class="fas fa-server"></i> 服务器状态</h2>
+            <p>实时监控服务器运行状况</p>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="icon-bg green">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <p>状态</p>
+                        <h3 id="server-status">加载中...</h3>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="icon-bg blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <p>在线玩家</p>
+                        <h3 id="player-count">...</h3>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="icon-bg purple">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div>
+                        <p>运行版本</p>
+                        <h3>Minecraft Java 1.20.1</h3>
+                    </div>
+                </div>
+            </div><br>
+            <button id="refresh-status">刷新状态</button>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-cogs"></i> 服务器插件、模组</h2>
+            <div class="tabs">
+                <button class="tab active" data-tab="mods">服务器模组列表</button>
+                <button class="tab" data-tab="plugins">服务器插件列表</button>
             </div>
-        </div><br><br><br><br><br>
-        <div class="announcement">
-            <div class="rule">
-                <p><strong>请所有人遵守服务器规则</strong></p>
-                <ol>
-                    <li><strong class="highlight">严禁DDOS</strong>，查到<strong class="highlight">永久踢出服务器</strong>。</li>
-                    <li><strong class="highlight">禁止炸图</strong>，虽然服务器存档每天都有备份，但是如果遇到炸图行为将会<strong class="highlight">封禁7天</strong>，第2次<strong class="highlight">30天</strong>，第3次<strong class="highlight">12个月</strong>，第4次<strong class="highlight">永久</strong>。</li>
-                    <li><strong class="highlight">禁止故意弄崩服务器</strong>，如果你是在正常游玩的过程中服务器突然关闭，可能是服务器崩了，这要么就是有人故意崩，要么就是服务器过载，等待服务器自动重启就行，如果是人为弄崩的将会<strong class="highlight">永久踢出服务器</strong>。</li>
-                    <li><strong class="highlight">严禁开挂</strong>，包括材质包开挂模组开挂，第三方软件开挂，如果被查到将<strong class="highlight">永久踢出服务器</strong>。</li>
-                    <li><strong class="highlight">适当使用ai插件</strong>，插件可以适当使用，比如跑图，挂机挖方块等等，但是禁止使用插件完成获取资源，攻击他人的行为，如果被查到将<strong class="highlight">永久踢出服务器</strong>。</li>
-                </ol>
+            <div class="tab-content active" id="mods-content">
+                <!-- 模组列表将通过JavaScript动态添加 -->
             </div>
-        </div><br><br><br><br><br>
-        <div class="list-container">
-            <div class="list">
-                <h2>模组列表</h2>
-                <ul>
-                    <li>AdLods.jar</li>
-                    <li>antixray-forge.jar</li>
-                    <li>anvilrestoration.jar</li>
-                    <li>BetterBurning-Forge.jar</li>
-                    <li>BetterThanMending.jar</li>
-                    <li>blossom.jar</li>
-                    <li>collective.jar</li>
-                    <li>cristellib.jar</li>
-                    <li>dimensionviewer.jar</li>
-                    <li>ForgeEndertech.jar</li>
-                    <li>infinitetrading.jar</li>
-                    <li>ships.jar</li>
-                    <li>SkyVillages.jar</li>
-                    <li>Towns-and-Towers.jar</li>
-                    <li>villagespawnpoint.jar</li>
-                    <li>YungsApi.jar</li>
-                    <li>YungsBetterDesertTemples.jar</li>
-                    <li>YungsBetterDungeons.jar</li>
-                    <li>YungsBetterEndIsland.jar</li>
-                    <li>YungsBetterJungleTemples.jar</li>
-                    <li>YungsBetterMineshafts.jar</li>
-                    <li>YungsBetterNetherFortresses.jar</li>
-                    <li>YungsBetterOceanMonuments.jar</li>
-                    <li>YungsBetterStrongholds.jar</li>
-                    <li>YungsBetterWitchHuts.jar</li>
-                    <li>McBot.jar</li>
-                </ul>
+            <div class="tab-content" id="plugins-content">
+                <!-- 插件列表将通过JavaScript动态添加 -->
             </div>
-            <div class="list">
-                <h2>插件列表</h2>
-                <ul>
-                    <li>ClickHarvest.jar</li>
-                    <li>LagFixer.jar</li>
-                    <li>minimotd.jar</li>
-                    <li>OneBot-Mirai.jar</li>
-                    <li>SimpleTpa.jar</li>
-                    <li>sit.jar</li>
-                    <li>SkinsRestorer.jar</li>
-                </ul>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-shield-alt"></i> 服务器规则</h2>
+            <ul class="rules-list">
+                <li class="red">严禁DDOS - 永久踢出服务器</li>
+                <li class="orange">禁止炸图 - 累进处罚制度 “虽然服务器存档每天都有备份，但是如果遇到炸图行为将会封禁7天，第2次30天，第3次12个月，第4次永久”</li>
+                <li class="yellow">禁止故意弄崩服务器 - 永久踢出服务器 “如果你是在正常游玩的过程中服务器突然关闭，可能是服务器崩了，这要么就是有人故意崩，要么就是服务器过载，如果是人为弄崩的肇事者将会永久踢出服务器”</li>
+                <li class="green">严禁开挂 - 永久踢出服务器 “包括材质包开挂模组开挂，第三方软件开挂，如果被查到将 永久踢出服务器”</li>
+                <li class="blue">适当使用ai插件 - 禁止滥用 “插件可以适当使用，比如跑图，挂机挖方块等等，但是禁止使用插件完成获取资源，攻击他人的行为，如果被查到将 永久踢出服务器”</li>
+            </ul>
+        </div>
+        <div class="card server-status">
+            <h2><i class="fas fa-refresh"></i> 最近的更新</h2>
+            <div class="card server-status">
+                <h3>1. 服务器核心版本更新：</h3>
+                <p> - [1]服务器核心已更新：从版本895升级至896</p>
+                <h3>2.新增插件：</h3>
+                <p> - [1]万用皮肤补丁</p>
+                <h3>3.插件优化：</h3>
+                <p> - [1]修改了三个插件的配置</p>
+                <p> - [2]汉化了两个插件的配置</p>
+                <h3>4.删除插件</h3>
+                <p> - [1]删除了三个插件</p>
             </div>
-        </div><br><br><br><br><br>
-    </div>
-    <div class="footer-bar"> [C] 2024 SystemMiniX </div>
+            <div class="card server-status">
+                <h3>1. 服务器核心版本更新：</h3>
+                <p> - [1]服务器核心版本已从894版本升级至895版本。</p>
+                <h3>2. 新增插件：</h3>
+                <p> - [1] 铜锭利用插件：现在玩家可以更充分地利用铜锭资源，用于制作各种装备和工具。</p>
+                <p> - [2] 楼梯坐功能：玩家现在可以在任何楼梯上坐下，增加了游戏的互动性和沉浸感。</p>
+                <p> - [3] 性能优化插件：为了提供更流畅的游戏体验，我们引入了新的性能优化插件，减少了延迟和卡顿现象。</p>
+                <p> - [4] 反外挂插件：为了确保所有玩家都能享受到公平的游戏环境，我们升级了反外挂系统，更有效地检测和阻止作弊行为。</p>
+                <h3> 3. 修复问题：</h3>
+                <p> - [1]我们修复了4个配置文件问题，这些问题之前可能导致游戏体验的不稳定或功能异常。</p>
+                <p>2024/11/2</p>
+            </div>
+            <div class="card server-status">
+                <h3>1. 服务器核心版本更新：</h3>
+                <p> - [1]服务器核心已从890版本升级至894版本。</p>
+                <h3>2. 新增插件：</h3>
+                <p> - [1]新增假人插件，专为挂机设计。</p>
+                <h3>3. 新增模组：</h3>
+                <p> - [1]新增模组，进一步防止外挂行为。</p>
+                <p>2024/10/20</p>
+            </div>
+            <div class="card server-status">
+                <h2>1.插件优化</h2>
+                <p> - [1]Tab插件优化 我们对Tab插件进行了修改，现在颜色代码文本的可视性更高，使得玩家在使用Tab查看在线玩家列表时，可以更清晰地看到不同玩家的信息。</p>
+                <p> - [2]TPA描述优化 TPA的描述经过了更新，现在更加详细，并且加入了一些幽默的元素。这将帮助玩家更好地理解TPA的使用方式和目的，同时也能带来一些乐趣。</p>
+                <p> - [3]Minimotd内容优化 我们对服务器的minimotd插件配置进行了修改，使其内容更加简洁且美观。</p>
+                <p>2024/10/19</p>
+            </div>
+            <div class="card server-status">
+                <h3>1. 新增模组：</h3>
+                <p> - [1]新版本中引入了更多种类的结构，增加了游戏的探索乐趣。</p>
+                <h3>2. 新增插件：</h3>
+                <p> - [1]新增的反作弊插件帮助我们更好地维护游戏的公平性。</p>
+                <p>2024/10/13</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2024 SystemMiniX Minecraft服务器科技 保留所有权利。</p>
+        </footer>
+
+
+        <script src="script.js"></script>
 </body>
-<script src="script.js"></script>
 
 </html>

@@ -1,58 +1,103 @@
-const server = 'cd.frp.one';
-const port = 25566;
+ 
+document.addEventListener('DOMContentLoaded', function() {
+    const serverStatus = document.getElementById('server-status');
+    const playerCount = document.getElementById('player-count');
+    const refreshButton = document.getElementById('refresh-status');
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const tabsContainer = document.querySelector('.tabs');
 
-function getServerStatus() {
-    fetch(`https://api.mcsrvstat.us/2/${server}:${port}`).then(response => response.json()).then(data => {
-        const statusElement = document.getElementById('status');
-        const playerCountElement = document.getElementById('player-count');
-        const maxPlayersElement = document.getElementById('max-players');
-        const latencyElement = document.getElementById('latency');
-        const latencyStatusElement = document.getElementById('latency-status');
-        if (data.online) {
-            statusElement.textContent = '在线';
-            statusElement.classList.remove('offline', 'high-load');
-            statusElement.classList.add('online');
-            playerCountElement.textContent = data.players.online;
-            maxPlayersElement.textContent = data.players.max;
-            if (data.latency) {
-                latencyElement.textContent = data.latency;
-                let latencyStatus = '';
-                if (data.latency <= 20) {
-                    latencyStatus = '正常';
-                    latencyStatusElement.classList.remove('latency-warning', 'latency-high', 'latency-critical');
-                    latencyStatusElement.classList.add('latency-normal');
-                } else if (data.latency > 20 && data.latency <= 50) {
-                    latencyStatus = '警告';
-                    latencyStatusElement.classList.remove('latency-normal', 'latency-high', 'latency-critical');
-                    latencyStatusElement.classList.add('latency-warning');
-                } else if (data.latency > 50 && data.latency <= 100) {
-                    latencyStatus = '高';
-                    latencyStatusElement.classList.remove('latency-normal', 'latency-warning', 'latency-critical');
-                    latencyStatusElement.classList.add('latency-high');
+    const mods = [
+        "AdLods", "antixray-forge", "anvilrestoration", "BetterBurning-Forge",
+        "BetterThanMending", "blossom", "collective", "cristellib",
+        "dimensionviewer", "ForgeEndertech", "infinitetrading", "ships",
+        "SkyVillages", "Towns-and-Towers", "villagespawnpoint", "YungsApi",
+        "YungsBetterDesertTemples", "YungsBetterDungeons", "YungsBetterEndIsland",
+        "YungsBetterJungleTemples", "YungsBetterMineshafts", "YungsBetterNetherFortresses",
+        "YungsBetterOceanMonuments", "YungsBetterStrongholds", "YungsBetterWitchHuts"
+    ];
+
+    const plugins = [
+        "ClickHarvest", "LagFixer", "minimotd",
+        "SimpleTpa", "sit", "SkinsRestorer"
+    ];
+
+    function fetchServerStatus() {
+        serverStatus.textContent = '加载中...';
+        playerCount.textContent = '...';
+
+        fetch('https://api.mcsrvstat.us/2/cd.frp.one:25566')
+            .then(response => response.json())
+            .then(data => {
+                if (data.online) {
+                    serverStatus.textContent = '在线';
+                    serverStatus.className = 'green';
+                    playerCount.textContent = `${data.players.online}/${data.players.max}`;
                 } else {
-                    latencyStatus = '严重';
-                    latencyStatusElement.classList.remove('latency-normal', 'latency-warning', 'latency-high');
-                    latencyStatusElement.classList.add('latency-critical');
+                    serverStatus.textContent = '离线';
+                    serverStatus.className = 'red';
+                    playerCount.textContent = '0/0';
                 }
-                latencyStatusElement.textContent = `(${latencyStatus})`;
-            } else {
-                latencyElement.textContent = '无法获取';
-                latencyStatusElement.textContent = '';
+            })
+            .catch(error => {
+                console.error('Error fetching server status:', error);
+                serverStatus.textContent = '无法获取';
+                serverStatus.className = 'red';
+                playerCount.textContent = '无法获取';
+            });
+    }
+
+    function populateList(items, containerId, itemClass) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = ''; // Clear existing content
+        items.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = itemClass;
+            div.innerHTML = `<i class="fas fa-cube"></i> ${item}`;
+            div.style.transitionDelay = `${index * 50}ms`;
+            container.appendChild(div);
+        });
+    }
+
+    function animateItems(containerId) {
+        const items = document.querySelectorAll(`#${containerId} > div`);
+        items.forEach((item, index) => {
+            setTimeout(() => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
+    }
+
+    refreshButton.addEventListener('click', fetchServerStatus);
+
+    // Create and append tab slider
+    const tabSlider = document.createElement('div');
+    tabSlider.className = 'tab-slider';
+    tabsContainer.appendChild(tabSlider);
+
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            tab.classList.add('active');
+            const contentId = tab.dataset.tab + '-content';
+            const content = document.getElementById(contentId);
+            content.classList.add('active');
+
+            // Animate tab slider
+            tabSlider.style.transform = `translateX(${index * 100}%)`;
+
+            // Populate and animate the content items
+            if (contentId === 'mods-content') {
+                populateList(mods, contentId, 'mod-item');
+            } else if (contentId === 'plugins-content') {
+                populateList(plugins, contentId, 'plugin-item');
             }
-        } else {
-            statusElement.textContent = '无法获取';
-            statusElement.classList.remove('online', 'high-load');
-            statusElement.classList.add('offline');
-            latencyElement.textContent = '无法获取';
-            latencyStatusElement.textContent = '';
-        }
-    }).catch(error => {
-        const statusElement = document.getElementById('status');
-        statusElement.textContent = '无法获取';
-        statusElement.classList.remove('online', 'high-load');
-        statusElement.classList.add('offline');
-        console.error('Error fetching server status:', error);
+            setTimeout(() => animateItems(contentId), 300);
+        });
     });
-}
-setInterval(getServerStatus, 1000);
-getServerStatus();
+
+    fetchServerStatus();
+    setInterval(fetchServerStatus, 30000); // 每30秒更新一次
+}); 
