@@ -1,59 +1,3 @@
-a {
-    position: relative;
-    /* 相对定位 */
-    text-decoration: none;
-    /* 去除下划线 */
-    color: inherit;
-    /* 继承父元素文字颜色 */
-    background-color: transparent;
-    /* 透明背景 */
-    font-weight: bold;
-    /* 粗体 */
-    border: none;
-    /* 无边框 */
-    padding: 10px 20px;
-    /* 内边距 */
-    cursor: pointer;
-    /* 鼠标指针 */
-    transition: background-color 0.3s, opacity 0.3s;
-    /* 过渡效果 */
-}
-
-a:hover {
-    background-color: transparent;
-    /* 悬停时背景颜色 */
-}
-
-a:hover::after {
-    width: 100%;
-    /* 悬停时伪元素宽度 */
-}
-
-a::after {
-    content: '';
-    /* 伪元素内容 */
-    color: #0000ff;
-    /* 伪元素文字颜色 */
-    display: block;
-    /* 块级元素 */
-    width: 0;
-    /* 初始宽度 */
-    height: 2px;
-    /* 高度 */
-    background: #0000ff;
-    /* 背景颜色 */
-    transition: width .3s;
-    /* 过渡效果 */
-    position: absolute;
-    /* 绝对定位 */
-    bottom: -5px;
-    /* 底部对齐 */
-    left: 50%;
-    /* 水平居中 */
-    transform: translateX(-50%);
-    /* 精确居中 */
-}
-
 body {
     font-family: 'Arial', sans-serif;
     background: linear-gradient(to bottom, #1a1a2e, #16213e);
@@ -61,6 +5,44 @@ body {
     margin: 0;
     padding: 20px;
     min-height: 100vh;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+a {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    background-color: transparent;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+a:hover {
+    background-color: transparent;
+}
+
+a:hover::after {
+    width: 100%;
+}
+
+a::after {
+    content: '';
+    color: #21217469;
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #1212706b;
+    transition: width .3s;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 button {
@@ -79,7 +61,7 @@ button:hover {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 90%;
     margin: 0 auto;
 }
 
@@ -192,7 +174,7 @@ h1 {
 
 .tab-content.active {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
     gap: 10px;
     opacity: 1;
     transform: translateY(0);
@@ -274,6 +256,75 @@ footer {
     text-align: center;
     margin-top: 40px;
     color: #7f8c8d;
+}
+
+.carousel {
+    position: relative;
+    width: 80%;
+    max-width: 800px;
+    height: 400px;
+    margin: 50px auto;
+    overflow: hidden;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background-color: #000;
+}
+
+.slides {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slides img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    margin: 0 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.arrow:hover {
+    color: rgba(255, 255, 255, 1);
+}
+
+.arrow.left {
+    left: 10px;
+}
+
+.arrow.right {
+    right: 10px;
 }
 
 @media (max-width: 768px) {
