@@ -6,40 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>近原探险 1.20.1 服务器官网</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="announcement.css">
+    <link rel="stylesheet" href="a.css">
+    <link rel="stylesheet" href="tab.css">
+    <link rel="stylesheet" href="color.css">
+    <link rel="stylesheet" href="webkit.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
     <link rel="png" href="https://s21.ax1x.com/2024/11/11/pAcK8aR.png" type="image/x-png">
 </head>
 
 <body>
     <div class="container">
         <header>
-            <h1>近原探险 1.20.1 ---------- BETA 0.28.0</h1>
+            <h1>近原探险 1.20.1 ---------- BETA 0.28.4</h1>
             <p>探索、建造、冒险 - 属于您的Minecraft世界</p>
         </header>
         <div class="carousel">
             <div class="slides">
-                <img src="https://s21.ax1x.com/2024/11/11/pAcKfsg.jpg" alt=" 建筑1 ">
+                <img src="https://s21.ax1x.com/2024/11/11/pAcKfsg.jpg" alt="建筑1">
                 <img src="https://s21.ax1x.com/2024/11/11/pAcK5Zj.jpg" alt="建筑2 ">
                 <img src="https://s21.ax1x.com/2024/11/11/pAcKhLQ.jpg" alt="建筑3 ">
                 <img src="https://s21.ax1x.com/2024/11/11/pAcKIds.jpg" alt="建筑4 ">
             </div>
             <div class="dots"></div>
         </div>
+
         <div class="card server-status">
-            <h2><i class="fas  fa-bell"></i> 最新的公告</h2>
+            <h2><i class="fas fa-bell"></i> 公告 </h2>
             <div class="card server-status">
-                <p>服主正在考虑服务器加上群服互联的ai，但是试了好久都没成功</p>
-                <p>2024/11/10 03:00</p>
+                <p>GitHub Pages 真是太棒了！我们的网站现在可以更稳定、快速地为各位用户提供服务。</p>
+                <p>发布时间：2024/11/13 20:00</p>
             </div>
-            <h2><i class="fas  fa-bell"></i> 以前的公告[仅展示最近5条]</h2>
-            <div class="card server-status">
-                <p>为了让服务器24小时运行，服主将服务器迁移到了阿里云，性能没有变化</p>
-                <p>2024/11/8 20:00</p>
+            <button class="announcement-toggle" id="announcementToggle">更多公告</button>
+            <div class="announcement-drawer" id="announcementDrawer">
+                <div class="card server-status">
+                    <p>服主近期一直在尝试为服务器添加群服互联的AI功能，以提高玩家之间的互动体验。遗憾的是，尽管经过多次尝试，目前仍未成功。我们会继续努力，争取早日为大家带来这项新功能。</p>
+                    <p>发布时间：2024/11/10 03:00</p>
+                </div>
+                <div class="card server-status">
+                    <p>为了确保服务器能够24小时不间断运行，服主已将服务器迁移至阿里云。请大家放心，服务器性能并未受到影响，我们依然会为大家提供优质的游戏体验。</p>
+                    <p>发布时间：2024/11/8 20:00</p>
+                </div>
             </div>
         </div>
+
         <div class="card server-status">
-            <h2><i class="fas fa-book"></i> 服务器简介</h2>
+            <h2><i class="fas fa-book"></i> 服务器简介 </h2>
             <div class="promo-box">
                 <h2>探索无尽的可能</h2>
                 <p>体验纯粹的我的世界乐趣！欢迎踏入我们的1.20.1版生存服务器，这里为你精心准备了多样化的模组和插件，无需繁琐操作，一键进入即刻享受。</p>
@@ -63,7 +76,7 @@
             </div>
         </div>
         <div class="card server-status">
-            <h2><i class="fas fa-server"></i> 服务器状态</h2>
+            <h2><i class="fas fa-server"></i> 服务器状态 </h2>
             <p>实时监控服务器运行状况</p>
             <div class="status-grid">
                 <div class="status-item">
@@ -97,7 +110,7 @@
             <button id="refresh-status">刷新状态</button>
         </div>
         <div class="card">
-            <h2><i class="fas fa-cogs"></i> 服务器插件、模组</h2>
+            <h2><i class="fas fa-cogs"></i> 服务器插件、模组 </h2>
             <div class="tabs">
                 <button class="tab active" data-tab="mods">服务器模组列表</button>
                 <button class="tab" data-tab="plugins">服务器插件列表</button>
@@ -108,7 +121,7 @@
             </div>
         </div>
         <div class="card">
-            <h2><i class="fas fa-shield-alt"></i> 服务器规则</h2>
+            <h2><i class="fas fa-shield-alt"></i> 服务器规则 </h2>
             <ul class="rules-list">
                 <li class="red">严禁DDOS - 永久踢出服务器</li>
                 <li class="orange">禁止炸图 - 累进处罚制度 “虽然服务器存档每天都有备份，但是如果遇到炸图行为将会封禁7天，第2次30天，第3次12个月，第4次永久”</li>
@@ -118,52 +131,65 @@
             </ul>
         </div>
         <div class="card server-status">
-            <h2><i class="fas fa-refresh"></i> 最近的更新</h2>
+            <h2><i class="fas fa-refresh"></i> 最近的更新 </h2>
+            <div class="card server-status">
+                <h3>1. 服务器核心版本升级：</h3>
+                <p> - [1]服务器核心版本已从896升级至900</p>
+                <h3>2. 插件更新：</h3>
+                <p> - [1]更新了插件minimotd</p>
+                <h3>3. 插件优化：</h3>
+                <p> - [1]我们对minimotd插件的配置文件进行了优化调整。 </p>
+                <h3>4. 客户端兼容性修复：</h3>
+                <p> - [1]解决了纯原版客户端无法进入服务器的问题，为此删除了两个模组。</p>
+                <p>2024/11/13</p>
+            </div>
             <div class="card server-status">
                 <h3>1. 服务器核心版本更新：</h3>
-                <p> - [1]服务器核心已更新：从版本895升级至896</p>
+                <p> - [1]服务器核心版本已从895升级至896版本。</p>
                 <h3>2.新增插件：</h3>
                 <p> - [1]万用皮肤补丁</p>
                 <h3>3.插件优化：</h3>
                 <p> - [1]修改了三个插件的配置</p>
                 <p> - [2]汉化了两个插件的配置</p>
                 <h3>4.删除插件</h3>
-                <p> - [1]删除了三个插件</p>
+                <p> - [1]删除了铜锭利用插件</p>
+                <p> - [2]删除了假人插件</p>
+                <p> - [3]删除了Tab插件</p>
                 <p>2024/11/9</p>
             </div>
             <div class="card server-status">
                 <h3>1. 服务器核心版本更新：</h3>
                 <p> - [1]服务器核心版本已从894版本升级至895版本。</p>
                 <h3>2. 新增插件：</h3>
-                <p> - [1] 铜锭利用插件：现在玩家可以更充分地利用铜锭资源，用于制作各种装备和工具。</p>
-                <p> - [2] 楼梯坐功能：玩家现在可以在任何楼梯上坐下，增加了游戏的互动性和沉浸感。</p>
-                <p> - [3] 性能优化插件：为了提供更流畅的游戏体验，我们引入了新的性能优化插件，减少了延迟和卡顿现象。</p>
-                <p> - [4] 反外挂插件：为了确保所有玩家都能享受到公平的游戏环境，我们升级了反外挂系统，更有效地检测和阻止作弊行为。</p>
+                <p> - [1] 铜锭利用插件</p>
+                <p> - [2] 楼梯坐功能</p>
+                <p> - [3] 性能优化插件</p>
+                <p> - [4] 反外挂插件</p>
                 <h3> 3. 修复问题：</h3>
                 <p> - [1]我们修复了4个配置文件问题，这些问题之前可能导致游戏体验的不稳定或功能异常。</p>
                 <p>2024/11/2</p>
             </div>
             <div class="card server-status">
                 <h3>1. 服务器核心版本更新：</h3>
-                <p> - [1]服务器核心已从890版本升级至894版本。</p>
+                <p> - [1]服务器核心版本已从890版本升级至894版本。</p>
                 <h3>2. 新增插件：</h3>
-                <p> - [1]新增假人插件，专为挂机设计。</p>
+                <p> - [1]新增假人插件</p>
                 <h3>3. 新增模组：</h3>
-                <p> - [1]新增模组，进一步防止外挂行为。</p>
+                <p> - [1]新增模组</p>
                 <p>2024/10/20</p>
             </div>
             <div class="card server-status">
                 <h2>1.插件优化</h2>
-                <p> - [1]Tab插件优化 我们对Tab插件进行了修改，现在颜色代码文本的可视性更高，使得玩家在使用Tab查看在线玩家列表时，可以更清晰地看到不同玩家的信息。</p>
-                <p> - [2]TPA描述优化 TPA的描述经过了更新，现在更加详细，并且加入了一些幽默的元素。这将帮助玩家更好地理解TPA的使用方式和目的，同时也能带来一些乐趣。</p>
-                <p> - [3]Minimotd内容优化 我们对服务器的minimotd插件配置进行了修改，使其内容更加简洁且美观。</p>
+                <p> - [1]Tab描述优化</p>
+                <p> - [2]Tpa描述优化</p>
+                <p> - [3]Minimotd描述优化</p>
                 <p>2024/10/19</p>
             </div>
             <div class="card server-status">
                 <h3>1. 新增模组：</h3>
-                <p> - [1]新版本中引入了更多种类的结构，增加了游戏的探索乐趣。</p>
+                <p> - [1]YUNG全家桶</p>
                 <h3>2. 新增插件：</h3>
-                <p> - [1]新增的反作弊插件帮助我们更好地维护游戏的公平性。</p>
+                <p> - [1]反作弊插件</p>
                 <p>2024/10/13</p>
             </div>
         </div>
