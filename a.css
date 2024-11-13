@@ -1,0 +1,33 @@
+a {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    background-color: transparent;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+a:hover {
+    background-color: transparent;
+}
+
+a:hover::after {
+    width: 100%;
+}
+
+a::after {
+    content: '';
+    color: #21217469;
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #1212706b;
+    transition: width .3s;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+}

@@ -6,16 +6,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabContents = document.querySelectorAll('.tab-content');
     const tabsContainer = document.querySelector('.tabs');
     const mods = [
-        "AdLods", "antixray-forge", "anvilrestoration", "BetterBurning-Forge",
+        "antixray-forge", "anvilrestoration", "BetterBurning-Forge",
         "BetterThanMending", "blossom", "collective", "cristellib",
-        "dimensionviewer", "ForgeEndertech", "infinitetrading", "ships",
+        "dimensionviewer", "infinitetrading", "ships",
         "SkyVillages", "Towns-and-Towers", "villagespawnpoint", "YungsApi",
         "YungsBetterDesertTemples", "YungsBetterDungeons", "YungsBetterEndIsland",
         "YungsBetterJungleTemples", "YungsBetterMineshafts", "YungsBetterNetherFortresses",
         "YungsBetterOceanMonuments", "YungsBetterStrongholds", "YungsBetterWitchHuts"
     ];
     const plugins = [
-        "ClickHarvest", "LagFixer", "minimotd",
+        "ClickHarvest", "LagFixer", "MiniMOTD",
         "SimpleTpa", "sit", "SkinsRestorer"
     ];
 
@@ -97,9 +97,10 @@ document.addEventListener('keydown', function(e) {
     }
 });
 document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    })
-    // script.js
+    e.preventDefault();
+})
+
+// script.js
 
 document.addEventListener('DOMContentLoaded', () => {
     const slides = document.querySelector('.slides');
@@ -188,3 +189,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初始化
     startCarousel();
 });
+
+  
+document.addEventListener('DOMContentLoaded', (event) => {
+    const announcementButton = document.getElementById('announcementToggle');
+    const announcementDrawer = document.getElementById('announcementDrawer');
+
+    // 切换公告显示状态
+    announcementButton.addEventListener('click', () => {
+        announcementDrawer.style.display = announcementDrawer.style.display === 'block' ? 'none' : 'block';
+        announcementButton.textContent = announcementDrawer.style.display === 'block' ? '关闭公告' : '更多公告';
+    });
+}); 
