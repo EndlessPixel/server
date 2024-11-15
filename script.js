@@ -1,203 +1,169 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const serverStatus = document.getElementById('server-status');
-    const playerCount = document.getElementById('player-count');
-    const refreshButton = document.getElementById('refresh-status');
-    const tabs = document.querySelectorAll('.tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-    const tabsContainer = document.querySelector('.tabs');
-    const mods = [
-        "antixray-forge", "anvilrestoration", "BetterBurning-Forge",
-        "BetterThanMending", "blossom", "collective", "cristellib",
-        "dimensionviewer", "infinitetrading", "ships",
-        "SkyVillages", "Towns-and-Towers", "villagespawnpoint", "YungsApi",
-        "YungsBetterDesertTemples", "YungsBetterDungeons", "YungsBetterEndIsland",
-        "YungsBetterJungleTemples", "YungsBetterMineshafts", "YungsBetterNetherFortresses",
-        "YungsBetterOceanMonuments", "YungsBetterStrongholds", "YungsBetterWitchHuts"
-    ];
-    const plugins = [
-        "ClickHarvest", "LagFixer", "MiniMOTD",
-        "SimpleTpa", "sit", "SkinsRestorer"
-    ];
-
-    function fetchServerStatus() {
-        serverStatus.textContent = '加载中...';
-        playerCount.textContent = '...';
-        fetch('https://api.mcsrvstat.us/2/cd.frp.one:25566')
-            .then(response => response.json())
-            .then(data => {
-                if (data.online) {
-                    serverStatus.textContent = '在线';
-                    serverStatus.className = 'green';
-                    playerCount.textContent = `${data.players.online}/${data.players.max}`;
-                } else {
-                    serverStatus.textContent = '离线';
-                    serverStatus.className = 'red';
-                    playerCount.textContent = '0/0';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching server status:', error);
-                serverStatus.textContent = '无法获取';
-                serverStatus.className = 'red';
-                playerCount.textContent = '无法获取';
-            });
-    }
-
-    function populateList(items, containerId, itemClass) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = '';
-        items.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = itemClass;
-            div.innerHTML = `<i class="fas fa-cube"></i> ${item}`;
-            div.style.transitionDelay = `${index * 50}ms`;
-            container.appendChild(div);
-        });
-    }
-
-    function animateItems(containerId) {
-        const items = document.querySelectorAll(`#${containerId} > div`);
-        items.forEach((item, index) => {
-            setTimeout(() => {
-                item.style.opacity = '1';
-                item.style.transform = 'translateY(0)';
-            }, index * 50);
-        });
-    }
-    refreshButton.addEventListener('click', fetchServerStatus);
-    const tabSlider = document.createElement('div');
-    tabSlider.className = 'tab-slider';
-    tabsContainer.appendChild(tabSlider);
-    tabs.forEach((tab, index) => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            tab.classList.add('active');
-            const contentId = tab.dataset.tab + '-content';
-            const content = document.getElementById(contentId);
-            content.classList.add('active');
-            tabSlider.style.transform = `translateX(${index * 100}%)`;
-            if (contentId === 'mods-content') {
-                populateList(mods, contentId, 'mod-item');
-            } else if (contentId === 'plugins-content') {
-                populateList(plugins, contentId, 'plugin-item');
-            }
-            setTimeout(() => animateItems(contentId), 300);
-        });
-    });
-    fetchServerStatus();
-    setInterval(fetchServerStatus, 30000);
-}); 
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'F12') {
-        e.preventDefault();
-    }
-    if (e.ctrlKey && e.key === 'c') {
-        e.preventDefault();
-    }
-});
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-})
-
-// script.js
-
 document.addEventListener('DOMContentLoaded', () => {
+    // 初始化轮播图功能
+    initCarousel();
+    // 初始化公告抽屉功能
+    initAnnouncementDrawer();
+    // 初始化服务器状态功能
+    initServerStatus();
+    // 初始化标签页功能
+    initTabs();
+    // 初始化Mods和Plugins列表
+    initModsAndPlugins();
+});
+
+// 轮播图功能
+const initCarousel = () => {
     const slides = document.querySelector('.slides');
-    const images = document.querySelectorAll('.slides img');
+    const images = slides.querySelectorAll('img');
     const dotsContainer = document.querySelector('.dots');
     const totalImages = images.length;
     let currentIndex = 0;
-    let interval;
 
-    // 动态生成点
+    // 创建轮播点
     for (let i = 0; i < totalImages; i++) {
         const dot = document.createElement('span');
         dot.classList.add('dot');
-        if (i === 0) {
-            dot.classList.add('active');
-        }
+        if (i === 0) dot.classList.add('active');
         dot.setAttribute('data-index', i);
         dotsContainer.appendChild(dot);
     }
 
-    const dots = document.querySelectorAll('.dot');
+    const dots = dotsContainer.querySelectorAll('.dot');
 
-    // 更新点的状态
-    function updateDots(index) {
-        dots.forEach(dot => dot.classList.remove('active'));
-        dots[index].classList.add('active');
-    }
-
-    // 显示当前图片
-    function showImage(index) {
+    const showImage = (index) => {
         slides.style.transform = `translateX(-${index * 100}%)`;
-        updateDots(index);
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
         currentIndex = index;
-    }
+    };
 
-    // 自动切换图片
-    function startCarousel() {
-        interval = setInterval(() => {
-            let nextIndex = (currentIndex + 1) % totalImages;
-            showImage(nextIndex);
-        }, 3000); // 修改这里的时间间隔为3000毫秒（3秒）
-    }
+    // 自动播放
+    setInterval(() => {
+        showImage((currentIndex + 1) % totalImages);
+    }, 5000);
 
-    // 停止自动切换
-    function stopCarousel() {
-        clearInterval(interval);
-    }
-
-    // 鼠标悬停停止自动切换
-    const carousel = document.querySelector('.carousel');
-    carousel.addEventListener('mouseenter', stopCarousel);
-    carousel.addEventListener('mouseleave', startCarousel);
-
-    // 点击点切换图片
+    // 轮播点点击事件
     dots.forEach(dot => {
         dot.addEventListener('click', () => {
-            let index = parseInt(dot.getAttribute('data-index'));
+            const index = parseInt(dot.getAttribute('data-index'));
             showImage(index);
-            stopCarousel();
         });
     });
+};
 
-    // 点击箭头切换图片
-    const leftArrow = document.createElement('div');
-    leftArrow.classList.add('arrow', 'left');
-    leftArrow.innerHTML = '&#10094;';
-    carousel.appendChild(leftArrow);
+// 公告抽屉功能
+const initAnnouncementDrawer = () => {
+    const toggleButton = document.getElementById('announcementToggle');
+    const drawer = document.getElementById('announcementDrawer');
 
-    const rightArrow = document.createElement('div');
-    rightArrow.classList.add('arrow', 'right');
-    rightArrow.innerHTML = '&#10095;';
-    carousel.appendChild(rightArrow);
+    toggleButton.addEventListener('click', () => {
+        const isVisible = drawer.style.display === 'block';
+        drawer.style.display = isVisible ? 'none' : 'block';
+        toggleButton.textContent = isVisible ? '更多公告' : '关闭公告';
+    });
+};
 
-    leftArrow.addEventListener('click', () => {
-        let prevIndex = (currentIndex - 1 + totalImages) % totalImages;
-        showImage(prevIndex);
-        stopCarousel();
+// 服务器状态功能
+const initServerStatus = () => {
+    const statusElement = document.getElementById('server-status');
+    const playerCountElement = document.getElementById('player-count');
+    const refreshButton = document.getElementById('refresh-status');
+
+    const fetchStatus = async() => {
+        try {
+            const response = await fetch('https://api.mcsrvstat.us/2/cd.frp.one');
+            const data = await response.json();
+
+            if (data.online) {
+                statusElement.textContent = '在线';
+                statusElement.className = 'green';
+                playerCountElement.textContent = `${data.players.online}/${data.players.max}`;
+            } else {
+                statusElement.textContent = '离线';
+                statusElement.className = 'red';
+                playerCountElement.textContent = '0/0';
+            }
+        } catch (error) {
+            console.error('Error fetching server status:', error);
+            statusElement.textContent = '无法获取';
+            statusElement.className = 'red';
+            playerCountElement.textContent = '无法获取';
+        }
+    };
+
+    refreshButton.addEventListener('click', fetchStatus);
+    fetchStatus();
+    setInterval(fetchStatus, 60000); // 每分钟刷新一次
+};
+
+// 标签页功能
+const initTabs = () => {
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.getAttribute('data-tab');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(`${target}-content`).classList.add('active');
+        });
+    });
+};
+
+// Mods和Plugins列表
+const initModsAndPlugins = () => {
+    const mods = [
+        "antixray-forge", "anvilrestoration", "BetterBurning-Forge", "BetterThanMending", "blossom", "collective", "cristellib", "dimensionviewer", "infinitetrading", "ships", "SkyVillages", "Towns-and-Towers", "villagespawnpoint", "YungsApi", "YungsBetterDesertTemples", "YungsBetterDungeons", "YungsBetterEndIsland", "YungsBetterJungleTemples", "YungsBetterMineshafts", "YungsBetterNetherFortresses", "YungsBetterOceanMonuments", "YungsBetterStrongholds", "YungsBetterWitchHuts"
+    ];
+
+    const plugins = [
+        "ClickHarvest", "LagFixer", "MiniMOTD", "SimpleTpa", "sit", "SkinsRestorer"
+    ];
+    const modsContent = document.getElementById('mods-content');
+    const pluginsContent = document.getElementById('plugins-content');
+
+    mods.forEach(mod => {
+        const div = document.createElement('div');
+        div.textContent = mod;
+        div.className = 'mod-item';
+        modsContent.appendChild(div);
     });
 
-    rightArrow.addEventListener('click', () => {
-        let nextIndex = (currentIndex + 1) % totalImages;
-        showImage(nextIndex);
-        stopCarousel();
+    plugins.forEach(plugin => {
+        const div = document.createElement('div');
+        div.textContent = plugin;
+        div.className = 'plugin-item';
+        pluginsContent.appendChild(div);
+    });
+};
+
+//右键菜单
+document.addEventListener('DOMContentLoaded', function() {
+    const customMenu = document.getElementById('customMenu');
+
+    // 监听全局的 contextmenu 事件
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault(); // 阻止默认的右键菜单
+
+        // 设置自定义菜单的位置
+        customMenu.style.top = `${e.clientY}px`;
+        customMenu.style.left = `${e.clientX}px`;
+        customMenu.style.display = 'block';
+
+        // 添加弹出动画
+        customMenu.style.opacity = 1;
+        customMenu.style.transform = 'translateY(0)';
     });
 
-    // 初始化
-    startCarousel();
+    // 监听点击页面其他区域以关闭菜单
+    document.addEventListener('click', function(e) {
+        customMenu.style.display = 'none';
+        customMenu.style.opacity = 0;
+        customMenu.style.transform = 'translateY(-10px)';
+    });
 });
-
-  
-document.addEventListener('DOMContentLoaded', (event) => {
-    const announcementButton = document.getElementById('announcementToggle');
-    const announcementDrawer = document.getElementById('announcementDrawer');
-
-    // 切换公告显示状态
-    announcementButton.addEventListener('click', () => {
-        announcementDrawer.style.display = announcementDrawer.style.display === 'block' ? 'none' : 'block';
-        announcementButton.textContent = announcementDrawer.style.display === 'block' ? '关闭公告' : '更多公告';
-    });
-}); 
