@@ -96,7 +96,7 @@ const initModsAndPlugins = () => {
         "antixray-forge", "anvilrestoration", "BetterBurning-Forge", "BetterThanMending", "blossom", "collective", "cristellib", "dimensionviewer", "infinitetrading", "ships", "SkyVillages", "Towns-and-Towers", "villagespawnpoint", "YungsApi", "YungsBetterDesertTemples", "YungsBetterDungeons", "YungsBetterEndIsland", "YungsBetterJungleTemples", "YungsBetterMineshafts", "YungsBetterNetherFortresses", "YungsBetterOceanMonuments", "YungsBetterStrongholds", "YungsBetterWitchHuts"
     ];
     const plugins = [
-        "ClickHarvest", "LagFixer", "MiniMOTD", "SimpleTpa", "sit", "SkinsRestorer", "Dynmap", "WelcomePlugin", "WorldEdit", "WorldGuard"
+        "ClickHarvest", "LagFixer", "MiniMOTD", "SimpleTpa", "sit", "SkinsRestorer", "Dynmap", "WelcomePlugin", "WorldEdit", "WorldGuard", "PlumBot"
     ];
     const modsContent = document.getElementById('mods-content');
     const pluginsContent = document.getElementById('plugins-content');
