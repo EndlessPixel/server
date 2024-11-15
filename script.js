@@ -120,9 +120,13 @@ const initModsAndPlugins = () => {
     const mods = [
         "antixray-forge", "anvilrestoration", "BetterBurning-Forge", "BetterThanMending", "blossom", "collective", "cristellib", "dimensionviewer", "infinitetrading", "ships", "SkyVillages", "Towns-and-Towers", "villagespawnpoint", "YungsApi", "YungsBetterDesertTemples", "YungsBetterDungeons", "YungsBetterEndIsland", "YungsBetterJungleTemples", "YungsBetterMineshafts", "YungsBetterNetherFortresses", "YungsBetterOceanMonuments", "YungsBetterStrongholds", "YungsBetterWitchHuts"
     ];
-
+                <h3>1. 服务器核心版本升级：</h3>
+                <p> - [1]服务器核心版本已从900升级至902</p>
+                <h3>2.新增插件：</h3>
+                <p> - [1]</p>
+                <p>2024/11/16</p>
     const plugins = [
-        "ClickHarvest", "LagFixer", "MiniMOTD", "SimpleTpa", "sit", "SkinsRestorer"
+        "ClickHarvest", "LagFixer", "MiniMOTD", "SimpleTpa", "sit", "SkinsRestorer", "Dynmap", "WelcomePlugin", "WorldEdit", "WorldGuard"
     ];
     const modsContent = document.getElementById('mods-content');
     const pluginsContent = document.getElementById('plugins-content');
