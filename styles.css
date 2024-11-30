@@ -1,141 +1,93 @@
-/* 字体导入 */
-
-@import url('https://fonts.googleapis.com/css2?family=Minecraft&display=swap');
-
-/* 颜色变量 */
-
- :root {
-    --primary-color: #FF69B4;
-    --secondary-color: #F48FB1;
-    --accent-color: #FCE4EC;
-    --background-color: #3C2F3D;
-    --text-color: #FFFFFF;
-    --cherry-wood: #A45651;
-    --cherry-leaves: #F7B2BD;
+:root {
+    --bg-color: #1a1a2e;
+    --card-bg: #16213e;
+    --text-color: #e94560;
+    --accent-color: #0f3460;
+    --secondary-color: #533483;
 }
 
-
-/* 全局样式（可选） */
-
-body {
-    background-color: #f0f0f0;
-    /* 页面背景色 */
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-
-/* 自定义菜单的样式 */
-
-.custom-menu {
-    position: absolute;
-    width: 250px;
-    background-color: #3c2f3d;
-    /* 深紫色背景 */
-    border: 1px solid #ccc;
-    /* 边框 */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    /* 阴影 */
-    display: none;
-    /* 初始隐藏 */
-    z-index: 1000;
-    border-radius: 5px;
-    /* 圆角 */
-    opacity: 0;
-    /* 初始透明度 */
-    transform: translateY(-10px);
-    /* 初始位置偏移 */
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    /* 动画过渡 */
-}
-
-.custom-menu ul {
-    list-style: none;
-    padding: 5px 0;
-    margin: 0;
-}
-
-.custom-menu ul li {
-    padding: 10px 15px;
-    cursor: pointer;
-    color: #ffffff;
-    /* 白色文字 */
-    font-weight: bold;
-}
-
-.custom-menu ul li:hover {
-    background-color: #ffffff;
-    /* 悬停时背景变为白色 */
-    color: #3c2f3d;
-    /* 文字变为深紫色 */
-    border-radius: 3px;
-    /* 悬停时圆角 */
-}
-
-
-/* 滚动条样式 */
-
- ::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 12px;
 }
 
- ::-webkit-scrollbar-track {
-    background: #3C2F3D;
+::-webkit-scrollbar-track {
+    background: #3d2f2f;
 }
 
- ::-webkit-scrollbar-thumb {
-    background: #3C2F5D;
+::-webkit-scrollbar-thumb {
+    background: #5d2f2f;
     border-radius: 6px;
 }
 
- ::-webkit-scrollbar-thumb:hover {
-    background: #3C2F9D;
+::-webkit-scrollbar-thumb:hover {
+    background: #9d2f2f;
 }
 
-
-/* 页面基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
-    font-family: 'Minecraft', sans-serif;
-    background: linear-gradient(135deg, var(--background-color), #2C1B2D);
-    color: var(--text-color);
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: #ffffff;
+    line-height: 1.6;
 }
-
-
-/* 容器样式 */
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 2rem;
 }
 
+.hero {
+    text-align: center;
+    padding: 4rem 0;
+    background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+}
 
-/* 卡片样式 */
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.hero h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.version-tag {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: bold;
+}
 
 .card {
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 2px solid var(--cherry-wood);
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    border-radius: 15px;
+    background-color: var(--card-bg);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
-    border-color: var(--cherry-leaves);
+.card h2 {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
 }
 
-
-/* 链接样式 */
+.card h2 svg {
+    margin-right: 0.5rem;
+}
 
 a {
     color: var(--cherry-leaves);
@@ -166,341 +118,196 @@ a:hover::after {
     transform: scaleX(1);
 }
 
-
-/* 网格布局样式 */
-
-.mod-grid,
-.plugin-grid {
+.grid-2 {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    /* 创建4列，每列等宽 */
-    gap: 15px;
-    /* 网格项之间的间隔 */
-}
-
-.mod-item,
-.plugin-item {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.mod-item:hover,
-.plugin-item:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-3px);
-}
-
-
-/* 英雄区域样式 */
-
-.hero {
-    text-align: center;
-    padding: 100px 0;
-    background: no-repeat center center;
-    background-size: cover;
-    margin-bottom: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.hero h1 {
-    font-size: 3em;
-    color: var(--cherry-leaves);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    margin-bottom: 50px;
-}
-
-.hero h3 {
-    font-size: 1.5em;
-    color: var(--text-color);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-
-/* 轮播图样式 */
-
-.carousel {
-    position: relative;
-    width: 100%;
-    height: 450px;
-    overflow: hidden;
-    border: 2px solid var(--cherry-wood);
-    border-radius: 15px;
-}
-
-.slides {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-}
-
-.slides img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.dots {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-}
-
-.dot {
-    width: 12px;
-    height: 12px;
-    margin: 0 8px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.dot.active,
-.dot:hover {
-    background-color: var(--cherry-leaves);
-    transform: scale(1.2);
-}
-
-
-/* 公告样式 */
-
-.announcement-group {
-    border: 1px solid var(--cherry-wood);
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
 }
 
 .announcement {
     background-color: rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
 }
 
-.announcement:last-child {
-    margin-bottom: 0;
+.announcement .date {
+    font-size: 0.8rem;
+    color: #888;
 }
 
-.announcement-toggle {
-    background-color: var(--primary-color);
-    color: var(--text-color);
+.hidden-announcements {
+    display: none;
+}
+
+.btn {
+    background-color: var(--accent-color);
+    color: #ffffff;
     border: none;
-    padding: 10px 20px;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
     cursor: pointer;
-    font-size: 1em;
     transition: background-color 0.3s;
-    border-radius: 5px;
-    margin-top: 15px;
 }
 
-.announcement-toggle:hover {
+.btn:hover {
     background-color: var(--secondary-color);
 }
 
-.announcement-drawer {
-    display: none;
-    margin-top: 20px;
-}
-
-
-/* 状态卡片样式 */
-
 .status-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
 }
 
 .status-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
     background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.status-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-3px);
-}
-
-.icon-bg {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5em;
-}
-
-
-/* 标签页样式 */
-
-.tabs {
-    display: flex;
-    margin-bottom: 50px;
-}
-
-.tab {
-    flex: 1;
-    padding: 10px;
+    padding: 1rem;
+    border-radius: 0.5rem;
     text-align: center;
-    cursor: pointer;
-    background-color: var(--cherry-wood);
+}
+
+.status-item h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.status-item p {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.info-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.info-item h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
     color: var(--text-color);
-    border: none;
-    transition: background-color 0.3s;
-    border-radius: 8px;
 }
 
-.tab.active {
-    background-color: var(--cherry-leaves);
-    color: var(--background-color);
+.join-us {
+    grid-column: 1 / -1;
+    text-align: center;
 }
 
-.tab-content {
-    display: none;
+.ip-address {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
 }
-
-.tab-content.active {
-    display: block;
-}
-
-
-/* 规则列表样式 */
 
 .rules-list {
     list-style-type: none;
-    padding: 0;
 }
 
 .rules-list li {
-    margin-bottom: 10px;
-    padding: 15px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s;
 }
 
 .rules-list li:hover {
     transform: translateX(10px);
 }
 
-
-/* 颜色标记样式 */
-
-.red {
+.rule-red {
     background-color: rgba(231, 76, 60, 0.2);
-    color: #e74c3c;
+    border-left: 4px solid #e74c3c;
 }
 
-.orange {
+.rule-orange {
     background-color: rgba(230, 126, 34, 0.2);
-    color: #e67e22;
+    border-left: 4px solid #e67e22;
 }
 
-.yellow {
+.rule-yellow {
     background-color: rgba(241, 196, 15, 0.2);
-    color: #f1c40f;
+    border-left: 4px solid #f1c40f;
 }
 
-.green {
+.rule-green {
     background-color: rgba(46, 204, 113, 0.2);
-    color: #2ecc71;
+    border-left: 4px solid #2ecc71;
 }
 
-.blue {
+.rule-blue {
     background-color: rgba(52, 152, 219, 0.2);
-    color: #3498db;
+    border-left: 4px solid #3498db;
 }
-
-
-/* 页脚样式 */
 
 footer {
     text-align: center;
-    margin-top: 40px;
-    color: var(--cherry-leaves);
-    font-size: 0.9em;
+    padding: 2rem;
 }
 
-
-/* 推广盒子样式 */
-
-.promo-box {
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-
-.promo-box:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-3px);
-}
-
-.promo-box h3 {
-    color: var(--cherry-leaves);
+.update-drawer {
     margin-bottom: 10px;
-}
-
-
-/* 更新项目样式 */
-
-.update-item {
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-}
-
-.update-item h3 {
-    color: var(--cherry-leaves);
-    margin-bottom: 10px;
-}
-
-
-/* 刷新状态按钮样式 */
-
-#refresh-status {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
+    padding: 10px;
+    border: 1px solid #8c93bb;
     border-radius: 5px;
-    margin-top: 20px;
 }
 
-#refresh-status:hover {
-    background-color: var(--secondary-color);
+.update-drawer h2 {
+    cursor: pointer;
+    color: #ffffff;
+    background-color: #726dac;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
 }
 
+.update-content {
+    display: none;
+    padding-left: 20px;
+}
 
-/* 响应式样式 */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-@media (max-width: 768px) {
-    .status-grid {
-        grid-template-columns: 1fr;
-    }
-    .carousel {
-        height: 300px;
-    }
-    .hero h1 {
-        font-size: 2em;
-    }
-    .hero h3 {
-        font-size: 1.2em;
-    }
+.tr {
+    background-color: #1a1a2e;
+    /* 更新后的背景色 */
+}
+
+.tr:hover {
+    background-color: #2a2a3e;
+    /* 悬停时的颜色稍微浅一些 */
+}
+
+.th {
+    background-color: #5e4caf;
+    /* 表头颜色保持不变 */
+    color: white;
+    text-align: left;
+    padding: 8px;
+}
+
+.td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.tr:nth-child(even) {
+    background-color: #2a2a3e;
+    /* 偶数行颜色稍微不同 */
 }
