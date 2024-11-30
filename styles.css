@@ -311,3 +311,32 @@ footer {
     background-color: #2a2a3e;
     /* 偶数行颜色稍微不同 */
 }
+
+.server-status .image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.server-status .grid-image {
+    width: calc(50% - 10px);
+    /* 两个图片并排，减去间隙 */
+    margin-bottom: 20px;
+    /* 图片之间的垂直间距 */
+    border-radius: 20px;
+    /* 保持图片的圆角 */
+}
+
+
+/* 修正偶数图片的右边距 */
+
+.server-status .grid-image:nth-child(2n) {
+    margin-right: 0;
+}
+
+
+/* 修正奇数图片的左边距 */
+
+.server-status .grid-image:nth-child(2n+1) {
+    margin-left: 0;
+}
