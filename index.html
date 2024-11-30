@@ -6,236 +6,271 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>近原探险 1.20.1 服务器官网</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Minecraft&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://s21.ax1x.com/2024/11/11/pAcK8aR.png" type="image/png">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 </head>
 
 <body>
-    <div id="customMenu" class="custom-menu">
-        <ul>
-            <h3>
-                <li>SystemMiniX服务器科技</li>
-            </h3>
-            <p>
-                <li>加入我们</li>
-            </p>
-            <a href="https://qm.qq.com/q/kVaWTIjRWU">
-                <li>加入服务器交流群</li>
-            </a>
-            <p></p>
-            <li>GitHub开源</li>
-            </p>
-            <a href="https://github.com/SystemMiniX/server/">
-                <li>前往GitHub</li>
-            </a>
-            <p>
-                <li>作者:system_mini</li>
-            </p>
-        </ul>
-    </div>
-    <br>
-    <h2 style="color: red;"><i class="fas fa-triangle-exclamation"></i>警告:新右键菜单暂未完工，可能有BUG，建议别用，小心被气死。。。</h2>
-    <div class="container">
-        <header class="hero">
-            <br><br><br><br><br>
-            <h1> 近 原 探 险 1 . 2 0 . 1 <br> B E T A 0 . 2 8 . 7 </h1>
-            <h3>探索、建造、冒险 - 属于您的Minecraft世界</h3>
-            <br><br><br><br><br>
-        </header>
-        <br><br><br><br><br>
+    <main class="container">
+        <section class="hero"><br><br>
+            <h1>近原探险 1.20.1</h1><br><br><br>
+            <h2>探索、建造、冒险 - 属于您的Minecraft世界</h2><br><br>
+            <div class="version-tag">BETA 0.29.4</div><br><br>
+        </section>
         <section class="card server-status">
             <h2><i class="fas fa-newspaper"></i> 服务器宣传图 </h2>
-            <div class="carousel">
-                <div class="slides">
-                    <img src="https://s21.ax1x.com/2024/11/11/pAcKfsg.jpg" alt="建筑1">
-                    <img src="https://s21.ax1x.com/2024/11/11/pAcK5Zj.jpg" alt="建筑2">
-                    <img src="https://s21.ax1x.com/2024/11/11/pAcKhLQ.jpg" alt="建筑3">
-                    <img src="https://s21.ax1x.com/2024/11/11/pAcKIds.jpg" alt="建筑4">
-                </div>
-                <div class="dots"></div>
-            </div>
+            <img src="https://s21.ax1x.com/2024/11/11/pAcKfsg.jpg" alt="建筑1"
+                style="width: 100%;border-radius:20px;"><br>
+            <img src="https://s21.ax1x.com/2024/11/11/pAcK5Zj.jpg" alt="建筑2"
+                style="width: 100%;border-radius:20px;"><br>
+            <img src="https://s21.ax1x.com/2024/11/11/pAcKhLQ.jpg" alt="建筑3"
+                style="width: 100%;border-radius:20px;"><br>
+            <img src="https://s21.ax1x.com/2024/11/11/pAcKIds.jpg" alt="建筑4"
+                style="width: 100%;border-radius:20px;"><br>
         </section>
-
-        <section class="card server-status">
-            <h2><i class="fas fa-bell"></i> 公告 </h2>
-            <div class="announcement">
-                <p>GitHub Pages 真是太棒了！我们的网站现在可以更稳定、快速地为各位用户提供服务。</p>
-                <p>发布时间：2024/11/13 20:00</p>
-            </div>
-            <button class="announcement-toggle" id="announcementToggle">更多公告</button>
-            <div class="announcement-drawer" id="announcementDrawer">
-                <div class="announcement">
-                    <p>服主近期一直在尝试为服务器添加群服互联的AI功能，以提高玩家之间的互动体验。遗憾的是，尽管经过多次尝试，目前仍未成功。我们会继续努力，争取早日为大家带来这项新功能。</p>
-                    <p>发布时间：2024/11/10 03:00</p>
-                </div>
+        <div class="grid-2">
+            <section class="card announcements">
+                <h2><i data-feather="bell"></i> 公告</h2>
                 <div class="announcement">
                     <p>为了确保服务器能够24小时不间断运行，服主已将服务器迁移至阿里云。请大家放心，服务器性能并未受到影响，我们依然会为大家提供优质的游戏体验。</p>
-                    <p>发布时间：2024/11/8 20:00</p>
+                    <p class="date">发布时间：2024/11/8 20:00</p>
                 </div>
-            </div>
-        </section>
+                <div class="hidden-announcements">
+                </div>
+                <button id="toggleAnnouncements" class="btn">更多公告</button>
+            </section>
 
-        <section class="card server-status">
-            <h2><i class="fas fa-book"></i> 服务器简介 </h2>
-            <div class="promo-box">
-                <h3>探索无尽的可能</h3>
-                <p>体验纯粹的我的世界乐趣！欢迎踏入我们的1.20.1版生存服务器，这里为你精心准备了多样化的模组和插件，无需繁琐操作，一键进入即刻享受。</p>
+            <section class="card server-status">
+                <h2><i data-feather="server"></i> 服务器状态</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <h3>状态</h3>
+                        <p id="serverStatus">加载中...</p>
+                    </div>
+                    <div class="status-item">
+                        <h3>在线玩家</h3>
+                        <p id="playerCount">...</p>
+                    </div>
+                    <div class="status-item">
+                        <h3>运行版本</h3>
+                        <p>Minecraft Java 1.20.1</p>
+                    </div>
+                </div><br>
+                <button id="refreshStatus" class="btn">刷新状态</button>
+            </section>
+        </div>
+
+        <section class="card server-info">
+            <h2><i data-feather="info"></i> 服务器简介</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>探索无尽的可能</h3>
+                    <p>体验纯粹的我的世界乐趣！欢迎踏入我们的1.20.1版生存服务器，这里为你精心准备了多样化的模组和插件，无需繁琐操作，一键进入即刻享受。</p>
+                </div>
+                <div class="info-item">
+                    <h3>模组盛宴</h3>
+                    <p>我们专注于为游戏世界增添更多结构，让每个角落都充满惊喜。精选模组，只为给你最丰富的游戏体验。</p>
+                </div>
+                <div class="info-item">
+                    <h3>插件助力</h3>
+                    <p>反作弊、优化和辅助功能一应俱全，我们致力于提升游戏的公平性与流畅度，让每位玩家都能公平竞技。</p>
+                </div>
+                <div class="info-item">
+                    <h3>联系我们</h3>
+                    <p><a href="https://qm.qq.com/q/kCXMS8IhlC">服主QQ:2267848501</a></p>
+                    <p><a href="https://qm.qq.com/q/kVaWTIjRWU">服务器交流群:870594910</a></p>
+                </div><br>
             </div>
-            <div class="promo-box">
-                <h3>模组盛宴</h3>
-                <p>我们专注于为游戏世界增添更多结构，让每个角落都充满惊喜。精选模组，只为给你最丰富的游戏体验。</p>
-            </div>
-            <div class="promo-box">
-                <h3>插件助力</h3>
-                <p>反作弊、优化和辅助功能一应俱全，我们致力于提升游戏的公平性与流畅度，让每位玩家都能公平竞技。</p>
-            </div>
-            <div class="promo-box">
-                <h3>联系我们</h3>
-                <p><a href="https://qm.qq.com/q/kCXMS8IhlC">服主QQ:2267848501</a></p>
-                <p><a href="https://qm.qq.com/q/kVaWTIjRWU">服务器交流群:870594910</a></p>
-            </div>
-            <div class="promo-box">
+            <div class="info-item join-us">
                 <h3>加入我们</h3>
                 <p>服务器IP地址: <span class="ip-address">cd.frp.one:25566</span></p>
             </div>
         </section>
 
-        <section class="card server-status">
-            <h2><i class="fas fa-server"></i> 服务器状态 </h2>
-            <p>实时监控服务器运行状况</p>
-            <div class="status-grid">
-                <div class="status-item">
-                    <div class="icon-bg green">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <div>
-                        <p>状态</p>
-                        <h3 id="server-status">加载中...</h3>
-                    </div>
-                </div>
-                <div class="status-item">
-                    <div class="icon-bg blue">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div>
-                        <p>在线玩家</p>
-                        <h3 id="player-count">...</h3>
-                    </div>
-                </div>
-                <div class="status-item">
-                    <div class="icon-bg purple">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                    <div>
-                        <p>运行版本</p>
-                        <h3>Minecraft Java 1.20.1</h3>
-                    </div>
-                </div>
-            </div>
-            <button id="refresh-status">刷新状态</button>
-        </section>
-
-        <section class="card">
-            <h2><i class="fas fa-cogs"></i> 服务器插件、模组 </h2>
-            <div class="tabs">
-                <button class="tab active" data-tab="mods">服务器模组列表</button>
-                <button class="tab" data-tab="plugins">服务器插件列表</button>
-            </div>
-            <div class="tab-content active" id="mods-content"></div>
-            <div class="tab-content" id="plugins-content"></div>
-        </section>
-
-        <section class="card">
-            <h2><i class="fas fa-shield-alt"></i> 服务器规则 </h2>
+        <section class="card rules">
+            <h2><i data-feather="alert-triangle"></i> 服务器规则</h2>
             <ul class="rules-list">
-                <li class="red">严禁DDOS - 永久踢出服务器</li>
-                <li class="orange">禁止炸图 - 累进处罚制度 "虽然服务器存档每天都有备份，但是如果遇到炸图行为将会封禁7天，第2次30天，第3次12个月，第4次永久"</li>
-                <li class="yellow">禁止故意弄崩服务器 - 永久踢出服务器 "如果你是在正常游玩的过程中服务器突然关闭，可能是服务器崩了，这要么就是有人故意崩，要么就是服务器过载，如果是人为弄崩的肇事者将会永久踢出服务器"</li>
-                <li class="green">严禁开挂 - 永久踢出服务器 "包括材质包开挂模组开挂，第三方软件开挂，如果被查到将 永久踢出服务器"</li>
-                <li class="blue">适当使用ai插件 - 禁止滥用 "插件可以适当使用，比如跑图，挂机挖方块等等，但是禁止使用插件完成获取资源，攻击他人的行为，如果被查到将 永久踢出服务器"</li>
+                <li class="rule-red">严禁DDOS - 永久踢出服务器</li>
+                <li class="rule-orange">禁止炸图 - 累进处罚制度 </li>
+                <li class="rule-yellow">禁止故意弄崩服务器 - 永久踢出服务器</li>
+                <li class="rule-green">严禁开挂 - 永久踢出服务器</li>
+                <li class="rule-blue">适当使用AI插件 - 禁止滥用"</li>
             </ul>
         </section>
 
-        <section class="card server-status">
-            <h2><i class="fas fa-refresh"></i> 最近的更新 </h2>
-            <div class="card server-status">
-                <h3>1. 服务器核心版本升级：</h3>
-                <p> - [1]服务器核心版本已从900升级至902</p>
-                <h3>2.新增插件：</h3>
-                <p> - [1]Dynmap</p>
-                <p> - [2]WelcomePlugin</p>
-                <p> - [3]WorldEdit</p>
-                <p> - [4]WorldGuard</p>
-                <p> - [5]PlumBot</p>
-                <p>2024/11/16</p>
+        <section class="card updates">
+            <h2><i data-feather="refresh-cw"></i> 最近的更新</h2>
+            <div class="update-drawer">
+                <h2 onclick="toggleDrawer('update-2024-11-30')">2024/11/30</h2>
+                <div id="update-2024-11-30" class="update-content">
+                    <h3>1. 服务器核心版本升级：</h3>
+                    <p> - [1] 服务器核心版本已从906升级至909</p>
+                    <h3>2.新增插件</h3>
+                    <p> - [1] 新增PerformanceChecker插件</p>
+                    <p> - [2] 新增VillagerFollow插件</p>
+                    <p>2024/11/30</p>
+                </div>
             </div>
-            <div class="card server-status">
-                <h3>1. 服务器核心版本升级：</h3>
-                <p> - [1]服务器核心版本已从896升级至900</p>
-                <h3>2. 插件更新：</h3>
-                <p> - [1]更新了插件minimotd</p>
-                <h3>3. 插件优化：</h3>
-                <p> - [1]我们对minimotd插件的配置文件进行了优化调整。 </p>
-                <h3>4. 客户端兼容性修复：</h3>
-                <p> - [1]解决了纯原版客户端无法进入服务器的问题，为此删除了两个模组。</p>
-                <p>2024/11/13</p>
+            <div class="update-drawer">
+                <h2 onclick="toggleDrawer('update-2024-11-20')">2024/11/20</h2>
+                <div id="update-2024-11-20" class="update-content">
+                    <h3>1. 服务器核心版本升级：</h3>
+                    <p> - [1] 服务器核心版本已从902升级至906</p>
+                    <h3>2.删除插件</h3>
+                    <p> - [2] 删除PlumBot插件</p>
+                    <p>2024/11/20</p>
+                </div>
             </div>
-            <div class="card server-status">
-                <h3>1. 服务器核心版本更新：</h3>
-                <p> - [1]服务器核心版本已从895升级至896版本。</p>
-                <h3>2.新增插件：</h3>
-                <p> - [1]万用皮肤补丁</p>
-                <h3>3.插件优化：</h3>
-                <p> - [1]修改了三个插件的配置</p>
-                <p> - [2]汉化了两个插件的配置</p>
-                <h3>4.删除插件</h3>
-                <p> - [1]删除了铜锭利用插件</p>
-                <p> - [2]删除了假人插件</p>
-                <p> - [3]删除了Tab插件</p>
-                <p>2024/11/9</p>
+            <div class="update-drawer">
+                <h2 onclick="toggleDrawer('update-2024-11-16')">2024/11/16</h2>
+                <div id="update-2024-11-16" class="update-content">
+                    <h3>1. 服务器核心版本升级：</h3>
+                    <p> - [1]服务器核心版本已从900升级至902</p>
+                    <h3>2.新增插件：</h3>
+                    <p> - [1] 新增Dynmap插件</p>
+                    <p> - [2] 新增Welcome插件</p>
+                    <p> - [3] 新增WorldEdit插件</p>
+                    <p> - [4] 新增WorldGuard插件</p>
+                    <p> - [5] 新增PlumBot插件</p>
+                    <p>2024/11/16</p>
+                </div>
             </div>
-            <div class="card server-status">
-                <h3>1. 服务器核心版本更新：</h3>
-                <p> - [1]服务器核心版本已从894版本升级至895版本。</p>
-                <h3>2. 新增插件：</h3>
-                <p> - [1] 铜锭利用插件</p>
-                <p> - [2] 楼梯坐功能</p>
-                <p> - [3] 性能优化插件</p>
-                <p> - [4] 反外挂插件</p>
-                <h3> 3. 修复问题：</h3>
-                <p> - [1]我们修复了4个配置文件问题，这些问题之前可能导致游戏体验的不稳定或功能异常。</p>
-                <p>2024/11/2</p>
+            <div class="update-drawer">
+                <h2 onclick="toggleDrawer('update-2024-11-13')">2024/11/13</h2>
+                <div id="update-2024-11-13" class="update-content">
+                    <h3>1. 服务器核心版本升级：</h3>
+                    <p> - [1] 服务器核心版本已从896升级至900</p>
+                    <h3>2. 插件更新：</h3>
+                    <p> - [1] 更新了插件minimotd</p>
+                    <h3>3. 插件优化：</h3>
+                    <p> - [1] 我们对minimotd插件的配置文件进行了优化调整。 </p>
+                    <h3>4. 客户端兼容性修复：</h3>
+                    <p> - [1] 解决了纯原版客户端无法进入服务器的问题，删除了两个模组。</p>
+                    <p>2024/11/13</p>
+                </div>
             </div>
-            <div class="card server-status">
-                <h3>1. 服务器核心版本更新：</h3>
-                <p> - [1]服务器核心版本已从890版本升级至894版本。</p>
-                <h3>2. 新增插件：</h3>
-                <p> - [1]新增假人插件</p>
-                <h3>3. 新增模组：</h3>
-                <p> - [1]新增模组</p>
-                <p>2024/10/20</p>
+            <div class="update-drawer">
+                <h2 onclick="toggleDrawer('update-2024-11-09')">2024/11/09</h2>
+                <div id="update-2024-11-09" class="update-content">
+                    <h3>1. 服务器核心版本更新：</h3>
+                    <p> - [1] 服务器核心版本已从895升级至896版本。</p>
+                    <h3>2.新增插件：</h3>
+                    <p> - [1] 万用皮肤补丁</p>
+                    <h3>3.插件优化：</h3>
+                    <p> - [1] 修改了三个插件的配置</p>
+                    <p> - [2] 汉化了两个插件的配置</p>
+                    <h3>4.删除插件</h3>
+                    <p> - [1] 删除铜锭利用插件</p>
+                    <p> - [2] 删除假人插件</p>
+                    <p> - [3] 删除Tab插件</p>
+                    <p>2024/11/9</p>
+                </div>
             </div>
-            <div class="card server-status">
-                <h2>1.插件优化</h2>
-                <p> - [1]Tab描述优化</p>
-                <p> - [2]Tpa描述优化</p>
-                <p> - [3]Minimotd描述优化</p>
-                <p>2024/10/19</p>
+            <div class="update-drawer">
+                <h2 onclick="toggleDrawer('update-2024-11-02')">2024/11/02</h2>
+                <div id="update-2024-11-02" class="update-content">
+                    <h3>1. 服务器核心版本更新：</h3>
+                    <p> - [1] 服务器核心版本已从894版本升级至895版本。</p>
+                    <h3>2. 新增插件：</h3>
+                    <p> - [1] 铜锭利用插件</p>
+                    <p> - [2] 楼梯坐功能</p>
+                    <p> - [3] 性能优化插件</p>
+                    <p> - [4] 反外挂插件</p>
+                    <h3> 3. 修复问题：</h3>
+                    <p> - [1] 修复了4个配置文件问题</p>
+                    <p>2024/11/2</p>
+                </div>
             </div>
-            <div class="card server-status">
-                <h3>1. 新增模组：</h3>
-                <p> - [1]YUNG全家桶</p>
-                <h3>2. 新增插件：</h3>
-                <p> - [1]反作弊插件</p>
-                <p>2024/10/13</p>
+            <div class="update-drawer">
+                <h2 onclick="toggleDrawer('update-2024-10-20')">2024/10/20</h2>
+                <div id="update-2024-10-20" class="update-content">
+                    <h3>1. 服务器核心版本更新：</h3>
+                    <p> - [1] 服务器核心版本已从890版本升级至894版本。</p>
+                    <h3>2. 新增插件：</h3>
+                    <p> - [1] 新增假人插件</p>
+                    <h3>3. 新增模组：</h3>
+                    <p> - [1] 新增模组</p>
+                    <p>2024/10/20</p>
+                </div>
+            </div>
+            <div class="update-drawer">
+                <h2 onclick="toggleDrawer('update-2024-10-19')">2024/10/19</h2>
+                <div id="update-2024-10-19" class="update-content">
+                    <h3>1.插件优化</h3>
+                    <p> - [1] Tab描述优化</p>
+                    <p> - [2] Tpa描述优化</p>
+                    <p> - [3] Minimotd描述优化</p>
+                    <p>2024/10/19</p>
+                </div>
+            </div>
+            <div class="update-drawer">
+                <h2 onclick="toggleDrawer('update-2024-10-13')">2024/10/13</h2>
+                <div id="update-2024-10-13" class="update-content">
+                    <h3>1. 新增模组：</h3>
+                    <p> - [1] 新增YYungsApi模组</p>
+                    <p> - [2] 新增YungsBetterDesertTemples模组</p>
+                    <p> - [3] 新增YungsBetterDungeons模组</p>
+                    <p> - [4] 新增YungsBetterEndIsland模组</p>
+                    <p> - [5] 新增YungsBetterJungleTemples模组</p>
+                    <p> - [6] 新增YungsBetterMineshafts模组</p>
+                    <p> - [7] 新增YungsBetterNetherFortresses模组</p>
+                    <p> - [8] 新增YungsBetterOceanMonuments模组</p>
+                    <p> - [9] 新增YungsBetterStrongholds模组</p>
+                    <p> - [10] 新增YungsBetterWitchHuts模组</p>
+                    <h3>2. 新增插件：</h3>
+                    <p> - [1] 反作弊插件</p>
+                    <p>2024/10/13</p>
+                </div>
             </div>
         </section>
+    </main>
+    <section class="card rules">
+        <h2><i class="fas fa-users"></i>SystemMiniX团队名单</h2>
+        <table class="table">
+            <tr class="tr">
+                <th class="th">
+                    <h3>员工</h3>
+                </th>
+                <th class="th">
+                    <h3>负责项目</h3>
+                </th>
+            </tr>
+            <h4>
+                <tr class="tr">
+                    <td class="td">system_mni[服主/创始人/服务器/代码部/维护部]</td>
+                    <td class="td">服务器提供，服务器维护，服务器更新，网站维护，网站更新</td>
+                </tr>
+                <tr class="tr">
+                    <td class="td">FallDownTrees[服务器/网络部]</td>
+                    <td class="td">服务器管理，IP/域名提供，IP/域名管理</td>
+                </tr>
+                <tr class="tr">
+                    <td class="td">夜色流觞[资源部/下载部]</td>
+                    <td class="td">高速下载资源</td>
+                </tr>
+                <tr class="tr">
+                    <td class="td">FallDownSao[财务部]</td>
+                    <td class="td">资金管理</td>
+                </tr>
+                <tr class="tr">
+                    <td class="td">PPP[财务部]</td>
+                    <td class="td">资金管理
+                    </td>
 
-        <footer>
-            <p>&copy; 2024 SystemMiniX Minecraft服务器科技 保留所有权利。</p>
-        </footer>
-        <script src="script.js"></script>
+                </tr>
+            </h4>
+        </table>
+    </section>
+    <footer>
+        <p>&copy; 2024 SystemMiniX Minecraft服务器科技 保留所有权利。</p>
+        <p>本网站由 <a href="https://pages.github.com/" target="_blank">GitHub Pages</a> 托管。</p>
+        <img src="https://s21.ax1x.com/2024/11/30/pA5b3dS.png" alt="GitHub Pages Logo"
+            style="width: 50px; height: 50px;">
+    </footer>
+
+
+    <script src="script.js"></script>
 </body>
 
 </html>
