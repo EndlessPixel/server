@@ -285,17 +285,14 @@ footer {
 
 .tr {
     background-color: #1a1a2e;
-    /* 更新后的背景色 */
 }
 
 .tr:hover {
     background-color: #2a2a3e;
-    /* 悬停时的颜色稍微浅一些 */
 }
 
 .th {
     background-color: #5e4caf;
-    /* 表头颜色保持不变 */
     color: white;
     text-align: left;
     padding: 8px;
@@ -307,11 +304,6 @@ footer {
     text-align: left;
 }
 
-.tr:nth-child(even) {
-    background-color: #2a2a3e;
-    /* 偶数行颜色稍微不同 */
-}
-
 .server-status .image-grid {
     display: flex;
     flex-wrap: wrap;
@@ -320,23 +312,40 @@ footer {
 
 .server-status .grid-image {
     width: calc(50% - 10px);
-    /* 两个图片并排，减去间隙 */
-    margin-bottom: 20px;
-    /* 图片之间的垂直间距 */
-    border-radius: 20px;
-    /* 保持图片的圆角 */
+    margin-bottom: 10px;
+    border-radius: 10px;
 }
-
-
-/* 修正偶数图片的右边距 */
 
 .server-status .grid-image:nth-child(2n) {
     margin-right: 0;
 }
 
-
-/* 修正奇数图片的左边距 */
-
 .server-status .grid-image:nth-child(2n+1) {
     margin-left: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+body {
+    animation: fadeIn 1s ease-out;
+}
+
+img,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    animation: fadeIn 1s ease-out;
+    animation-fill-mode: forwards;
 }
