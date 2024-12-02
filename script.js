@@ -26,7 +26,7 @@ function initServerStatus() {
 
     const fetchStatus = async() => {
         try {
-            const response = await fetch('https://api.mcsrvstat.us/2/cd.frp.one:25566');
+            const response = await fetch('https://api.mcsrvstat.us/2/ld.frp.one:25566');
             const data = await response.json();
 
             if (data.online) {
