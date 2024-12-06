@@ -22,12 +22,10 @@ function initServerStatus() {
     const statusElement = document.getElementById(SERVER_STATUS_ID);
     const playerCountElement = document.getElementById(PLAYER_COUNT_ID);
     const refreshButton = document.getElementById(REFRESH_BUTTON_ID);
-
     const fetchStatus = throttle(async () => {
         try {
             const response = await fetch(API_URL, { cache: 'no-store' });
             const data = await response.json();
-
             statusElement.textContent = data.online ? '在线' : '离线';
             statusElement.style.color = data.online ? '#2ecc71' : '#e74c3c';
             playerCountElement.textContent = `${data.online ? data.players.online : 0}/${data.players.max}`;
@@ -38,7 +36,6 @@ function initServerStatus() {
             playerCountElement.textContent = '无法获取';
         }
     }, 2000);
-
     refreshButton.addEventListener('click', fetchStatus);
     fetchStatus();
 }
@@ -75,4 +72,63 @@ document.addEventListener('click', function (event) {
     if (sidebar && sidebar.style.left !== '-250px') {
         toggleSidebar();
     }
+});
+const startDateStr = "2024-09-16T15:34:00";
+const startDate = new Date(startDateStr);
+const timerElement = document.getElementById('timer');
+function updateTimer() {
+    const now = new Date();
+    let diffInMs = now - startDate;
+    if (diffInMs < 0) {
+        timerElement.textContent = "计算错误: 你的时间有问题!";
+        return;
+    }
+    let years = 0;
+    let months = 0;
+    let days = 0;
+    let hours = 0;
+    let minutes = 0;
+    let seconds = 0;
+    years = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 365.25));
+    diffInMs -= years * (1000 * 60 * 60 * 24 * 365.25);
+    months = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30.44));
+    diffInMs -= months * (1000 * 60 * 60 * 24 * 30.44);
+    days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    diffInMs -= days * (1000 * 60 * 60 * 24);
+    hours = Math.floor(diffInMs / (1000 * 60 * 60));
+    diffInMs -= hours * (1000 * 60 * 60);
+    minutes = Math.floor(diffInMs / (1000 * 60));
+    diffInMs -= minutes * (1000 * 60);
+    seconds = Math.floor(diffInMs / 1000);
+    const pad = (num) => num.toString().padStart(2, '0');
+    timerElement.innerHTML = `
+                <span class="time-unit">${years} 年</span>
+                <span class="time-unit">${months} 月</span>
+                <span class="time-unit">${days} 日</span>
+                <span class="time-unit">${pad(hours)} 小时</span>
+                <span class="time-unit">${pad(minutes)} 分钟</span>
+                <span class="time-unit">${pad(seconds)} 秒</span>
+            `;
+}
+updateTimer();
+setInterval(updateTimer, 1000);
+document.getElementById('darkModeBtn').addEventListener('click', function () {
+    document.querySelector('link[rel="stylesheet"]').href = 'styles-dark.css';
+});
+document.getElementById('lightModeBtn').addEventListener('click', function () {
+    document.querySelector('link[rel="stylesheet"]').href = 'styles-linght.css';
+});
+function openPopup() {
+    document.getElementById('customPopup').classList.add('show');
+    document.body.classList.add('popup-open');
+}
+function closePopup() {
+    document.getElementById('customPopup').classList.remove('show');
+    document.body.classList.remove('popup-open');
+}
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.close-btn').addEventListener('click', function (event) {
+        event.preventDefault();
+        closePopup();
+    });
 });
