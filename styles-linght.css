@@ -287,11 +287,39 @@ a:hover::after {
 }
 
 /* 页脚样式 */
-footer {
+.footer {
+    background-color: #f8f9fa;
+    color: #333;
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    font-size: 14px;
+}
+
+.footer-section {
+    flex: 1;
     text-align: center;
-    padding: 2rem;
-    color: var(--text-color);
-    animation: slideInFromBottom 1s ease-out;
+}
+
+.footer-section h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section li a {
+    color: #333;
+    text-decoration: none;
+    margin: 5px 0;
+    display: block;
+}
+
+.footer-section li a:hover {
+    text-decoration: underline;
 }
 
 /* 更新抽屉样式 */
@@ -510,6 +538,38 @@ footer {
 .show {
     opacity: 1;
     display: block;
+}
+
+/*mod and plugin列表*/
+.container1 {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.panel {
+    width: 48%;
+    border: 1px solid #b3b3b3;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #a1a1a1;
+}
+
+.panel h2 {
+    margin-top: 0;
+    color: #fff;
+}
+
+.items {
+    margin-top: 10px;
+}
+
+.item {
+    background-color: #d3d3d3;
+    border: 1px solid #6e6e6e;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 3px;
 }
 
 /* 动画 */
