@@ -89,12 +89,12 @@
     <main class="container">
         <section class="hero" id="0">
             <br><br>
-            <h1>像素探险</h1>
+            <h1>像素探险 - 由12名初中生运营的Minecraft服务器</h1>
             <h4>Java Minecraft 1.20.1</h4>
             <br><br><br>
-            <h3>探索、建造、冒险 - 属于您的Minecraft世界</h3>
+            <h3>探索、建造、冒险 - 属于我们的Minecraft世界</h3>
             <br><br>
-            <div class="version-tag">BETA 0.14.7</div>
+            <div class="version-tag">BETA 0.18.9</div>
             <br><br>
         </section>
         <section class="card server-status" id="1">
@@ -124,10 +124,6 @@
                 <div class="announcement">
                     <p>我们团队内部对我们团队的名称产生了一些分歧</p>
                     <p class="date">发布时间：2024/11/30-23:35</p>
-                </div>
-                <div class="announcement">
-                    <p>我们团队来了一名新员工--“小黄瓜”</p>
-                    <p class="date">发布时间：2024/11/30-20:11</p>
                 </div>
                 <div class="announcement">
                     <p>我们的阿里云服务器到期了，我们正在寻找新的提供商</p>
@@ -260,16 +256,22 @@
         <section class="card updates" id="7">
             <h2><i data-feather="refresh-cw"></i> 最近的更新 </h2>
             <div class="update-drawer">
-                <h2 onclick="toggleDrawer('update-2024-12-07-2')">2024/12/07 BETA 0.17.7 [17:23]</h2>
+                <h2 onclick="toggleDrawer('update-2024-12-08')">2024/12/08 BETA 0.18.9 [14:44]</h2>
+                <div id="update-2024-12-08" class="update-content">
+                    <h3>1. 服务器升级：</h3>
+                    <p> - [1] 服务器核心版本已从909升级至910</p>
+                    <h3>2.新增：</h3>
+                    <p> - [1] 新增commandnpc插件</p>
+                    <p> - [2] 新增Citizen2插件</p>
+                </div>
+                <h2 onclick="toggleDrawer('update-2024-12-07-2')">2024/12/07 BETA 0.18.0 [17:23]</h2>
                 <div id="update-2024-12-07-2" class="update-content">
                     <h3>1.删除：</h3>
-                    <p> - [1] 删除WorldEdit插件</p>
-                    <p> - [2] 删除WorldGuard插件</p>
                     <p> - [3] 删除FastAsyncWorldEdit插件</p>
                     <h3>2.优化：</h3>
                     <p> - [1] 汉化AuraSkills插件</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-12-07-1')">2024/12/07 BETA 0.16.5 [03:43]</h2>
+                <h2 onclick="toggleDrawer('update-2024-12-07-1')">2024/12/07 BETA 0.17.4 [03:43]</h2>
                 <div id="update-2024-12-07-1" class="update-content">
                     <h3>1.新增：</h3>
                     <p> - [1] 新增CoreProtect插件</p>
@@ -282,7 +284,7 @@
                     <p> - [1] 删除welcomer_plus插件</p>
                     <p>2024/12/07</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-11-30')">2024/11/30 BETA 0.14.4</h2>
+                <h2 onclick="toggleDrawer('update-2024-11-30')">2024/11/30 BETA 0.15.3 [14:17]</h2>
                 <div id="update-2024-11-30" class="update-content">
                     <h3>1. 服务器升级：</h3>
                     <p> - [1] 服务器核心版本已从906升级至909</p>
@@ -291,7 +293,7 @@
                     <p> - [2] 新增VillagerFollow插件</p>
                     <p>2024/11/30</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-11-20')">2024/11/20 BETA 0.13.5</h2>
+                <h2 onclick="toggleDrawer('update-2024-11-20')">2024/11/20 BETA 0.14.4 [14:47]</h2>
                 <div id="update-2024-11-20" class="update-content">
                     <h3>1. 服务器升级：</h3>
                     <p> - [1] 服务器核心版本已从902升级至906</p>
@@ -299,7 +301,7 @@
                     <p> - [2] 删除PlumBot插件</p>
                     <p>2024/11/20</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-11-16')">2024/11/16 BETA 0.12.9</h2>
+                <h2 onclick="toggleDrawer('update-2024-11-16')">2024/11/16 BETA 0.13.8 [01:59]</h2>
                 <div id="update-2024-11-16" class="update-content">
                     <h3>1. 服务器升级：</h3>
                     <p> - [1]服务器核心版本已从900升级至902</p>
@@ -311,7 +313,7 @@
                     <p> - [5] 新增PlumBot插件</p>
                     <p>2024/11/16</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-11-13')">2024/11/13 BETA 0.11.1</h2>
+                <h2 onclick="toggleDrawer('update-2024-11-13')">2024/11/13 BETA 0.12.0 [18:57]</h2>
                 <div id="update-2024-11-13" class="update-content">
                     <h3>1.服务器升级：</h3>
                     <p> - [1] 服务器核心版本已从896升级至900</p>
@@ -323,21 +325,23 @@
                     <p> - [1] 解决了纯原版客户端无法进入服务器的问题，删除了两个模组。</p>
                     <p>2024/11/13</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-11-09')">2024/11/09 BETA 0.09.9</h2>
+                <h2 onclick="toggleDrawer('update-2024-11-09')">2024/11/09 BETA 0.10.8 [14:27]</h2>
                 <div id="update-2024-11-09" class="update-content">
                     <h3>1.服务器升级：</h3>
                     <p> - [1] 服务器核心版本已从895升级至896版本。</p>
                     <h3>2.新增：</h3>
-                    <p> - [1] 万用皮肤补丁</p>
+                    <p> - [1] 新增SkinsRestorer插件</p>
                     <h3>3.优化：</h3>
                     <p> - [1] 修改了三个插件的配置</p>
                     <p> - [2] 汉化了两个插件的配置</p>
                     <h3>4.删除：</h3>
                     <p> - [1] 删除铜锭利用插件</p>
                     <p> - [2] 删除假人插件</p>
+                    <h3>5.更新</h3>
+                    <p> - [1] 更新SimpleTpa插件</p>
                     <p>2024/11/09</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-11-02')">2024/11/02 BETA 0.08.1</h2>
+                <h2 onclick="toggleDrawer('update-2024-11-02')">2024/11/02 BETA 0.08.7 [22:27]</h2>
                 <div id="update-2024-11-02" class="update-content">
                     <h3>1.服务器升级：</h3>
                     <p> - [1] 服务器核心版本已从894版本升级至895版本。</p>
@@ -350,7 +354,7 @@
                     <p> - [1] 修复了4个配置文件问题</p>
                     <p>2024/11/02</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-10-20')">2024/10/20 BETA 0.06.3</h2>
+                <h2 onclick="toggleDrawer('update-2024-10-20')">2024/10/20 BETA 0.06.9 [17:00]</h2>
                 <div id="update-2024-10-20" class="update-content">
                     <h3>1.服务器升级：</h3>
                     <p> - [1] 服务器核心版本已从890版本升级至894版本。</p>
@@ -359,7 +363,7 @@
                     <p> - [2] 新增模组</p>
                     <p>2024/10/20</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-10-19')">2024/10/19 BETA 0.05.4</h2>
+                <h2 onclick="toggleDrawer('update-2024-10-19')">2024/10/19 BETA 0.06.6 [18:05]</h2>
                 <div id="update-2024-10-19" class="update-content">
                     <h3>1.优化：</h3>
                     <p> - [1] Tab插件描述优化</p>
@@ -367,7 +371,7 @@
                     <p> - [3] Minimotd插件描述优化</p>
                     <p>2024/10/19</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-10-13')">2024/10/13 BETA 0.04.5</h2>
+                <h2 onclick="toggleDrawer('update-2024-10-13')">2024/10/13 BETA 0.05.1 [00:48]</h2>
                 <div id="update-2024-10-13" class="update-content">
                     <h3>1.服务器降级：</h3>
                     <p> - [1] 服务器版本从1.20.2降级到1.20.1</p>
@@ -385,15 +389,18 @@
                     <p> - [11] 新增反作弊插件</p>
                     <p>2024/10/13</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-09-28')">2024/09/28 BETA 0.00.9</h2>
+                <h2 onclick="toggleDrawer('update-2024-09-28')">2024/09/28 BETA 0.01.5 [21:31]</h2>
                 <div id="update-2024-09-28" class="update-content">
                     <h3>1.服务器升级：</h3>
                     <p> - [1] 服务器版本从1.20.1升级到1.20.2</p>
                     <p> - [2] 服务器核心从Vanilla升级到Mohist</p>
                     <p> - [3] 新增Forge</p>
+                    <h3>2.新增：</h3>
+                    <p> - [1] 新增Minimotd插件</p>
+                    <p> - [2] 新增SimpleTpa插件</p>
                     <p>2024/09/28</p>
                 </div>
-                <h2 onclick="toggleDrawer('update-2024-09-16')">2024/09/16 BETA 0.00.0</h2>
+                <h2 onclick="toggleDrawer('update-2024-09-16')">2024/09/16 BETA 0.00.0 [02:14]</h2>
                 <div id="update-2024-09-16" class="update-content">
                     <h3>服务器创建</h3>
                     <p>版本为"Vanilla 1.20.1"</p>
@@ -422,19 +429,19 @@
                     <td class="td">system_mni</td>
                     <td class="td">[服主/创始人/服务器/代码部/维护部/宣传部]</td>
                     <td class="td">服务器维护，服务器更新，网站维护，网站更新，宣传</td>
-                    <td class="td">60%</td>
+                    <td class="td">50%</td>
                 </tr>
                 <tr class="tr">
                     <td class="td">tony小熊</td>
                     <td class="td">[服务器/网络部]</td>
                     <td class="td">服务器提供，IP/域名提供，IP/域名管理</td>
-                    <td class="td">17%</td>
+                    <td class="td">23%</td>
                 </tr>
                 <tr class="tr">
                     <td class="td">MSL</td>
                     <td class="td">[网络部]</td>
                     <td class="td">IP/域名提供，IP/域名管理</td>
-                    <td class="td">13%</td>
+                    <td class="td">14%</td>
                 </tr>
                 <tr class="tr">
                     <td class="td">FallDownTrees</td>
@@ -443,23 +450,23 @@
                     <td class="td">5%</td>
                 </tr>
                 <tr class="tr">
+                    <td class="td">夜色流觞</td>
+                    <td class="td">[资源部/下载部/网络部]</td>
+                    <td class="td">高速下载资源，IP/域名提供，IP/域名管理</td>
+                    <td class="td">5%</td>
+                </tr>
+                <tr class="tr">
                     <td class="td">小黄瓜</td>
                     <td class="td">[服务器/代码部/维护部]</td>
                     <td class="td">服务器维护，网站维护，网站更新</td>
-                    <td class="td">2%</td>
+                    <td class="td">1%</td>
                 </tr>
 
-                <tr class="tr">
-                    <td class="td">夜色流觞</td>
-                    <td class="td">[资源部/下载部]</td>
-                    <td class="td">高速下载资源</td>
-                    <td class="td">2%</td>
-                </tr>
                 <tr class="tr">
                     <td class="td">LANt</td>
                     <td class="td">[服务器/代码部/维护部]</td>
                     <td class="td">服务器更新，服务器维护，服务器管理</td>
-                    <td class="td">1%</td>
+                    <td class="td">2%</td>
                 </tr>
 
                 <tr class="tr">
