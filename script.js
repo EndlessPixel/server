@@ -17,7 +17,7 @@ function initAnnouncements() {
 const SERVER_STATUS_ID = 'serverStatus';
 const PLAYER_COUNT_ID = 'playerCount';
 const REFRESH_BUTTON_ID = 'refreshStatus';
-const API_URL = 'https://api.mcsrvstat.us/2/ld.frp.one:25566';
+const API_URL = 'https://api.mcsrvstat.us/3/ld.frp.one:25566';
 function initServerStatus() {
     const statusElement = document.getElementById(SERVER_STATUS_ID);
     const playerCountElement = document.getElementById(PLAYER_COUNT_ID);
@@ -28,7 +28,7 @@ function initServerStatus() {
             const data = await response.json();
             statusElement.textContent = data.online ? '在线' : '离线';
             statusElement.style.color = data.online ? '#2ecc71' : '#e74c3c';
-            playerCountElement.textContent = `${data.online ? data.players.online : 0}/${data.players.max}`;
+            playerCountElement.textContent = `${data.online ? data.players.online : 0}/${data.players.max + 2}`;
         } catch (error) {
             console.error('Error fetching server status:', error);
             statusElement.textContent = '无法获取';
