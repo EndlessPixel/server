@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>像素探险[PixelAdventure] - 服务器官网</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://s21.ax1x.com/2024/12/11/pAHvtKS.png" type="image/png">
+</head>
+
+<body>
+    <div class="overlay">
+        <div class="text" style="color: black;">像素探险[PixelAdventure] - 服务器官网</div>
+    </div>
+    <div class="content">
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <img src="https://s21.ax1x.com/2024/12/11/pAHzgAJ.png" alt="pAHzgAJ.png"
+                    style="height: 10%;width: 20%;">
+            </div>
+            <div class="top-bar-right">
+                <nav class="nav-menu">
+                    <a href="#0"> 回到顶部 </a>
+                    <a href="#1"> 服务器截图 </a>
+                    <a href="#2"> 服务器公告 </a>
+                    <a href="#3"> 服务器状态 </a>
+                    <a href="#4"> 服务器简介 </a>
+                    <a href="#5"> 服务器规则 </a>
+                    <a href="#6"> 最近的更新 </a>
+                    <a href="#7"> 我们的团队 </a>
+                </nav>
+            </div>
+        </header>
+        <br><br><br><br><br>
+        <main class="container">
+            <section class="hero" id="0">
+                <br><br>
+                <h1>像素探险[PixelAdventure] - 服务器官网</h1>
+                <br><br><br>
+                <h2>探索、建造、冒险 - 属于我们的Minecraft世界
+                    <br><br>
+                    <div class="version-tag">BETA 0.06.5</div>
+                    <br><br>
+            </section>
+            <section class="card server-status" id="1">
+                <h2><i class="fas fa-newspaper"></i> 服务器截图 </h2>
+                <div class="image-grid">
+                    <img src="https://s21.ax1x.com/2024/11/11/pAcKfsg.jpg" alt="建筑1" class="grid-image">
+                    <img src="https://s21.ax1x.com/2024/11/11/pAcKhLQ.jpg" alt="建筑2" class="grid-image">
+                    <img src="https://s21.ax1x.com/2024/11/11/pAcK5Zj.jpg" alt="建筑3" class="grid-image">
+                    <img src="https://s21.ax1x.com/2024/11/11/pAcKIds.jpg" alt="建筑4" class="grid-image">
+                </div>
+            </section>
+            <section class="card announcements" id="2">
+                <h2><i data-feather="bell"></i> 服务器公告 </h2>
+                <div class="announcement">
+                    <p>今天我们的团队新入职了两名成员</p>
+                    <p class="date">发布时间：2024/12/06-23:43</p>
+                </div>
+                <div class="hidden-announcements">
+                    <div class="announcement">
+                        <p>我们的服务器正式更名为像素探险(PixelAdventure)</p>
+                        <p class="date">发布时间：2024/12/06-20:24</p>
+                    </div>
+                    <div class="announcement">
+                        <p>由于DNS节点离线，我们的ip更换为ld.frp.one:25566</p>
+                        <p class="date">发布时间：2024/12/01-16:31</p>
+                    </div>
+                    <div class="announcement">
+                        <p>我们团队内部对我们团队的名称产生了一些分歧</p>
+                        <p class="date">发布时间：2024/11/30-23:35</p>
+                    </div>
+                    <div class="announcement">
+                        <p>我们的阿里云服务器到期了，我们正在寻找新的提供商</p>
+                        <p class="date">发布时间：2024/11/30-13:33</p>
+                    </div>
+                    <div class="announcement">
+                        <p>为了确保服务器能够24小时不间断运行，服主已将服务器迁移至阿里云。</p>
+                        <p class="date">发布时间：2024/11/08-20:34</p>
+                    </div>
+                </div>
+                <button id="toggleAnnouncements" class="btn">更多公告</button>
+            </section>
+            <section class="card server-status" id="3">
+                <h2><i data-feather="server"></i> 服务器状态 </h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <h3>状态</h3>
+                        <p id="serverStatus">加载中...</p>
+                    </div>
+                    <div class="status-item">
+                        <h3>在线玩家</h3>
+                        <p id="playerCount">...</p>
+                    </div>
+                    <div class="status-item">
+                        <h3>运行版本</h3>
+                        <p>Minecraft Java 1.20.1</p>
+                    </div>
+                </div><br>
+                <button id="refreshStatus" class="btn">刷新状态</button>
+                <h1>服务器创建至今</h1>
+                <div id="timer">加载中...</div>
+            </section>
+            <section class="card server-info" id="4">
+                <h2><i data-feather="info"></i> 服务器简介 </h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h3>探索无尽的可能，体验纯粹的乐趣！</h3>
+                        <p>欢迎踏入我们的1.20.1版生存服务器，这里为你精心准备了多样化的模组和插件，无需安装，即可享受。</p>
+                    </div>
+                    <div class="info-item">
+                        <h3>模组盛宴</h3>
+                        <p>我们专注于为游戏世界增添更多结构，让每个角落都充满惊喜。精选模组，只为给你最丰富的游戏体验。</p>
+                    </div>
+                    <div class="info-item">
+                        <h3>插件助力</h3>
+                        <p>反作弊、优化和辅助功能一应俱全，我们致力于提升游戏的公平性与流畅度，让每位玩家都能公平竞技。</p>
+                    </div>
+                    <div class="info-item">
+                        <h3>加入我们</h3>
+                        <p><a href="https://qm.qq.com/q/kVaWTIjRWU" target="_blank">服务器交流群:870594910</a></p>
+                        <p>服务器IP地址: <span class="ip-address">ld.frp.one:25566</span></p>
+                    </div>
+                </div>
+            </section>
+            <section class="card rules" id="5">
+                <h2><i data-feather="alert-triangle"></i> 服务器规则 </h2>
+                <ul class="rules-list">
+                    <li class="rule-red">严禁DDOS - 永久踢出服务器</li>
+                    <li class="rule-orange">禁止炸图 - 累进处罚制度 </li>
+                    <li class="rule-yellow">禁止故意弄崩服务器 - 永久踢出服务器</li>
+                    <li class="rule-green">严禁开挂 - 永久踢出服务器</li>
+                    <li class="rule-blue">适当使用AI插件 - 禁止滥用"</li>
+                </ul>
+            </section>
+            <section class="card updates" id="6">
+                <h2><i data-feather="refresh-cw"></i> 最近的更新 </h2>
+                <div class="update-drawer">
+                    <h2 onclick="toggleDrawer('update-2024-12-09')">2024/12/09 BETA 0.06.7 [20:28]</h2>
+                    <div id="update-2024-12-09" class="update-content">
+                        <h3>1.删除：</h3>
+                        <p> - [1] 删除commandnpc插件</p>
+                        <p> - [2] 删除Citizen2插件</p>
+                        <p> - [3] 删除WorldGuard插件</p>
+                        <p> - [4] 删除WorldEdit插件</p>
+                        <p>2024/12/09</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-12-08')">2024/12/08 BETA 0.06.3 [14:44]</h2>
+                    <div id="update-2024-12-08" class="update-content">
+                        <h3>1. 服务器升级：</h3>
+                        <p> - [1] 服务器核心版本已从909升级至910</p>
+                        <h3>2.新增：</h3>
+                        <p> - [1] 新增commandnpc插件</p>
+                        <p> - [2] 新增Citizen2插件</p>
+                        <p>2024/12/08</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-12-07-2')">2024/12/07 BETA 0.06.0 [17:23]</h2>
+                    <div id="update-2024-12-07-2" class="update-content">
+                        <h3>1.删除：</h3>
+                        <p> - [1] 删除FastAsyncWorldEdit插件</p>
+                        <h3>2.优化：</h3>
+                        <p> - [1] 汉化AuraSkills插件</p>
+                        <p>2024/12/07</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-12-07-1')">2024/12/07 BETA 0.05.8 [03:43]</h2>
+                    <div id="update-2024-12-07-1" class="update-content">
+                        <h3>1.新增：</h3>
+                        <p> - [1] 新增CoreProtect插件</p>
+                        <p> - [2] 新增LuckPerms插件</p>
+                        <p> - [3] 新增BungeeCord插件</p>
+                        <p> - [4] 新增FastAsyncWorldEdit插件</p>
+                        <p> - [5] 新增AuraSkills插件</p>
+                        <p> - [6] 新增Chunky插件</p>
+                        <h3>2.删除：</h3>
+                        <p> - [1] 删除welcomer_plus插件</p>
+                        <p>2024/12/07</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-11-30')">2024/11/30 BETA 0.05.1 [14:17]</h2>
+                    <div id="update-2024-11-30" class="update-content">
+                        <h3>1. 服务器升级：</h3>
+                        <p> - [1] 服务器核心版本已从906升级至909</p>
+                        <h3>2.新增：</h3>
+                        <p> - [1] 新增PerformanceChecker插件</p>
+                        <p> - [2] 新增VillagerFollow插件</p>
+                        <p>2024/11/30</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-11-20')">2024/11/20 BETA 0.04.8 [14:47]</h2>
+                    <div id="update-2024-11-20" class="update-content">
+                        <h3>1. 服务器升级：</h3>
+                        <p> - [1] 服务器核心版本已从902升级至906</p>
+                        <h3>2.删除：</h3>
+                        <p> - [2] 删除PlumBot插件</p>
+                        <p>2024/11/20</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-11-16')">2024/11/16 BETA 0.04.6 [01:59]</h2>
+                    <div id="update-2024-11-16" class="update-content">
+                        <h3>1. 服务器升级：</h3>
+                        <p> - [1]服务器核心版本已从900升级至902</p>
+                        <h3>2.新增：</h3>
+                        <p> - [1] 新增Dynmap插件</p>
+                        <p> - [2] 新增Welcome插件</p>
+                        <p> - [3] 新增WorldEdit插件</p>
+                        <p> - [4] 新增WorldGuard插件</p>
+                        <p> - [5] 新增PlumBot插件</p>
+                        <p>2024/11/16</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-11-13')">2024/11/13 BETA 0.04.0 [18:57]</h2>
+                    <div id="update-2024-11-13" class="update-content">
+                        <h3>1.服务器升级：</h3>
+                        <p> - [1] 服务器核心版本已从896升级至900</p>
+                        <h3>2.更新：</h3>
+                        <p> - [1] 更新了插件minimotd</p>
+                        <h3>3.优化：</h3>
+                        <p> - [1] 我们对minimotd插件的配置文件进行了优化调整。 </p>
+                        <h3>4.修复：</h3>
+                        <p> - [1] 解决了纯原版客户端无法进入服务器的问题，删除了两个模组。</p>
+                        <p>2024/11/13</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-11-09')">2024/11/09 BETA 0.3.6 [14:27]</h2>
+                    <div id="update-2024-11-09" class="update-content">
+                        <h3>1.服务器升级：</h3>
+                        <p> - [1] 服务器核心版本已从895升级至896版本。</p>
+                        <h3>2.新增：</h3>
+                        <p> - [1] 新增SkinsRestorer插件</p>
+                        <h3>3.优化：</h3>
+                        <p> - [1] 修改了三个插件的配置</p>
+                        <p> - [2] 汉化了两个插件的配置</p>
+                        <h3>4.删除：</h3>
+                        <p> - [1] 删除铜锭利用插件</p>
+                        <p> - [2] 删除假人插件</p>
+                        <h3>5.更新</h3>
+                        <p> - [1] 更新SimpleTpa插件</p>
+                        <p>2024/11/09</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-11-02')">2024/11/02 BETA 0.02.9 [22:27]</h2>
+                    <div id="update-2024-11-02" class="update-content">
+                        <h3>1.服务器升级：</h3>
+                        <p> - [1] 服务器核心版本已从894版本升级至895版本。</p>
+                        <h3>2.新增：</h3>
+                        <p> - [1] 新增铜锭利用插件</p>
+                        <p> - [2] 新增楼梯坐功能</p>
+                        <p> - [3] 新增性能优化插件</p>
+                        <p> - [4] 新增反外挂插件</p>
+                        <h3> 3.修复：</h3>
+                        <p> - [1] 修复了4个配置文件问题</p>
+                        <p>2024/11/02</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-10-20')">2024/10/20 BETA 0.02.3 [17:00]</h2>
+                    <div id="update-2024-10-20" class="update-content">
+                        <h3>1.服务器升级：</h3>
+                        <p> - [1] 服务器核心版本已从890版本升级至894版本。</p>
+                        <h3>2.新增：</h3>
+                        <p> - [1] 新增假人插件</p>
+                        <p> - [2] 新增模组</p>
+                        <p>2024/10/20</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-10-19')">2024/10/19 BETA 0.02.0 [18:05]</h2>
+                    <div id="update-2024-10-19" class="update-content">
+                        <h3>1.优化：</h3>
+                        <p> - [1] Tab插件描述优化</p>
+                        <p> - [2] Tpa插件描述优化</p>
+                        <p> - [3] Minimotd插件描述优化</p>
+                        <p>2024/10/19</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-10-13')">2024/10/13 BETA 0.01.7 [00:48]</h2>
+                    <div id="update-2024-10-13" class="update-content">
+                        <h3>1.服务器降级：</h3>
+                        <p> - [1] 服务器版本从1.20.2降级到1.20.1</p>
+                        <h3>2.新增：</h3>
+                        <p> - [1] 新增YYungsApi模组</p>
+                        <p> - [2] 新增YungsBetterDesertTemples模组</p>
+                        <p> - [3] 新增YungsBetterDungeons模组</p>
+                        <p> - [4] 新增YungsBetterEndIsland模组</p>
+                        <p> - [5] 新增YungsBetterJungleTemples模组</p>
+                        <p> - [6] 新增YungsBetterMineshafts模组</p>
+                        <p> - [7] 新增YungsBetterNetherFortresses模组</p>
+                        <p> - [8] 新增YungsBetterOceanMonuments模组</p>
+                        <p> - [9] 新增YungsBetterStrongholds模组</p>
+                        <p> - [10] 新增YungsBetterWitchHuts模组</p>
+                        <p> - [11] 新增反作弊插件</p>
+                        <p>2024/10/13</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-09-28')">2024/09/28 BETA 0.00.5 [21:31]</h2>
+                    <div id="update-2024-09-28" class="update-content">
+                        <h3>1.服务器升级：</h3>
+                        <p> - [1] 服务器版本从1.20.1升级到1.20.2</p>
+                        <p> - [2] 服务器核心从Vanilla升级到Mohist</p>
+                        <p> - [3] 新增Forge</p>
+                        <h3>2.新增：</h3>
+                        <p> - [1] 新增Minimotd插件</p>
+                        <p> - [2] 新增SimpleTpa插件</p>
+                        <p>2024/09/28</p>
+                    </div>
+                    <h2 onclick="toggleDrawer('update-2024-09-16')">2024/09/16 BETA 0.00.0 [02:14]</h2>
+                    <div id="update-2024-09-16" class="update-content">
+                        <h3>服务器创建</h3>
+                        <p>版本为"Vanilla 1.20.1"</p>
+                        <p>2024/09/16</p>
+                    </div>
+                </div>
+            </section>
+            <section class="team-gallery" id="7">
+                <h2>我们的团队 [12人]</h2>
+                <div class="team-gallery-wrapper">
+                    <div class="team-card">
+                        <h3>system_mni</h3>
+                        <p><strong>职位/部门:</strong> 服主/创始人/服务器/代码部/维护部/宣传部</p>
+                        <p><strong>负责项目:</strong> 服务器维护，服务器更新，网站维护，网站更新，宣传</p>
+                        <p><strong>贡献比例:</strong> 50%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>tony小熊</h3>
+                        <p><strong>职位/部门:</strong> 服务器/网络部</p>
+                        <p><strong>负责项目:</strong> 服务器提供，IP/域名提供，IP/域名管理</p>
+                        <p><strong>贡献比例:</strong> 23%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>MSL</h3>
+                        <p><strong>职位/部门:</strong> 网络部</p>
+                        <p><strong>负责项目:</strong> IP/域名提供，IP/域名管理</p>
+                        <p><strong>贡献比例:</strong> 14%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>FallDownTrees</h3>
+                        <p><strong>职位/部门:</strong> 服务器/网络部</p>
+                        <p><strong>负责项目:</strong> 服务器管理，IP/域名提供，IP/域名管理</p>
+                        <p><strong>贡献比例:</strong> 5%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>夜色流觞</h3>
+                        <p><strong>职位/部门:</strong> 资源部/下载部/网络部</p>
+                        <p><strong>负责项目:</strong> 高速下载资源，IP/域名提供，IP/域名管理</p>
+                        <p><strong>贡献比例:</strong> 5%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>小黄瓜</h3>
+                        <p><strong>职位/部门:</strong> 服务器/代码部/维护部</p>
+                        <p><strong>负责项目:</strong> 服务器维护，网站维护，网站更新</p>
+                        <p><strong>贡献比例:</strong> 1%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>LANt</h3>
+                        <p><strong>职位/部门:</strong> 服务器/代码部/维护部</p>
+                        <p><strong>负责项目:</strong> 服务器更新，服务器维护，服务器管理</p>
+                        <p><strong>贡献比例:</strong> 2%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>FallDownSao</h3>
+                        <p><strong>职位/部门:</strong> 财务部</p>
+                        <p><strong>负责项目:</strong> 资金管理，资金提供</p>
+                        <p><strong>贡献比例:</strong> 0%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>PPP</h3>
+                        <p><strong>职位/部门:</strong> 财务部</p>
+                        <p><strong>负责项目:</strong> 资金管理，资金提供</p>
+                        <p><strong>贡献比例:</strong> 0%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>苍穹</h3>
+                        <p><strong>职位/部门:</strong> 宣传部</p>
+                        <p><strong>负责项目:</strong> 宣传</p>
+                        <p><strong>贡献比例:</strong> 0%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>彻底疯狂</h3>
+                        <p><strong>职位/部门:</strong> 宣传部</p>
+                        <p><strong>负责项目:</strong> 宣传</p>
+                        <p><strong>贡献比例:</strong> 0%</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>二狗子</h3>
+                        <p><strong>职位/部门:</strong> 宣传部</p>
+                        <p><strong>负责项目:</strong> 宣传</p>
+                        <p><strong>贡献比例:</strong> 0%</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <div class="footer-section">
+                <h3>Minecraft服务器由<a href="https://ddscloud.smstars.top/" target="_blank">等灯云</a>提供</h3>
+                <br>
+                <h3>网页由<a href="https://pages.github.com/" target="_blank">Github Page</a>托管</h3>
+            </div>
+            <div class="footer-section">
+                <p>&copy; 2024 AdventureCrafters服务器科技，保留所有权利。</p>
+                <br><br>
+                <p>&copy; 2024 AdventureCrafters Server Techology,All rights reserved.</p>
+            </div>
+            <div class="footer-section">
+                <p><a href="https://qm.qq.com/q/kCXMS8IhlC" target="_blank">服主QQ:2267848501</a></p>
+                <p><a href="https://qm.qq.com/q/kVaWTIjRWU" target="_blank">服务器交流群:870594910</a></p>
+            </div>
+        </footer>
+        <script src="script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</body>
+
+</html>
