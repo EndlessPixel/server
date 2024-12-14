@@ -1,12 +1,12 @@
 /* 定义颜色变量 */
 :root {
-    --accent-color: #3498db;
+    --accent-color: #3498dbaa;
     /* 主要颜色 */
-    --secondary-color: #2980b9;
+    --secondary-color: #41b929aa;
     /* 次要颜色 */
-    --text-color: #ffffff;
+    --text-color: #000000;
     /* 文本颜色 */
-    --card-bg: #ecf0f1;
+    --card-bg: #a4e2f1aa;
     /* 卡片背景颜色 */
 }
 
@@ -50,6 +50,8 @@ html {
     height: 100%;
     margin: 0;
     overflow: hidden;
+    background-image: url("https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msKXW.img");
+    background-size: cover;
 }
 
 /* 容器和布局 */
