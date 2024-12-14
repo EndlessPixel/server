@@ -1,18 +1,11 @@
-#Jinyun Adventure 1.20.1 Server#
+Welcome to the Pixel Adventure Server!
 
-Welcome to the Jinyun Adventure 1.20.1 server,the starting point for adventure and fun.Our server is based on the latest version of Minecraft,providing a stable,secure,and challenging gaming environment.Here,you can explore,build,and battle with players from around the world.
+No need for the official version, offline access available. Whether you have the official Minecraft or not, you can join us and enjoy the game anytime, anywhere.
 
+Minimal plugins and mods, maintaining original balance. We've only used a few plugins and mods to ensure the gameplay is similar to the original version, while adding some auxiliary functions to make the game more convenient.
 
-This website is operated by the SystemMiniX Server Technology Team
+Completely free, no microtransactions, no recharge. The server does not provide any paid services, and all players can play for free.
 
-Our website is operated by the professional SystemMiniX Server Technology Team.This team is composed of a group of developers and designers who are passionate about Minecraft,dedicated to providing the best gaming experience and technical support.Our goal is to ensure that every player can find their own fun here.
+Relaxed rules, freedom to explore. We encourage players to freely explore and create, but please follow the basic rules: no cheating, no destroying others' buildings. Here, you can fully unleash your creativity.
 
-
-The website is independently developed and maintained by system_mini
-
-Our website is independently developed and maintained by the talented system_mini.He is responsible for the front-end development of the website,ensuring user interface friendliness and interactivity,as well as the performance and security of the website.The efforts of system_mini make our website responsive and provide a smooth access experience for players.
-
-
-Other members,including system_mini,are responsible for maintaining the Minecraft server
-
-In addition to system_mini,we have other team members responsible for maintaining the Minecraft server.They monitor the server's operation,handle player feedback,and regularly update game content to keep the game fresh and attractive.Our team members are all veteran players of Minecraft,understanding the needs of players and committed to providing a fair,interesting,and challenging gaming experience.
+- **Client Version:** Minecraft Java 1.20.1
