@@ -1,13 +1,13 @@
 /* 定义颜色变量 */
 :root {
-    --accent-color: #3498dbaa;
-    /* 主要颜色 */
-    --secondary-color: #41b929aa;
-    /* 次要颜色 */
+    --accent-color: #3498db88;
+    /* 主要颜色，增加透明度 */
+    --secondary-color: #ffa50088;
+    /* 次要颜色，使用橙色作为互补色，增加透明度 */
     --text-color: #000000;
     /* 文本颜色 */
-    --card-bg: #a4e2f1aa;
-    /* 卡片背景颜色 */
+    --card-bg: #e6f7ff88;
+    /* 卡片背景颜色，使用更浅的蓝色以增加对比度，增加透明度 */
 }
 
 /* 重置默认样式 */
@@ -43,6 +43,11 @@ body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
     color: var(--text-color);
+    backdrop-filter: blur(10px);
+    /* 毛刺玻璃效果 */
+    -webkit-backdrop-filter: blur(10px);
+    /* 兼容旧版Safari */
+    color: var(--text-color);
 }
 
 body,
@@ -68,6 +73,10 @@ html {
     border-radius: 1rem;
     margin-bottom: 2rem;
     animation: fadeIn 1s ease-out;
+    backdrop-filter: blur(10px);
+    /* 毛刺玻璃效果 */
+    -webkit-backdrop-filter: blur(10px);
+    /* 兼容旧版Safari */
 }
 
 .hero h1,
@@ -121,7 +130,8 @@ a:hover::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.5);
+    /* 半透明背景 */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -146,8 +156,12 @@ a:hover::after {
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-    background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    background: rgba(255, 255, 255, 0.2);
+    /* 半透明背景 */
     backdrop-filter: blur(10px);
+    /* 毛刺玻璃效果 */
+    -webkit-backdrop-filter: blur(10px);
+    /* 兼容旧版Safari */
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     position: fixed;
     width: 100%;
@@ -173,13 +187,13 @@ a:hover::after {
 }
 
 .nav-menu li {
-    margin-left: 20px;
+    margin-left: 50px;
 }
 
 .nav-menu a {
     text-decoration: none;
     color: var(--text-color);
-    font-size: 16px;
+    font-size: 15px;
     position: relative;
     transition: color 0.3s ease;
 }
@@ -188,7 +202,7 @@ a:hover::after {
     content: '';
     display: block;
     width: 0;
-    height: 2px;
+    height: 5px;
     background: var(--accent-color);
     transition: width 0.3s ease;
     position: absolute;
@@ -212,6 +226,10 @@ a:hover::after {
     margin-bottom: 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+    /* 毛刺玻璃效果 */
+    -webkit-backdrop-filter: blur(10px);
+    /* 兼容旧版Safari */
 }
 
 .card:hover {
@@ -233,6 +251,10 @@ a:hover::after {
     border-radius: 0.5rem;
     margin-bottom: 1rem;
     animation: slideInFromLeft 1s ease-out;
+    backdrop-filter: blur(10px);
+    /* 毛刺玻璃效果 */
+    -webkit-backdrop-filter: blur(10px);
+    /* 兼容旧版Safari */
 }
 
 .announcement .date {
@@ -300,6 +322,10 @@ a:hover::after {
     padding: 1rem;
     border-radius: 0.5rem;
     transition: box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+    /* 毛刺玻璃效果 */
+    -webkit-backdrop-filter: blur(10px);
+    /* 兼容旧版Safari */
 }
 
 .info-item:hover {
@@ -370,12 +396,17 @@ a:hover::after {
 
 /* 页脚样式 */
 .footer {
-    background-color: #f8f9fa;
+    background-color: rgba(248, 249, 250, 0.8);
+    /* 半透明背景 */
     color: #333;
     display: flex;
     justify-content: space-around;
     padding: 20px;
     font-size: 14px;
+    backdrop-filter: blur(10px);
+    /* 毛刺玻璃效果 */
+    -webkit-backdrop-filter: blur(10px);
+    /* 兼容旧版Safari */
 }
 
 .footer-section {
@@ -402,28 +433,6 @@ a:hover::after {
 
 .footer-section li a:hover {
     text-decoration: underline;
-}
-
-/* 更新抽屉样式 */
-.update-drawer {
-    margin-bottom: 5px;
-    padding: 5px;
-    border: 1px solid #74747470;
-    border-radius: 5px;
-}
-
-.update-drawer h2 {
-    cursor: pointer;
-    color: var(--text-color);
-    background-color: var(--card-bg);
-    padding: 5px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
-
-.update-content {
-    display: none;
-    padding-left: 10px;
 }
 
 /* 服务器状态 */
@@ -589,6 +598,10 @@ h6 {
     border-radius: 8px;
     box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+    /* 毛刺玻璃效果 */
+    -webkit-backdrop-filter: blur(10px);
+    /* 兼容旧版Safari */
 }
 
 .team-card:hover {
