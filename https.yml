@@ -1,0 +1,15 @@
+https:
+    html:
+        -'https://s21.ax1x.com/2024/12/11/pAHvtKS.png'
+        -'https://s21.ax1x.com/2024/11/11/pAcKfsg.jpg'
+        -'https://s21.ax1x.com/2024/11/11/pAcKhLQ.jpg'
+        -'https://s21.ax1x.com/2024/11/11/pAcK5Zj.jpg'
+        -'https://s21.ax1x.com/2024/11/11/pAcKIds.jpg'
+        -'https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js'
+    css:
+        -'https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msKXW.img'
+    js:
+        -'https://api.mcsrvstat.us/3/ld.frp.one:25566'
+home: index.html
+styles: styles.css
+logic: script.js
