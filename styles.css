@@ -43,9 +43,10 @@ body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
     color: var(--text-color);
-    backdrop-filter: blur(10px);
+    /* 调低模糊度为 5px */
+    backdrop-filter: blur(5px);
     /* 毛刺玻璃效果 */
-    -webkit-backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(5px);
     /* 兼容旧版Safari */
     color: var(--text-color);
 }
@@ -55,7 +56,7 @@ html {
     height: 100%;
     margin: 0;
     overflow: hidden;
-    background-image: url("https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msKXW.img");
+    background-image: url("https://s21.ax1x.com/2025/04/03/pE6KQZ6.jpg");
     background-size: cover;
 }
 
@@ -244,6 +245,11 @@ a:hover::after {
     color: var(--text-color);
 }
 
+.card svg {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
 /* 公告样式 */
 .announcement {
     background-color: rgba(0, 0, 0, 0.05);
@@ -252,9 +258,7 @@ a:hover::after {
     margin-bottom: 1rem;
     animation: slideInFromLeft 1s ease-out;
     backdrop-filter: blur(10px);
-    /* 毛刺玻璃效果 */
     -webkit-backdrop-filter: blur(10px);
-    /* 兼容旧版Safari */
 }
 
 .announcement .date {
@@ -263,7 +267,29 @@ a:hover::after {
 }
 
 .hidden-announcements {
-    display: none;
+    display: none; /* 默认隐藏 */
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.pagination button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 /* 按钮样式 */
@@ -342,14 +368,6 @@ a:hover::after {
 .join-us {
     grid-column: 1 / -1;
     text-align: center;
-}
-
-/* IP地址样式 */
-.ip-address {
-    background-color: rgba(0, 0, 0, 0.1);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-family: monospace;
 }
 
 /* 规则列表 */
@@ -442,6 +460,15 @@ a:hover::after {
     justify-content: space-between;
 }
 
+.server-status h3 {
+    font-size: 1.25rem;
+}
+
+.server-status svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
 .server-status .grid-image {
     width: calc(50% - 10px);
     margin-bottom: 10px;
@@ -476,86 +503,7 @@ a:hover::after {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-/* 动画 */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes popIn {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-
-    80% {
-        transform: scale(1.05);
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInFromLeft {
-    from {
-        transform: translateX(-100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInFromBottom {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@media (max-width: 768px) {
-    .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .nav-menu ul {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .nav-menu li {
-        margin: 10px 0;
-    }
-}
-
-body,
-img,
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: #000000;
-    animation: fadeIn 1s ease-out;
-    animation-fill-mode: forwards;
-}
+/*关于我们*/
 
 .team-gallery {
     width: 100%;
@@ -623,4 +571,154 @@ h6 {
 
 .team-card strong {
     font-weight: bold;
+}
+
+/*评价*/
+
+.rating-container {
+    text-align: center;
+    margin: 2rem;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.buttons button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #0056b3;
+}
+
+.thank-you-message {
+    display: none;
+    text-align: center;
+}
+
+.thank-you-message p {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.checkmark {
+    font-size: 2rem;
+    color: #2ecc71;
+    animation: checkmarkAnimation 1s ease-out;
+}
+
+/* 动画 */
+
+@keyframes checkmarkAnimation {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    80% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromBottom {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-menu ul {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-menu li {
+        margin: 10px 0;
+    }
+}
+
+/* 为 body 元素设置淡入动画 */
+body {
+    color: var(--text-color);
+    animation: fadeIn 1s ease-out;
+    animation-fill-mode: forwards;
+}
+
+/* 为图片元素设置弹出动画 */
+img {
+    color: var(--text-color);
+    animation: popIn 0.5s ease-out;
+    animation-fill-mode: forwards;
+}
+
+/* 为标题元素设置从左侧滑入动画 */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color);
+    animation: slideInFromLeft 1s ease-out;
+    animation-fill-mode: forwards;
+}
+
+/* 为段落元素设置从底部滑入动画 */
+p {
+    color: var(--text-color);
+    animation: slideInFromBottom 1s ease-out;
+    animation-fill-mode: forwards;
 }
