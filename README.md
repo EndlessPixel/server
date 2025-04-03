@@ -1,4 +1,4 @@
-Welcome to the Pixel Adventure Server!
+Welcome to the EndlessPixel Server!
 
 No need for the official version, offline access available. Whether you have the official Minecraft or not, you can join us and enjoy the game anytime, anywhere.
 
@@ -8,4 +8,4 @@ Completely free, no microtransactions, no recharge. The server does not provide 
 
 Relaxed rules, freedom to explore. We encourage players to freely explore and create, but please follow the basic rules: no cheating, no destroying others' buildings. Here, you can fully unleash your creativity.
 
-- **Client Version:** Minecraft Java 1.20.1
+- **Client Version:** Minecraft Java 1.21.4
