@@ -135,57 +135,188 @@ initAnnouncements();
 
 // 服务器状态功能
 function initServerStatus() {
+    // 获取页面元素
     const statusElement = document.getElementById('serverStatus');
     const playerCountElement = document.getElementById('playerCount');
     const refreshButton = document.getElementById('refreshStatus');
-    const API_URL = 'https://api.mcsrvstat.us/3/gz.endlesspixel.fun:21212';
+    const motdElement = document.getElementById('serverMotd');
+    const apiVersionElement = document.getElementById('apiVersion'); // 获取 API 版本显示元素
+    const API_URL = 'https://api.mcsrvstat.us/3/gz.endlesspixel.fun:21212'; // 服务器状态 API 地址
 
-    if (!statusElement || !playerCountElement || !refreshButton) {
+    // 检查是否获取到所有必要的元素
+    if (!statusElement || !playerCountElement || !refreshButton || !motdElement || !apiVersionElement) {
         console.error('Missing elements for server status');
         return;
     }
 
-    // 复用之前定义的节流函数
+    // 节流函数，限制函数的执行频率
     const fetchStatus = throttle(async () => {
         try {
             // 显示加载状态
             statusElement.textContent = '查询中...';
             statusElement.style.color = '#f39c12';
             playerCountElement.textContent = '...';
+            motdElement.textContent = '查询中...';
+            apiVersionElement.textContent = '查询中...'; // 显示 API 版本加载状态
 
+            // 发起请求获取服务器状态
             const response = await fetch(API_URL, { cache: 'no-store' });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            // 处理 JSON 解析错误
+
+            // 解析响应数据
             const data = await response.json();
 
+            // 更新服务器状态
             statusElement.textContent = data.online ? '在线' : '离线';
             statusElement.style.color = data.online ? '#2ecc71' : '#e74c3c';
 
-            // 处理玩家数据可能缺失的情况
+            // 更新玩家数量
             const onlinePlayers = data.online ? (data.players?.online || 0) : 0;
             const maxPlayers = data.online ? (data.players?.max || 0) : 0;
             playerCountElement.textContent = `${onlinePlayers}/${maxPlayers}`;
+
+            // 更新 MOTD 信息
+            if (data.motd && data.motd.html) {
+                motdElement.innerHTML = data.motd.html.join('<br>');
+            } else {
+                motdElement.textContent = '未获取到 motd 信息';
+            }
+
+            // 更新 API 版本信息
+            apiVersionElement.textContent = data.debug?.apiversion || '未获取到 API 版本信息';
+
         } catch (error) {
             console.error('Error fetching server status:', error);
             statusElement.textContent = '无法获取';
             statusElement.style.color = '#e74c3c';
             playerCountElement.textContent = '错误';
+            motdElement.textContent = '错误';
+            apiVersionElement.textContent = '错误'; // 显示 API 版本错误信息
         }
     }, 2000);
 
     // 初始请求
     fetchStatus();
 
-    // 设置刷新按钮
+    // 设置刷新按钮事件
     refreshButton.addEventListener('click', (e) => {
         e.preventDefault();
         fetchStatus();
+        fetchAndDisplayJSON();
     });
 
-    // 可选：每 30 秒自动刷新
+    // 每隔 30 秒自动刷新服务器状态
     setInterval(fetchStatus, 30000);
+}
+
+// API 端点
+const apiUrl = 'https://api.mcsrvstat.us/3/gz.endlesspixel.fun:21212';
+
+// 获取 JSON 数据并渲染
+async function fetchAndDisplayJSON() {
+    const container = document.getElementById('jsonContainer');
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+
+    try {
+        // 显示加载中...
+        loading.style.display = 'block';
+        container.style.display = 'none';
+        error.textContent = '';
+
+        // 发起 API 请求
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok.');
+        }
+
+        const data = await response.json();
+        const maskedData = JSON.parse(maskSensitiveData(JSON.stringify(data))); // 对数据进行打码处理
+        const formattedJSON = renderJSON(maskedData); // 渲染打码后的 JSON 数据
+
+        // 渲染 JSON 数据
+        container.innerHTML = formattedJSON;
+        container.style.display = 'block';
+        loading.style.display = 'none';
+
+    } catch (err) {
+        // 显示错误消息
+        console.error('Fetch error:', err);
+        loading.style.display = 'none';
+        container.style.display = 'none';
+        error.textContent = '加载失败，请稍后再试。';
+    }
+}
+
+function renderJSON(obj, indent = 0) {
+    let html = '';
+    const space = ''.repeat(indent);
+
+    if (typeof obj === 'object' && obj !== null) {
+        if (Array.isArray(obj)) {
+            html += '[\n';
+            obj.forEach((item, index) => {
+                html += `${space}  ${renderJSON(item, indent + 1)}${index < obj.length - 1 ? ',' : ''}\n`;
+            });
+            html += `${space}]`;
+        } else {
+            html += '{\n';
+            const keys = Object.keys(obj);
+            keys.forEach((key, index) => {
+                html += `${space}  <span class="json-key">"${key}"</span>: ${renderJSON(obj[key], indent + 1)}${index < keys.length - 1 ? ',' : ''}\n`;
+            });
+            html += `${space}}`;
+        }
+    } else if (typeof obj === 'string') {
+        html += `<span class="json-string">"${obj}"</span>`;
+    } else if (typeof obj === 'number') {
+        html += `<span class="json-number">${obj}</span>`;
+    } else if (typeof obj === 'boolean') {
+        html += `<span class="json-boolean">${obj}</span>`;
+    } else if (obj === null) {
+        html += `<span class="json-null">null</span>`;
+    } else {
+        html += obj;
+    }
+
+    return html;
+}
+
+// 打码敏感数据
+function maskSensitiveData(json) {
+    const regex = /"ip":"([^"]+)"/g;
+    // 修复：省略未使用的 match 参数
+    return json.replace(regex, (_, ip) => {
+        const maskedIp = ip.replace(/\d/g, '*');
+        return `"ip":"${maskedIp}"`;
+    }).replace(/"name":"([^"]+)"/g, (_, name) => {
+        const maskedName = name.replace(/./g, '*');
+        return `"name":"${maskedName}"`;
+    });
+}
+
+// 初始化并每30秒自动重载
+fetchAndDisplayJSON();
+setInterval(fetchAndDisplayJSON, 30000);
+
+
+//切换服务器窗口的显示状态
+function toggleServerWindow() {
+    // 检查是否存在服务器窗口
+    const serverWindow = document.getElementById('serverWindow');
+    if (!serverWindow) {
+        console.error('Missing server window element');
+        return;
+    }
+    // 切换服务器窗口的显示状态
+    serverWindow.classList.toggle('server-window');
+    // 如果窗口显示，更新 JSON 数据
+    if (!serverWindow.classList.contains('server-window')) {
+        fetchAndDisplayJSON();
+    }
 }
 
 // 计时器功能

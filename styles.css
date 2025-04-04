@@ -19,11 +19,11 @@
 
 /* 滚动条样式 */
 ::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0);
     /* 更深的滚动条轨道颜色 */
 }
 
@@ -188,7 +188,7 @@ a:hover::after {
 }
 
 .nav-menu li {
-    margin-left: 50px;
+    width: 100px;
 }
 
 .nav-menu a {
@@ -267,7 +267,8 @@ a:hover::after {
 }
 
 .hidden-announcements {
-    display: none; /* 默认隐藏 */
+    display: none;
+    /* 默认隐藏 */
 }
 
 .pagination {
@@ -305,35 +306,6 @@ a:hover::after {
 
 .btn:hover {
     background-color: var(--secondary-color);
-}
-
-/* 状态网格 */
-.status-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-}
-
-.status-item {
-    background-color: rgba(0, 0, 0, 0.05);
-    padding: 1rem;
-    border-radius: 0.5rem;
-    text-align: center;
-    transition: transform 0.3s;
-}
-
-.status-item:hover {
-    transform: translateY(-5px);
-}
-
-.status-item h3,
-.status-item p {
-    margin-bottom: 0.5rem;
-}
-
-.status-item p {
-    font-size: 1.25rem;
-    font-weight: bold;
 }
 
 /* 信息网格 */
@@ -488,6 +460,97 @@ a:hover::after {
     margin-left: 0;
 }
 
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.status-item {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.status-item:hover {
+    transform: translateY(-5px);
+}
+
+.status-item h3,
+.status-item p {
+    margin-bottom: 0.5rem;
+}
+
+.status-item p {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.motd {
+    grid-column: span 2;
+}
+
+/*JSON渲染*/
+#jsonContainer {
+    background-color: rgba(56, 56, 56, 0.7);
+    padding: 20px;
+    border-radius: 8px;
+    overflow: auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #ccc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 20px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+#loading {
+    text-align: center;
+    font-size: 16px;
+    color: #ccc;
+    margin-top: 20px;
+}
+
+#error {
+    color: #f92672;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.json-key {
+    color: #f92672;
+}
+
+.json-string {
+    color: #e6db74;
+}
+
+.json-number {
+    color: #ae81ff;
+}
+
+.json-boolean {
+    color: #66d9ef;
+}
+
+.json-null {
+    color: #f4bf75;
+}
+
+.indent {
+    margin-left: 20px;
+}
+
+.server-window {
+    display: none;
+}
+
 /*计时器*/
 #timer {
     font-size: 2em;
@@ -623,6 +686,7 @@ a:hover::after {
         transform: scale(0);
         opacity: 0;
     }
+
     100% {
         transform: scale(1);
         opacity: 1;
@@ -710,7 +774,12 @@ img {
 }
 
 /* 为标题元素设置从左侧滑入动画 */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: var(--text-color);
     animation: slideInFromLeft 1s ease-out;
     animation-fill-mode: forwards;
@@ -721,4 +790,22 @@ p {
     color: var(--text-color);
     animation: slideInFromBottom 1s ease-out;
     animation-fill-mode: forwards;
+}
+
+br {
+    /* bug 修复: 修正为 height: 20px; 应改为 line-height: 20px; 因为 br 元素没有 height 属性 */
+    line-height: 20px;
+}
+
+/* ... existing code ... */
+hr {
+    /* bug 修复: 修正为 height: 2px; 原代码中 2x 是拼写错误 */
+    height: 1.5px;
+    width: 100%;
+    /* 新增样式美化 */
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: 1px;
+    margin: 20px auto;
+    /* 设置上下外边距并水平居中 */
 }
