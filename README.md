@@ -1,11 +1,29 @@
-Welcome to the EndlessPixel Server!
+# Welcome to the EndlessPixel Server!
 
-No need for the official version, offline access available. Whether you have the official Minecraft or not, you can join us and enjoy the game anytime, anywhere.
+## Server Overview
+Welcome to the EndlessPixel Server, a Minecraft community where you can dive into the world of endless possibilities! No need to worry about having the official version of Minecraft or being online constantly. Our server offers **offline access** so that you can join us anytime, anywhere and enjoy the game to the fullest.
 
-Minimal plugins and mods, maintaining original balance. We've only used a few plugins and mods to ensure the gameplay is similar to the original version, while adding some auxiliary functions to make the game more convenient.
+## Core Features
 
-Completely free, no microtransactions, no recharge. The server does not provide any paid services, and all players can play for free.
+### Original Gameplay Experience
+We strive to maintain the original balance of Minecraft. With minimal plugins and mods, we ensure that the gameplay remains true to the original version while adding some auxiliary functions to enhance your experience. This way, you can enjoy the game just like you would in the official version, but with added convenience.
 
-Relaxed rules, freedom to explore. We encourage players to freely explore and create, but please follow the basic rules: no cheating, no destroying others' buildings. Here, you can fully unleash your creativity.
+### Completely Free
+Our server is **completely free**. We do not offer any paid services, microtransactions, or recharge options. Every player can join and play without any financial obligations. Enjoy the game as it was meant to be, without any barriers.
 
-- **Client Version:** Minecraft Java 1.21.4
+### Relaxed Rules and Freedom to Explore
+We encourage players to freely explore and create in our server. Here, you can fully unleash your creativity and build amazing structures, explore vast landscapes, and interact with other players. However, we ask that you follow our basic rules: **no cheating** and **no destroying others' buildings**. Let's keep the server a fun and respectful place for everyone.
+
+## Technical Details
+
+### Client Version
+- **Minecraft Java Edition 1.21.4**
+
+## Join Our Community
+
+### QQ Group
+Join our QQ group to stay updated, get support, and connect with other players. Click the link below to join:
+
+[870594910](https://qm.qq.com/q/QomvgjLMY2)
+
+We look forward to seeing you on the EndlessPixel Server!
