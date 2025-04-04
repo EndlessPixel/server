@@ -1,4 +1,4 @@
-[en](README-en.md) [zh-cn](README-zh-cn.md) [zh-tw](README-zh-tw.md) [mo](README-zh-mo.md) [hk](README-zh-hk.md)
+[en](README.md) [zh-cn](README-zh-cn.md) [zh-tw](README-zh-tw.md) [mo](README-zh-mo.md) [hk](README-zh-hk.md)
 
 # Welcome to the EndlessPixel Server!
 
