@@ -133,94 +133,130 @@ function initAnnouncements() {
 // 初始化公告
 initAnnouncements();
 
-// 服务器状态功能
-function initServerStatus() {
-    // 获取页面元素
-    const statusElement = document.getElementById('serverStatus');
-    const playerCountElement = document.getElementById('playerCount');
-    const refreshButton = document.getElementById('refreshStatus');
-    const motdElement = document.getElementById('serverMotd');
-    const apiVersionElement = document.getElementById('apiVersion'); // 获取 API 版本显示元素
-    const API_URL = 'https://api.mcsrvstat.us/3/gz.endlesspixel.fun:21212'; // 服务器状态 API 地址
+// 获取页面元素
+const statusElement = document.getElementById('serverStatus');
+const playerCountElement = document.getElementById('playerCount');
+const refreshButton = document.getElementById('refreshStatus');
+const motdElement = document.getElementById('serverMotd');
+const apiVersionElement = document.getElementById('apiVersion');
+const nodeSelect = document.getElementById('nodeSelect');
+const container = document.getElementById('jsonContainer');
+const loading = document.getElementById('loading');
+const error = document.getElementById('error');
 
-    // 检查是否获取到所有必要的元素
-    if (!statusElement || !playerCountElement || !refreshButton || !motdElement || !apiVersionElement) {
-        console.error('Missing elements for server status');
-        return;
+// 定义不同节点的 API 地址
+const nodeApiUrls = {
+    gz: 'https://api.mcsrvstat.us/3/gz.endlesspixel.fun:21212',
+    hn: 'https://api.mcsrvstat.us/3/hn.endlesspixel.fun:25568',
+    hb: 'https://api.mcsrvstat.us/3/hb.endlesspixel.fun:25568'
+};
+
+// 定义不同节点的 FRP 地址
+const nodeFrpUrls = {
+    gz: 'https://api.mcsrvstat.us/3/vip.gz.frp.one:21212',
+    hn: 'https://api.mcsrvstat.us/3/ld.frp.one:25568',
+    hb: 'https://api.mcsrvstat.us/3/hb.frp.one:25568'
+};
+
+// 获取当前选择的连接方式对应的 API 地址
+function getCurrentApiUrl() {
+    const selectedNode = nodeSelect.value;
+    const connectionOption = getSelectedConnectionOption();
+    if (connectionOption === 'domain') {
+        return nodeApiUrls[selectedNode];
+    } else if (connectionOption === 'frp') {
+        return nodeFrpUrls[selectedNode];
     }
-
-    // 节流函数，限制函数的执行频率
-    const fetchStatus = throttle(async () => {
-        try {
-            // 显示加载状态
-            statusElement.textContent = '查询中...';
-            statusElement.style.color = '#f39c12';
-            playerCountElement.textContent = '...';
-            motdElement.textContent = '查询中...';
-            apiVersionElement.textContent = '查询中...'; // 显示 API 版本加载状态
-
-            // 发起请求获取服务器状态
-            const response = await fetch(API_URL, { cache: 'no-store' });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            // 解析响应数据
-            const data = await response.json();
-
-            // 更新服务器状态
-            statusElement.textContent = data.online ? '在线' : '离线';
-            statusElement.style.color = data.online ? '#2ecc71' : '#e74c3c';
-
-            // 更新玩家数量
-            const onlinePlayers = data.online ? (data.players?.online || 0) : 0;
-            const maxPlayers = data.online ? (data.players?.max || 0) : 0;
-            playerCountElement.textContent = `${onlinePlayers}/${maxPlayers}`;
-
-            // 更新 MOTD 信息
-            if (data.motd && data.motd.html) {
-                motdElement.innerHTML = data.motd.html.join('<br>');
-            } else {
-                motdElement.textContent = '未获取到 motd 信息';
-            }
-
-            // 更新 API 版本信息
-            apiVersionElement.textContent = data.debug?.apiversion || '未获取到 API 版本信息';
-
-        } catch (error) {
-            console.error('Error fetching server status:', error);
-            statusElement.textContent = '无法获取';
-            statusElement.style.color = '#e74c3c';
-            playerCountElement.textContent = '错误';
-            motdElement.textContent = '错误';
-            apiVersionElement.textContent = '错误'; // 显示 API 版本错误信息
-        }
-    }, 2000);
-
-    // 初始请求
-    fetchStatus();
-
-    // 设置刷新按钮事件
-    refreshButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        fetchStatus();
-        fetchAndDisplayJSON();
-    });
-
-    // 每隔 30 秒自动刷新服务器状态
-    setInterval(fetchStatus, 30000);
 }
 
-// API 端点
-const apiUrl = 'https://api.mcsrvstat.us/3/gz.endlesspixel.fun:21212';
+// 获取单选框的值
+function getSelectedConnectionOption() {
+    const radios = document.getElementsByName('connectionOption');
+    for (let i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            return radios[i].value;
+        }
+    }
+    return 'domain'; // 默认值
+}
+
+// 节流函数，限制函数的执行频率
+function throttle(func, limit) {
+    let lastFunc;
+    let lastRan;
+    return function () {
+        const context = this;
+        const args = arguments;
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function () {
+                if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
+    };
+}
+
+// 获取服务器状态
+async function fetchServerStatus() {
+    try {
+        const API_URL = getCurrentApiUrl();
+
+        // 显示加载状态
+        statusElement.textContent = '查询中...';
+        statusElement.style.color = '#f39c12';
+        playerCountElement.textContent = '...';
+        motdElement.textContent = '查询中...';
+        apiVersionElement.textContent = '查询中...';
+
+        // 发起请求获取服务器状态
+        const response = await fetch(API_URL, { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // 解析响应数据
+        const data = await response.json();
+
+        // 更新服务器状态
+        statusElement.textContent = data.online ? '在线' : '离线';
+        statusElement.style.color = data.online ? '#2ecc71' : '#e74c3c';
+
+        // 更新玩家数量
+        const onlinePlayers = data.online ? (data.players?.online || 0) : 0;
+        const maxPlayers = data.online ? (data.players?.max || 0) : 0;
+        playerCountElement.textContent = `${onlinePlayers}/${maxPlayers}`;
+
+        // 更新 MOTD 信息
+        if (data.motd && data.motd.html) {
+            motdElement.innerHTML = data.motd.html.join('<br>');
+        } else {
+            motdElement.textContent = '未获取到 motd 信息';
+        }
+
+        // 更新 API 版本信息
+        apiVersionElement.textContent = data.debug?.apiversion || '未获取到 API 版本信息';
+
+    } catch (error) {
+        console.error('Error fetching server status:', error);
+        statusElement.textContent = '无法获取';
+        statusElement.style.color = '#e74c3c';
+        playerCountElement.textContent = '错误';
+        motdElement.textContent = '错误';
+        apiVersionElement.textContent = '错误';
+    }
+}
 
 // 获取 JSON 数据并渲染
 async function fetchAndDisplayJSON() {
-    const container = document.getElementById('jsonContainer');
-    const loading = document.getElementById('loading');
-    const error = document.getElementById('error');
-
     try {
+        const apiUrl = getCurrentApiUrl();
+
         // 显示加载中...
         loading.style.display = 'block';
         container.style.display = 'none';
@@ -251,6 +287,7 @@ async function fetchAndDisplayJSON() {
     }
 }
 
+// 渲染 JSON 数据
 function renderJSON(obj, indent = 0) {
     let html = '';
     const space = ''.repeat(indent);
@@ -288,7 +325,6 @@ function renderJSON(obj, indent = 0) {
 // 打码敏感数据
 function maskSensitiveData(json) {
     const regex = /"ip":"([^"]+)"/g;
-    // 修复：省略未使用的 match 参数
     return json.replace(regex, (_, ip) => {
         const maskedIp = ip.replace(/\d/g, '*');
         return `"ip":"${maskedIp}"`;
@@ -298,12 +334,33 @@ function maskSensitiveData(json) {
     });
 }
 
-// 初始化并每30秒自动重载
-fetchAndDisplayJSON();
-setInterval(fetchAndDisplayJSON, 30000);
+// 初始化并设置自动刷新
+const throttledFetchStatus = throttle(fetchServerStatus, 2000);
+throttledFetchStatus();
+setInterval(throttledFetchStatus, 30000);
 
+// 设置刷新按钮事件
+refreshButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    throttledFetchStatus();
+    fetchAndDisplayJSON();
+});
 
-//切换服务器窗口的显示状态
+// 设置下拉框事件
+nodeSelect.addEventListener('change', () => {
+    throttledFetchStatus();
+    fetchAndDisplayJSON();
+});
+
+// 添加单选框的事件监听
+document.querySelectorAll('input[name="connectionOption"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+        throttledFetchStatus();
+        fetchAndDisplayJSON();
+    });
+});
+
+// 切换服务器窗口的显示状态
 function toggleServerWindow() {
     // 检查是否存在服务器窗口
     const serverWindow = document.getElementById('serverWindow');
@@ -319,9 +376,9 @@ function toggleServerWindow() {
     }
 }
 
-// 计时器功能
+//时间
 function initTimer() {
-    const startDateStr = "2024-09-16T15:34:00";
+    const startDateStr = "2024-09-16T15:34:43";
     const startDate = new Date(startDateStr);
     const timerElement = document.getElementById('timer');
 
@@ -333,28 +390,46 @@ function initTimer() {
     function updateTimer() {
         const now = new Date();
         let diffInMs = now - startDate;
+
         if (diffInMs < 0) {
             timerElement.textContent = "计算错误: 你的时间有问题!";
             return;
         }
+
+        // 计算时间差
         let years = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 365.25));
         diffInMs -= years * (1000 * 60 * 60 * 24 * 365.25);
+
         let months = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30.44));
         diffInMs -= months * (1000 * 60 * 60 * 24 * 30.44);
+
         let days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
         diffInMs -= days * (1000 * 60 * 60 * 24);
+
         let hours = Math.floor(diffInMs / (1000 * 60 * 60));
         diffInMs -= hours * (1000 * 60 * 60);
+
         let minutes = Math.floor(diffInMs / (1000 * 60));
         diffInMs -= minutes * (1000 * 60);
+
         let seconds = Math.floor(diffInMs / 1000);
+
+        // 格式化数字，确保两位数显示
         const pad = (num) => num.toString().padStart(2, '0');
-        timerElement.innerHTML = `<span class="time-unit"> ${years} 年 ${months} 月 ${days} 日 ${pad(hours)} 小时 ${pad(minutes)} 分钟 ${pad(seconds)} 秒 </span>`;
+        const padYear = (num) => num.toString().padStart(4, '0');
+
+        // 更新显示内容
+        timerElement.innerHTML = `<span class="time-unit"> ${padYear(years)} 年 ${pad(months)} 月 ${pad(days)} 日 ${pad(hours)} 小时 ${pad(minutes)} 分钟 ${pad(seconds)} 秒 </span>`;
     }
 
+    // 初始化并更新计时器
     updateTimer();
-    setInterval(updateTimer, 100);
+    setInterval(updateTimer, 1000); // 每秒更新一次
 }
+
+// 确保在页面加载完成后调用 initTimer 函数
+document.addEventListener('DOMContentLoaded', initTimer);
+
 
 // 抽屉动画
 function toggleDrawer(drawerId) {
