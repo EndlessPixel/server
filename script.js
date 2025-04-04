@@ -138,7 +138,7 @@ function initServerStatus() {
     const statusElement = document.getElementById('serverStatus');
     const playerCountElement = document.getElementById('playerCount');
     const refreshButton = document.getElementById('refreshStatus');
-    const API_URL = 'https://api.mcsrvstat.us/3/mc.endlesspixel.fun:25565';
+    const API_URL = 'https://api.mcsrvstat.us/3/gz.endlesspixel.fun:21212';
 
     if (!statusElement || !playerCountElement || !refreshButton) {
         console.error('Missing elements for server status');
