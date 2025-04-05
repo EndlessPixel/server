@@ -210,11 +210,19 @@ html {
     animation: slideInFromLeft 1s ease-out;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    height: 300px;
+    min-height: 300px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .announcement .date {
-    font-size: 0.8rem;
-    color: #888;
+    font-size: 1rem;
+    color: #505050;
+    background-color: rgba(255, 255, 255, 0.25);
+    margin: 10px;
+    padding: 5px;
+    border-radius: 4px;
 }
 
 .hidden-announcements {
@@ -830,44 +838,55 @@ button:disabled {
 input[type="text"],
 input[type="email"],
 input[type="password"],
-textarea {
+textarea,
+input[type="number"] { /* 添加了 input[type="number"] */
     background-color: rgba(0, 0, 0, 0.05);
     color: var(--text-color);
     border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s; /* 添加了 box-shadow 动画 */
     width: 100%;
     resize: vertical; /* 允许垂直调整文本域大小 */
+    font-size: 1rem; /* 统一字体大小 */
+    line-height: 1.5; /* 添加行高以改善可读性 */
+    box-sizing: border-box; /* 确保宽度包含 padding 和 border */
 }
 
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
-textarea:focus {
+textarea:focus,
+input[type="number"]:focus { /* 添加了 input[type="number"] */
     border-color: var(--accent-color);
     outline: none;
+    box-shadow: 0 0 0 2px var(--accent-color); /* 添加聚焦时的阴影效果 */
 }
 
 /* 表单的提交按钮 */
 input[type="submit"],
 input[type="reset"],
-input[type="button"] {
+input[type="button"],
+button { /* 添加了 button 以支持通用按钮样式 */
     background-color: var(--accent-color);
     color: var(--text-color);
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s; /* 添加了 transform 动画 */
     font-size: 1rem;
     font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微的阴影效果 */
 }
 
 input[type="submit"]:hover,
 input[type="reset"]:hover,
-input[type="button"]:hover {
+input[type="button"]:hover,
+button:hover { /* 添加了 button:hover */
     background-color: var(--secondary-color);
+    transform: translateY(-2px); /* 鼠标悬停时轻微上移 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* 鼠标悬停时增强阴影效果 */
 }
 
 /* 表单的复选框和单选按钮 */
@@ -875,4 +894,30 @@ input[type="checkbox"],
 input[type="radio"] {
     accent-color: var(--accent-color); /* 自定义复选框和单选按钮的颜色 */
     margin-right: 0.5rem;
+    cursor: pointer; /* 添加鼠标指针样式 */
+}
+
+/* 输入框和按钮的禁用状态 */
+input[type="text"]:disabled,
+input[type="email"]:disabled,
+input[type="password"]:disabled,
+textarea:disabled,
+input[type="number"]:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled,
+input[type="button"]:disabled,
+button:disabled {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.5);
+    cursor: not-allowed; /* 添加鼠标禁用指针样式 */
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: none;
+}
+
+input[type="submit"]:disabled,
+input[type="reset"]:disabled,
+input[type="button"]:disabled,
+button:disabled {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.5);
 }
