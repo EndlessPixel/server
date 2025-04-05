@@ -81,13 +81,11 @@ function throttle(func, limit) {
     }
 }
 
-// 公告功能
 function initAnnouncements() {
     const announcements = document.querySelectorAll('.announcement');
-    const hiddenAnnouncements = document.querySelector('.hidden-announcements');
     const prevButton = document.getElementById('prevPage');
     const nextButton = document.getElementById('nextPage');
-    const currentPageSpan = document.getElementById('currentPage');
+    const currentPageInput = document.getElementById('currentPage'); // 获取输入框
 
     let currentPage = 1;
     const announcementsPerPage = 1; // 每页显示一条公告
@@ -102,8 +100,8 @@ function initAnnouncements() {
             }
         });
 
-        // 更新页码
-        currentPageSpan.textContent = page;
+        // 更新页码输入框的值
+        currentPageInput.value = page;
 
         // 更新按钮状态
         prevButton.disabled = page === 1;
@@ -126,6 +124,18 @@ function initAnnouncements() {
         if (currentPage < totalPages) {
             currentPage++;
             showAnnouncement(currentPage);
+        }
+    });
+
+    // 输入框事件：监听输入并跳转到指定页码
+    currentPageInput.addEventListener('input', (event) => {
+        const newPage = parseInt(event.target.value, 10);
+        if (!isNaN(newPage) && newPage >= 1 && newPage <= totalPages) {
+            currentPage = newPage;
+            showAnnouncement(currentPage);
+        } else {
+            // 如果输入无效，恢复到当前页码
+            currentPageInput.value = currentPage;
         }
     });
 }
@@ -324,14 +334,51 @@ function renderJSON(obj, indent = 0) {
 
 // 打码敏感数据
 function maskSensitiveData(json) {
-    const regex = /"ip":"([^"]+)"/g;
-    return json.replace(regex, (_, ip) => {
-        const maskedIp = ip.replace(/\d/g, '*');
-        return `"ip":"${maskedIp}"`;
-    }).replace(/"name":"([^"]+)"/g, (_, name) => {
-        const maskedName = name.replace(/./g, '*');
-        return `"name":"${maskedName}"`;
-    });
+    // 将 JSON 字符串解析为对象
+    const data = JSON.parse(json);
+
+    // 脱敏函数
+    const maskIp = (ip) => ip.replace(/\d/g, '*');
+    const maskDomain = (domain) => domain.replace(/[^.]/g, '*');
+    const maskPort = (port) => port.toString().replace(/\d/g, '*');
+    const maskError = (error) => error.replace(/./g, '*');
+
+    // 脱敏 IP 地址
+    if (data.ip) {
+        data.ip = maskIp(data.ip);
+    }
+
+    // 脱敏端口号
+    if (data.port) {
+        data.port = maskPort(data.port);
+    }
+
+    // 脱敏 DNS 中的 IP 地址和域名
+    if (data.dns && data.dns.a) {
+        data.dns.a.forEach((record) => {
+            if (record.address) {
+                record.address = maskIp(record.address);
+            }
+            if (record.name) {
+                record.name = maskDomain(record.name);
+            }
+            if (record.cname) {
+                record.cname = maskDomain(record.cname);
+            }
+        });
+    }
+
+    // 脱敏错误信息
+    if (data.error) {
+        for (const key in data.error) {
+            if (data.error[key]) {
+                data.error[key] = maskError(data.error[key]);
+            }
+        }
+    }
+
+    // 将对象转换回 JSON 字符串
+    return JSON.stringify(data, null, 2);
 }
 
 // 初始化并设置自动刷新
