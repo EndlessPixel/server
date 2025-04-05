@@ -1,0 +1,189 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.hero {
+    text-align: center;
+    padding: 4rem 0;
+    background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    animation: fadeIn 1s ease-out;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.hero h1,
+.hero h2 {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.version-tag {
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: bold;
+    animation: popIn 0.5s ease-out;
+}
+
+/* 覆盖层和内容样式 */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    z-index: 1000;
+    transition: transform 1s ease-in-out;
+}
+
+.text {
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+.content {
+    display: none;
+}
+
+/* 顶栏样式 */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.site-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.site-title:hover {
+    color: #a8a8a8;
+}
+
+/* 导航菜单样式 */
+.nav-menu ul {
+    list-style: none;
+    display: flex;
+}
+
+.nav-menu li {
+    width: 100px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 15px;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-menu a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 5px;
+    background: var(--accent-color);
+    transition: width 0.3s ease;
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+}
+
+.nav-menu a:hover {
+    color: var(--accent-color);
+}
+
+.nav-menu a:hover::after {
+    width: 100%;
+}
+
+/* 卡片样式 */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.card svg {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+/* 页脚样式 */
+.footer {
+    background-color: rgba(248, 249, 250, 0.8);
+    color: #333;
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.footer-section {
+    flex: 1;
+    text-align: center;
+}
+
+.footer-section h3 {
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section li a {
+    color: #333;
+    text-decoration: none;
+    margin: 5px 0;
+    display: block;
+}
+
+.footer-section li a:hover {
+    text-decoration: underline;
+}

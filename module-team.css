@@ -1,0 +1,110 @@
+/*关于我们*/
+
+.team-gallery {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.team-gallery-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+.team-gallery-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.team-gallery-wrapper::-webkit-scrollbar-track {
+    background: #949494;
+}
+
+.team-gallery-wrapper::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.team-gallery-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.team-card {
+    flex: 0 0 auto;
+    width: 250px;
+    margin-right: 20px;
+    padding: 15px;
+    background-color: var(--card-bg);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.team-card h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: var(--text-color);
+}
+
+.team-card p {
+    margin: 10px 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.team-card strong {
+    font-weight: bold;
+}
+
+/*评价*/
+
+.rating-container {
+    text-align: center;
+    margin: 2rem;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.buttons button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #0056b3;
+}
+
+.thank-you-message {
+    display: none;
+    text-align: center;
+}
+
+.thank-you-message p {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.checkmark {
+    font-size: 2rem;
+    color: #2ecc71;
+    animation: checkmarkAnimation 1s ease-out;
+}

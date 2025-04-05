@@ -1,0 +1,139 @@
+.server-status .image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.server-status h3 {
+    font-size: 1.25rem;
+}
+
+.server-status svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.server-status .grid-image {
+    width: calc(50% - 10px);
+    margin-bottom: 10px;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.server-status .grid-image:hover {
+    transform: scale(1.05);
+}
+
+.server-status .grid-image:nth-child(2n) {
+    margin-right: 0;
+}
+
+.server-status .grid-image:nth-child(2n+1) {
+    margin-left: 0;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.status-item {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.status-item:hover {
+    transform: translateY(-5px);
+}
+
+.status-item h3,
+.status-item p {
+    margin-bottom: 0.5rem;
+}
+
+.status-item p {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.motd {
+    grid-column: span 2;
+}
+
+/*JSON渲染*/
+#jsonContainer {
+    background-color: rgba(56, 56, 56, 0.7);
+    padding: 20px;
+    border-radius: 8px;
+    overflow: auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #ccc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 20px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+#loading {
+    text-align: center;
+    font-size: 16px;
+    color: #ccc;
+    margin-top: 20px;
+}
+
+#error {
+    color: #f92672;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.json-key {
+    color: #f92672;
+}
+
+.json-string {
+    color: #e6db74;
+}
+
+.json-number {
+    color: #ae81ff;
+}
+
+.json-boolean {
+    color: #66d9ef;
+}
+
+.json-null {
+    color: #f4bf75;
+}
+
+.indent {
+    margin-left: 20px;
+}
+
+.server-window {
+    display: none;
+}
+
+/*计时器*/
+#timer {
+    font-size: 2em;
+    color: var(--text-color);
+    margin-top: 20px;
+}
+
+.time-unit {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
