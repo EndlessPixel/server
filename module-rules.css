@@ -1,0 +1,41 @@
+/* 规则列表 */
+.rules-list {
+    list-style-type: none;
+}
+
+.rules-list li {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s;
+}
+
+.rules-list li:hover {
+    transform: translateX(10px);
+}
+
+/* 规则颜色 */
+.rule-red {
+    background-color: rgba(220, 20, 60, 0.2);
+    border-left: 4px solid #dc143c;
+}
+
+.rule-orange {
+    background-color: rgba(255, 69, 0, 0.2);
+    border-left: 4px solid #ff4500;
+}
+
+.rule-yellow {
+    background-color: rgba(255, 255, 0, 0.2);
+    border-left: 4px solid #ffff00;
+}
+
+.rule-green {
+    background-color: rgba(0, 128, 0, 0.2);
+    border-left: 4px solid #008000;
+}
+
+.rule-blue {
+    background-color: rgba(0, 0, 255, 0.2);
+    border-left: 4px solid #0000ff;
+}
