@@ -164,3 +164,23 @@ function updatePlayerList(players) {
     });
 }
 
+// 设置刷新按钮事件
+refreshButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    throttledFetchStatus();
+    fetchAndDisplayJSON();
+});
+
+// 设置下拉框事件
+nodeSelect.addEventListener('change', () => {
+    throttledFetchStatus();
+    fetchAndDisplayJSON();
+});
+
+// 添加单选框的事件监听
+document.querySelectorAll('input[name="connectionOption"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+        throttledFetchStatus();
+        fetchAndDisplayJSON();
+    });
+});

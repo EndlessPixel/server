@@ -122,27 +122,6 @@ const throttledFetchStatus = throttle(fetchServerStatus, 2000);
 throttledFetchStatus();
 setInterval(throttledFetchStatus, 30000);
 
-// 设置刷新按钮事件
-refreshButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    throttledFetchStatus();
-    fetchAndDisplayJSON();
-});
-
-// 设置下拉框事件
-nodeSelect.addEventListener('change', () => {
-    throttledFetchStatus();
-    fetchAndDisplayJSON();
-});
-
-// 添加单选框的事件监听
-document.querySelectorAll('input[name="connectionOption"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-        throttledFetchStatus();
-        fetchAndDisplayJSON();
-    });
-});
-
 // 切换服务器窗口的显示状态
 function toggleServerWindow() {
     // 检查是否存在服务器窗口
