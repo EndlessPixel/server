@@ -34,7 +34,7 @@
 
 .status-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
 }
 
@@ -44,6 +44,7 @@
     border-radius: 0.5rem;
     text-align: center;
     transition: transform 0.3s;
+    height: 125px;
 }
 
 .status-item:hover {
@@ -60,8 +61,33 @@
     font-weight: bold;
 }
 
+.edition {
+    grid-column: span 2;
+}
+
 .motd {
     grid-column: span 2;
+}
+
+.player {
+    grid-column: span 4;
+    height: 200px;
+    overflow-y: auto;
+}
+
+.player-name {
+    width: 30%;
+}
+
+.uuid {
+    width: 60%;
+}
+
+.refresh-statusbar {
+    width: 0%;
+    background-color: #4caf50;
+    height: 5px;
+    transition: width 0.5s ease;
 }
 
 /*JSON渲染*/
