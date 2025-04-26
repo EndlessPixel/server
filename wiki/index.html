@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="EndlessPixel是一个由一群热爱游戏的玩家组成的社区，我们致力于提供一个有趣、自由、开放的游戏世界。"><meta name="keywords" content="endlesspixel, Endlesspixel, EndlessPixel, endlesspixel官网, Endlesspixel官网, EndlessPixel官网， endlesspixel官方网站, Endlesspixel官方网站, EndlessPixel官方网站"><title>无尽像素 ( ^-^ )つロ 干杯~-EndlessPixel</title><meta property="og:title" content="无尽像素 ( ^-^ )つロ 干杯~-EndlessPixel"><meta property="og:description" content="EndlessPixel是一个由一群热爱游戏的玩家组成的社区，我们致力于提供一个有趣、自由、开放的游戏世界。"><meta property="og:image" content="https://s21.ax1x.com/2024/12/11/pAHvtKS.png"><meta property="og:url" content="https://www.endlesspixel.fun"><meta property="og:type" content="website"><meta name="twitter:title" content="无尽像素 ( ^-^ )つロ 干杯~-EndlessPixel"><meta name="twitter:description" content="EndlessPixel是一个由一群热爱游戏的玩家组成的社区，我们致力于提供一个有趣、自由、开放的游戏世界。"><meta name="twitter:image" content="https://s21.ax1x.com/2024/12/11/pAHvtKS.png">
+    <title>无尽像素 - EndlessPixel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/bootstraps/bootstrap.css">
+    <link rel="stylesheet" href="../styles/bootstraps/bootstrap-grid.css">
+    <link rel="stylesheet" href="../styles/bootstraps/bootstrap-reboot.css">
+    <link rel="stylesheet" href="../styles/bootstraps/bootstrap-utilities.css">
+    <link rel="stylesheet" href="../styles/main-module.css">
+    <link rel="stylesheet" href="../styles/header.css">
+    <link rel="stylesheet" href="../styles/footer.css">
+    <link rel="stylesheet" href="../styles/br.css">
+    <link rel="stylesheet" href="../styles/wiki/wiki.css">
+    <link rel="stylesheet" href="../styles/topic.css">
+    <link rel="icon" href="https://s21.ax1x.com/2024/12/11/pAHvtKS.png" type="image/png">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-light bg-light top">
+            <div class="container-fluid">
+                <!-- 移动端导航栏切换按钮 -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <!-- 左侧社交链接 -->
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a rel="noopener noreferrer" class="nav-link" href="https://github.com/EndlessPixel" target="_blank">Github</a>
+                        </li>
+                        <li class="nav-item">
+                            <a rel="noopener noreferrer" class="nav-link" href="https://qm.qq.com/q/vGmT0PA49O" target="_blank">QQ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a rel="noopener noreferrer" class="nav-link" href="https://space.bilibili.com/3546799478409405?spm_id_from=333.1007.0.0" target="_blank">bilibili</a>
+                        </li>
+                        <li class="nav-item">
+                            <a rel="noopener noreferrer" class="nav-link" href="https://kuaishou.cn/profile/3xth2cp4jf5ha6c" target="_blank">快手</a>
+                        </li>
+                    </ul>
+                    <!-- 中间导航链接 -->
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.html">主页</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../introduction/index.html">简介</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../status/index.html">状态</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../resources/index.html">资源</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../about/index.html">关于</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">wiki</a>
+                        </li>
+                    </ul>
+                    <!-- 右侧主题切换按钮 -->
+                    <div class="d-flex">
+                        <button id="theme-toggle" type="button">切换主题</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="container-fluid mt-4">
+            <div class="br-60"></div>
+            <div class="row">
+                <!-- 侧边栏 -->
+                <div class="col-md-3 col-lg-2 sidebar dynamic-color p-3 nav-wiki">
+                    <div class="sidebar-header d-flex align-items-center mb-3">
+                        <i class="fas fa-book-open fa-2x me-2"></i> 
+                        <h4>Wiki 导航</h4>
+                    </div>
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#connectionIssues">
+                                <i class="fas fa-server me-2"></i> 服务器连接问题
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#specialFeatures">
+                                <i class="fas fa-magic me-2"></i> 特殊功能指南
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#servercommand">
+                                <i class="fas fa-terminal me-2"></i> 服务器玩家命令
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#serverOP">
+                                <i class="fas fa-user-cog me-2"></i> 服务器管理员获取指南
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#registerLogin">
+                                <i class="fas fa-user-plus me-2"></i> 注册与登录指南
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#clientVersion">
+                                <i class="fas fa-code-branch me-2"></i> 客户端版本说明
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#rules">
+                                <i class="fas fa-book me-2"></i> 服务器规则
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#worldMapAccess">
+                                <i class="fas fa-map-marked-alt me-2"></i> 世界地图访问指南
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#nodeContribution">
+                                <i class="fas fa-network-wired me-2"></i> 节点贡献指南
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="sidebar-divider my-3"></div> 
+                    <div class="sidebar-footer">
+                        <p class="small text-muted">最后更新时间: 2025-04-26</p>
+                    </div>
+                </div>
+                <!-- 主内容区域 -->
+                <div class="col-md-9 col-lg-10 main-content dynamic-color p-4">
+                    <div class="main-header mb-4">
+                        <div class="d-flex align-items-center">
+                            <h1 class="me-3">欢迎来到 Wiki</h1>
+                            <!-- 添加动画徽章 -->
+                            <span class="badge badge-primary animate__animated animate__pulse">新内容</span> 
+                        </div>
+                        <p class="lead">这里是 Wiki 的主内容区域。</p>
+                    </div>
+                    <div class="mt-5">
+                        <div class="article-content">
+                            <div class="br-10"></div>
+                            <!-- 正版账号登录 - 服务器连接问题及解决方法 -->
+                            <div class="section" id="connectionIssues">
+                                <h3 class="section-title"><i class="fas fa-server"></i> 服务器连接问题及解决方法</h3>
+                                <p>在尝试连接服务器时，玩家可能会碰到形形色色的问题。下面为您详细介绍常见问题及其对应的解决策略：</p>
+                                <div class="br-20"></div>
+                                
+                                <!-- 部分节点临时抽风 -->
+                                <div class="mb-4">
+                                    <h4>1. 部分节点突发异常</h4>
+                                    <p><strong>问题根源：</strong>服务器的部分节点或许会因临时故障，或者网络出现波动，从而影响您的连接。</p>
+                                    <p><strong>解决方案：</strong>您可以尝试切换到其他节点进行连接；也可以稍作等待，通常几分钟后节点可能会自行恢复正常。</p>
+                                </div>
+                                <div class="br-30"></div>
+                                
+                                <!-- 服务器维护 -->
+                                <div class="mb-4">
+                                    <h4>2. 服务器正在维护</h4>
+                                    <p><strong>问题根源：</strong>服务器可能正在进行日常维护或者系统更新，这期间会影响您的连接。</p>
+                                    <p><strong>解决方案：</strong>请您耐心等待维护工作完成。若您有紧急需求，可以在游戏群里 @ 服主，请求加急处理。</p>
+                                </div>
+                                <div class="br-30"></div>
+                                
+                                <!-- 人流量过大 -->
+                                <div class="mb-4">
+                                    <h4>3. 服务器负载过高</h4>
+                                    <p><strong>问题根源：</strong>当前服务器玩家数量过多，导致服务器负载过大，进而出现连接延迟甚至拒绝连接的情况。</p>
+                                    <p><strong>解决方案：</strong>建议您稍作等待，等其他玩家退出服务器，负载降低后再尝试连接。</p>
+                                </div>
+                                <div class="br-30"></div>
+                                
+                                <!-- 自己的网络问题 -->
+                                <div class="mb-4">
+                                    <h4>4. 网络连接异常</h4>
+                                    <p><strong>问题根源：</strong>可能是您的网络连接不稳定，或者受到防火墙的限制，影响了与服务器的连接。</p>
+                                    <p><strong>解决方案：</strong>请检查您的 Internet 连接是否正常，同时确认防火墙或路由器设置没有阻碍您的连接。</p>
+                                </div>
+                                <div class="br-40"></div>
+                                
+                                <h4>其他疑难问题</h4>
+                                <p>如果您遇到的问题不在上述范围内，不妨尝试以下通用方法来解决：</p>
+                                <ul>
+                                    <li>重启客户端：关闭并重新启动 Minecraft 客户端，有时候简单的重启就能解决一些临时问题。</li>
+                                    <li>查看服务器公告：及时关注服务器的最新公告或更新信息，可能会找到与您问题相关的解决方案。</li>
+                                    <li>联系管理员：若问题仍然存在，您可以在游戏群里联系管理员，他们会为您提供进一步的帮助。</li>
+                                </ul>
+                            </div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <!-- 正版账号登录 - PixelAdventure服务器特殊功能指南 -->
+                            <div class="section" id="specialFeatures">
+                                <h3 class="section-title"><i class="fas fa-magic"></i> 服务器特殊功能指南</h3>
+                                <ol>
+                                    <li>
+                                        <strong>坐下功能</strong>
+                                        <p>空手右键点击下半砖或楼梯，可以坐下。坐下后可以避免受到某些攻击或防止掉落。</p>
+                                    </li>
+                                    <li>
+                                        <strong>连锁挖掘</strong>
+                                        <p>蹲下（按住 Shift 键）并手持对应工具挖掘任何方块时，可以触发连锁挖掘，相同种类的方块会被全部破坏，一次性最多挖掘 128 个方块。此功能以玩家的饱食度和工具耐久为代价，饱食度过低时无法挖掘。</p>
+                                    </li>
+                                    <li>
+                                        <strong>一键收获农作物</strong>
+                                        <p>右键点击成熟的农作物可以直接收获，无需手动破坏，方便快捷，此方式不会增长技能。</p>
+                                    </li>
+                                </ol>
+                            </div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <!-- 正版账号登录 - 服务器玩家命令 -->
+                            <div class="section" id="servercommand">
+                                <h3 class="section-title"><i class="fas fa-terminal"></i> 服务器玩家命令</h3>
+                                <div class="info-box info">
+                                    <i class="fas fa-code"></i>
+                                    <div class="info-content">
+                                        <dl class="command-list">
+                                            <dt><code class="code-block">/tpa 玩家名称</code></dt>
+                                            <dd>请求传送到指定玩家位置，需对方同意</dd>
+                                            
+                                            <dt><code class="code-block">/tpahere 玩家名称</code></dt>
+                                            <dd>将玩家传送到你所在位置，需对方同意</dd>
+                                            
+                                            <dt><code class="code-block">/back</code></dt>
+                                            <dd>回到上次死亡地点</dd>
+                                            
+                                            <dt><code class="code-block">/killme</code></dt>
+                                            <dd>立即执行角色死亡</dd>
+                                            
+                                            <dt><code class="code-block">/skins</code></dt>
+                                            <dd>打开皮肤管理界面</dd>
+                                            
+                                            <dt><code class="code-block">/skills</code></dt>
+                                            <dd>查看当前技能树状态</dd>
+                                            
+                                            <dt><code class="code-block">/l 密码</code></dt>
+                                            <dd>账号登录（密码区分大小写）</dd>
+                                            
+                                            <dt><code class="code-block">/reg 密码 确认密码</code></dt>
+                                            <dd>新账号注册（需两次输入相同密码）</dd>
+                                            
+                                            <dt><code class="code-block">/changepw 旧密码 新密码 重复新密码</code></dt>
+                                            <dd>修改账户密码（需验证旧密码）</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <!-- 正版账号登录 - 服务器管理员获取指南 -->
+                            <div class="section" id="serverOP">
+                                <h3 class="section-title"><i class="fas fa-user-cog"></i> 服务器管理员获取指南</h3>
+                                <div class="info-box warning">
+                                    <i class="fas fa-id-badge"></i>
+                                    <div class="info-content">
+                                        <h4>管理员类型说明</h4>
+                                        <div class="admin-types">
+                                            <div class="admin-type bg-danger">
+                                                <i class="fas fa-shield-alt"></i>
+                                                <h5>永久管理员 (OP)</h5>
+                                                <ul>
+                                                    <li>权限范围：完整服务器管理权限</li>
+                                                    <li>获取方式：通过团队入职审核</li>
+                                                    <li>适用对象：服务器核心成员</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="admin-type bg-warning">
+                                                <i class="fas fa-clock"></i>
+                                                <h5>临时管理员 (TempOP)</h5>
+                                                <ul>
+                                                    <li>权限范围：基础管理功能</li>
+                                                    <li>有效期：按分钟计费</li>
+                                                    <li class="price-tag">
+                                                        <i class="fas fa-coins"></i>
+                                                        价格：0.75元/分钟
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="alert alert-danger mt-3">
+                                            <h5><i class="fas fa-exclamation-triangle"></i> 重要声明</h5>
+                                            <ul>
+                                                <li>滥用权限将导致永久封禁</li>
+                                                <li>所有操作记录会被存档审计</li>
+                                                <li>购买临时OP视为同意服务条款</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <!-- 正版账号登录 - 注册与登录指南 -->
+                            <div class="section" id="registerLogin">
+                                <h3 class="section-title"><i class="fas fa-user-plus"></i> 注册与登录指南</h3>
+                                <div class="info-box info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <div class="info-content">
+                                        <h4>注册账号</h4>
+                                        <ol>
+                                            <li>按下 T 键打开输入框（若更改按键绑定，请使用对应按键）。</li>
+                                            <li>输入命令：<code>/reg &lt;密码&gt; &lt;确认密码&gt;</code>。</li>
+                                            <li>密码要求：同时包含字母和数字，且至少 6 位。</li>
+                                            <li>示例：<code>/reg abc123 abc123</code>（请勿直接使用示例密码）。</li>
+                                            <li>输入命令后，按下回车键提交。</li>
+                                            <li>注册成功会提示“注册成功”，失败请检查密码格式或重新尝试。</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <div class="info-box info">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <div class="info-content">
+                                        <h4>登录账号</h4>
+                                        <ol>
+                                            <li>重新加入游戏后，按下 T 键打开输入框。</li>
+                                            <li>输入命令：<code>/l &lt;密码&gt;</code>。</li>
+                                            <li>示例：<code>/l abc123</code>（请使用自己的密码）。</li>
+                                            <li>按下回车键完成登录。</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <div class="info-box info">
+                                    <i class="fas fa-key"></i>
+                                    <div class="info-content">
+                                        <h4>修改密码</h4>
+                                        <ol>
+                                            <li>输入命令：<code>/changepw &lt;旧密码&gt; &lt;新密码&gt; &lt;重复新密码&gt;</code>。</li>
+                                            <li>示例：<code>/changepw oldpw newpw newpw</code>（请替换为实际密码）。</li>
+                                            <li>确保旧密码正确，新密码两次输入一致。</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <div class="info-box warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="info-content">
+                                        <h4>账号安全与找回</h4>
+                                        <ul>
+                                            <li>账号不绑定身份信息，仅需用户名和密码即可登录。</li>
+                                            <li>忘记密码请找管理员，请求删除账户后重新注册。</li>
+                                            <li>重要提醒：勿泄露密码，避免账号被盗用。</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <!-- 正版账号登录 - 服务器客户端版本说明 -->
+                            <div class="section" id="clientVersion">
+                                <h3 class="section-title"><i class="fas fa-code-branch"></i> 服务器客户端版本说明</h3>
+                                <p>本服务器支持多种版本的客户端，但为了获得最佳游戏体验，推荐使用 Minecraft Java Edition 1.21.4 客户端。</p>
+                                <h4>支持的客户端版本范围</h4>
+                                <ul>
+                                    <li>支持范围：1.8 至 1.21.5 的客户端均可进入服务器。</li>
+                                    <li>推荐版本：1.21.4，此版本兼容性最佳，所有功能和材质均能正常显示。</li>
+                                </ul>
+                                <h4>版本兼容性问题说明</h4>
+                                <ul>
+                                    <li>低于 1.21.4 的版本：可能会出现部分方块材质乱码问题，或者某些方块直接变成石头，影响游戏体验。</li>
+                                    <li>高于 1.21.4 的版本：可能会导致版本中的新物品无法正常显示，例如变成石头或功能失效，甚至无法放入箱子中。</li>
+                                </ul>
+                                <h4>如何选择客户端版本</h4>
+                                <ol>
+                                    <li>推荐使用 1.21.4 客户端：这是服务器优化的最佳版本，所有功能和材质都能完美显示。</li>
+                                    <li>其他版本：如果你使用的是 1.8 至 1.21.3 或 1.21.5 的客户端，虽然可以进入服务器，但可能会遇到上述兼容性问题。建议尽量升级或降级到 1.21.4 版本以获得最佳体验。</li>
+                                </ol>
+                                <p>如有任何问题，请随时联系管理员，祝你在服务器上玩得愉快！</p>
+                            </div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <!-- 正版账号登录 - 服务器规则 -->
+                            <div class="section" id="rules">
+                                <h3 class="section-title"><i class="fas fa-book"></i> 服务器规则</h3>
+                                <ul class="rules-list">
+                                    <li class="rule-red">严禁DDOS - 永久踢出服务器+封禁IP</li>
+                                    <li class="rule-orange">禁止炸图 - 累进处罚制度</li>
+                                    <li class="rule-yellow">禁止故意弄崩服务器 - 累进处罚制度</li>
+                                    <li class="rule-green">严禁开挂 - 累进处罚制度</li>
+                                    <li class="rule-blue">适当使用AI模组 - 禁止滥用，累进处罚制度</li>
+                                </ul>
+                                <p>请遵守以上规则，以保证服务器的正常运行。</p>
+                            </div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <!-- 世界地图访问指南 -->
+                            <div class="section" id="worldMapAccess">
+                                <h3 class="section-title"><i class="fas fa-map-marked-alt"></i> 世界地图访问指南</h3>
+                                
+                                <div class="info-box warning">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <div class="info-content">
+                                        <h4>前置要求</h4>
+                                        <p>需要先完成 Tailscale 客户端的安装和认证，才能访问以下地图服务</p>
+                                    </div>
+                                </div>
+
+                                <div class="info-box info">
+                                    <i class="fas fa-download"></i>
+                                    <div class="info-content">
+                                        <h4>客户端下载安装</h4>
+                                        <ol>
+                                            <li>访问官网：<a href="https://tailscale.com/download/">https://tailscale.com/download/</a></li>
+                                            <li>选择对应设备版本：
+                                                <ul class="device-list">
+                                                    <li>
+                                                        <strong>Apple 设备：</strong>
+                                                        <ul>
+                                                            <li>支持 macOS 11.0 (Big Sur) 及以上版本</li>
+                                                            <li>iOS 15 及以上版本</li>
+                                                            <li class="notice-box">需使用美区 Apple ID 下载客户端（安装后无需美区账号）</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <strong>Android 设备：</strong>
+                                                        <ul>
+                                                            <li>Android 8.0 (Oreo) 及以上版本</li>
+                                                            <li>必须通过 Google Play Store 安装</li>
+                                                            <li class="notice-box">需要科学上网工具访问 Play Store</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <strong>Windows 设备：</strong>
+                                                        <ul>
+                                                            <li>Windows 10 及以上版本</li>
+                                                            <li>需启用 "IP Helper" 服务（iphlpsvc）</li>
+                                                            <li class="notice-box">安装失败时检查：<code>services.msc → 确保 IP Helper 处于运行状态</code></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <strong>Linux 设备：</strong>
+                                                        <ul>
+                                                            <li>需要 root 权限执行安装命令</li>
+                                                            <li>基础要求：<code>curl</code> 和 <code>apt-get</code></li>
+                                                            <li>推荐使用图形化终端版本</li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="info-box primary">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <div class="info-content">
+                                        <h4>登录认证流程</h4>
+                                        <ol>
+                                            <li>安装完成后启动 Tailscale 客户端</li>
+                                            <li>点击 <strong>"Login"</strong> 按钮开始认证</li>
+                                            <li>不同设备操作差异：
+                                                <div class="row mt-3">
+                                                    <div class="col-md-6">
+                                                        <div class="device-card">
+                                                            <h5><i class="fas fa-desktop"></i> 电脑端</h5>
+                                                            <ol>
+                                                                <li>自动弹出系统默认浏览器</li>
+                                                                <li>地址栏显示格式：<code>https://login.tailscale.com/a/xxx</code></li>
+                                                                <li>完整复制当前页面 URL</li>
+                                                                <li>发送该 URL 给管理员 (system_mini)</li>
+                                                                <li>等待管理员完成权限授予</li>
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="device-card">
+                                                            <h5><i class="fas fa-mobile-alt"></i> 手机端</h5>
+                                                            <ol>
+                                                                <li>点击右上角 <i class="fas fa-ellipsis-v"></i> 菜单</li>
+                                                                <li>选择 "在系统浏览器中打开"</li>
+                                                                <li>长按地址栏选择 "复制全部内容"</li>
+                                                                <li>通过 QQ/微信发送给管理员</li>
+                                                                <li>等待 5-10 分钟处理时间</li>
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="info-box success">
+                                    <i class="fas fa-globe-asia"></i>
+                                    <div class="info-content">
+                                        <h4>地图访问方式</h4>
+                                        <div class="alert alert-info">
+                                            <h5><i class="fas fa-compass"></i> 访问步骤：</h5>
+                                            <ol>
+                                                <li>确保 Tailscale 客户端显示为 <span class="status-connected">Connected</span></li>
+                                                <li>根据需求选择地图类型：
+                                                    <ul>
+                                                        <li>
+                                                            <strong>2D 平面地图：</strong>
+                                                            <code>http://ts.endlesspixel.fun:8123</code>
+                                                            <p class="desc">实时查看玩家位置、领地信息和资源分布</p>
+                                                        </li>
+                                                        <li>
+                                                            <strong>3D 立体地图：</strong> 
+                                                            <code>http://ts.endlesspixel.fun:8100</code>
+                                                            <p class="desc">支持第一人称视角浏览建筑细节</p>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                        
+                                        <div class="alert alert-warning mt-3">
+                                            <h5><i class="fas fa-star"></i> 特权节点说明</h5>
+                                            <p>完成认证后自动获得专属节点：</p>
+                                            <p><code>ts.endlesspixel.fun:25566</code></p>
+                                            <ul>
+                                                <li>低延迟优化：比公共节点快 50-80ms</li>
+                                                <li>专属带宽保障：优先传输地图数据</li>
+                                                <li>断线自动重连功能</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <div class="br-10"></div>
+                            <!-- 节点贡献指南 -->
+                            <div class="section" id="nodeContribution">
+                                <h3 class="section-title"><i class="fas fa-share-alt"></i> 节点贡献指南</h3>
+                                <div class="info-box info">
+                                    <i class="fas fa-server"></i>
+                                    <div class="info-content">
+                                        <h4>FRP 节点配置要求</h4>
+                                        <ol>
+                                            <li>基础配置：frpc.ini
+                                                <pre><code>
+            [common]
+            server_addr = xxx.xxx.xxx.xxx
+            server_port = 7000
+            token = xxxxxxxxxxxxxxxxxxxx
+            
+            [your_node_name]
+            type = tcp
+            local_ip = 127.0.0.1
+            local_port = 25566
+            </code></pre>
+                                            </li>
+                                            <li>端口建议：
+                                                <div class="port-grid mt-3">
+                                                    <span class="port-badge">25565</span>
+                                                    <span class="port-badge">25566</span>
+                                                    <span class="port-badge">25568</span>
+                                                    <span class="port-badge">22222</span>
+                                                </div>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-warning mt-4">
+                                    <h5><i class="fas fa-exclamation-circle"></i> 提交说明</h5>
+                                    <ol>
+                                        <li>完成配置后测试节点连通性</li>
+                                        <li>将配置文件私聊发送给服主 (system_mini)</li>
+                                        <li>邮件主题格式：<code>[节点贡献] 你的ID_推荐端口</code></li>
+                                    </ol>
+                                    <div class="notice-box mt-3">
+                                        <i class="fas fa-lightbulb"></i> 优质节点将获得游戏内特权奖励
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <div class="br-10"></div>
+                            <div class="br-10"></div>
+                            <hr>
+                            <div class="br-10"></div>
+                            <div class="br-10"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="py-4">
+        <div class="container text-center">
+            <p class="mb-2">&copy; 2024-2025 EndlessPixel Team, All rights reserved.</p>
+            <p class="mb-2">本站并非Minecraft官方网站，与Mojang和微软亦无从属关系。</p>
+            <p>本服务器已同意<a href="https://account.mojang.com/documents/minecraft_eula" target="_blank">《Minecraft 最终用户许可协议》（EULA）</a>，确保合法合规运营。</p>
+            </div>
+        </div>
+    </footer>
+    <script src="../scripts/topic.js"></script>
+    <script src="../scropts/bootstraps/bootstrap.js"></script>
+    <script src="../scripts/bootstraps/bootstrap.bunde.js"></script>
+    <script src="../scripts/bootstraps/bootstrap.esm.js"></script>
+</body>
+
+</html>
