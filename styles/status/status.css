@@ -1,0 +1,56 @@
+@import "../main-module.css";
+
+/* 状态卡片样式 */
+.server-status-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.status-card {
+    background: var(--card-bg);
+    border-radius: 0.8rem;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    
+    h3 {
+        color: var(--text-secondary);
+        margin: 1rem 0;
+    }
+}
+
+.status-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.player-table-card {
+    th, td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+    
+    th {
+        background: rgba(var(--accent-color), 0.1);
+    }
+}
+
+.node-selector {
+    .form-select {
+        background: var(--card-bg) url("data:image/svg+xml,%3csvg...") no-repeat right 0.75rem center/16px 12px;
+    }
+}
+
+.control-buttons {
+    .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 0.8rem;
+        transition: all 0.3s ease;
+        
+        &:hover {
+            transform: translateY(-2px);
+        }
+    }
+}
