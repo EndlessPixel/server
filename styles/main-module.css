@@ -1,0 +1,421 @@
+/* 变量定义，支持深浅模式，添加更多颜色 */
+:root {
+    /* 浅色模式默认变量 */
+    --light-accent-color: #3498dbee; /* 主色调 */
+    --light-secondary-color: #f0f0f0ee; /* 次级背景色 */
+    --light-text-color: #000000; /* 文字颜色 */
+    --light-card-bg: #e6f7ffee; /* 卡片背景色 */
+    --light-scrollbar-bg: rgba(0, 0, 0, 0.05); /* 滚动条背景 */
+    --light-scrollbar-thumb: rgba(52, 152, 219, 0.8); /* 滚动条滑块 */
+    --light-scrollbar-thumb-hover: rgba(255, 165, 0, 0.8); /* 滚动条滑块悬停 */
+    --light-background-color: #ffffff; /* 页面背景色 */
+    --light-grey-color: #bbbbbb; /* 灰色文字或边框 */
+    --light-tertiary-color: #2ecc71ee; /* 第三色调 */
+    --light-warning-color: #e74c3cee; /* 警告色 */
+    --light-info-color: #16a04bee; /* 信息色 */
+    --light-top-color: #e6f7ffee; /* 顶部导航背景色 */
+
+    /* 深色模式默认变量 */
+    --dark-accent-color: #2980b9ee; /* 主色调 */
+    --dark-secondary-color: #222222ee; /* 次级背景色 */
+    --dark-text-color: #ffffff; /* 文字颜色 */
+    --dark-card-bg: #1a1a1aee; /* 卡片背景色 */
+    --dark-scrollbar-bg: rgba(255, 255, 255, 0.05); /* 滚动条背景 */
+    --dark-scrollbar-thumb: rgba(41, 128, 185, 0.8); /* 滚动条滑块 */
+    --dark-scrollbar-thumb-hover: rgba(230, 126, 34, 0.8); /* 滚动条滑块悬停 */
+    --dark-background-color: #121212; /* 页面背景色 */
+    --dark-grey-color: #777777; /* 灰色文字或边框 */
+    --dark-tertiary-color: #27ae60ee; /* 第三色调 */
+    --dark-warning-color: #c0392bee; /* 警告色 */
+    --dark-info-color: #1ee46aee; /* 信息色 */
+    --dark-top-color: #1a1a1aee; /* 顶部导航背景色 */
+
+    /* 通用变量 */
+    --font-family: Arial, sans-serif; /* 字体 */
+    --border-radius: 8px; /* 边框圆角 */
+    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 阴影 */
+    --transition-duration: 0.3s; /* 动画过渡时间 */
+    --hover-opacity: 0.8; /* 悬停透明度 */
+    --active-opacity: 0.6; /* 激活透明度 */
+}
+
+/* 浅色模式 */
+[data-theme="light"] {
+    --accent-color: var(--light-accent-color);
+    --secondary-color: var(--light-secondary-color);
+    --text-color: var(--light-text-color);
+    --card-bg: var(--light-card-bg);
+    --scrollbar-bg: var(--light-scrollbar-bg);
+    --scrollbar-thumb: var(--light-scrollbar-thumb);
+    --scrollbar-thumb-hover: var(--light-scrollbar-thumb-hover);
+    --background-color: var(--light-background-color);
+    --grey-color: var(--light-grey-color);
+    --tertiary-color: var(--light-tertiary-color);
+    --warning-color: var(--light-warning-color);
+    --info-color: var(--light-info-color);
+    --top-color: var(--light-top-color);
+}
+
+/* 深色模式 */
+[data-theme="dark"] {
+    --accent-color: var(--dark-accent-color);
+    --secondary-color: var(--dark-secondary-color);
+    --text-color: var(--dark-text-color);
+    --card-bg: var(--dark-card-bg);
+    --scrollbar-bg: var(--dark-scrollbar-bg);
+    --scrollbar-thumb: var(--dark-scrollbar-thumb);
+    --scrollbar-thumb-hover: var(--dark-scrollbar-thumb-hover);
+    --background-color: var(--dark-background-color);
+    --grey-color: var(--dark-grey-color);
+    --tertiary-color: var(--dark-tertiary-color);
+    --warning-color: var(--dark-warning-color);
+    --info-color: var(--dark-info-color);
+    --top-color: var(--dark-top-color);
+}
+
+/* 跟随系统模式 */
+:root {
+    color-scheme: light dark;
+}
+
+/* 重置默认样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* 整体页面样式 */
+body,
+html {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--background-color);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-color);
+    overflow-y: auto !important;
+}
+
+.dynamic-color {
+    background-color: var(--card-bg);
+}
+
+/* 通用 */
+/* 链接样式 */
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+a:hover {
+    color: var(--text-color);
+}
+
+a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--secondary-color);
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out;
+}
+
+a:hover::after {
+    visibility: visible;
+    transform: scaleX(1);
+}
+
+/* 图片动画 */
+img {
+    animation-fill-mode: forwards;
+}
+
+/* 标题动画 */
+h1, h2, h3, h4, h5, h6 {
+    animation-fill-mode: forwards;
+}
+
+/* 段落动画 */
+p {
+    animation-fill-mode: forwards;
+}
+
+/* 分割线样式 */
+hr {
+    height: 1.5px;
+    width: 100%;
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: 1px;
+    margin: 20px auto;
+}
+
+/* 下拉选择框样式，去除半透明 */
+select {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--card-bg);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    appearance: none; /* 移除默认样式 */
+}
+
+select:hover {
+    background-color: var(--card-bg);
+}
+
+option {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* 表格样式，去除半透明 */
+th, td {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    transition: background-color 0.3s;
+}
+
+th:hover, td:hover {
+    background-color: var(--card-bg);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* 按钮样式，去除半透明 */
+button {
+    background-color: var(--accent-color);
+    color: var(--card-bg);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+}
+
+button:disabled {
+    background-color: var(--bg-color, #f5f5f5);
+    color: var(--text-color, #999);
+    cursor: not-allowed;
+}
+
+/* 先在 :root 中添加新变量，如果还未添加的话 */
+/* :root {
+    --input-bg-color: #fff;
+    --input-border-color: #ddd;
+    --disabled-bg-color: #f5f5f5;
+    --disabled-text-color: #999;
+} */
+
+/* 输入框样式，去除半透明 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+input[type="number"] { 
+    background-color: var(--input-bg-color, #fff);
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color, #ddd);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    transition: border-color 0.3s, box-shadow 0.3s; 
+    width: 100%;
+    resize: vertical; 
+    font-size: 1rem; 
+    line-height: 1.5; 
+    box-sizing: border-box; 
+}
+
+/* 新增标签样式 */
+mark {
+    background-color: var(--tertiary-color);
+    color: var(--text-color);
+    padding: 0.2em;
+    border-radius: 0.2em;
+}
+
+blockquote {
+    border-left: 4px solid var(--accent-color);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: var(--secondary-color);
+}
+
+/* 新增进度条样式 */
+progress {
+    width: 100%;
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+progress::-webkit-progress-bar {
+    background-color: var(--scrollbar-bg);
+    border-radius: 10px;
+}
+
+progress::-webkit-progress-value {
+    background-color: var(--accent-color);
+    border-radius: 10px;
+}
+
+progress::-moz-progress-bar {
+    background-color: var(--accent-color);
+    border-radius: 10px;
+}
+
+
+
+/* 输入框聚焦样式，添加更多过渡效果 */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+input[type="number"]:focus { 
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-color), 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
+}
+
+/* 表单的提交按钮，去除半透明 */    
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+.button, 
+button { 
+    background-color: var(--accent-color);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; 
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+button:hover { 
+    background-color: var(--secondary-color);
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); 
+}
+
+/* 表单的复选框和单选按钮 */
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--accent-color); /* 自定义复选框和单选按钮的颜色 */
+    margin-right: 0.5rem;
+    cursor: pointer; /* 添加鼠标指针样式 */
+}
+
+/* 输入框和按钮的禁用状态，去除半透明 */
+input[type="text"]:disabled,
+input[type="email"]:disabled,
+input[type="password"]:disabled,
+textarea:disabled,
+input[type="number"]:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled,
+input[type="button"]:disabled,
+button:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed; 
+    border-color: #ddd;
+    box-shadow: none;
+}
+
+input[type="submit"]:disabled,
+input[type="reset"]:disabled,
+input[type="button"]:disabled,
+button:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+}
+
+
+/* Apply animations to elements */
+body {
+    animation: fadeIn var(--transition-duration) ease-out;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    animation: slideInFromTop var(--transition-duration) ease-out;
+    animation-fill-mode: forwards;
+}
+
+p {
+    animation: slideInFromBottom var(--transition-duration) ease-out;
+    animation-fill-mode: forwards;
+}
+
+a {
+    animation: fadeIn var(--transition-duration) ease-out;
+}
+
+img {
+    animation: popIn var(--transition-duration) ease-out;
+    animation-fill-mode: forwards;
+}
+
+/* If the 'popIn' animation is not defined, add it */
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
