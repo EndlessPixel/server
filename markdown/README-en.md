@@ -29,6 +29,6 @@ Our server updates relatively frequently, but don't worry. We will notify all pl
 ### QQ Group
 Join our QQ group to stay updated, get support, and connect with other players. Click the link below to join:
 
-[870594910](https://qm.qq.com/q/QomvgjLMY2](https://qun.qq.com/universal-share/share?ac=1&authKey=OM5gxE8IwLIC1DCBCrw8GXCAuoluZtHvc1j0LYNFAgoPOSPzJvz5nJ4%2BZnE91V8t&busi_data=eyJncm91cENvZGUiOiI4NzA1OTQ5MTAiLCJ0b2tlbiI6Im5jckV0VXRrYmRBUkR5SnovbDkvbWN0bEN5SmNYMlpyTXU3TlVKTnB3b3dZcDlhTzFrQmpYNjRyS0tJcThSZHgiLCJ1aW4iOiIyMjY3ODQ4NTAxIn0%3D&data=t70-iK5GjlrnHP-Runz99-s2PfqWNG7szkerVbxCo5u6i0DrwYLiHUvIB2fQ_sTvsGIW21t46tvYKMezxlGkiQ&svctype=4&tempid=h5_group_info)
+[870594910](https://qun.qq.com/universal-share/share?ac=1&authKey=OM5gxE8IwLIC1DCBCrw8GXCAuoluZtHvc1j0LYNFAgoPOSPzJvz5nJ4%2BZnE91V8t&busi_data=eyJncm91cENvZGUiOiI4NzA1OTQ5MTAiLCJ0b2tlbiI6Im5jckV0VXRrYmRBUkR5SnovbDkvbWN0bEN5SmNYMlpyTXU3TlVKTnB3b3dZcDlhTzFrQmpYNjRyS0tJcThSZHgiLCJ1aW4iOiIyMjY3ODQ4NTAxIn0%3D&data=t70-iK5GjlrnHP-Runz99-s2PfqWNG7szkerVbxCo5u6i0DrwYLiHUvIB2fQ_sTvsGIW21t46tvYKMezxlGkiQ&svctype=4&tempid=h5_group_info)
 
 We look forward to seeing you on the EndlessPixel Server!
