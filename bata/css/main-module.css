@@ -1,0 +1,204 @@
+@import 'custom-styles.css';
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* 整体页面样式 */
+body,
+html {
+    height: 100%;
+    margin: 0;
+    background-color: var(--background-color);
+    font-family: var(--font-family);
+    color: var(--text-color);
+    overflow-y: auto;
+}
+
+.dynamic-color {
+    background-color: var(--card-bg);
+}
+
+/* 通用 */
+/* 链接样式 */
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+a:hover {
+    color: var(--text-color);
+}
+
+a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--secondary-color);
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out;
+}
+
+a:hover::after {
+    visibility: visible;
+    transform: scaleX(1);
+}
+
+/* 分割线样式 */
+hr {
+    height: 1.5px;
+    width: 100%;
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: 1px;
+    margin: 20px auto;
+}
+
+/* 输入框样式 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+input[type="number"] { 
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--grey-color);
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    transition: border-color 0.3s, box-shadow 0.3s; 
+    width: 100%;
+    resize: vertical; 
+    font-size: 1rem; 
+    line-height: 1.5; 
+    box-sizing: border-box; 
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+input[type="number"]:focus { 
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-color), 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
+}
+
+/* 按钮样式 */
+button {
+    background-color: var(--accent-color);
+    color: var(--card-bg);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; 
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+button:hover { 
+    background-color: var(--secondary-color);
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); 
+}
+
+button:disabled {
+    background-color: var(--grey-color);
+    color: var(--text-color);
+    cursor: not-allowed; 
+    box-shadow: none;
+}
+
+/* 表单的复选框和单选按钮 */
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--accent-color); /* 自定义复选框和单选按钮的颜色 */
+    margin-right: 0.5rem;
+    cursor: pointer; /* 添加鼠标指针样式 */
+}
+
+/* 输入框和按钮的禁用状态 */
+input[type="text"]:disabled,
+input[type="email"]:disabled,
+input[type="password"]:disabled,
+textarea:disabled,
+input[type="number"]:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled,
+input[type="button"]:disabled,
+button:disabled {
+    background-color: var(--grey-color);
+    color: var(--text-color);
+    cursor: not-allowed; 
+    border-color: var(--grey-color);
+    box-shadow: none;
+}
+
+/* 动画效果 */
+body {
+    animation: fadeIn var(--transition-duration) ease-out;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    animation: slideInFromTop var(--transition-duration) ease-out;
+    animation-fill-mode: forwards;
+}
+
+p {
+    animation: slideInFromBottom var(--transition-duration) ease-out;
+    animation-fill-mode: forwards;
+}
+
+a {
+    animation: fadeIn var(--transition-duration) ease-out;
+}
+
+img {
+    animation: popIn var(--transition-duration) ease-out;
+    animation-fill-mode: forwards;
+}
+
+fieldset {
+    border: 5px solid var(--white-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
