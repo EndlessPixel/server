@@ -13,11 +13,11 @@
 </head>
 <body>
     <header class="top-bar">
-        <button class="hamburger-button" aria-label="导航菜单">☰</button>
+        <button class="hamburger-button">☰</button>
         <span class="info">EndlessPixel</span>
-        <button class="theme-button" aria-label="主题设置">⚙️</button>
+        <button class="theme-button">⚙️</button>
     </header>
-    <nav class="navbar" aria-hidden="true">
+    <nav class="navbar">
         <span class="close-button">❌</span>
         <hr>
         <ul>
@@ -63,7 +63,7 @@
             <hr>
         </ul>
     </nav>
-    <aside class="settings-panel" aria-hidden="true">
+    <aside class="settings-panel">
         <span class="close-button">❌</span>
         <form class="theme-form">
             <label>主色：</label>
@@ -104,39 +104,40 @@
     </aside>
     <main>
         <div class="flex">
-        <div class="status-box">
-            <div class="flex">
-                <div class="status-info">
-                    <h2 id="player-count">在线人数：?/?</h2>
+            <div class="box-container-3">
+                <h2>服务器状态</h2>
+                <h3>服务器地址：nmg.frp.one:14090</h3>
+                <div class="box-container">
+                    <div class="flex">
+                        <div class="flex">
+                            <h3>服务器在线状态：</h3>
+                        <h2 id="playerCount">?</h2>
+                        </div>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                        <div class="flex">
+                            <h3>当前在线人数：</h3>
+                            <h2 id="player-count">?/?</h2>
+                        </div>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                        <div class="flex">
+                            <h3>服务器版本：</h3>
+                            <h2>Java Minecraft 1.21.4<br>Paper Core</h2>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <button class="copy-button" id="copy-button">nmg.frp.one:14090</button>
-            </div>
-            <div class="hero">
-                <h1>欢迎来到EndlessPixel</h1>
-                <p>无尽像素是一个充满创造力和乐趣的Minecraft服务器，期待你的加入！</p>
-                <p>在这里，你可以与朋友们一起探索、建造、冒险，享受无尽的游戏乐趣。</p>
-                <p>无论你是新手还是老玩家，我们都欢迎你加入我们的社区！如果你有任何问题或建议，请随时与我们联系！</p>
+            <div class="box-container">
+                <fieldset>
+                    <legend>服务器地理位置</legend>
+                    <div id="container"></div>
+                </fieldset>
             </div>
         </div>
     </main>
-    <!-- 自定义模态框 -->
-    <div id="copy-confirm-modal" class="modal">
-        <div class="modal-content">
-            <h2>提示</h2>
-            <div style="color: #000000; height: 3px; width: 100%; margin: 5px; border-radius: 20px;"></div>
-            <p>此地址延迟较高，建议加入<a rel="noopener noreferrer" style="color: blue;" href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910" target="_blank">QQ群</a>获取低延迟公网直连地址，以获得更好的体验</p>
-            <p>你确定要复制吗？</p>
-            <button id="confirm-copy">确定</button>
-            <button id="cancel-copy">取消</button>
-        </div>
-    </div>
     <p class="mb-2">&copy; 2024-2025 EndlessPixel Team, All rights reserved.</p>
     <p class="mb-2">本站并非Minecraft官方网站，与Mojang和微软亦无从属关系。</p>
     <p>本服务器已同意<a href="https://account.mojang.com/documents/minecraft_eula" target="_blank">《Minecraft 最终用户许可协议》（EULA）</a>，确保合法合规运营。</p>
-    
     <script src="js/script.js"></script>
     <script src="js/index.js"></script>
-    
 </body>
 </html>
