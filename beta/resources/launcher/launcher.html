@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="EndlessPixel是一个由一群热爱游戏的玩家组成的社区，我们致力于提供一个有趣、自由、开放的游戏世界。" />
+    <meta name="keywords" content="EndlessPixel, EndlessPixel Minecraft Server, 无尽像素, 无尽像素我的世界服务器" />
+    <title>EndlessPixel</title>
+    <link rel="icon" href="https://s21.ax1x.com/2024/12/11/pAHvtKS.png" type="image/png">
+    <link rel="stylesheet" href="../../css/main-module.css" />
+    <link rel="stylesheet" href="../../css/custom-styles.css" />
+    <link rel="stylesheet" href="../../css/main.css" />
+</head>
+
+<body>
+    <header class="top-bar">
+        <button class="hamburger-button">☰</button>
+        <span class="info">EndlessPixel</span>
+        <button class="theme-button">⚙️</button>
+    </header>
+    <nav class="navbar">
+        <span class="close-button">❌</span>
+        <hr>
+        <ul>
+            <h1>导航</h1>
+            <hr>
+            <li>
+                <a href="../../index.html">首页(home)</a>
+            </li>
+            <hr>
+            <li>
+                <a href="../../state.html">状态(state)</a>
+            </li>
+            <hr>
+            <li>
+                <a href="../../resources/resources_index.html">资源(resources)</a>
+            </li>
+            <hr>
+            <li>
+                <a href="../../wiki/wiki_index.html">维基(wiki)</a>
+            </li>
+            <hr>
+            <li>
+                <a href="../../about.html">关于(about)</a>
+            </li>
+            <hr>
+            <h1>相关链接</h1>
+            <hr>
+            <li class="nav-item">
+                <a rel="noopener noreferrer" class="nav-link" href="https://github.com/EndlessPixel"
+                    target="_blank">Github</a>
+            </li>
+            <hr>
+            <li class="nav-item">
+                <a rel="noopener noreferrer" class="nav-link"
+                    href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910"
+                    target="_blank">QQ</a>
+            </li>
+            <hr>
+            <li class="nav-item">
+                <a rel="noopener noreferrer" class="nav-link"
+                    href="https://space.bilibili.com/3546799478409405?spm_id_from=333.1007.0.0"
+                    target="_blank">bilibili</a>
+            </li>
+            <hr>
+            <li class="nav-item">
+                <a rel="noopener noreferrer" class="nav-link" href="https://kuaishou.cn/profile/3xth2cp4jf5ha6c"
+                    target="_blank">快手</a>
+            </li>
+            <hr>
+        </ul>
+    </nav>
+    <aside class="settings-panel">
+        <span class="close-button">❌</span>
+        <form class="theme-form">
+            <label>主色：</label>
+            <input type="color" class="primary-color">
+            <button type="button" class="reset-color" data-color="primary">重置</button>
+            <br>
+            <label>次要颜色：</label>
+            <input type="color" class="secondary-color">
+            <button type="button" class="reset-color" data-color="secondary">重置</button>
+            <br>
+            <label>强调色：</label>
+            <input type="color" class="accent-color">
+            <button type="button" class="reset-color" data-color="accent">重置</button>
+            <br>
+            <label>背景色：</label>
+            <input type="color" class="background-color">
+            <button type="button" class="reset-color" data-color="background">重置</button>
+            <br>
+            <label>高亮色：</label>
+            <input type="color" class="highlight-color">
+            <button type="button" class="reset-color" data-color="highlight">重置</button>
+            <br>
+            <label>黑色深度（用于文本或其他需要黑色的地方）：</label>
+            <input type="range" class="color-slider black-depth" min="0" max="100" value="100">
+            <button type="button" class="reset-color" data-color="black">重置</button>
+            <br>
+            <label>白色深度（用于文本或其他需要白色的地方）：</label>
+            <input type="range" class="color-slider white-depth" min="0" max="100" value="100">
+            <button type="button" class="reset-color" data-color="white">重置</button>
+            <br>
+            <label>灰色深度（用于边框或其他需要灰色的地方）：</label>
+            <input type="range" class="color-slider gray-depth" min="0" max="100" value="50">
+            <button type="button" class="reset-color" data-color="gray">重置</button>
+            <br>
+            <button type="submit">应用设置</button>
+            <button type="button" class="reset-button">全部重置</button>
+        </form>
+    </aside>
+    <main>
+        <div class="alert-box">
+            <p>
+                <strong>重要提示：</strong><br>
+                本页面提供的所有启动器版本号均以官方GitHub为准。<br>
+                安全性几乎不必担心，所有链接均来自于GitHub或者官方网站，而不是自建下载源。
+            </p>
+        </div>
+        <div class="box-container-3">
+            <h2>启动器</h2>
+            <a href="../resources_index.html">返回</a>
+        </div>
+        <div class="box-container">
+            <div class="flex">
+                <div class="type-box-red">闭源</div>
+                <div class="type-box-green">免费</div>
+                <div class="type-box-green">官方</div>
+            </div>
+            <h3>ML 启动器(Minecraft Launcher)</h3>
+            <div class="flex">
+                <ul>
+                    <p>畅玩所有Minecraft游戏</p>
+                    <li>可以启动和管理Minecraft Java版的所有版本，包括正式版和快照版。</li>
+                    <li>支持Minecraft的多个分支版本，例如Java版、基岩版（Bedrock Edition）等。</li>
+                </ul>
+                <ul>
+                    <p>游戏更新与快照</p>
+                    <li>提供最新的游戏版本更新，包括正式版和快照版。</li>
+                    <li>启动器会自动检测并提示用户下载最新的游戏版本。</li>
+                </ul>
+                <ul>
+                    <p>安全性</p>
+                    <li>作为官方提供的启动器，安全性较高，不会包含恶意软件或广告。</li>
+                    <li>所有游戏版本和更新均来自Mojang的官方服务器，确保数据的可靠性和安全性。</li>
+                </ul>
+            </div>
+            <p>适用于Windows</p>
+            <h4>相关链接</h4>
+            <a href="https://www.minecraft.net/" target="_blank">官方网站</a>
+            <div class="box-container-3">
+                <h4>下载(launcher.mojang.com)</h4>
+                <a href="https://launcher.mojang.com/download/MinecraftInstaller.exe?ref=mcnet">Windows</a>
+            </div>
+        </div>
+        <div class="box-container">
+            <div class="flex">
+                <div class="type-box-green">活跃</div>
+                <div class="type-box-yellow">半开源</div>
+                <div class="type-box-green">免费</div>
+                <div class="type-box-blue">第三方</div>
+            </div>
+            <h3>PCL2 启动器(Plain Craft Launcher)</h3>
+            <p class="card-text text-muted">Minecraft 启动器：Plain Craft Launcher！简称 PCL！ 超快的下载速度，下载安装 Mod
+                和整合包，简洁且高度自定义的界面，流畅精细的动画……总之很棒就完事啦！</p>
+            <p>适用于Windows</p>
+            <h4>相关链接</h4>
+            <a href="https://afdian.com/a/LTCat" target="_blank">爱发电</a>
+            <a href="https://bbsmc.net/software/pcl" target="_blank">BBSMC</a>
+            <div class="box-container-3">
+                <h4>下载(cdn.bbsmc.net)</h4>
+                <a
+                    href="https://cdn.bbsmc.net/bbsmc/data/YJBkhCZM/versions/SKZruCNW/PCL%20%E6%AD%A3%E5%BC%8F%E7%89%88%202.10.0.zip">2.10.0</a>
+                <a
+                    href="https://cdn.bbsmc.net/bbsmc/data/YJBkhCZM/versions/JIyvBEgV/PCL%20%E6%AD%A3%E5%BC%8F%E7%89%88%202.9.3.zip">2.9.3</a>
+            </div>
+        </div>
+        <div class="box-container">
+            <div class="flex">
+                <div class="type-box-green">活跃</div>
+                <div class="type-box-green">开源</div>
+                <div class="type-box-green">免费</div>
+                <div class="type-box-blue">二次开发</div>
+                <div class="type-box-blue">第三方</div>
+            </div>
+            <h3>PCL2-CE 启动器(Plain Craft Launcher 2 Community Edition)</h3>
+            <p class="card-text text-muted">基于 PCL2 开源代码二次开发的社区版本，包括了主线暂未制作的功能和改进！<br>
+                代码会在主线发布更新时与主线同步一次，但来自社区的功能会保持自己的更新节奏。<br>
+                同时需注意，社区版的版本号与主线并非严格对应关系。</p>
+            <p>适用于Windows</p>
+            <h4>相关链接</h4>
+            <a href="https://github.com/PCL-Community/PCL2-CE/" target="_blank">GitHub</a>
+            <a href="https://github.com/PCL-Community/PCL2-CE/releases/" target="_blank">Github Release</a>
+            <a href="https://github.com/PCL-Community/PCL2-CE/releases/latest" target="_blank">Github Release Latest</a>
+            <div class="box-container-3">
+                <h4>下载(github.com)</h4>
+                <a href="https://github.com/PCL-Community/PCL2-CE/releases/download/2.10.7/PCL2_CE_x64.exe">2.10.7</a>
+                <a
+                    href="https://github.com/PCL-Community/PCL2-CE/releases/download/2.10.6/PCL2_CE_Beta_x64.exe">2.10.6</a>
+                <a href="https://github.com/PCL-Community/PCL2-CE/releases/download/2.10.5/PCL2_CE_x64.exe">2.10.5</a>
+                <a href="https://github.com/PCL-Community/PCL2-CE/releases/download/2.10.4/PCL2_CE.exe">2.10.4</a>
+                <a href="https://github.com/PCL-Community/PCL2-CE/releases/download/2.10.3/PCL2_CE.exe">2.10.3</a>
+                <a href="https://github.com/PCL-Community/PCL2-CE/releases/download/2.10.2/PCL2_CE.exe">2.10.2</a>
+                <a href="https://github.com/PCL-Community/PCL2-CE/releases/download/2.10.1/PCL2_CE.exe">2.10.1</a>
+                <a href="https://github.com/PCL-Community/PCL2-CE/releases/download/2.10.0/PCL2_CE.exe">2.10.0</a>
+            </div>
+        </div>
+        <div class="box-container">
+            <div class="flex">
+                <div class="type-box-green">活跃</div>
+                <div class="type-box-green">开源</div>
+                <div class="type-box-green">免费</div>
+                <div class="type-box-blue">第三方</div>
+            </div>
+            <h3>MMC 启动器(MultiMC)</h3>
+            <p class="card-text text-muted">MultiMC 是 Minecraft 的自定义启动器，专注于可预测性、长期稳定性和简单性。</p>
+            <p>适用于Windows</p>
+            <h4>相关链接</h4>
+            <a href="https://multimc.org/" target="_blank">官方网站</a>
+            <div class="box-container-3">
+                <h4>下载(files.multimc.org)</h4>
+                <a href="https://files.multimc.org/downloads/mmc-develop-win32.zip">Windows</a>
+            </div>
+        </div>
+        <div class="box-container">
+            <div class="flex">
+                <div class="type-box-green">活跃</div>
+                <div class="type-box-green">开源</div>
+                <div class="type-box-green">免费</div>
+                <div class="type-box-blue">第三方</div>
+            </div>
+            <h3>HMCL 启动器(Hello Minecraft! Launcher)</h3>
+            <p>六年历史 多系统支持 全新界面 自动安装<br>
+                支持导入 CurseForge、MultiMC 整合包<br>
+                创建游戏并安装 Fabric、Forge、LiteLoader、OptiFine<br>
+                支持导出 HMCL、MultiMC 整合包</p>
+            <h4>相关链接</h4>
+            <p>适用于Windows</p>
+            <a href="https://hmcl.huangyuhui.net/" target="_blank">官方网站</a>
+            <a href="https://github.com/HMCL-dev/HMCL/" target="_blank">GitHub</a>
+            <a href="https://github.com/HMCL-dev/HMCL/releases/" target="_blank">Github Release</a>
+            <a href="https://github.com/HMCL-dev/HMCL/releases/latest" target="_blank">Github Release Latest</a>
+            <p class="card-text text-muted"></p>
+            <div class="box-container-3">
+                <h4>下载(github.com)</h4>
+                <fieldset>
+                    <legend>正式版</legend>
+                    <a
+                        href="https://github.com/HMCL-dev/HMCL/releases/download/release-3.6.12/HMCL-3.6.12.exe">3.6.12</a>
+                </fieldset>
+                <fieldset>
+                    <legend>测试版</legend>
+                    <a
+                        href="https://github.com/HMCL-dev/HMCL/releases/download/v3.6.12.278/HMCL-3.6.12.278.exe">3.6.12.278</a>
+                    <a
+                        href="https://github.com/HMCL-dev/HMCL/releases/download/v3.6.12.276/HMCL-3.6.12.276.exe">3.6.12.276</a>
+                    <a
+                        href="https://github.com/HMCL-dev/HMCL/releases/download/v3.6.12.275/HMCL-3.6.12.275.exe">3.6.12.275</a>
+                    <a
+                        href="https://github.com/HMCL-dev/HMCL/releases/download/v3.6.12.274/HMCL-3.6.12.274.exe">3.6.12.274</a>
+
+                </fieldset>
+            </div>
+        </div>
+        <div class="box-container">
+            <div class="flex">
+                <div class="type-box-red">停更</div>
+                <div class="type-box-green">开源</div>
+                <div class="type-box-green">免费</div>
+                <div class="type-box-blue">第三方</div>
+            </div>
+            <h3>HMCL-PE 启动器(Hello Minecraft! Launcher:Pocket Edition)</h3>
+            <p class="card-text text-muted">该软件尝试在 Android 设备上恢复 HMCL，允许玩家管理游戏、模组、控件等。<br>
+                直接在您的 Android 设备上运行 Minecraft Java 版，支持 mod 和所有版本的游戏。<br>
+                HMCL-PE 已停止维护。如果您想在 Android 设备上运行 Minecraft： Java Edition 并获得更好的体验，请下载 Fold Craft Launcher 或
+                PojavLauncher。<br>
+                注意：如果您在使用其他启动器时遇到任何问题，HMCL-dev 概不负责。请向您正在使用的启动器的开发人员寻求帮助。</p>
+            <p>适用于Android</p>
+            <h4>相关链接</h4>
+            <a href="https://github.com/HMCL-dev/HMCL-PE/" target="_blank">GitHub</a>
+            <a href="https://github.com/HMCL-dev/HMCL-PE/releases/" target="_blank">Github Release</a>
+            <a href="https://github.com/HMCL-dev/HMCL-PE/releases/latest" target="_blank">Github Release Latest</a>
+            <div class="box-container-3">
+                <h4>下载(github.com)</h4>
+                <fieldset>
+                    <legend>正式版</legend>
+                    <a href="https://github.com/HMCL-dev/HMCL-PE/releases/download/2.0.8/HMCLPE-release.apk">2.0.8</a>
+                    <a href="https://github.com/HMCL-dev/HMCL-PE/releases/download/2.0.7/HMCLPE-release.apk">2.0.7</a>
+                </fieldset>
+                <fieldset>
+                    <legend>测试版</legend>
+                    <a
+                        href="https://github.com/HMCL-dev/HMCL-PE/releases/download/22.8.30/HMCLPE-release.apk">22.8.30</a>
+                    <a
+                        href="https://github.com/HMCL-dev/HMCL-PE/releases/download/22.8.29/HMCLPE-release.apk">22.8.29</a>
+                    <a
+                        href="https://github.com/HMCL-dev/HMCL-PE/releases/download/22.8.18/HMCLPE-release.apk">22.8.18</a>
+                </fieldset>
+            </div>
+        </div>
+        <div class="box-container">
+            <div class="flex">
+                <div class="type-box-green">活跃</div>
+                <div class="type-box-green">开源</div>
+                <div class="type-box-green">免费</div>
+                <div class="type-box-blue">第三方</div>
+            </div>
+            <h3>FCL 启动器(Fold Craft Launcher)</h3>
+            <p class="card-text text-muted">「Fold Craft Launcher」是由FCL团队开发的Android平台Minecraft: Java
+                Edition启动器。基于HMCL的核心功能，结合PojavLauncher后端和Boat后端，让您能在移动设备上畅玩Java版MC，支持模组加载与全版本运行。</p>
+            <p>适用于Android</p>
+            <h4>相关链接</h4>
+            <a href="https://github.com/FCL-Team/FoldCraftLauncher/" target="_blank">GitHub</a>
+            <a href="https://github.com/FCL-Team/FoldCraftLauncher/releases/" target="_blank">Github Release</a>
+            <a href="https://github.com/FCL-Team/FoldCraftLauncher/releases/latest" target="_blank">Github Release
+                Latest</a>
+            <div class="box-container-3">
+                <h4>下载(github.com)</h4>
+                <a
+                    href="https://github.com/FCL-Team/FoldCraftLauncher/releases/download/1.2.2.7/FCL-release-1.2.2.7-all.apk">1.2.2.7</a>
+                <a
+                    href="https://github.com/FCL-Team/FoldCraftLauncher/releases/download/1.2.2.6/FCL-release-1.2.2.6-all.apk">1.2.2.6</a>
+                <a
+                    href="https://github.com/FCL-Team/FoldCraftLauncher/releases/download/1.2.2.5/FCL-release-1.2.2.5-all.apk">1.2.2.5</a>
+                <a
+                    href="https://github.com/FCL-Team/FoldCraftLauncher/releases/download/1.2.2.4/FCL-release-1.2.2.4-all.apk">1.2.2.4</a>
+                <a
+                    href="https://github.com/FCL-Team/FoldCraftLauncher/releases/download/1.2.2.3/FCL-release-1.2.2.3-all.apk">1.2.2.3</a>
+                <a
+                    href="https://github.com/FCL-Team/FoldCraftLauncher/releases/download/1.2.2.2/FCL-release-1.2.2.2-all.apk">1.2.2.2</a>
+                <a
+                    href="https://github.com/FCL-Team/FoldCraftLauncher/releases/download/1.2.2.1/FCL-release-1.2.2.1-all.apk">1.2.2.1</a>
+                <a
+                    href="https://github.com/FCL-Team/FoldCraftLauncher/releases/download/1.2.2.0/FCL-release-1.2.2.0-all.apk">1.2.2.0</a>
+            </div>
+        </div>
+        <div class="box-container">
+            <div class="flex">
+                <div class="type-box-green">活跃</div>
+                <div class="type-box-green">开源</div>
+                <div class="type-box-green">免费</div>
+                <div class="type-box-blue">第三方</div>
+            </div>
+            <h3>PL 启动器(PojavLauncher)</h3>
+            <p class="card-text text-muted">PojavLauncher 是基于 Boardwalk 的适用于 Android 的 Minecraft：Java 版启动器<br>
+                此启动器可以启动几乎所有可用的 Minecraft 版本</p>
+            <p>适用于Android</p>
+            <h4>相关链接</h4>
+            <a href="https://github.com/PojavLauncherTeam/PojavLauncher/" target="_blank">GitHub</a>
+            <a href="https://github.com/PojavLauncherTeam/PojavLauncher/releases/" target="_blank">Github Release</a>
+            <a href="https://github.com/PojavLauncherTeam/PojavLauncher/releases/latest" target="_blank">Github Release
+                Latest</a>
+            <div class="box-container-3">
+                <h4>下载(github.com)</h4>
+                <a
+                    href="https://github.com/PojavLauncherTeam/PojavLauncher/releases/download/gladiolus/PojavLauncher.apk">gladiolus</a>
+                <a
+                    href="https://github.com/PojavLauncherTeam/PojavLauncher/releases/download/v3.3.1.1/app-debug.apk">v3.3.1.1</a>
+                <a
+                    href="https://github.com/PojavLauncherTeam/PojavLauncher/releases/download/v3.3.1-release/app-debug.apk">v3.3.1</a>
+                <a
+                    href="https://github.com/PojavLauncherTeam/PojavLauncher/releases/download/v3.3.0-testing/app-debug.apk">v3.3.0</a>
+            </div>
+        </div>
+    </main>
+    <p class="mb-2">&copy; 2024-2025 EndlessPixel Team, All rights reserved.</p>
+    <p class="mb-2">本站并非Minecraft官方网站，与Mojang和微软亦无从属关系。</p>
+    <p>本服务器已同意<a href="https://account.mojang.com/documents/minecraft_eula" target="_blank">《Minecraft
+            最终用户许可协议》（EULA）</a>，确保合法合规运营。</p>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

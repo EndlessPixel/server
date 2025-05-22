@@ -1,0 +1,229 @@
+/* custom-styles.css */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 10px 20px;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.theme-button, .hamburger-button {
+    background: none;
+    border: none;
+    color: var(--white-color);
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.navbar, .settings-panel {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    background-color: var(--background-color);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.navbar {
+    left: 0;
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+}
+
+.settings-panel {
+    right: 0;
+    transform: translateX(100%);
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+}
+
+.navbar.active, .settings-panel.active {
+    transform: translateX(0);
+}
+
+.close-button {
+    font-size: 20px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.theme-form {
+    padding: 20px;
+}
+
+.theme-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.theme-form input {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--gray-color);
+}
+
+.theme-form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    cursor: pointer;
+}
+
+.theme-form button:hover {
+    background-color: var(--accent-color);
+}
+
+/* 英雄段落样式 */
+.hero-section {
+    text-align: center;
+    padding: 2rem 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* 信息卡片容器样式 */
+.info-cards-container {
+    padding: 2rem 1rem;
+}
+
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.info-card {
+    background-color: var(--gray-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.info-card i {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.info-card h3 {
+    font-size: 1.375rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.info-card p, .info-card ul {
+    font-size: 1rem;
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+.info-card ul {
+    padding: 0;
+    list-style: none;
+}
+
+.info-card ul li {
+    margin-bottom: 0.5rem;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .info-cards-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .info-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .info-card {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-card {
+        width: 100%; /* 1列布局 */
+    }
+}
+
+/* 样式定义 */
+.display-6 {
+    font-size: 1.5rem; /* 标题字体大小 */
+    font-weight: bold; /* 加粗 */
+    margin-bottom: 1.5rem; /* 底部外边距 */
+    text-align: center; /* 文本居中 */
+}
+
+.lead {
+    font-size: 1.25rem; /* 副标题字体大小 */
+    margin-bottom: 0; /* 底部外边距 */
+    text-align: center; /* 文本居中 */
+}
+
+/* 动画效果 */
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -100%, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 100%, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.animated.fadeInDown {
+    animation-name: fadeInDown;
+}
+
+.animated.fadeInUp {
+    animation-name: fadeInUp;
+}
