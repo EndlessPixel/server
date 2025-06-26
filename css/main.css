@@ -1,0 +1,391 @@
+.flex {
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+}
+
+
+
+
+.status-box {
+    background: url('https://zh.minecraft.wiki/images/1.21.5.png?134b0&format=original')center center/cover;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    width: 600px;
+    height: 200px;
+    transition: transform 0.3s ease;
+    border-radius: 15px;
+    margin: 20px;
+}
+
+.status-box::after:hover {
+    transform: translateY(-1px);
+}
+
+.status-box:hover {
+    transform: translateY(-1px);
+}
+
+.status-circle {
+    width: 20px;
+    height: 20px;
+    background-color: green;
+    border-radius: 50%;
+    position: relative;
+    top: -10px;
+    margin: 0 auto;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
+    }
+}
+
+.status-info {
+    margin: 10px 0;
+}
+
+.copy-button {
+    position: relative;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    overflow: hidden;
+    /* 隐藏溢出内容 */
+    width: 250px;
+    height: 50px;
+}
+
+.copy-button::before {
+    content: '复制地址';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.copy-button:hover {
+    background-color: var(--primary-color);
+}
+
+.copy-button:hover::before {
+    opacity: 1;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--black-color);
+    /* 使用已有透明度黑色 */
+    animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: var(--white-color);
+    /* 动态透明度白色 */
+    border: 1px solid var(--gray-color);
+    /* 灰度边框 */
+    border-radius: 16px;
+    box-shadow: 0 8px 32px var(--black-color);
+    /* 阴影透明度继承 */
+    color: var(--text-color);
+    /* 假设您有text-color变量 */
+    backdrop-filter: blur(12px);
+    max-width: 400px;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 2rem;
+}
+
+/* 按钮组增强 */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.modal-button {
+    background: var(--background-color);
+    color: var(--white-color);
+    border: 1px solid var(--gray-color);
+    transition: all 0.3s ease;
+}
+
+/* 主按钮使用渐变色 */
+.primary-btn {
+    background: linear-gradient(45deg,
+            var(--primary-color),
+            var(--accent-color));
+    border-color: var(--highlight-color);
+}
+
+/* 悬停状态使用系统变量 */
+button:hover {
+    background: var(--highlight-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--black-color);
+}
+
+/* 关闭按钮现代化 */
+.modal-close {
+    background: var(--gray-color);
+    color: var(--white-color);
+    transition: transform 0.3s;
+}
+
+/* 暗黑模式适配 */
+@media (prefers-color-scheme: dark) {
+    .modal-content {
+        background: var(--black-color);
+        color: var(--white-color);
+        border-color: var(--gray-color);
+    }
+
+    .modal-button {
+        background: var(--secondary-color);
+        color: var(--black-color);
+    }
+}
+
+/* 公共样式 */
+.box-container,
+.box-container-2,
+.box-container-3 {
+    gap: 20px;
+    /* 间距 */
+    margin-top: 20px;
+    /* 顶部间距 */
+    padding: 20px;
+    /* 内边距 */
+    border-radius: 10px;
+    /* 圆角 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* 阴影 */
+    margin: 10px;
+    /* 外边距 */
+    transition: all 0.3s ease;
+    /* 平滑过渡效果 */
+}
+
+/* 链接公共样式 */
+.box-container a,
+.box-container-2 a,
+.box-container-3 a {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    text-decoration: none;
+    /* 去掉下划线 */
+    padding: 7.5px 12.5px;
+    /* 内边距 */
+    border-radius: 50px;
+    /* 圆角 */
+    transition: background-color 0.3s, transform 0.3s;
+    /* 过渡效果 */
+    min-width: 75px;
+    text-align: center;
+    display: inline-block;
+    margin: 5px;
+    /* 外边距 */
+    font-weight: bold;
+    /* 加粗字体 */
+    cursor: pointer;
+    /* 鼠标指针样式 */
+}
+
+/* 特定容器的背景颜色 */
+/* 白色 */
+.box-container {
+    background-color: var(--white-color);
+}
+
+/* 黑色 */
+.box-container-2 {
+    background-color: var(--black-color);
+}
+
+/* 灰色 */
+.box-container-3 {
+    background-color: var(--gray-color);
+}
+
+/* 悬停效果 */
+.box-container a:hover button:hover,
+.box-container-2 a:hover button:hover,
+.box-container-3 a:hover button:hover {
+    background-color: var(--accent-color);
+}
+
+/* 媒体查询：响应式设计 */
+@media (max-width: 768px) {
+
+    .box-container,
+    .box-container-2,
+    .box-container-3 {
+        padding: 15px;
+        /* 减小内边距 */
+        margin: 5px;
+        /* 减小外边距 */
+    }
+
+    .box-container a,
+    .box-container-2 a,
+    .box-container-3 a {
+        padding: 5px 10px;
+        /* 减小内边距 */
+        font-size: 14px;
+        /* 减小字体大小 */
+    }
+}
+
+@media (max-width: 480px) {
+
+    .box-container,
+    .box-container-2,
+    .box-container-3 {
+        padding: 10px;
+        /* 进一步减小内边距 */
+        margin: 3px;
+        /* 进一步减小外边距 */
+    }
+
+    .box-container a,
+    .box-container-2 a,
+    .box-container-3 a {
+        padding: 3px 6px;
+        /* 进一步减小内边距 */
+        font-size: 12px;
+        /* 进一步减小字体大小 */
+    }
+}
+
+.alert-box {
+    background-color: #ff000050;
+    border: 1px solid #ff8800aa;
+    padding: 10px;
+    margin: 20px;
+    border-radius: 20px;
+    /* 圆角边框 */
+    font-size: 14px;
+    color: #000000;
+    /* 文字颜色 */
+}
+
+.alert-box strong {
+    color: #d6ff22;
+    /* 强调文字颜色 */
+}
+
+#container {
+    width: 400px;
+    height: 200px;
+    border-radius: 15px;
+    margin: 20px;
+}
+
+.hero {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    width: 600px;
+    height: 200px;
+    transition: transform 0.3s ease;
+    border-radius: 15px;
+    margin: 20px;
+}
+
+.type-box-green,
+.type-box-red,
+.type-box-blue,
+.type-box-yellow,
+.type-box-orange {
+    font-size: 16px;
+    border-radius: 10px;
+    margin: 3px;
+    padding: 5px;
+    color: var(--black-color);
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+    width: 75px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+}
+
+.type-box-green {
+    background-color: #22ff22aa;
+}
+
+.type-box-red {
+    background-color: #ff2222aa;
+}
+
+.type-box-blue {
+    background-color: #22aaffaa;
+}
+
+.type-box-yellow {
+    background-color: #ffff22aa;
+}
+
+.type-box-orange {
+    background-color: #ffaa22aa;
+}
+
+footer {
+    background-color: var(--footer-bg-color);
+    color: var(--footer-text-color);
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+    border-top: 1px solid var(--footer-border-color);
+}
+
+footer p {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    font-size: 0.9rem;
+    color: var(--footer-text-color);
+    font-family: 'Arial', sans-serif;
+}
