@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="EndlessPixel是一个由一群热爱游戏的玩家组成的社区，我们致力于提供一个有趣、自由、开放的游戏世界。" />
+    <meta name="keywords" content="EndlessPixel, EndlessPixel Minecraft Server, 无尽像素, 无尽像素我的世界服务器" />
+    <title>EndlessPixel</title>
+    <link rel="icon" href="https://s21.ax1x.com/2024/12/11/pAHvtKS.png" type="image/png">
+    <link rel="stylesheet" href="../../css/main-module.css" />
+    <link rel="stylesheet" href="../../css/custom-styles.css" />
+    <link rel="stylesheet" href="../../css/main.css" />
+    <link rel="stylesheet" href="../../css/br.css">
+    <link rel="stylesheet" href="../../css/mb.css">
+    <link rel="stylesheet" href="../wiki.css">
+</head>
+
+<body>
+    <header class="top-bar">
+        <button class="hamburger-button">☰</button>
+        <span class="info">EndlessPixel</span>
+        <button class="theme-button">⚙️</button>
+    </header>
+    <!-- 新增导航菜单占位 div -->
+    <div id="nav-placeholder"></div>
+    <!-- 新增设置面板占位 div -->
+    <div id="settings-placeholder"></div>
+    <main>
+        <div class="box-container">
+            <a href="../wiki_index.html">返回</a>
+            <div class="section">
+                <h3 class="section-title">注册与登录指南</h3>
+                <div class="info-box info">
+                    <div class="info-content">
+                        <h4>注册账号</h4>
+                        <ol>
+                            <li>按下 T 键打开输入框（若更改按键绑定，请使用对应按键）。</li>
+                            <li>输入命令：<code>/reg &lt;密码&gt; &lt;确认密码&gt;</code>。</li>
+                            <li>密码要求：同时包含字母和数字，且至少 6 位。</li>
+                            <li>示例：<code>/reg abc123 abc123</code>（请勿直接使用示例密码）。</li>
+                            <li>输入命令后，按下回车键提交。</li>
+                            <li>注册成功会提示“注册成功”，失败请检查密码格式或重新尝试。</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="info-box info">
+                    <div class="info-content">
+                        <h4>登录账号</h4>
+                        <ol>
+                            <li>重新加入游戏后，按下 T 键打开输入框。</li>
+                            <li>输入命令：<code>/l &lt;密码&gt;</code>。</li>
+                            <li>示例：<code>/l abc123</code>（请使用自己的密码）。</li>
+                            <li>按下回车键完成登录。</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="info-box info">
+                    <div class="info-content">
+                        <h4>修改密码</h4>
+                        <ol>
+                            <li>输入命令：<code>/changepw &lt;旧密码&gt; &lt;新密码&gt; &lt;重复新密码&gt;</code>。</li>
+                            <li>示例：<code>/changepw oldpw newpw newpw</code>（请替换为实际密码）。</li>
+                            <li>确保旧密码正确，新密码两次输入一致。</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="info-box warning">
+                    <div class="info-content">
+                        <h4>账号安全与找回</h4>
+                        <ul>
+                            <li>账号不绑定身份信息，仅需用户名和密码即可登录。</li>
+                            <li>忘记密码请找管理员，请求删除账户后重新注册。</li>
+                            <li>重要提醒：勿泄露密码，避免账号被盗用。</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info-box warning">
+                    <div class="info-content">
+                        <h4>安全建议</h4>
+                        <ol>
+                            <li>定期修改密码（推荐每30天更新一次）</li>
+                            <li>避免使用与其他平台相同的密码</li>
+                            <li>在公共设备登录后务必执行 /logout 命令</li>
+                            <li>启用邮箱验证（即将上线）</li>
+                        </ol>
+                    </div>
+                </div>
+                <table class="info-table">
+                    <thead>
+                        <tr>
+                            <th>错误代码</th>
+                            <th class="severity-level">级别</th>
+                            <th>解决方案</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ACCOUNT_ALREADY_REGISTERED</td>
+                            <td><span class="tag critical">严重</span></td>
+                            <td>该账号已注册</td>
+                        </tr>
+                        <tr>
+                            <td>PASSWORD_INVALID_LENGTH_OR_FORMAT</td>
+                            <td><span class="tag warning">警告</span></td>
+                            <td>密码长度不足或格式错误</td>
+                        </tr>
+                        <tr>
+                            <td>USER_NOT_REGISTERED</td>
+                            <td><span class="tag warning">警告</span></td>
+                            <td>该用户未注册</td>
+                        </tr>
+                        <tr>
+                            <td>EMAIL_SERVICE_NOT_ENABLED</td>
+                            <td><span class="tag critical">严重</span></td>
+                            <td>邮箱服务未启用</td>
+                        </tr>
+                        <tr>
+                            <td>EMAIL_NOT_SET_FOR_PASSWORD_RESET</td>
+                            <td><span class="tag warning">警告</span></td>
+                            <td>未设置邮箱用于密码重置</td>
+                        </tr>
+                        <tr>
+                            <td>VERIFICATION_CODE_SENT_NO_DUPLICATE</td>
+                            <td><span class="tag info">提示</span></td>
+                            <td>验证码已发送，请检查邮箱</td>
+                        </tr>
+                        <tr>
+                            <td>FAILED_SEND_EMAIL_SERVER_INTERNAL_ERROR</td>
+                            <td><span class="tag error">错误</span></td>
+                            <td>发送验证码失败，服务器内部错误</td>
+                        </tr>
+                        <tr>
+                            <td>CAPTCHA_ERROR</td>
+                            <td><span class="tag warning">警告</span></td>
+                            <td>验证码错误</td>
+                        </tr>
+                        <tr>
+                            <td>NOT_RGEISTERED_PASSWORD_CANNOT_MODFY</td>
+                            <td><span class="tag warning">警告</span></td>
+                            <td>未注册用户无法修改密码</td>
+                        </tr>
+                        <tr>
+                            <td>CHANGEPASSWORD_NOLOGIN</td>
+                            <td><span class="tag warning">警告</span></td>
+                            <td>未登录无法修改密码</td>
+                        </tr>
+                        <tr>
+                            <td>CHANGEPASSWORD_OLDPASSWORD_INCORRECT</td>
+                            <td><span class="tag error">错误</span></td>
+                            <td>旧密码错误</td>
+                        </tr>
+                        <tr>
+                            <td>CHANGEPASSWORD_PASSWORD_CONFIRM_FAIL</td>
+                            <td><span class="tag warning">警告</span></td>
+                            <td>两次输入的密码不一致</td>
+                        </tr>
+                        <tr>
+                            <td>LOGIN_TIMEO0UT_TO_KICK</td>
+                            <td><span class="tag critical">严重</span></td>
+                            <td>登录超时踢出</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- 新增响应式支持 -->
+                <tr class="mobile-only">
+                    <td colspan="4">* 移动端查看建议横屏浏览完整信息</td>
+                </tr>
+            </div>
+    </main>
+    <p class="mb-2">&copy; 2024-2025 EndlessPixel Team, All rights reserved.</p>
+    <p class="mb-2">本站并非Minecraft官方网站，与Mojang和微软亦无从属关系。</p>
+    <p>本服务器已同意<a href="https://account.mojang.com/documents/minecraft_eula" target="_blank">《Minecraft
+            最终用户许可协议》（EULA）</a>，确保合法合规运营。</p>
+    <script src="../../js/menu.js"></script>
+    <script src="../../js/menu.js"></script>
+<script src="../../js/script.js"></script>
+    
+</body>
+
+</html>
