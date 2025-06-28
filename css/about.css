@@ -1,6 +1,7 @@
 .team-gallery {
     width: 100%;
-    padding: 2rem; /* 使用相对单位，提高响应式表现 */
+    padding: 2rem;
+    /* 使用相对单位，提高响应式表现 */
     box-sizing: border-box;
 }
 
@@ -8,8 +9,10 @@
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* 增强移动端滚动体验 */
-    scroll-snap-type: x mandatory; /* 添加滚动吸附效果 */
+    -webkit-overflow-scrolling: touch;
+    /* 增强移动端滚动体验 */
+    scroll-snap-type: x mandatory;
+    /* 添加滚动吸附效果 */
     scrollbar-width: thin;
     scrollbar-color: var(--secondary-color) var(--background-color);
     background-color: var(--border-color);
@@ -35,18 +38,21 @@
 
 .team-card {
     flex: 0 0 auto;
-    width: 16rem; /* 使用相对单位 */
+    width: 16rem;
+    /* 使用相对单位 */
     margin-right: 1.5rem;
     padding: 1.25rem;
     background-color: var(--white-color);
     color: var(--text-color);
     border: 1px solid var(--border-color);
-    border-radius: 1rem; /* 增大圆角，让卡片更圆润 */
+    border-radius: 1rem;
+    /* 增大圆角，让卡片更圆润 */
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    scroll-snap-align: start; /* 滚动吸附对齐 */
+    scroll-snap-align: start;
+    /* 滚动吸附对齐 */
 }
 
 .team-card:hover {
@@ -56,8 +62,10 @@
 
 .team-card h3 {
     margin-top: 0;
-    font-size: 1.25rem; /* 调整字体大小 */
-    color: var(--primary-color); /* 使用主色调 */
+    font-size: 1.25rem;
+    /* 调整字体大小 */
+    color: var(--primary-color);
+    /* 使用主色调 */
 }
 
 .team-card p {
@@ -68,5 +76,127 @@
 
 .team-card strong {
     font-weight: bold;
-    color: var(--secondary-color); /* 使用次色调 */
+    color: var(--secondary-color);
+    /* 使用次色调 */
+}
+
+
+/* 开源许可信息专属样式 */
+.license-info h2 {
+    color: #2c3e50;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.license-info h3 {
+    color: #34495e;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.license-info h4 {
+    color: #7f8c8d;
+    font-size: 18px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.license-info p {
+    color: #2c3e50;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.license-info a {
+    color: #2980b9;
+    text-decoration: none;
+}
+
+.license-info a:hover {
+    text-decoration: underline;
+}
+
+/* 列表样式 */
+.license-info .flex ul {
+    list-style-type: none;
+    padding-left: 0;
+    width: 100%;
+}
+
+.license-info ul li {
+    background-color: var(--white-color);
+    color: var(--text-color);
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.license-info ul li:hover {
+    background-color: var(--white-color);
+}
+
+/* 为包含 emoji 的标题和列表项添加样式 */
+.license-info h2,
+.license-info h3,
+.license-info h4,
+.license-info .flex ul li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* 设置 emoji 和文字之间的间距 */
+}
+
+.license-info h2,
+.license-info h3,
+.license-info h4 {
+    font-size: calc(1em + 0.2vw);
+    /* 响应式字体大小 */
+    transform-origin: 50% 50%;
+}
+
+
+/* 定义载入动画 */
+@keyframes loadIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 定义循环强调动画 */
+@keyframes emphasize {
+    0% {
+        color: #2c3e50;
+        transform: scale(1);
+    }
+
+    50% {
+        color: #2980b9;
+        /* 强调时的颜色 */
+        transform: scale(1.01);
+    }
+
+    100% {
+        color: #2c3e50;
+        transform: scale(1);
+    }
+}
+
+/* 应用载入动画到 license-info 容器 */
+.license-info {
+    animation: loadIn 0.8s ease-out forwards;
+}
+
+/* 应用循环强调动画到标题 */
+.license-info h2,
+.license-info h3,
+.license-info h4 {
+    animation: emphasize 3s ease-in-out infinite;
 }

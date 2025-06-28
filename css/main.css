@@ -211,7 +211,7 @@ button:hover {
 .box-container a,
 .box-container-2 a,
 .box-container-3 a {
-    background-color: var(--secondary-color);
+    background-color: var(--white-color);
     color: var(--text-color);
     text-decoration: none;
     /* 去掉下划线 */
@@ -246,13 +246,6 @@ button:hover {
 /* 灰色 */
 .box-container-3 {
     background-color: var(--gray-color);
-}
-
-/* 悬停效果 */
-.box-container a:hover button:hover,
-.box-container-2 a:hover button:hover,
-.box-container-3 a:hover button:hover {
-    background-color: var(--accent-color);
 }
 
 /* 媒体查询：响应式设计 */
@@ -392,4 +385,118 @@ footer p {
     font-size: 0.9rem;
     color: var(--footer-text-color);
     font-family: 'Arial', sans-serif;
+}
+
+.markdown-content {
+    /* 内容居中显示 */
+    margin: 0 auto;
+    /* 内边距 */
+    padding: 20px;
+    /* 最大宽度 */
+    max-width: 800px;
+    /* 文字颜色 */
+    color: #333;
+    /* 字体 */
+    font-family: Arial, sans-serif;
+    /* 行高 */
+    line-height: 1.6;
+}
+
+.markdown-content h1 {
+    /* 一级标题字体大小 */
+    font-size: 2.5rem;
+    /* 底部边距 */
+    margin-bottom: 20px;
+    /* 文字对齐方式 */
+    text-align: center;
+    /* 标题颜色 */
+    color: #2c3e50;
+}
+
+.markdown-content h2 {
+    /* 二级标题字体大小 */
+    font-size: 2rem;
+    /* 底部边距 */
+    margin-bottom: 15px;
+    /* 标题下边框 */
+    border-bottom: 1px solid #ddd;
+    /* 下边框内边距 */
+    padding-bottom: 5px;
+    /* 标题颜色 */
+    color: #34495e;
+}
+
+.markdown-content h3 {
+    /* 三级标题字体大小 */
+    font-size: 1.5rem;
+    /* 底部边距 */
+    margin-bottom: 10px;
+    /* 标题颜色 */
+    color: #2980b9;
+}
+
+.markdown-content p {
+    /* 段落底部边距 */
+    margin-bottom: 15px;
+}
+
+.markdown-content ul {
+    /* 列表内边距 */
+    padding-left: 20px;
+    /* 列表底部边距 */
+    margin-bottom: 15px;
+}
+
+.markdown-content li {
+    /* 列表项底部边距 */
+    margin-bottom: 8px;
+}
+
+.markdown-content a {
+    /* 链接颜色 */
+    color: #3498db;
+    /* 去除链接下划线 */
+    text-decoration: none;
+}
+
+.markdown-content a:hover {
+    /* 链接悬停时的颜色 */
+    color: #2980b9;
+    /* 链接悬停时显示下划线 */
+    text-decoration: underline;
+}
+
+.step-section,
+.safety-section,
+.suggestion-section {
+    margin-bottom: 20px;
+}
+
+.step-section h5,
+.safety-section h5,
+.suggestion-section h5 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.step-section h4,
+.safety-section h4,
+.suggestion-section h4 {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+.step-section p,
+.safety-section p,
+.suggestion-section p {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.spacing {
+    height: 15px; /* 小间距，可根据需求调整 */
+}
+
+.large-spacing {
+    height: 30px; /* 大间距，用于模块间，可根据需求调整 */
 }
