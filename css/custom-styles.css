@@ -43,13 +43,12 @@
     left: 0;
     /* 确保导航栏向左隐藏 */
     transform: translateX(-120%); 
+    width: 300px;
 }
 
 .settings-panel {
     right: 0;
     width: 300px;
-    min-width: 300px;
-    max-width: 300px;
     /* 确保向右隐藏 */
     transform: translateX(120%); 
     margin: 20px;

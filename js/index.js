@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         navigator.clipboard.writeText(ip).then(() => {
             copyButton.textContent = '复制成功';
             setTimeout(() => {
-                copyButton.textContent = 'nmg.frp.one:14090';
+                copyButton.textContent = '150.138.79.32:25568';
             }, 1500);
         }).catch(err => {
             console.error('Failed to copy IP address:', err);
@@ -32,6 +32,4 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = 'none';
         }
     });
-
-    fetchServerStatus();
 });
