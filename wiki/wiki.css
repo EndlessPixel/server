@@ -404,17 +404,96 @@ pre code {
     /* 悬停时加深阴影 */
 }
 
+/* 优化模块链接样式 */
 .module-link {
     color: var(--accent-color);
     text-decoration: none;
     display: block;
-    /* 让链接填充整个模块 */
+    padding: 1.5rem; /* 添加内边距 */
+    border-radius: 12px; /* 圆角边框 */
+    background-color: var(--card-bg); /* 背景颜色 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+    transition: all 0.3s ease; /* 过渡效果 */
 }
 
 .module-link:hover {
     color: var(--secondary-color);
+    background-color: var(--white-color); /* 悬停时背景变色 */
+    transform: translateY(-3px); /* 悬停时上移 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 悬停时加深阴影 */
 }
 
 .module-link:active {
     color: var(--accent-color);
+    transform: translateY(0); /* 点击时恢复位置 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 点击时恢复阴影 */
+}
+
+.wiki-dir {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+/* 优化 wiki 目录链接样式 */
+.wiki-dir a {
+    /* 使用响应式宽度 */
+    width: clamp(280px, 40vw, 400px);
+    background-color: var(--card-bg); /* 背景颜色 */
+    border-radius: 12px; /* 圆角边框 */
+    margin: 10px;
+    padding: 1.5rem; /* 添加内边距 */
+    text-align: center; /* 文字居中 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+    transition: all 0.3s ease; /* 过渡效果 */
+    display: flex; /* 使用 flex 布局 */
+    flex-direction: column; /* 垂直排列 */
+    align-items: center; /* 水平居中 */
+    gap: 1rem; /* 元素间距 */
+    height: 150px;
+}
+
+.wiki-dir a:hover {
+    background-color: var(--white-color); /* 悬停时背景变色 */
+    transform: translateY(-3px); /* 悬停时上移 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 悬停时加深阴影 */
+}
+
+.wiki-dir a:active {
+    transform: translateY(0); /* 点击时恢复位置 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 点击时恢复阴影 */
+}
+
+.plugin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table-header {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+}
+
+.table-row {
+    transition: background-color 0.3s ease;
+}
+
+.table-row:hover {
+    background-color: #f5f5f5;
+}
+
+.table-cell {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.status-tag {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.enabled {
+    background-color: #e8f5e9;
 }

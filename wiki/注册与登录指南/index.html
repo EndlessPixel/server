@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../css/br.css">
     <link rel="stylesheet" href="../../css/mb.css">
     <link rel="stylesheet" href="../wiki.css">
+    <link rel="stylesheet" href="../../css/text.css">
 </head>
 
 <body>
@@ -33,25 +34,25 @@
                 <h3 class="section-title">注册与登录指南</h3>
                 <div class="info-box info">
                     <div class="info-content">
-                        <h4>注册账号</h4>
+                        <h4 class="text-color-orange text-size-xlarge">注册账号</h4>
                         <div class="step-section">
-                            <h5>步骤 1：打开输入框</h5>
-                            <p>首先，确保你已经成功进入游戏界面。按下键盘上的 <strong>T</strong>
+                            <h5 class="text-color-purple text-size-large">步骤 1：打开输入框</h5>
+                            <p class="text-line-height-medium">首先，确保你已经成功进入游戏界面。按下键盘上的 <strong>T</strong>
                                 键打开游戏内的输入框。若你之前修改过游戏的按键绑定，可在游戏设置菜单里查看或重新设置聊天输入框的触发按键，再用对应的按键打开输入框。</p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 2：输入注册命令</h5>
-                            <p>在打开的输入框中，可选择以下两种命令进行注册：
-                                <code>/reg &lt;密码&gt; &lt;确认密码&gt;</code> 或
-                                <code>/register &lt;密码&gt; &lt;重复密码&gt;</code>。
-                                其中 <code>&lt;密码&gt;</code> 是你要为账号设置的登录密码，<code>&lt;确认密码&gt;</code> 或
-                                <code>&lt;重复密码&gt;</code> 需再次输入相同密码进行确认。注意，输入时不要遗漏命令前的斜杠 <code>/</code>。
+                            <h5 class="text-color-purple text-size-large">步骤 2：输入注册命令</h5>
+                            <p class="text-line-height-medium">在打开的输入框中，可选择以下两种命令进行注册：
+                                <code class="code-block text-color-purple text-size-medium">/reg &lt;密码&gt; &lt;确认密码&gt;</code> 或
+                                <code class="code-block text-color-purple text-size-medium">/register &lt;密码&gt; &lt;重复密码&gt;</code>。
+                                其中 <code class="text-color-purple">&lt;密码&gt;</code> 是你要为账号设置的登录密码， <code class="text-color-purple">&lt;确认密码&gt;</code> 或
+                                <code class="text-color-purple">&lt;重复密码&gt;</code> 需再次输入相同密码进行确认。注意，输入时不要遗漏命令前的斜杠 <code class="text-color-purple">/</code>。
                             </p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 3：设置安全密码</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 3：设置安全密码</h5>
                             <p>密码要求同时包含字母和数字，且长度至少为 6 位，字母区分大小写。建议采用大小写字母混合搭配数字的组合方式，例如
                                 <code>Abc123</code>，这样能提高密码安全性，降低账号被盗用风险。避免使用过于简单的密码，像 <code>123456</code> 或
                                 <code>abcdef</code> 等，这类密码很容易被破解。
@@ -59,70 +60,72 @@
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 4：参考示例但勿照搬</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 4：参考示例但勿照搬</h5>
                             <p>为便于你了解命令的正确输入格式，给出示例：<code>/reg abc123 abc123</code> 或
                                 <code>/register abc123 abc123</code>。但请务必注意，不要直接使用该示例密码，因其是公开的，存在安全隐患。你应依据密码要求设置独特的密码。
                             </p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 5：提交注册请求</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 5：提交注册请求</h5>
                             <p>当你确认输入的命令和密码无误后，按下键盘上的回车键提交注册请求。此时，游戏会对输入的信息进行验证。</p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 6：查看注册结果</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 6：查看注册结果</h5>
                             <p>如果注册成功，游戏界面会弹出提示信息“注册成功”，这意味着你已拥有自己的游戏账号。若注册失败，可能是密码格式不符合要求，你可仔细检查密码是否同时包含字母和数字，且长度不少于 6
                                 位；也可能是两次输入的密码不一致，请重新确认后再次尝试。</p>
                         </div>
                     </div>
                 </div>
-                <div class="large-spacing"></div>
+
+                <!-- 登录账号部分 -->
                 <div class="info-box info">
                     <div class="info-content">
-                        <h4>登录账号</h4>
+                        <h4 class="text-color-orange text-size-xlarge">登录账号</h4>
                         <div class="step-section">
-                            <h5>步骤 1：进入游戏并打开输入框</h5>
-                            <p>当你重新加入游戏后，等待游戏加载完成进入主界面。按下键盘上的 <strong>T</strong> 键打开游戏内的输入框。若你的按键设置有变动，需使用对应的按键操作。</p>
+                            <h5 class="text-color-purple text-size-large">步骤 1：进入游戏并打开输入框</h5>
+                            <p class="text-line-height-medium">当你重新加入游戏后，等待游戏加载完成进入主界面。按下键盘上的 <strong>T</strong> 键打开游戏内的输入框。若你的按键设置有变动，需使用对应的按键操作。</p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 2：输入登录命令</h5>
-                            <p>在输入框中，可选择以下两种命令进行登录：
+                            <h5 class="text-color-purple text-size-large">步骤 2：输入登录命令</h5>
+                            <p class="text-line-height-medium">在输入框中，可选择以下两种命令进行登录：
                                 <code>/l &lt;密码&gt;</code> 或 <code>/login &lt;密码&gt;</code>。
                                 这里的 <code>&lt;密码&gt;</code> 是你在注册账号时设置的密码。输入时要确保密码的准确性，因为密码区分大小写。
                             </p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 3：参考示例使用正确密码</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 3：参考示例使用正确密码</h5>
                             <p>为方便你理解命令的输入格式，给出示例：<code>/l abc123</code> 或
                                 <code>/login abc123</code>。请记住，在实际操作中要使用你自己注册时设置的密码，而不是示例中的密码。
                             </p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 4：完成登录操作</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 4：完成登录操作</h5>
                             <p>输入完命令和密码后，按下回车键完成登录操作。如果密码正确，你将成功登录游戏账号，进入游戏世界。若提示登录失败，可能是密码输入错误，请仔细检查后重新输入。</p>
                         </div>
                     </div>
                 </div>
-                <div class="large-spacing"></div>
+
+                <!-- 修改密码部分 -->
                 <div class="info-box info">
                     <div class="info-content">
-                        <h4>修改密码</h4>
+                        <h4 class="text-color-orange text-size-xlarge">修改密码</h4>
                         <div class="step-section">
-                            <h5>步骤 1：确保已登录并打开输入框</h5>
-                            <p>如果你需要修改账号密码，首先要确保自己已经成功登录游戏。然后按下 <strong>T</strong> 键打开输入框，可选择以下两种命令进行密码修改：
-                                <code>/changepw &lt;旧密码&gt; &lt;新密码&gt; &lt;重复新密码&gt;</code> 或
-                                <code>/changepassword &lt;旧密码&gt; &lt;新密码&gt; &lt;重复新密码&gt;</code>。
-                                其中，<code>&lt;旧密码&gt;</code> 是你当前账号使用的密码，<code>&lt;新密码&gt;</code>
-                                是你想要设置的新密码，<code>&lt;重复新密码&gt;</code> 则是再次输入新密码进行确认。
+                            <h5 class="text-color-purple text-size-large">步骤 1：确保已登录并打开输入框</h5>
+                            <p class="text-line-height-medium">如果你需要修改账号密码，首先要确保自己已经成功登录游戏。然后按下 <strong>T</strong> 键打开输入框，可选择以下两种命令进行密码修改：
+                                <code class="code-block text-color-purple text-size-medium">/changepw &lt;旧密码&gt; &lt;新密码&gt; &lt;重复新密码&gt;</code> 或
+                                <code class="code-block text-color-purple text-size-medium">/changepassword &lt;旧密码&gt; &lt;新密码&gt; &lt;重复新密码&gt;</code>。
+                                其中，<code class="text-color-purple">&lt;旧密码&gt;</code> 是你当前账号使用的密码， <code class="text-color-purple">&lt;新密码&gt;</code>
+                                是你想要设置的新密码， <code class="text-color-purple">&lt;重复新密码&gt;</code> 则是再次输入新密码进行确认。
                             </p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 2：参考示例正确输入</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 2：参考示例正确输入</h5>
                             <p>为了让你更直观地了解命令格式，给出示例：<code>/changepw oldpw newpw newpw</code> 或
                                 <code>/changepassword oldpw newpw newpw</code>。请务必将示例中的 <code>oldpw</code>
                                 替换为你实际的旧密码，<code>newpw</code> 替换为符合密码要求的新密码。新密码同样需要满足同时包含字母和数字，且长度至少为 6 位的要求。
@@ -130,88 +133,92 @@
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 3：确认信息并提交</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 3：确认信息并提交</h5>
                             <p>在提交修改密码请求前，要确保旧密码输入正确，并且新密码两次输入一致。如果旧密码错误，游戏将提示修改失败；若新密码两次输入不一致，也无法完成密码修改操作。修改成功后，下次登录时请使用新密码。
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="large-spacing"></div>
+
+                <!-- 绑定邮箱部分 -->
                 <div class="info-box info">
                     <div class="info-content">
-                        <h4>绑定邮箱</h4>
+                        <h4 class="text-color-orange text-size-xlarge">绑定邮箱</h4>
                         <div class="step-section">
-                            <h5>步骤 1：打开输入框</h5>
-                            <p>进入游戏界面后，按下键盘上的 <strong>T</strong> 键打开游戏内的输入框。若修改过按键绑定，使用对应按键操作。</p>
+                            <h5 class="text-color-purple text-size-large">步骤 1：打开输入框</h5>
+                            <p class="text-line-height-medium">进入游戏界面后，按下键盘上的 <strong>T</strong> 键打开游戏内的输入框。若修改过按键绑定，使用对应按键操作。</p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 2：输入绑定邮箱命令</h5>
-                            <p>在输入框中，可选择以下两种命令绑定邮箱：
+                            <h5 class="text-color-purple text-size-large">步骤 2：输入绑定邮箱命令</h5>
+                            <p class="text-line-height-medium">在输入框中，可选择以下两种命令绑定邮箱：
                                 <code>/bindemail set &lt;邮箱&gt;</code> 或 <code>/bdmail set &lt;邮箱&gt;</code>。
                                 请将 <code>&lt;邮箱&gt;</code> 替换为你要绑定的有效邮箱地址。
                             </p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 3：提交绑定请求</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 3：提交绑定请求</h5>
                             <p>输入命令后，按下回车键提交绑定请求。若输入的邮箱格式正确，系统会向该邮箱发送验证码。</p>
                         </div>
                     </div>
                 </div>
-                <div class="large-spacing"></div>
+
+                <!-- 验证邮箱绑定部分 -->
                 <div class="info-box info">
                     <div class="info-content">
-                        <h4>验证邮箱绑定</h4>
+                        <h4 class="text-color-orange text-size-xlarge">验证邮箱绑定</h4>
                         <div class="step-section">
-                            <h5>步骤 1：获取验证码</h5>
-                            <p>查收你绑定邮箱的收件箱，找到系统发送的验证码邮件。验证码有效期为 10 分钟，请及时操作。</p>
+                            <h5 class="text-color-purple text-size-large">步骤 1：获取验证码</h5>
+                            <p class="text-line-height-medium">查收你绑定邮箱的收件箱，找到系统发送的验证码邮件。验证码有效期为 10 分钟，请及时操作。</p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 2：输入验证命令</h5>
-                            <p>在游戏输入框中，可选择以下两种命令进行验证：
+                            <h5 class="text-color-purple text-size-large">步骤 2：输入验证命令</h5>
+                            <p class="text-line-height-medium">在游戏输入框中，可选择以下两种命令进行验证：
                                 <code>/bindemail verify &lt;验证码&gt;</code> 或 <code>/bdmail verify &lt;验证码&gt;</code>。
                                 请将 <code>&lt;验证码&gt;</code> 替换为你收到的真实验证码。
                             </p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 3：完成验证</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 3：完成验证</h5>
                             <p>输入命令后按回车键提交验证请求。若验证码正确，邮箱绑定成功。</p>
                         </div>
                     </div>
                 </div>
-                <div class="large-spacing"></div>
+
+                <!-- 发送密码重置验证码部分 -->
                 <div class="info-box info">
                     <div class="info-content">
-                        <h4>发送密码重置验证码</h4>
+                        <h4 class="text-color-orange text-size-xlarge">发送密码重置验证码</h4>
                         <div class="step-section">
-                            <h5>步骤 1：打开输入框</h5>
-                            <p>进入游戏界面，按下 <strong>T</strong> 键打开输入框，若按键有修改，用对应按键操作。</p>
+                            <h5 class="text-color-purple text-size-large">步骤 1：打开输入框</h5>
+                            <p class="text-line-height-medium">进入游戏界面，按下 <strong>T</strong> 键打开输入框，若按键有修改，用对应按键操作。</p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 2：输入发送验证码命令</h5>
-                            <p>在输入框中，可选择以下两种命令发送密码重置验证码：
+                            <h5 class="text-color-purple text-size-large">步骤 2：输入发送验证码命令</h5>
+                            <p class="text-line-height-medium">在输入框中，可选择以下两种命令发送密码重置验证码：
                                 <code>/resetpassword forget</code> 或
                                 <code>/repw forget</code>。输入后按回车键提交，系统会将验证码发送到你绑定的邮箱。
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="large-spacing"></div>
+
+                <!-- 通过邮箱验证码重置密码部分 -->
                 <div class="info-box info">
                     <div class="info-content">
-                        <h4>通过邮箱验证码重置密码</h4>
+                        <h4 class="text-color-orange text-size-xlarge">通过邮箱验证码重置密码</h4>
                         <div class="step-section">
-                            <h5>步骤 1：获取验证码</h5>
-                            <p>查看绑定邮箱，找到密码重置验证码，注意验证码有效期。</p>
+                            <h5 class="text-color-purple text-size-large">步骤 1：获取验证码</h5>
+                            <p class="text-line-height-medium">查看绑定邮箱，找到密码重置验证码，注意验证码有效期。</p>
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 2：输入重置密码命令</h5>
-                            <p>在游戏输入框中，可选择以下两种命令重置密码：
+                            <h5 class="text-color-purple text-size-large">步骤 2：输入重置密码命令</h5>
+                            <p class="text-line-height-medium">在游戏输入框中，可选择以下两种命令重置密码：
                                 <code>/bindemail re &lt;验证码&gt; &lt;新密码&gt;</code> 或
                                 <code>/bdmail re &lt;验证码&gt; &lt;新密码&gt;</code>。
                                 请将 <code>&lt;验证码&gt;</code> 替换为收到的验证码，<code>&lt;新密码&gt;</code> 替换为符合要求的新密码。
@@ -219,67 +226,43 @@
                         </div>
                         <div class="spacing"></div>
                         <div class="step-section">
-                            <h5>步骤 3：完成密码重置</h5>
+                            <h5 class="text-color-purple text-size-large">步骤 3：完成密码重置</h5>
                             <p>输入命令后按回车键提交，若验证码和新密码符合要求，密码重置成功，下次登录使用新密码。</p>
                         </div>
                     </div>
                 </div>
-                <div class="large-spacing"></div>
+
+                <!-- 账号安全与找回部分 -->
                 <div class="info-box warning">
                     <div class="info-content">
-                        <h4>账号安全与找回</h4>
+                        <h4 class="text-color-yellow text-size-xlarge">账号安全与找回</h4>
                         <div class="safety-section">
-                            <h5>账号验证方式与风险</h5>
-                            <p>本游戏账号不绑定任何身份信息，仅依靠用户名和密码进行登录验证。这种方式在一定程度上保护了你的个人隐私，但同时也增加了账号被盗用的风险。因此，一定要妥善保管好自己的账号密码。绑定邮箱后，能提高账号安全性和找回的便利性。
+                            <h5 class="text-color-purple text-size-large">账号验证方式与风险</h5>
+                            <p class="text-line-height-medium">本游戏账号不绑定任何身份信息，仅依靠用户名和密码进行登录验证。这种方式在一定程度上保护了你的个人隐私，但同时也增加了账号被盗用的风险。因此，一定要妥善保管好自己的账号密码。绑定邮箱后，能提高账号安全性和找回的便利性。
                             </p>
                         </div>
                         <div class="spacing"></div>
                         <div class="safety-section">
-                            <h5>忘记密码的解决办法</h5>
-                            <p>如果你不慎忘记了密码，可以先通过 <code>/resetpassword forget</code> 或 <code>/repw forget</code>
-                                命令发送验证码到绑定邮箱，再使用 <code>/bindemail re &lt;验证码&gt; &lt;新密码&gt;</code> 或
-                                <code>/bdmail re &lt;验证码&gt; &lt;新密码&gt;</code>
+                            <h5 class="text-color-purple text-size-large">忘记密码的解决办法</h5>
+                            <p>如果你不慎忘记了密码，可以先通过 <code class="code-block text-color-purple text-size-medium">/resetpassword forget</code> 或 <code class="code-block text-color-purple text-size-medium">/repw forget</code>
+                                命令发送验证码到绑定邮箱，再使用 <code class="code-block text-color-purple text-size-medium">/bindemail re &lt;验证码&gt; &lt;新密码&gt;</code> 或
+                                <code class="code-block text-color-purple text-size-medium">/bdmail re &lt;验证码&gt; &lt;新密码&gt;</code>
                                 命令重置密码。若未绑定邮箱，唯一的解决办法是联系游戏管理员，通过游戏内的聊天窗口、官方论坛、社交媒体群组等渠道找到管理员，向他们说明情况，请求删除你的账户。账户删除后，你可以按照注册流程重新注册一个新账号。
                             </p>
                         </div>
                         <div class="spacing"></div>
                         <div class="safety-section">
-                            <h5>重要安全提醒</h5>
-                            <p>千万不要将自己的账号密码泄露给他人，包括现实中的朋友、网友等。一些不法分子可能会通过各种手段骗取你的密码，一旦账号被盗用，可能会导致你的游戏数据丢失、虚拟物品被盗取等损失。同时，不要随意向他人透露邮箱验证码，保障账号和邮箱安全。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="large-spacing"></div>
-                <div class="info-box warning">
-                    <div class="info-content">
-                        <h4>安全建议</h4>
-                        <div class="suggestion-section">
-                            <h5>定期修改密码</h5>
-                            <p>定期修改密码是保障账号安全的重要措施之一，推荐每 30 天更新一次密码。新密码要避免与旧密码有过多相似之处，且依然要满足同时包含字母和数字，长度至少 6 位的要求。</p>
-                        </div>
-                        <div class="spacing"></div>
-                        <div class="suggestion-section">
-                            <h5>使用独特密码</h5>
-                            <p>避免使用与其他平台相同的密码。如果其他平台发生数据泄露事件，黑客可能会尝试使用泄露的密码登录你的游戏账号。为每个平台设置独特的密码，可以有效降低账号被盗用的风险。</p>
-                        </div>
-                        <div class="spacing"></div>
-                        <div class="suggestion-section">
-                            <h5>公共设备使用注意</h5>
-                            <p>如果你在公共设备（如网吧、学校机房等）上登录游戏账号，在使用完毕后务必退出登录。这样可以防止后续使用者获取你的账号信息，保护账号安全。</p>
-                        </div>
-                        <div class="spacing"></div>
-                        <div class="suggestion-section">
-                            <h5>关注邮箱验证功能</h5>
-                            <p>邮箱验证功能已经上线，绑定并验证邮箱后，你的账号安全性将得到进一步提升。通过邮箱验证，你可以在忘记密码、账号异常登录等情况下，通过邮箱重置密码或找回账号。请及时绑定并验证邮箱。
+                            <h5 class="text-color-purple text-size-large">重要安全提醒</h5>
+                            <p class="text-line-height-medium">千万不要将自己的账号密码泄露给他人，包括现实中的朋友、网友等。一些不法分子可能会通过各种手段骗取你的密码，一旦账号被盗用，可能会导致你的游戏数据丢失、虚拟物品被盗取等损失。同时，不要随意向他人透露邮箱验证码，保障账号和邮箱安全。
                             </p>
                         </div>
                     </div>
                     <div class="spacing"></div>
-                    <div class="box-container-3">不建议使用的密码
+                    <div class="box-container-3">
+                        <h3 class="text-color-yellow text-size-large">不建议使用的密码</h3>
                         <div class="box-container">
                             <div class="flex">
-                                <ul>
+                                <ul class="text-line-height-medium">
                                     <li>a1b2c3</li>
                                     <li>abc123</li>
                                     <li>123abc</li>
@@ -485,9 +468,10 @@
                 </table>
                 <!-- 新增响应式支持 -->
                 <tr class="mobile-only">
-                    <td colspan="4">* 移动端查看建议横屏浏览完整信息</td>
+                    <td colspan="4" class="text-line-height-medium">* 移动端查看建议横屏浏览完整信息</td>
                 </tr>
             </div>
+        </div>
     </main>
     <p class="mb-2">&copy; 2024-2025 EndlessPixel Team, All rights reserved.</p>
     <p class="mb-2">本站并非Minecraft官方网站，与Mojang和微软亦无从属关系。</p>
