@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../css/main-module.css" />
     <link rel="stylesheet" href="../css/custom-styles.css" />
     <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/text.css" />
 </head>
 
 <body>
@@ -24,9 +25,10 @@
     <!-- 新增设置面板占位 div -->
     <div id="settings-placeholder"></div>
     <main>
-        <h1>资源(resources)</h1>
-        <hr>
-        <p>我们的资源页面将定期更新，以提供最新的资源。如果你有任何问题或建议，请随时联系我们。</p>
+        <div class="box-container">
+            <h1>资源(resources)</h1>
+            <p>我们的资源页面将定期更新，以提供最新的资源。如果你有任何问题或建议，请随时联系我们。</p>
+        </div>
         <div class="box-container">
             <h2>启动器</h2>
             <a href="launcher/launcher.html">下载</a>
@@ -40,10 +42,12 @@
             <a href="java/java.html">下载</a>
         </div>
     </main>
-    <p class="mb-2">&copy; 2024-2025 EndlessPixel Team, All rights reserved.</p>
-    <p class="mb-2">本站并非Minecraft官方网站，与Mojang和微软亦无从属关系。</p>
-    <p>本服务器已同意<a href="https://account.mojang.com/documents/minecraft_eula" target="_blank">《Minecraft
-            最终用户许可协议》（EULA）</a>，确保合法合规运营。</p>
+    <footer class="text-align-center text-color-gray text-size-small text-line-height-medium">
+        <p class="mb-2">&copy; 2024-2025 EndlessPixel Team, All rights reserved.</p>
+        <p class="mb-2">本站并非Minecraft官方网站，与Mojang和微软亦无从属关系。</p>
+        <p>本服务器已同意<a href="https://account.mojang.com/documents/minecraft_eula" target="_blank">《Minecraft
+                最终用户许可协议》（EULA）</a>，确保合法合规运营。</p>
+    </footer>
     <script src="../js/menu.js"></script>
     <script src="../js/script.js"></script>
 </body>
