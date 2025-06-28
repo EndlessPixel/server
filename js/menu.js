@@ -1,29 +1,28 @@
 // 等待页面加载完成
 document.addEventListener('DOMContentLoaded', function () {
     let relativePath = '';
-    const isLocal = window.location.protocol === 'file:';
+    const locationProtocol = window.location.protocol;
+    const pathname = window.location.pathname;
 
-    if (isLocal) {
+    if (locationProtocol === 'file:') {
         // 本地环境处理
-        const pathname = window.location.pathname;
-        // 假设项目根目录为 EP，找到 EP 之后的路径部分
         const projectRootIndex = pathname.indexOf('/EP/');
         const relativePathPart = projectRootIndex !== -1 ? pathname.slice(projectRootIndex + 4) : '';
-        // 分割路径并过滤空字符串
         const pathParts = relativePathPart.split('/').filter(part => part);
         // 减去文件名
         let level = pathParts.length - 1; 
         // 确保 level 非负
-        level = Math.max(0, level);
+        level = Math.max(0, level); 
         relativePath = '../'.repeat(level);
-    } else {
-        // 服务器环境处理，使用相对根路径
-        const pathParts = window.location.pathname.split('/').filter(part => part);
+    } else if (locationProtocol === 'https:') {
+        // 服务器环境处理
+        const pathParts = pathname.split('/').filter(part => part);
         // 减去文件名
         let level = pathParts.length - 1; 
         // 确保 level 非负
-        level = Math.max(0, level);
-        relativePath = '../'.repeat(level);
+        level = Math.max(0, level); 
+        // 服务器环境使用相对根路径
+        relativePath = level > 0 ? '../'.repeat(level) : './';
     }
 
     // 创建导航菜单元素
