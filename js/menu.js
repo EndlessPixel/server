@@ -12,12 +12,17 @@ document.addEventListener('DOMContentLoaded', function () {
         // 分割路径并过滤空字符串
         const pathParts = relativePathPart.split('/').filter(part => part);
         // 减去文件名
-        const level = pathParts.length - 1; 
+        let level = pathParts.length - 1; 
+        // 确保 level 非负
+        level = Math.max(0, level);
         relativePath = '../'.repeat(level);
     } else {
         // 服务器环境处理，使用相对根路径
         const pathParts = window.location.pathname.split('/').filter(part => part);
-        const level = pathParts.length - 1; // 减去文件名
+        // 减去文件名
+        let level = pathParts.length - 1; 
+        // 确保 level 非负
+        level = Math.max(0, level);
         relativePath = '../'.repeat(level);
     }
 
