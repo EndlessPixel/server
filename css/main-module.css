@@ -266,6 +266,10 @@ fieldset {
     margin-bottom: 1rem;
 }
 
+svg {
+    width: 100px;
+}
+
 /* 动画效果 */
 @keyframes popIn {
     0% {

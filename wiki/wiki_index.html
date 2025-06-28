@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../css/main-module.css" />
     <link rel="stylesheet" href="../css/custom-styles.css" />
     <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="wiki.css" />
 </head>
 
 <body>
@@ -19,124 +20,87 @@
         <span class="info">EndlessPixel</span>
         <button class="theme-button">⚙️</button>
     </header>
-    <nav class="navbar">
-        <span class="close-button">❌</span>
-        <hr>
-        <ul>
-            <h1>导航</h1>
-            <hr>
-            <li>
-                <a href="../index.html">首页(home)</a>
-            </li>
-            <hr>
-            <li>
-                <a href="../state.html">状态(state)</a>
-            </li>
-            <hr>
-            <li>
-                <a href="../resources/resources_index.html">资源(resources)</a>
-            </li>
-            <hr>
-            <li>
-                <a href="../wiki/wiki_index.html">维基(wiki)</a>
-            </li>
-            <hr>
-            <li>
-                <a href="../about.html">关于(about)</a>
-            </li>
-            <hr>
-            <h1>相关链接</h1>
-            <hr>
-            <li class="nav-item">
-                <a rel="noopener noreferrer" class="nav-link" href="https://github.com/EndlessPixel"
-                    target="_blank">Github</a>
-            </li>
-            <hr>
-            <li class="nav-item">
-                <a rel="noopener noreferrer" class="nav-link"
-                    href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910"
-                    target="_blank">QQ</a>
-            </li>
-            <hr>
-            <li class="nav-item">
-                <a rel="noopener noreferrer" class="nav-link"
-                    href="https://space.bilibili.com/3546799478409405?spm_id_from=333.1007.0.0"
-                    target="_blank">bilibili</a>
-            </li>
-            <hr>
-            <li class="nav-item">
-                <a rel="noopener noreferrer" class="nav-link" href="https://kuaishou.cn/profile/3xth2cp4jf5ha6c"
-                    target="_blank">快手</a>
-            </li>
-            <hr>
-        </ul>
-    </nav>
-    <aside class="settings-panel">
-        <span class="close-button">❌</span>
-        <form class="theme-form">
-            <label>主色：</label>
-            <input type="color" class="primary-color">
-            <button type="button" class="reset-color" data-color="primary">重置</button>
-            <br>
-            <label>次要颜色：</label>
-            <input type="color" class="secondary-color">
-            <button type="button" class="reset-color" data-color="secondary">重置</button>
-            <br>
-            <label>强调色：</label>
-            <input type="color" class="accent-color">
-            <button type="button" class="reset-color" data-color="accent">重置</button>
-            <br>
-            <label>背景色：</label>
-            <input type="color" class="background-color">
-            <button type="button" class="reset-color" data-color="background">重置</button>
-            <br>
-            <label>高亮色：</label>
-            <input type="color" class="highlight-color">
-            <button type="button" class="reset-color" data-color="highlight">重置</button>
-            <br>
-            <label>黑色深度（用于文本或其他需要黑色的地方）：</label>
-            <input type="range" class="color-slider black-depth" min="0" max="100" value="100">
-            <button type="button" class="reset-color" data-color="black">重置</button>
-            <br>
-            <label>白色深度（用于文本或其他需要白色的地方）：</label>
-            <input type="range" class="color-slider white-depth" min="0" max="100" value="100">
-            <button type="button" class="reset-color" data-color="white">重置</button>
-            <br>
-            <label>灰色深度（用于边框或其他需要灰色的地方）：</label>
-            <input type="range" class="color-slider gray-depth" min="0" max="100" value="50">
-            <button type="button" class="reset-color" data-color="gray">重置</button>
-            <br>
-            <button type="submit">应用设置</button>
-            <button type="button" class="reset-button">全部重置</button>
-        </form>
-    </aside>
+    <!-- 新增导航菜单占位 div -->
+    <div id="nav-placeholder"></div>
+    <!-- 新增设置面板占位 div -->
+    <div id="settings-placeholder"></div>
     <main>
         <div class="box-container">
-            <h1>欢迎来到 Wiki</h1>
-            <div class="flex">
-                <div class="wiki-modules">
-                    <div class="wiki-module">
-                        <a href="服务器连接问题及解决方法/index.html" class="module-link">服务器连接问题及解决方法</a>
-                    </div>
-                    <div class="wiki-module">
-                        <a href="服务器特殊功能指南/index.html" class="module-link">服务器特殊功能指南</a>
-                    </div>
-                    <div class="wiki-module">
-                        <a href="服务器玩家命令/index.html" class="module-link">服务器玩家命令</a>
-                    </div>
-                    <div class="wiki-module">
-                        <a href="注册与登录指南/index.html" class="module-link">注册与登录指南</a>
-                    </div>
-                    <div class="wiki-module">
-                        <a href="服务器客户端版本说明/index.html" class="module-link">服务器客户端版本说明</a>
-                    </div>
-                    <div class="wiki-module">
-                        <a href="服务器规则/index.html" class="module-link">服务器规则</a>
-                    </div>
-                    <div class="wiki-module">
-                        <a href="服务器FRP节点贡献指南/index.html" class="module-link">服务器FRP节点贡献指南</a>
-                    </div>
-                </div>
+            <h1 class="page-title text-color-blue text-size-xxlarge text-center">欢迎来到 Wiki</h1>
+            <div class="wiki-dir">
+                <!-- 服务器连接问题及解决方法 -->
+                <a href="服务器连接问题及解决方法/index.html" class="wiki-link">
+                    <svg t="1751107111405" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="8055" width="48" height="48">
+                        <path
+                            d="M469.333333 554.666667a42.666667 42.666667 0 1 0 0 85.333333 42.666667 42.666667 0 0 0 0-85.333333z m-170.666666 0a42.666667 42.666667 0 1 0 0 85.333333 42.666667 42.666667 0 0 0 0-85.333333z m640-384a128 128 0 0 0-128-128H213.333333a128 128 0 0 0-128 128v170.666666a128 128 0 0 0 33.28 85.333334A128 128 0 0 0 85.333333 512v170.666667a128 128 0 0 0 128 128h256v85.333333H128a42.666667 42.666667 0 0 0 0 85.333333h768a42.666667 42.666667 0 1 0 0-85.333333h-341.333333v-85.333333h256a128 128 0 0 0 128-128v-170.666667a128 128 0 0 0-33.28-85.333333A128 128 0 0 0 938.666667 341.333333V170.666667z m-85.333334 512a42.666667 42.666667 0 0 1-42.666666 42.666666H213.333333a42.666667 42.666667 0 0 1-42.666666-42.666666v-170.666667a42.666667 42.666667 0 0 1 42.666666-42.666667h597.333334a42.666667 42.666667 0 0 1 42.666666 42.666667v170.666667z m0-341.333334a42.666667 42.666667 0 0 1-42.666666 42.666667H213.333333a42.666667 42.666667 0 0 1-42.666666-42.666667V170.666667a42.666667 42.666667 0 0 1 42.666666-42.666667h597.333334a42.666667 42.666667 0 0 1 42.666666 42.666667v170.666666z m-384-128a42.666667 42.666667 0 1 0 0 85.333334 42.666667 42.666667 0 0 0 0-85.333334zM298.666667 213.333333a42.666667 42.666667 0 1 0 0 85.333334 42.666667 42.666667 0 0 0 0-85.333334z"
+                            p-id="8056" fill="#000000"></path>
+                    </svg>
+                    <p class="wiki-link-text text-color-orange text-hover-underline">服务器连接问题及解决方法</p>
+                </a>
+                <!-- 服务器特殊功能指南 -->
+                <a href="服务器特殊功能指南/index.html" class="wiki-link">
+                    <svg t="1751106979341" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="4411" width="48" height="48">
+                        <path
+                            d="M78.097067 440.32h324.471466a14.199467 14.199467 0 0 0 14.062934-14.062933V142.097067a14.199467 14.199467 0 0 0-14.062934-14.097067H78.062933a14.199467 14.199467 0 0 0-14.062933 14.062933v284.194134c0 7.68 6.417067 14.062933 14.097067 14.062933zM561.288533 440.32h324.471467a14.199467 14.199467 0 0 0 14.062933-14.062933V142.097067a14.199467 14.199467 0 0 0-14.062933-14.097067h-324.471467a14.199467 14.199467 0 0 0-14.097066 14.062933v284.194134c0 7.68 6.417067 14.062933 14.097066 14.062933zM402.568533 868.488533H78.062933a14.199467 14.199467 0 0 1-14.062933-14.097066v-284.16c0-7.68 6.417067-14.062933 14.097067-14.062934h324.471466c7.68 0 14.062933 6.382933 14.062934 14.062934v284.16a14.199467 14.199467 0 0 1-14.062934 14.097066zM885.998933 868.113067h-324.608a14.199467 14.199467 0 0 1-14.062933-14.097067v-283.921067c0-7.68 6.417067-14.062933 14.097067-14.062933h324.608c7.645867 0 14.062933 6.382933 14.062933 14.062933v283.921067a14.199467 14.199467 0 0 1-14.097067 14.097067z m-56.183466-54.272c5.051733 0 9.216-4.1984 9.216-9.216V619.52a9.284267 9.284267 0 0 0-9.216-9.181867h-212.206934a9.284267 9.284267 0 0 0-9.216 9.181867v185.173333c0 4.983467 4.164267 9.181867 9.216 9.181867h212.206934z"
+                            p-id="4412" fill="#000000"></path>
+                    </svg>
+                    <p class="wiki-link-text text-color-orange text-hover-underline">服务器特殊功能指南</p>
+                </a>
+                <!-- 服务器玩家命令 -->
+                <a href="服务器玩家命令/index.html" class="wiki-link">
+                    <svg t="1751107192618" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="9231" width="48" height="48">
+                        <path
+                            d="M800 192c19.2 0 32 12.8 32 32v576c0 19.2-12.8 32-32 32H224c-19.2 0-32-12.8-32-32V224c0-19.2 12.8-32 32-32h576z m-32 256H256v320h512V448z m0-192H256v128h512V256zM320 288c19.2 0 32 12.8 32 32s-12.8 32-32 32-32-12.8-32-32 12.8-32 32-32z m96 0c19.2 0 32 12.8 32 32s-12.8 32-32 32-32-12.8-32-32 12.8-32 32-32z"
+                            fill="#000000" p-id="9232"></path>
+                        <path
+                            d="M512 672c19.2 0 32 12.8 32 32s-12.8 32-32 32-32-12.8-32-32 12.8-32 32-32z m-182.4-118.4c12.8-12.8 28.8-12.8 41.6-3.2l3.2 3.2 64 64 3.2 3.2c9.6 12.8 9.6 28.8 0 38.4l-3.2 3.2-64 64-3.2 3.2c-12.8 9.6-28.8 9.6-38.4 0l-3.2-3.2-3.2-3.2c-9.6-12.8-9.6-28.8 0-38.4l3.2-3.2 41.6-41.6-41.6-41.6-3.2-3.2c-9.6-12.8-9.6-28.8 3.2-41.6z"
+                            fill="#000000" p-id="9233"></path>
+                    </svg>
+                    <p class="wiki-link-text text-color-orange text-hover-underline">服务器玩家命令</p>
+                </a>
+                <!-- 注册与登录指南 -->
+                <a href="注册与登录指南/index.html" class="wiki-link">
+                    <svg t="1751107253130" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="10364" width="48" height="48">
+                        <path
+                            d="M896 256h-42.667v-42.667a42.667 42.667 0 0 0-85.333 0V256h-42.667a42.667 42.667 0 0 0 0 85.333H768V384a42.667 42.667 0 0 0 85.333 0v-42.667H896A42.667 42.667 0 0 0 896 256zM426.667 469.333A170.667 170.667 0 1 0 256 298.667a170.667 170.667 0 0 0 170.667 170.666z m0-256a85.333 85.333 0 1 1-85.334 85.334 85.333 85.333 0 0 1 85.334-85.334z m0 341.334A298.667 298.667 0 0 0 128 853.333a42.667 42.667 0 0 0 85.333 0 213.333 213.333 0 0 1 426.667 0 42.667 42.667 0 0 0 85.333 0 298.667 298.667 0 0 0-298.666-298.666z"
+                            p-id="10365" fill="#000000"></path>
+                    </svg>
+                    <p class="wiki-link-text text-color-orange text-hover-underline">注册与登录指南</p>
+                </a>
+                <!-- 服务器客户端版本说明 -->
+                <a href="服务器客户端版本说明/index.html" class="wiki-link">
+                    <svg t="1751107462451" class="icon" viewBox="0 0 1228 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="11765" width="48" height="48">
+                        <path
+                            d="M31.5392 417.792l532.138667 307.8144a56.1152 56.1152 0 0 0 59.665066 0l532.8896-307.8144a61.8496 61.8496 0 0 0 21.572267-21.572267 58.231467 58.231467 0 0 0 7.918933-29.4912 62.532267 62.532267 0 0 0-7.918933-29.4912 71.8848 71.8848 0 0 0-21.572267-21.572266L623.274667 7.918933a60.416 60.416 0 0 0-59.665067 0L31.5392 315.665067a56.797867 56.797867 0 0 0-21.572267 21.572266 55.364267 55.364267 0 0 0-8.6016 29.4912 51.746133 51.746133 0 0 0 7.850667 29.4912 51.746133 51.746133 0 0 0 22.3232 21.572267z m1064.96 171.144533L593.237333 876.612267 89.770667 588.936533a48.878933 48.878933 0 0 0-22.254934-7.918933 63.2832 63.2832 0 0 0-23.005866 0 61.8496 61.8496 0 0 0-20.8896 10.103467c-5.7344 5.051733-10.8544 10.8544-15.086934 17.271466a62.532267 62.532267 0 0 0-7.168 22.254934 50.312533 50.312533 0 0 0 0 23.005866c2.321067 7.441067 5.666133 14.472533 10.0352 20.8896 4.983467 6.144 11.0592 11.264 17.954134 15.018667l532.138666 307.882667a60.416 60.416 0 0 0 59.733334 0l532.821333-307.882667c6.5536-4.027733 12.356267-9.147733 17.271467-15.018667a61.8496 61.8496 0 0 0 10.103466-20.8896 50.312533 50.312533 0 0 0 0-23.005866 62.532267 62.532267 0 0 0-7.236266-22.254934 71.8848 71.8848 0 0 0-15.086934-17.271466 61.8496 61.8496 0 0 0-20.8896-10.103467 63.2832 63.2832 0 0 0-23.005866 0 51.746133 51.746133 0 0 0-18.6368 7.918933z"
+                            fill="#000000" p-id="11766"></path>
+                    </svg>
+                    <p class="wiki-link-text text-color-orange text-hover-underline">服务器客户端版本说明</p>
+                </a>
+                <!-- 服务器规则 -->
+                <a href="服务器规则/index.html" class="wiki-link">
+                    <svg t="1751107548587" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="13887" width="48" height="48">
+                        <path
+                            d="M722.9 253H299.8c-39.9 0-72.5 32.6-72.5 72.5v459.4c0 39.9 32.6 72.5 72.5 72.5h423.1c39.9 0 72.5-32.6 72.5-72.5V325.5c0-39.9-32.6-72.5-72.5-72.5zM349.4 396.4h196.5c14.3 0 25.9 11.6 25.9 25.9s-11.6 25.9-25.9 25.9H349.4c-14.3 0-25.9-11.6-25.9-25.9s11.6-25.9 25.9-25.9zM471.5 714h-122c-14.3 0-25.9-11.6-25.9-25.9 0-14.3 11.6-25.9 25.9-25.9h122c14.3 0 25.9 11.6 25.9 25.9 0 14.3-11.6 25.9-25.9 25.9z m186.2-132.9H349.4c-14.3 0-25.9-11.6-25.9-25.9 0-14.3 11.6-25.9 25.9-25.9h308.3c14.3 0 25.9 11.6 25.9 25.9 0 14.3-11.6 25.9-25.9 25.9zM349.4 218.4h308.3c14.3 0 25.9-11.6 25.9-25.9 0-14.3-11.6-25.9-25.9-25.9H349.4c-14.3 0-25.9 11.6-25.9 25.9 0 14.3 11.6 25.9 25.9 25.9z"
+                            fill="#000000" p-id="13888"></path>
+                    </svg>
+                    <p class="wiki-link-text text-color-orange text-hover-underline">服务器规则</p>
+                </a>
+                <!-- 服务器FRP节点贡献指南 -->
+                <a href="服务器FRP节点贡献指南/index.html" class="wiki-link">
+                    <svg t="1751107676485" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="16884" width="48" height="48">
+                        <path
+                            d="M768 160a96 96 0 1 1-42.464 182.112l-103.872 103.84c11.648 19.264 18.336 41.888 18.336 66.048 0 15.648-2.816 30.656-7.936 44.48l81.504 68.416a96 96 0 1 1-37.696 51.936l-80.64-67.616c-22.368 19.2-51.456 30.784-83.232 30.784-24.16 0-46.72-6.72-66.016-18.304l-48.32 48.288A128 128 0 1 1 352 625.12L401.12 576A127.424 127.424 0 0 1 384 512c0-24.288 6.752-46.976 18.496-66.304l-49.248-47.552a128 128 0 1 1 45.152-45.344l49.92 48.128A127.424 127.424 0 0 1 512 384c23.328 0 45.184 6.24 64 17.12l104.832-104.832A96 96 0 0 1 768 160zM288 672a64 64 0 1 0 0 128 64 64 0 0 0 0-128z m480 0a32 32 0 1 0 0 64 32 32 0 0 0 0-64z m-256-224a64 64 0 1 0 0 128 64 64 0 0 0 0-128zM288 224a64 64 0 1 0 0 128 64 64 0 0 0 0-128z m480 0a32 32 0 1 0 0 64 32 32 0 0 0 0-64z"
+                            fill="#000000" p-id="16885"></path>
+                    </svg>
+                    <p class="wiki-link-text text-color-orange text-hover-underline">服务器FRP节点贡献指南</p>
+                </a>
             </div>
         </div>
     </main>
@@ -144,6 +108,7 @@
     <p class="mb-2">本站并非Minecraft官方网站，与Mojang和微软亦无从属关系。</p>
     <p>本服务器已同意<a href="https://account.mojang.com/documents/minecraft_eula" target="_blank">《Minecraft
             最终用户许可协议》（EULA）</a>，确保合法合规运营。</p>
+    <script src="../js/menu.js"></script>
     <script src="../js/script.js"></script>
 </body>
 
