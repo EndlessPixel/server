@@ -224,7 +224,7 @@ button:hover {
     min-width: 75px;
     text-align: center;
     display: inline-block;
-    margin: 5px;
+    margin: 20px;
     /* 外边距 */
     font-weight: bold;
     /* 加粗字体 */
@@ -372,10 +372,11 @@ footer {
     text-align: center;
     font-size: 14px;
     border-top: 1px solid var(--border-color);
-    width: 100%;
+    width: calc(100%-40px);
     position: relative;
     height: 100px;
-    border-radius: 20px;
+    border-radius: 10px;
+    margin: 20px;
 }
 
 footer p {
@@ -385,85 +386,6 @@ footer p {
     font-size: 0.9rem;
     color: var(--footer-text-color);
     font-family: 'Arial', sans-serif;
-}
-
-.markdown-content {
-    /* 内容居中显示 */
-    margin: 0 auto;
-    /* 内边距 */
-    padding: 20px;
-    /* 最大宽度 */
-    max-width: 800px;
-    /* 文字颜色 */
-    color: #333;
-    /* 字体 */
-    font-family: Arial, sans-serif;
-    /* 行高 */
-    line-height: 1.6;
-}
-
-.markdown-content h1 {
-    /* 一级标题字体大小 */
-    font-size: 2.5rem;
-    /* 底部边距 */
-    margin-bottom: 20px;
-    /* 文字对齐方式 */
-    text-align: center;
-    /* 标题颜色 */
-    color: #2c3e50;
-}
-
-.markdown-content h2 {
-    /* 二级标题字体大小 */
-    font-size: 2rem;
-    /* 底部边距 */
-    margin-bottom: 15px;
-    /* 标题下边框 */
-    border-bottom: 1px solid #ddd;
-    /* 下边框内边距 */
-    padding-bottom: 5px;
-    /* 标题颜色 */
-    color: #34495e;
-}
-
-.markdown-content h3 {
-    /* 三级标题字体大小 */
-    font-size: 1.5rem;
-    /* 底部边距 */
-    margin-bottom: 10px;
-    /* 标题颜色 */
-    color: #2980b9;
-}
-
-.markdown-content p {
-    /* 段落底部边距 */
-    margin-bottom: 15px;
-}
-
-.markdown-content ul {
-    /* 列表内边距 */
-    padding-left: 20px;
-    /* 列表底部边距 */
-    margin-bottom: 15px;
-}
-
-.markdown-content li {
-    /* 列表项底部边距 */
-    margin-bottom: 8px;
-}
-
-.markdown-content a {
-    /* 链接颜色 */
-    color: #3498db;
-    /* 去除链接下划线 */
-    text-decoration: none;
-}
-
-.markdown-content a:hover {
-    /* 链接悬停时的颜色 */
-    color: #2980b9;
-    /* 链接悬停时显示下划线 */
-    text-decoration: underline;
 }
 
 .step-section,
