@@ -200,3 +200,114 @@
 .license-info h4 {
     animation: emphasize 3s ease-in-out infinite;
 }
+
+.tech-category {
+    margin-bottom: 2rem;
+}
+
+.tech-list {
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.tech-box {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--accent-color);
+    transition: transform 0.3s ease;
+}
+
+.tech-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.license-section {
+    margin-bottom: 1.5rem;
+}
+
+.license-list {
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+.permission-item,
+.limitation-item,
+.condition-item {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.permission-item::before,
+.limitation-item::before,
+.condition-item::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.permission-item {
+    color: #27ae60;
+}
+
+.limitation-item {
+    color: #c0392b;
+}
+
+.condition-item {
+    color: #2980b9;
+}
+
+.license-section {
+    margin-bottom: 1.5rem;
+}
+
+.license-list {
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+.permission-item,
+.limitation-item,
+.condition-item {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.permission-item::before,
+.limitation-item::before,
+.condition-item::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.permission-item {
+    color: #27ae60;
+}
+
+.limitation-item {
+    color: #c0392b;
+}
+
+.condition-item {
+    color: #2980b9;
+}
+
+.license-content {
+    max-height: 500px;
+    background-color: var(--white-color);
+    padding: 1rem;
+    background-color: var(--card-bg);
+    border-radius: 4px;
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
