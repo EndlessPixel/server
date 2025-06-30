@@ -27,8 +27,22 @@
     color: #808080;
 }
 
+/* 深灰色文字 */
+.text-color-dark-gray {
+    color: #333333;
+}
+
+/* 浅灰色文字 */
+.text-color-light-gray {
+    color: #cccccc;
+}
+
 .text-color-black {
     color: #000000;
+}
+
+.text-color-white {
+    color: #ffffff;
 }
 
 .text-bold {
@@ -407,3 +421,5 @@
     opacity: 1;
     /* 完全不透明 */
 }
+
+

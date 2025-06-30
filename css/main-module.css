@@ -1,5 +1,9 @@
-/* 通用变量和基础样式 */
+/* ==================== 通用变量和基础样式 ==================== */
 /* 整体页面样式 */
+* {
+    max-width: 100%;
+}
+
 body,
 html {
     height: 100%;
@@ -30,26 +34,23 @@ html {
     background: var(--scrollbar-thumb-hover);
 }
 
-/* 通用样式 */
+/* ==================== 元素样式 ==================== */
 /* 链接样式 */
 a {
     color: var(--accent-color);
     text-decoration: none;
-    /* 明确过渡属性，提升性能 */
-    transition: color 0.3s ease; 
+    transition: color 0.3s ease;
     position: relative;
-    display: inline-block; 
+    display: inline-block;
     animation: fadeIn var(--transition-duration) ease-out;
     cursor: pointer;
 }
 
 a:hover {
-    /* 悬停时变为强调色 */
-    color: var(--secondary-color); 
+    color: var(--secondary-color);
     font-weight: 1000;
 }
 
-/* 移除下划线相关样式 */
 a::after {
     content: none;
 }
@@ -75,7 +76,12 @@ hr {
 }
 
 /* 标题样式 */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     animation: slideInFromTop var(--transition-duration) ease-out;
     animation-fill-mode: forwards;
     margin-top: 0;
@@ -95,35 +101,90 @@ img {
     animation-fill-mode: forwards;
 }
 
-/* 输入框样式 */
+svg {
+    width: 100px;
+}
+
+/* ==================== 表单样式 ==================== */
+/* 输入框通用样式 */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input:hover {
+    border-color: #999;
+}
+
+input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* 特定类型输入框样式 */
 input[type="text"],
 input[type="email"],
 input[type="password"],
 textarea,
-input[type="number"] { 
+input[type="number"] {
     background-color: var(--card-bg);
     color: var(--text-color);
     border: 1px solid var(--grey-color);
     padding: 0.75rem 1rem;
     border-radius: var(--border-radius);
-    transition: border-color 0.3s, box-shadow 0.3s; 
+    transition: border-color 0.3s, box-shadow 0.3s;
     width: 100%;
-    resize: vertical; 
-    font-size: 1rem; 
-    line-height: 1.5; 
-    box-sizing: border-box; 
+    resize: vertical;
+    font-size: 1rem;
+    line-height: 1.5;
+    box-sizing: border-box;
 }
 
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
 textarea:focus,
-input[type="number"]:focus { 
+input[type="number"]:focus {
     border-color: var(--accent-color);
     outline: none;
     box-shadow: 0 0 0 2px var(--accent-color), 0 2px 4px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
     transition: all 0.3s ease;
+}
+
+input[type="color"] {
+    width: 50px;
+    height: 30px;
+    padding: 0;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 5px;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-moz-color-swatch {
+    border: none;
+    border-radius: 4px;
+}
+
+input[type="color"]::-moz-color-swatch-wrapper {
+    padding: 0;
 }
 
 /* 按钮样式 */
@@ -134,22 +195,22 @@ button {
     padding: 0.75rem 1.5rem;
     border-radius: var(--border-radius);
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s; 
+    transition: background-color 0.3s, transform 0.3s;
     font-size: 1rem;
     font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-button:hover { 
+button:hover {
     background-color: var(--secondary-color);
-    transform: translateY(-2px); 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 button:disabled {
     background-color: var(--grey-color);
     color: var(--text-color);
-    cursor: not-allowed; 
+    cursor: not-allowed;
     box-shadow: none;
 }
 
@@ -173,52 +234,9 @@ input[type="button"]:disabled,
 button:disabled {
     background-color: var(--grey-color);
     color: var(--text-color);
-    cursor: not-allowed; 
+    cursor: not-allowed;
     border-color: var(--grey-color);
     box-shadow: none;
-}
-
-/* 表格样式 */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
-    background-color: var(--card-bg);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    vertical-align: middle; 
-}
-
-th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--grey-color);
-    vertical-align: middle; 
-    box-sizing: border-box; 
-}
-
-th {
-    background-color: var(--accent-color);
-    color: var(--card-bg);
-    font-weight: bold;
-}
-
-tr:hover {
-    background-color: var(--secondary-color);
-    transition: background-color 0.3s ease;
-}
-
-tr:last-child td {
-    border-bottom: none;
-}
-
-/* 响应式表格 */
-@media (max-width: 768px) {
-    table {
-        display: block;
-        overflow-x: auto;
-    }
 }
 
 /* 下拉框样式 */
@@ -228,10 +246,10 @@ select {
     border: 1px solid var(--grey-color);
     padding: 0.75rem 2.5rem 0.75rem 1rem;
     border-radius: var(--border-radius);
-    transition: border-color 0.3s, box-shadow 0.3s; 
-    font-size: 1rem; 
-    line-height: 1.5; 
-    box-sizing: border-box; 
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-size: 1rem;
+    line-height: 1.5;
+    box-sizing: border-box;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -252,7 +270,7 @@ select:focus {
 select:disabled {
     background-color: var(--grey-color);
     color: var(--text-color);
-    cursor: not-allowed; 
+    cursor: not-allowed;
     border-color: var(--grey-color);
     box-shadow: none;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path fill="%23999" d="M1 1l5 5 5-5z"/></svg>');
@@ -266,19 +284,61 @@ fieldset {
     margin-bottom: 1rem;
 }
 
-svg {
-    width: 100px;
+/* ==================== 表格样式 ==================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background-color: var(--card-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    vertical-align: middle;
 }
 
-/* 动画效果 */
+th,
+td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--grey-color);
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+th {
+    background-color: var(--accent-color);
+    color: var(--card-bg);
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: var(--secondary-color);
+    transition: background-color 0.3s ease;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* ==================== 响应式样式 ==================== */
+@media (max-width: 768px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+/* ==================== 动画效果 ==================== */
 @keyframes popIn {
     0% {
         transform: scale(0);
         opacity: 0;
     }
+
     80% {
         transform: scale(1.1);
     }
+
     100% {
         transform: scale(1);
         opacity: 1;
