@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('fcl-download-links');
     const baseUrl = 'https://github.com/FCL-Team/FoldCraftLauncher/releases/download/';
-    const latestVersion = '1.2.3.5';
-    const lowestVersion = '1.2.0.0';
+    const latestVersion = '1.2.4.4';
+    const lowestVersion = '1.1.5.0';
 
     // 定义支持的架构
     const architectures = ['all', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'];
@@ -74,3 +74,4 @@ function intToVersion(num) {
     const build = num % 10;
     return `${major}.${minor}.${patch}.${build}`;
 }
+
