@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </li>
             <hr>
             <li>
-                <a href="${relativePath}state.html">状态(state)</a>
+                <a href="${relativePath}state.html">状态(status)</a>  
             </li>
             <hr>
             <li>
@@ -130,3 +130,4 @@ document.addEventListener('DOMContentLoaded', function () {
         settingsPlaceholder.appendChild(settingsPanel);
     }
 });
+
