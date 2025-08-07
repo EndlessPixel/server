@@ -366,29 +366,6 @@ button:hover {
     background-color: #ffaa22aa;
 }
 
-footer {
-    background-color: var(--white-color);
-    color: var(--text-color);
-    padding: 20px;
-    text-align: center;
-    font-size: 14px;
-    border-top: 1px solid var(--border-color);
-    width: calc(100%-40px);
-    position: relative;
-    height: 100px;
-    border-radius: 10px;
-    margin: 20px;
-}
-
-footer p {
-    margin: 0;
-    padding: 0;
-    line-height: 1.5;
-    font-size: 0.9rem;
-    color: var(--footer-text-color);
-    font-family: 'Arial', sans-serif;
-}
-
 .step-section,
 .safety-section,
 .suggestion-section {
