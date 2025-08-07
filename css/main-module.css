@@ -189,29 +189,54 @@ input[type="color"]::-moz-color-swatch-wrapper {
 
 /* 按钮样式 */
 button {
-    background-color: var(--accent-color);
-    color: var(--card-bg);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    font-size: 1rem;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    border: 1px solid #03045e;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease-in;
+    z-index: 1;
 }
 
-button:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+button::before,
+button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 100%;
+    transform: skew(15deg);
+    transition: all 0.5s;
+    overflow: hidden;
+    z-index: -1;
 }
 
-button:disabled {
-    background-color: var(--grey-color);
-    color: var(--text-color);
-    cursor: not-allowed;
-    box-shadow: none;
+button::before {
+    left: -10px;
+    background: #240046;
+}
+
+button::after {
+    right: -10px;
+    background: #5a189a;
+}
+
+button:hover::before,
+button:hover::after {
+    width: 58%;
+}
+
+button:hover span {
+    color: #e0aaff;
+    transition: 0.3s;
+}
+
+button span {
+    color: #03045e;
+    font-size: 18px;
+    transition: all 0.3s ease-in;
 }
 
 /* 表单的复选框和单选按钮 */
@@ -343,4 +368,5 @@ tr:last-child td {
         transform: scale(1);
         opacity: 1;
     }
+
 }
