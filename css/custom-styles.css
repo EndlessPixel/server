@@ -268,3 +268,29 @@
     line-height: 1.5;
     margin: 10px;
 }
+
+/* 统一间距 */
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+
+/* 三栏卡片 */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+/* 按钮 */
+.btn-primary {
+  background: var(--accent-color);
+  color: var(--card-bg);
+  border: none;
+  padding: .75rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: .3s;
+}
+.btn-primary:hover {
+  background: var(--secondary-color);
+}
