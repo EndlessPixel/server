@@ -3,6 +3,14 @@
     color: #ff0000;
 }
 
+.text-color-light-red {
+    color: #ff8888;
+}
+
+.text-color-deep-red {
+    color: #880000;
+}
+
 .text-color-orange {
     color: #ff8800;
 }
@@ -11,15 +19,61 @@
     color: #ffff00;
 }
 
+.text-color-light-yellow {
+    color: #ffff88;
+}
+
+.text-color-deep-yellow {
+    color: #888800;
+}
+
+
 .text-color-green {
     color: #00ff00;
+}
+
+.text-color-light-green {
+    color: #90ee90;
+}
+
+.text-color-deep-green {
+    color: #005000;
 }
 
 .text-color-blue {
     color: #0000ff;
 }
 
+.text-color-linght-blue{
+    color: #88ceff;
+}
+
+.text-color-deep-blue {
+    color: #000080;
+}
+
 .text-color-purple {
+    color: #800080;
+}
+
+.text-color-light-purple {
+    color: #c370ff;
+}
+
+.text-color-deep-purple {
+    color: #4b0082;
+}
+
+
+.text-color-pink {
+    color: #ff88ff;
+}
+
+.text-color-light-pink {
+    color: #ff88ff;
+}
+
+.text-color-deep-pink {
     color: #800080;
 }
 
@@ -27,12 +81,10 @@
     color: #808080;
 }
 
-/* 深灰色文字 */
 .text-color-dark-gray {
     color: #333333;
 }
 
-/* 浅灰色文字 */
 .text-color-light-gray {
     color: #cccccc;
 }
@@ -421,5 +473,3 @@
     opacity: 1;
     /* 完全不透明 */
 }
-
-
