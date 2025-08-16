@@ -15,6 +15,7 @@ export function WikiSidebar() {
       title: "新手入门",
       icon: BookOpen,
       items: [
+        { title: "整合包安装指南", id: "launcher-guide" },
         { title: "服务器玩家命令", id: "server-commands" },
         { title: "如何创建领地", id: "create-claims" },
       ],

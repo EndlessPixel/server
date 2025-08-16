@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { WikiSkeleton } from "@/components/wiki-skeleton"
 import { useToast } from "@/hooks/use-toast"
-import { Heart, Share2, Terminal, Shield, Wrench, HelpCircle, Trophy } from "lucide-react"
+import { Heart, Share2, Terminal, Shield, Wrench, HelpCircle, Trophy, Download } from "lucide-react"
 
 interface WikiContentProps {
   currentArticle: string
@@ -45,6 +45,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
     } else {
       // 初始化默认数据
       const defaultStats: Record<string, ArticleStats> = {
+        "launcher-guide": { likes: 0, skim: 0 },
         "server-commands": { likes: 0, skim: 0 },
         "create-claims": { likes: 0, skim: 0 },
         "server-rules": { likes: 0, skim: 0 },
@@ -139,6 +140,178 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
   const currentStats = articleStats[currentArticle] || { likes: 0, skim: 0 }
 
   const articles: Record<string, ArticleData> = {
+    "launcher-guide": {
+      title: "整合包安装指南",
+      category: "新手入门",
+      icon: Download,
+      lastUpdated: "2025/08/15",
+      author: "system_mini",
+      readTime: "10分钟",
+      content: (
+        <div className="space-y-6">
+          <div className="flex items-center space-x-3 mb-6">
+            <Download className="h-8 w-8 text-green-600 dark:text-green-400" />
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">启动器安装指南</h1>
+              <div className="flex items-center space-x-4 mt-2 text-sm text-muted-foreground">
+                <span>分类：新手入门</span>
+                <span>•</span>
+                <span>最后编辑：2025/08/15</span>
+                <span>•</span>
+                <span>作者：system_mini</span>
+                <span>•</span>
+                <span>阅读时间：10分钟</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="prose max-w-none">
+            <div className="bg-blue-50 dark:bg-blue-950/30 border-l-4 border-blue-400 dark:border-blue-600 p-4 mb-6">
+              <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">开始游戏</h2>
+              <p className="text-blue-800 dark:text-blue-200">
+                按照以下步骤，您可以快速安装并开始游玩EndlessPixel服务器。
+              </p>
+            </div>
+
+            <h2 className="text-xl font-semibold text-foreground mb-4">安装步骤</h2>
+            <div className="space-y-4">
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h3 className="font-semibold text-foreground mb-2 flex items-center">
+                  <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3">
+                    1
+                  </span>
+                  准备启动器
+                </h3>
+                <p className="text-muted-foreground ml-9">
+                  准备一个启动器，PCL2、HMCL等启动器均可以，取决于自己的喜好。推荐使用PCL2或HMCL启动器。
+                </p>
+                <div className="ml-9 mt-2 space-y-1">
+                  <div className="text-sm text-muted-foreground">
+                    • <strong>PCL2</strong>：界面美观，功能丰富
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    • <strong>HMCL</strong>：轻量级，启动速度快
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    • <strong>官方启动器</strong>：稳定可靠，官方支持
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h3 className="font-semibold text-foreground mb-2 flex items-center">
+                  <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3">
+                    2
+                  </span>
+                  安装Java 21
+                </h3>
+                <p className="text-muted-foreground ml-9">
+                  安装好Java 21，如果已经安装了，请跳过这一步。Java 21是运行Minecraft 1.21+版本的必要环境。
+                </p>
+                <div className="ml-9 mt-2">
+                  <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 p-3 rounded">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                      <strong>注意：</strong>确保安装的是Java 21或更高版本，低版本Java可能无法正常运行。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h3 className="font-semibold text-foreground mb-2 flex items-center">
+                  <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3">
+                    3
+                  </span>
+                  下载整合包
+                </h3>
+                <p className="text-muted-foreground ml-9">
+                  前往{" "}
+                  <a href="/downloads" className="text-primary hover:underline font-medium">
+                    资源下载页面
+                  </a>{" "}
+                  下载一个整合包，版本任意，建议使用最新版本以获得最佳游戏体验。
+                </p>
+                <div className="ml-9 mt-2">
+                  <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 p-3 rounded">
+                    <p className="text-sm text-green-800 dark:text-green-200">
+                      <strong>推荐：</strong>选择最新的稳定版本，通常标有"Latest"标签。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h3 className="font-semibold text-foreground mb-2 flex items-center">
+                  <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3">
+                    4
+                  </span>
+                  导入整合包
+                </h3>
+                <p className="text-muted-foreground ml-9">
+                  将下载好的整合包拖入启动器，启动器将自行自动安装，全程只需等待进度条跑完即可。
+                </p>
+                <div className="ml-9 mt-2 space-y-2">
+                  <div className="text-sm text-muted-foreground">• 直接拖拽.zip文件到启动器窗口</div>
+                  <div className="text-sm text-muted-foreground">• 或使用启动器的"导入整合包"功能</div>
+                  <div className="text-sm text-muted-foreground">• 等待自动下载和安装完成</div>
+                </div>
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h3 className="font-semibold text-foreground mb-2 flex items-center">
+                  <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3">
+                    5
+                  </span>
+                  启动游戏
+                </h3>
+                <p className="text-muted-foreground ml-9">
+                  点击启动游戏按钮（不同的启动器位置不相同，请根据实际查找），开始游玩EndlessPixel服务器！
+                </p>
+                <div className="ml-9 mt-2">
+                  <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 p-3 rounded">
+                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                      <strong>服务器地址：</strong>安装完成后，在多人游戏中添加服务器即可开始游玩。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h2 className="text-xl font-semibold text-foreground mb-4 mt-8">常见问题</h2>
+            <div className="space-y-3">
+              <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg">
+                <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">启动失败</h3>
+                <ul className="text-red-800 dark:text-red-200 space-y-1 text-sm">
+                  <li>• 检查Java版本是否为Java 21或更高</li>
+                  <li>• 确保启动器设置的Java路径正确</li>
+                  <li>• 尝试重新下载整合包</li>
+                </ul>
+              </div>
+
+              <div className="bg-orange-50 dark:bg-orange-950/30 p-4 rounded-lg">
+                <h3 className="font-semibold text-orange-900 dark:text-orange-100 mb-2">内存不足</h3>
+                <ul className="text-orange-800 dark:text-orange-200 space-y-1 text-sm">
+                  <li>• 建议分配4GB以上内存</li>
+                  <li>• 在启动器设置中调整内存分配</li>
+                  <li>• 关闭其他占用内存的程序</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-green-50 dark:bg-green-950/30 border-l-4 border-green-400 dark:border-green-600 p-4 mt-6">
+              <div className="flex">
+                <div className="ml-3">
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    <strong>提示：</strong>如果在安装过程中遇到任何问题，可以加入QQ群 870594910
+                    寻求帮助，或查看其他Wiki文章获取更多信息。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
     "server-commands": {
       title: "服务器玩家命令",
       category: "新手入门",
