@@ -4,6 +4,7 @@ import { TeamSection } from "@/components/team-section"
 import { TechStackSection } from "@/components/tech-stack-section"
 import { LicenseSection } from "@/components/license-section"
 import { ContactSection } from "@/components/contact-section"
+import { LuckTest } from "@/components/luck-test"
 import { Card, CardContent } from "@/components/ui/card"
 import { Server, Heart, Users } from "lucide-react"
 import type { Metadata } from "next"
@@ -63,6 +64,7 @@ export default function AboutPage() {
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <ContactSection />
+              <LuckTest />
             </div>
           </div>
 
