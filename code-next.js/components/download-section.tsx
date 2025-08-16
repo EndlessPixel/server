@@ -1,106 +1,176 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Download, ExternalLink, Package, Clock } from "lucide-react"
+import { Download, ExternalLink, Package, Clock, Loader2 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+
+interface GitHubRelease {
+  id: number
+  tag_name: string
+  name: string
+  body: string
+  published_at: string
+  html_url: string
+  prerelease: boolean
+  assets: Array<{
+    name: string
+    download_count: number
+    browser_download_url: string
+  }>
+}
+
+interface ParsedRelease {
+  name: string
+  version: string
+  mcVersion: string
+  releaseDate: string
+  downloadUrl: string
+  detailsUrl: string
+  isPrerelease: boolean
+  isLatest: boolean
+  downloadCount: number
+}
 
 export function DownloadSection() {
-  const downloads = [
-    {
-      name: "EndlessPixel 1.21.8-v7-1.0 (最新版)",
-      description: "Minecraft 1.21.8 最新稳定版本，全新优化框架，61个精选模组",
-      version: "1.21.8-v7-1.0",
-      mcVersion: "1.21.8",
-      fabricVersion: "0.17.2",
-      releaseDate: "2024-08-14",
-      downloadUrl: "https://github.com/EndlessPixel/EndlessPixel-Modpack/releases/tag/1.21.8-v7-1.0",
-      isLatest: true,
-      highlights: ["使用全新 Remalkably Optimized 优化整合包作为基础", "从100个模组精简至61个", "零禁用模组", "启动速度大幅提升"],
-    },
-    {
-      name: "EndlessPixel 1.21.6-v6-b5 (测试版)",
-      description: "Minecraft 1.21.6 测试版本，包含实验性功能",
-      version: "1.21.6-v6-b5",
-      mcVersion: "1.21.6",
-      fabricVersion: "0.17.0",
-      releaseDate: "2024-08-10",
-      downloadUrl: "https://github.com/EndlessPixel/EndlessPixel-Modpack/releases/tag/1.21.6-v6-b5",
-      isLatest: false,
-      highlights: ["依然基于 Fabulously Optimized 进行开发", "实验性功能", "可能不稳定", "停止更新"],
-    },
-    {
-      name: "EndlessPixel 1.21.4-v5-1.4 (稳定版)",
-      description: "Minecraft 1.21.4 经典稳定版本，适合追求稳定性的玩家",
-      version: "1.21.4-v5-1.4",
-      mcVersion: "1.21.4",
-      fabricVersion: "0.16.14",
-      releaseDate: "2024-08-06",
-      downloadUrl: "https://github.com/EndlessPixel/EndlessPixel-Modpack/releases/tag/1.21.4-v5-1.4",
-      isLatest: false,
-      highlights: ["基于 Fabulously Optimized 优化整合包开发", "第2次重构", "经过长期测试", "稳定可靠", "完整功能支持", "停止更新"],
-    },
-  ]
+  const [releases, setReleases] = useState<ParsedRelease[]>([])
+  const [loading, setLoading] = useState(true)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    fetchReleases()
+  }, [])
+
+  const fetchReleases = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch("https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases", {
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`GitHub API error: ${response.status}`)
+      }
+
+      const data: GitHubRelease[] = await response.json()
+
+      const parsedReleases: ParsedRelease[] = data.map((release, index) => {
+        // Extract MC version from tag name (e.g., "1.21.8-v7-1.0" -> "1.21.8")
+        const mcVersionMatch = release.tag_name.match(/^(\d+\.\d+\.\d+)/)
+        const mcVersion = mcVersionMatch ? mcVersionMatch[1] : "Unknown"
+
+        // Get total download count from all assets
+        const downloadCount = release.assets.reduce((total, asset) => total + asset.download_count, 0)
+
+        // Format release date
+        const releaseDate = new Date(release.published_at).toLocaleDateString("zh-CN")
+
+        return {
+          name: release.name || release.tag_name,
+          version: release.tag_name,
+          mcVersion,
+          releaseDate,
+          downloadUrl: release.html_url, // Link to GitHub release page for download
+          detailsUrl: release.html_url,
+          isPrerelease: release.prerelease,
+          isLatest: index === 0 && !release.prerelease, // First non-prerelease is latest
+          downloadCount,
+        }
+      })
+
+      setReleases(parsedReleases)
+    } catch (error) {
+      console.error("Failed to fetch releases:", error)
+      toast({
+        title: "获取版本信息失败",
+        description: "无法从GitHub获取最新版本信息，请稍后重试。",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+        <span className="ml-2 text-muted-foreground">正在获取版本信息...</span>
+      </div>
+    )
+  }
+
+  if (releases.length === 0) {
+    return (
+      <Card>
+        <CardContent className="py-12 text-center">
+          <p className="text-muted-foreground mb-4">暂无可用版本</p>
+          <Button onClick={fetchReleases} variant="outline">
+            重新获取
+          </Button>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        {downloads.map((item) => (
+        {releases.map((release) => (
           <Card
-            key={item.version}
-            className={item.isLatest ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20" : ""}
+            key={release.version}
+            className={
+              release.isLatest ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20" : ""
+            }
           >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Package className="w-5 h-5 text-green-600" />
-                  <CardTitle className="text-lg">{item.name}</CardTitle>
-                  {item.isLatest && <Badge className="bg-green-600 text-white">最新</Badge>}
+                  <CardTitle className="text-lg">{release.name}</CardTitle>
+                  {release.isLatest && <Badge className="bg-green-600 text-white">最新</Badge>}
+                  {release.isPrerelease && <Badge variant="secondary">预发布</Badge>}
                 </div>
                 <div className="flex space-x-2">
                   <Button size="sm" className="bg-green-600 hover:bg-green-700" asChild>
-                    <a href={item.downloadUrl} target="_blank" rel="noopener noreferrer">
+                    <a href={release.downloadUrl} target="_blank" rel="noopener noreferrer">
                       <Download className="w-4 h-4 mr-1" />
                       下载
                     </a>
                   </Button>
-                  <Button size="sm" variant="outline" asChild>
-                    <a href={item.downloadUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="w-4 h-4 mr-1" />
-                      详情
-                    </a>
-                  </Button>
                 </div>
               </div>
-              <CardDescription>{item.description}</CardDescription>
+              <CardDescription>
+                Minecraft {release.mcVersion} • 发布于 {release.releaseDate}
+              </CardDescription>
             </CardHeader>
             <CardContent className="pt-0">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 text-sm">
                 <div>
                   <span className="text-muted-foreground">MC版本:</span>
-                  <div className="font-medium">{item.mcVersion}</div>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Fabric:</span>
-                  <div className="font-medium">{item.fabricVersion}</div>
+                  <div className="font-medium">{release.mcVersion}</div>
                 </div>
                 <div>
                   <span className="text-muted-foreground">版本号:</span>
-                  <div className="font-medium">{item.version}</div>
+                  <div className="font-medium">{release.version}</div>
                 </div>
                 <div>
                   <span className="text-muted-foreground">发布日期:</span>
-                  <div className="font-medium">{item.releaseDate}</div>
+                  <div className="font-medium">{release.releaseDate}</div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium text-muted-foreground">版本特色:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {item.highlights.map((highlight, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {highlight}
-                    </Badge>
-                  ))}
-                </div>
+              <div className="flex items-center space-x-2 text-sm">
+                <span className="text-muted-foreground">更新日志:</span>
+                <Button size="sm" variant="link" className="h-auto p-0" asChild>
+                  <a href={release.detailsUrl} target="_blank" rel="noopener noreferrer">
+                    在GitHub上查看 <ExternalLink className="w-3 h-3 ml-1" />
+                  </a>
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -122,7 +192,7 @@ export function DownloadSection() {
               </div>
               <div>
                 <h4 className="font-medium">下载整合包</h4>
-                <p className="text-sm text-muted-foreground">推荐下载最新版 1.21.8-v7-1.0，获得最佳游戏体验</p>
+                <p className="text-sm text-muted-foreground">选择合适的版本下载，推荐使用最新稳定版</p>
               </div>
             </div>
             <div className="flex items-start space-x-3">
@@ -158,7 +228,10 @@ export function DownloadSection() {
         </CardContent>
       </Card>
 
-      <div className="text-center">
+      <div className="text-center space-y-2">
+        <Button onClick={fetchReleases} variant="outline" className="mr-2 bg-transparent">
+          刷新版本列表
+        </Button>
         <Button variant="outline" asChild>
           <a
             href="https://github.com/EndlessPixel/EndlessPixel-Modpack/releases"
@@ -166,7 +239,7 @@ export function DownloadSection() {
             rel="noopener noreferrer"
           >
             <ExternalLink className="w-4 h-4 mr-2" />
-            查看所有版本
+            在GitHub上查看所有版本
           </a>
         </Button>
       </div>
