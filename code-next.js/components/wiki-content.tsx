@@ -152,7 +152,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
           <div className="flex items-center space-x-3 mb-6">
             <Download className="h-8 w-8 text-green-600 dark:text-green-400" />
             <div>
-              <h1 className="text-3xl font-bold text-foreground">启动器安装指南</h1>
+              <h1 className="text-3xl font-bold text-foreground">整合包安装指南</h1>
               <div className="flex items-center space-x-4 mt-2 text-sm text-muted-foreground">
                 <span>分类：新手入门</span>
                 <span>•</span>

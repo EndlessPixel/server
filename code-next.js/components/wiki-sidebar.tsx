@@ -150,7 +150,7 @@ export function WikiSidebar() {
                         key={item.id}
                         variant="ghost"
                         className={`w-full justify-start px-4 py-3 h-auto text-sm min-h-[44px] active:bg-accent/80 ${
-                          selectedArticle === item.id && !item.external
+                          selectedArticle === item.id && (!("external" in item) || !item.external)
                             ? "text-primary bg-accent font-medium"
                             : "text-muted-foreground hover:text-foreground hover:bg-accent"
                         }`}
@@ -158,7 +158,7 @@ export function WikiSidebar() {
                       >
                         <div className="flex items-center justify-between w-full">
                           <span className="text-left leading-relaxed">{item.title}</span>
-                          {item.external && (
+                          {"external" in item && item.external && (
                             <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 ml-2" />
                           )}
                         </div>

@@ -14,7 +14,7 @@ export function TechStackSection() {
       title: "开发工具",
       icon: Code,
       color: "text-green-600",
-      technologies: ["Vercel", "ESLint", "Prettier", "Git"],
+      technologies: ["ESLint", "Prettier", "Git"],
     },
     {
       title: "UI组件",
@@ -26,7 +26,7 @@ export function TechStackSection() {
       title: "API服务",
       icon: Database,
       color: "text-orange-600",
-      technologies: ["api.mcsrvstat.us", "GitHub API", "Vercel Analytics"],
+      technologies: ["api.mcsrvstat.us", "uapis.cn", "api.github.com"],
     },
     {
       title: "服务器环境",
