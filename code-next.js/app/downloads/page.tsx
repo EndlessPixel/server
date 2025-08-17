@@ -1,7 +1,6 @@
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { DownloadSection } from "@/components/download-section"
-import { Card, CardContent } from "@/components/ui/card"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -27,18 +26,6 @@ export default function DownloadsPage() {
             <h1 className="text-4xl font-bold text-foreground mb-4">资源下载</h1>
             <p className="text-lg text-muted-foreground">下载 EndlessPixel 客户端整合包，开始你的冒险之旅</p>
           </div>
-
-          {/* Important Notice */}
-          <Card className="mb-8 border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950">
-            <CardContent className="p-4">
-              <div className="text-center">
-                <h3 className="font-semibold text-green-900 dark:text-green-100 mb-2">💡 推荐下载最新版 v7-1.0</h3>
-                <p className="text-sm text-green-800 dark:text-green-200">
-                  全新优化框架，性能提升，61个精选模组，零禁用模组
-                </p>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Downloads Section */}
           <DownloadSection />
