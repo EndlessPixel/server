@@ -146,7 +146,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
       icon: Download,
       lastUpdated: "2025/08/15",
       author: "system_mini",
-      readTime: "10分钟",
+      readTime: "12分钟",
       content: (
         <div className="space-y-6">
           <div className="flex items-center space-x-3 mb-6">
@@ -160,20 +160,20 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
                 <span>•</span>
                 <span>作者：system_mini</span>
                 <span>•</span>
-                <span>阅读时间：10分钟</span>
+                <span>阅读时间：12分钟</span>
               </div>
             </div>
           </div>
 
           <div className="prose max-w-none">
             <div className="bg-blue-50 dark:bg-blue-950/30 border-l-4 border-blue-400 dark:border-blue-600 p-4 mb-6">
-              <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">开始游戏</h2>
+              <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">快速开始</h2>
               <p className="text-blue-800 dark:text-blue-200">
-                按照以下步骤，您可以快速安装并开始游玩EndlessPixel服务器。
+                本指南将帮助您快速安装并开始游玩 EndlessPixel 服务器。无论您是新手还是老玩家，都可以轻松完成以下步骤。
               </p>
             </div>
 
-            <h2 className="text-xl font-semibold text-foreground mb-4">安装步骤</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">详细安装步骤</h2>
             <div className="space-y-4">
               <div className="bg-muted/50 p-4 rounded-lg">
                 <h3 className="font-semibold text-foreground mb-2 flex items-center">
@@ -183,19 +183,13 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
                   准备启动器
                 </h3>
                 <p className="text-muted-foreground ml-9">
-                  准备一个启动器，PCL2、HMCL等启动器均可以，取决于自己的喜好。推荐使用PCL2或HMCL启动器。
+                  选择一个适合您的启动器，例如 PCL2、HMCL 或官方启动器。以下是它们的特点：
                 </p>
-                <div className="ml-9 mt-2 space-y-1">
-                  <div className="text-sm text-muted-foreground">
-                    • <strong>PCL2</strong>：界面美观，功能丰富
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    • <strong>HMCL</strong>：轻量级，启动速度快
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    • <strong>官方启动器</strong>：稳定可靠，官方支持
-                  </div>
-                </div>
+                <ul className="ml-9 mt-2 list-disc list-inside text-muted-foreground">
+                  <li><strong>PCL2</strong>：界面美观，功能丰富，适合高级玩家。</li>
+                  <li><strong>HMCL</strong>：轻量级，启动速度快，适合新手。</li>
+                  <li><strong>官方启动器</strong>：稳定可靠，官方支持。</li>
+                </ul>
               </div>
 
               <div className="bg-muted/50 p-4 rounded-lg">
@@ -203,15 +197,19 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
                   <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3">
                     2
                   </span>
-                  安装Java 21
+                  安装 Java 环境
                 </h3>
                 <p className="text-muted-foreground ml-9">
-                  安装好Java 21，如果已经安装了，请跳过这一步。Java 21是运行Minecraft 1.21+版本的必要环境。
+                  确保您的设备已安装 Java 21 或更高版本。如果尚未安装，请前往{" "}
+                  <a href="https://www.oracle.com/java/technologies/javase-downloads.html" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    Oracle 官方网站
+                  </a>{" "}
+                  下载并安装。
                 </p>
                 <div className="ml-9 mt-2">
                   <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 p-3 rounded">
                     <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                      <strong>注意：</strong>确保安装的是Java 21或更高版本，低版本Java可能无法正常运行。
+                      <strong>注意：</strong>低于 Java 21 的版本可能导致游戏无法正常运行。
                     </p>
                   </div>
                 </div>
@@ -229,15 +227,8 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
                   <a href="/downloads" className="text-primary hover:underline font-medium">
                     资源下载页面
                   </a>{" "}
-                  下载一个整合包，版本任意，建议使用最新版本以获得最佳游戏体验。
+                  下载最新版本的整合包。推荐选择标有“Latest”标签的版本以获得最佳体验。
                 </p>
-                <div className="ml-9 mt-2">
-                  <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 p-3 rounded">
-                    <p className="text-sm text-green-800 dark:text-green-200">
-                      <strong>推荐：</strong>选择最新的稳定版本，通常标有"Latest"标签。
-                    </p>
-                  </div>
-                </div>
               </div>
 
               <div className="bg-muted/50 p-4 rounded-lg">
@@ -248,13 +239,8 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
                   导入整合包
                 </h3>
                 <p className="text-muted-foreground ml-9">
-                  将下载好的整合包拖入启动器，启动器将自行自动安装，全程只需等待进度条跑完即可。
+                  将下载的整合包文件拖入启动器窗口，启动器会自动完成安装。您只需等待进度条完成即可。
                 </p>
-                <div className="ml-9 mt-2 space-y-2">
-                  <div className="text-sm text-muted-foreground">• 直接拖拽.zip文件到启动器窗口</div>
-                  <div className="text-sm text-muted-foreground">• 或使用启动器的"导入整合包"功能</div>
-                  <div className="text-sm text-muted-foreground">• 等待自动下载和安装完成</div>
-                </div>
               </div>
 
               <div className="bg-muted/50 p-4 rounded-lg">
@@ -265,48 +251,36 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
                   启动游戏
                 </h3>
                 <p className="text-muted-foreground ml-9">
-                  点击启动游戏按钮（不同的启动器位置不相同，请根据实际查找），开始游玩EndlessPixel服务器！
+                  点击启动器中的“启动游戏”按钮，开始您的冒险之旅！
                 </p>
-                <div className="ml-9 mt-2">
-                  <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 p-3 rounded">
-                    <p className="text-sm text-blue-800 dark:text-blue-200">
-                      <strong>服务器地址：</strong>安装完成后，在多人游戏中添加服务器即可开始游玩。
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
 
-            <h2 className="text-xl font-semibold text-foreground mb-4 mt-8">常见问题</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4 mt-8">常见问题解答</h2>
             <div className="space-y-3">
               <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg">
                 <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">启动失败</h3>
                 <ul className="text-red-800 dark:text-red-200 space-y-1 text-sm">
-                  <li>• 检查Java版本是否为Java 21或更高</li>
-                  <li>• 确保启动器设置的Java路径正确</li>
-                  <li>• 尝试重新下载整合包</li>
+                  <li>• 检查 Java 版本是否为 Java 21 或更高。</li>
+                  <li>• 确保启动器设置的 Java 路径正确。</li>
+                  <li>• 尝试重新下载整合包。</li>
                 </ul>
               </div>
 
               <div className="bg-orange-50 dark:bg-orange-950/30 p-4 rounded-lg">
                 <h3 className="font-semibold text-orange-900 dark:text-orange-100 mb-2">内存不足</h3>
                 <ul className="text-orange-800 dark:text-orange-200 space-y-1 text-sm">
-                  <li>• 建议分配4GB以上内存</li>
-                  <li>• 在启动器设置中调整内存分配</li>
-                  <li>• 关闭其他占用内存的程序</li>
+                  <li>• 建议分配至少 4GB 内存。</li>
+                  <li>• 在启动器设置中调整内存分配。</li>
+                  <li>• 关闭其他占用内存的程序。</li>
                 </ul>
               </div>
             </div>
 
             <div className="bg-green-50 dark:bg-green-950/30 border-l-4 border-green-400 dark:border-green-600 p-4 mt-6">
-              <div className="flex">
-                <div className="ml-3">
-                  <p className="text-sm text-green-700 dark:text-green-300">
-                    <strong>提示：</strong>如果在安装过程中遇到任何问题，可以加入QQ群 870594910
-                    寻求帮助，或查看其他Wiki文章获取更多信息。
-                  </p>
-                </div>
-              </div>
+              <p className="text-sm text-green-700 dark:text-green-300">
+                <strong>提示：</strong>如果遇到问题，可以加入我们的 QQ 群（870594910）寻求帮助，或查看其他 Wiki 文章获取更多信息。
+              </p>
             </div>
           </div>
         </div>
@@ -478,7 +452,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
                 <p className="text-purple-800 dark:text-purple-200">
                   输入命令：
                   <code className="bg-purple-200 dark:bg-purple-800 px-2 py-1 rounded text-foreground">
-                    /rg define [领地名称]
+                    /dom define [领地名称]
                   </code>
                 </p>
               </div>
@@ -488,13 +462,13 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
             <div className="bg-muted/50 p-4 rounded-lg">
               <ul className="space-y-2">
                 <li>
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">/rg remove [领地名称]</code> - 删除领地
+                  <code className="bg-muted px-2 py-1 rounded text-foreground">/dom remove [领地名称]</code> - 删除领地
                 </li>
                 <li>
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">/rg info [领地名称]</code> - 查看领地信息
+                  <code className="bg-muted px-2 py-1 rounded text-foreground">/dom info [领地名称]</code> - 查看领地信息
                 </li>
                 <li>
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">/rg list</code> - 查看所有领地
+                  <code className="bg-muted px-2 py-1 rounded text-foreground">/dom list</code> - 查看所有领地
                 </li>
               </ul>
             </div>

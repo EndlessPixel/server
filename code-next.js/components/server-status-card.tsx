@@ -1,25 +1,32 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ServerStatusSkeleton } from "@/components/server-status-skeleton"
-import { Server, Users, Clock, Wifi, Info, MessageSquare, RefreshCw, Timer } from "lucide-react"
+import { Server, Users, Clock, Wifi, Info, MessageSquare, RefreshCw, Timer, Globe } from "lucide-react"
 
 interface ServerData {
   online: boolean
+  ip: string
+  port: number
   players: {
     online: number
     max: number
     list?: Array<{ name: string; uuid: string }>
   }
   motd?: {
+    raw?: string[]
+    clean?: string[]
     html?: string[]
   }
-  debug?: {
-    apiversion?: string
-  }
-  ping?: number
+  version?: string
+  protocol?: number
+  software?: string
+  plugins?: string[]
+  mods?: string[]
+  hostname?: string
 }
 
 interface PingData {
@@ -33,28 +40,27 @@ interface PingData {
 }
 
 export function ServerStatusCard() {
-  const [serverData, setServerData] = useState<ServerData>({
-    online: false,
-    players: { online: 0, max: 0 },
-    motd: { html: ["服务器状态暂时无法获取，请稍后重试"] },
-    debug: { apiversion: "未知" },
-  })
+  const searchParams = useSearchParams()
+  const serverIp = searchParams.get("serverip") || "epmc.top" // 默认服务器 IP
+  const pingIp = searchParams.get("pingip") || "modrinth.com" // 默认 Ping 测试 IP
+
+  const [serverData, setServerData] = useState<ServerData | null>(null)
   const [pingData, setPingData] = useState<PingData>({
     code: 500,
-    host: "36.50.226.35",
+    host: pingIp,
     location: "网络测试失败",
   })
   const [loading, setLoading] = useState(true)
   const [pingLoading, setPingLoading] = useState(true)
-  const [serverTime, setServerTime] = useState("")
+  const [serverTime, setServerTime] = useState("加载中...")
 
   const fetchServerStatus = async () => {
     try {
       setLoading(true)
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30秒超时
 
-      const response = await fetch("https://api.mcsrvstat.us/3/36.50.226.35:12277", {
+      const response = await fetch(`https://api.mcsrvstat.us/3/${serverIp}`, {
         cache: "no-store",
         signal: controller.signal,
         headers: {
@@ -71,22 +77,8 @@ export function ServerStatusCard() {
       const data = await response.json()
       setServerData(data)
     } catch (error) {
-      if (error.name === "AbortError") {
-        console.warn("Server status request timed out")
-      } else if (error.message.includes("Failed to fetch")) {
-        console.warn(
-          "Network error: Unable to reach server status API. This may be due to CORS restrictions or network connectivity issues.",
-        )
-      } else {
-        console.warn("Server status error:", error.message)
-      }
-
-      setServerData({
-        online: false,
-        players: { online: 0, max: 0 },
-        motd: { html: ["服务器状态暂时无法获取，请稍后重试"] },
-        debug: { apiversion: "未知" },
-      })
+      console.warn("Failed to fetch server status:", error)
+      setServerData(null)
     } finally {
       setLoading(false)
     }
@@ -96,9 +88,9 @@ export function ServerStatusCard() {
     try {
       setPingLoading(true)
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 8000) // 8 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 8000) // 8秒超时
 
-      const response = await fetch("https://uapis.cn/api/v1/network/ping?host=36.50.226.35", {
+      const response = await fetch(`https://uapis.cn/api/v1/network/ping?host=${pingIp}`, {
         cache: "no-store",
         signal: controller.signal,
         headers: {
@@ -115,54 +107,15 @@ export function ServerStatusCard() {
       const data = await response.json()
       setPingData(data)
     } catch (error) {
-      if (error.name === "AbortError") {
-        console.warn("Ping request timed out")
-      } else if (error.message.includes("Failed to fetch")) {
-        console.warn(
-          "Network error: Unable to reach ping API. This may be due to CORS restrictions or network connectivity issues.",
-        )
-      } else {
-        console.warn("Ping API error:", error.message)
-      }
-
+      console.warn("Failed to fetch ping data:", error)
       setPingData({
         code: 500,
-        host: "36.50.226.35",
+        host: pingIp,
         location: "网络测试失败",
       })
     } finally {
       setPingLoading(false)
     }
-  }
-
-  const updateServerTime = () => {
-    const startDate = new Date("2024-09-16T15:34:43")
-    const now = new Date()
-    let diffInMs = now.getTime() - startDate.getTime()
-
-    if (diffInMs < 0) {
-      setServerTime("计算错误: 时间有问题!")
-      return
-    }
-
-    const years = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 365.25))
-    diffInMs -= years * (1000 * 60 * 60 * 24 * 365.25)
-    const months = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30.44))
-    diffInMs -= months * (1000 * 60 * 60 * 24 * 30.44)
-    const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
-    diffInMs -= days * (1000 * 60 * 60 * 24)
-    const hours = Math.floor(diffInMs / (1000 * 60 * 60))
-    diffInMs -= hours * (1000 * 60 * 60)
-    const minutes = Math.floor(diffInMs / (1000 * 60))
-    diffInMs -= minutes * (1000 * 60)
-    const seconds = Math.floor(diffInMs / 1000)
-
-    const pad = (num: number) => num.toString().padStart(2, "0")
-    const padYear = (num: number) => num.toString().padStart(4, "0")
-
-    setServerTime(
-      `${padYear(years)} 年 ${pad(months)} 月 ${pad(days)} 日 ${pad(hours)} 小时 ${pad(minutes)} 分钟 ${pad(seconds)} 秒`,
-    )
   }
 
   const refreshAllData = () => {
@@ -171,6 +124,36 @@ export function ServerStatusCard() {
   }
 
   useEffect(() => {
+    const updateServerTime = () => {
+      const startDate = new Date("2024-09-16T15:34:43")
+      const now = new Date()
+      let diffInMs = now.getTime() - startDate.getTime()
+
+      if (diffInMs < 0) {
+        setServerTime("计算错误: 时间有问题!")
+        return
+      }
+
+      const years = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 365.25))
+      diffInMs -= years * (1000 * 60 * 60 * 24 * 365.25)
+      const months = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30.44))
+      diffInMs -= months * (1000 * 60 * 60 * 24 * 30.44)
+      const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+      diffInMs -= days * (1000 * 60 * 60 * 24)
+      const hours = Math.floor(diffInMs / (1000 * 60 * 60))
+      diffInMs -= hours * (1000 * 60 * 60)
+      const minutes = Math.floor(diffInMs / (1000 * 60))
+      diffInMs -= minutes * (1000 * 60)
+      const seconds = Math.floor(diffInMs / 1000)
+
+      const pad = (num: number) => num.toString().padStart(2, "0")
+      const padYear = (num: number) => num.toString().padStart(4, "0")
+
+      setServerTime(
+        `${padYear(years)} 年 ${pad(months)} 月 ${pad(days)} 日 ${pad(hours)} 小时 ${pad(minutes)} 分钟 ${pad(seconds)} 秒`,
+      )
+    }
+
     fetchServerStatus()
     fetchPingData()
     updateServerTime()
@@ -184,7 +167,7 @@ export function ServerStatusCard() {
       clearInterval(pingInterval)
       clearInterval(timeInterval)
     }
-  }, [])
+  }, [serverIp, pingIp])
 
   if (loading && !serverData) {
     return <ServerStatusSkeleton />
@@ -195,7 +178,7 @@ export function ServerStatusCard() {
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Server className="h-6 w-6" />
-          服务器状态
+          服务器状态 【可以使用?serverip=[serverIp]&pingip=[pingIp]来查询自己的服务器状态和延迟】
         </CardTitle>
         <Button onClick={refreshAllData} disabled={loading || pingLoading} variant="outline" size="sm">
           <RefreshCw className={`h-4 w-4 mr-2 ${loading || pingLoading ? "animate-spin" : ""}`} />
@@ -230,6 +213,7 @@ export function ServerStatusCard() {
             </div>
           </div>
 
+          {/* 网络延迟 */}
           <div className="flex items-center space-x-3 p-4 bg-muted/50 rounded-lg">
             <Clock className="h-8 w-8 text-purple-600" />
             <div>
@@ -250,33 +234,44 @@ export function ServerStatusCard() {
             </div>
           </div>
 
-          {/* API版本 */}
+          {/* 服务器版本 */}
           <div className="flex items-center space-x-3 p-4 bg-muted/50 rounded-lg">
-            <Info className="h-8 w-8 text-orange-600" />
+            <Info className="h-8 w-8 text-indigo-600" />
             <div>
-              <h3 className="font-semibold text-foreground">API版本</h3>
+              <h3 className="font-semibold text-foreground">服务器版本</h3>
               <p className="text-lg font-bold text-foreground">
-                {loading ? "查询中..." : serverData?.debug?.apiversion || "未知"}
+                {loading ? "查询中..." : serverData?.version || "未知"}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {loading ? "..." : `协议版本: ${serverData?.protocol || "未知"}`}
               </p>
             </div>
           </div>
 
-          {/* 运行版本 */}
+          {/* 软件信息 */}
           <div className="flex items-center space-x-3 p-4 bg-muted/50 rounded-lg">
-            <Info className="h-8 w-8 text-indigo-600" />
+            <Globe className="h-8 w-8 text-orange-600" />
             <div>
-              <h3 className="font-semibold text-foreground">运行版本</h3>
-              <p className="text-lg font-bold text-foreground">LeafMC Core 1.21.8</p>
-              <p className="text-xs text-muted-foreground">Java 21 • Windows Server 2022</p>
+              <h3 className="font-semibold text-foreground">服务器软件</h3>
+              <p className="text-lg font-bold text-foreground">
+                {loading ? "查询中..." : serverData?.software || "未知"}
+              </p>
+              {serverData?.plugins && (
+                <p className="text-xs text-muted-foreground">插件数量: {serverData.plugins.length}</p>
+              )}
+              {serverData?.mods && (
+                <p className="text-xs text-muted-foreground">模组数量: {serverData.mods.length}</p>
+              )}
             </div>
           </div>
         </div>
 
+        {/* MOTD */}
         <div className="mb-8">
           <div className="flex items-start space-x-3 p-6 bg-muted/50 rounded-lg">
             <MessageSquare className="h-8 w-8 text-teal-600 mt-1 flex-shrink-0" />
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground mb-3">服务器MOTD</h3>
+              <h3 className="font-semibold text-foreground mb-3">服务器 MOTD</h3>
               <div className="text-sm text-foreground leading-relaxed">
                 {loading ? (
                   "查询中..."
