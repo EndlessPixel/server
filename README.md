@@ -1,32 +1,51 @@
-# 欢迎加入无尽像素服务器！
+# EndlessPixel 服务器官网源代码
 
-## 服务器概述
-欢迎来到无尽像素服务器，一个充满无限可能的 Minecraft 社区！我们的服务器支持**离线模式**，允许所有类型的玩家加入，包括正版玩家、第三方客户端玩家和离线模式玩家。你可以随时随地加入我们，尽情享受游戏的乐趣。
+本仓库存放的是 EndlessPixel 服务器官网的源代码，基于 [Next.js](https://nextjs.org/) 构建，采用 [GNU](https://www.gnu.org/licenses/) 许可证进行开源。
 
-## 核心功能
+## 项目结构
 
-### 原汁原味的游戏体验
-我们致力于保持 Minecraft 的原始平衡。通过插件，我们确保游戏玩法与原始版本保持一致，同时添加了一些辅助功能来提升你的体验。你可以像在正版游戏中一样享受游戏，但更加便捷。
+- **`/code-next.js/`**：存放官网的源代码。
 
-### 完全免费
-我们的服务器是**完全免费**的。我们不提供任何付费服务、小额交易或充值选项。所有玩家都可以免费加入和游玩，没有任何经济负担。但请注意，虽然服务器不提供付费服务，但可能会有玩家以稀有道具的名义兑换现实中的现金。对于此类交易产生的诈骗或欺诈行为，我们概不负责。
+## 开发环境
 
-### 宽松的规则和自由探索
-我们鼓励玩家在服务器中自由探索和创造。在这里，你可以充分发挥创造力，建造令人惊叹的建筑，探索广袤的地形，并与其他玩家互动。但请遵守我们的基本规则：**禁止作弊**和**禁止破坏其他玩家的建筑**。让我们共同维护一个有趣且尊重他人的服务器环境。
+### 前提条件
 
-## 技术细节
+- Node.js（建议使用 [Node.js 官方网站](https://nodejs.org/) 下载并安装）
+- npm（随 Node.js 安装）
 
-### 客户端版本
-- **Minecraft Java 版本 1.21.4**
+### 启动项目
 
-### 服务器更新
-我们的服务器更新较为频繁，但请放心，每次关服或重启前都会通知所有玩家，确保你的游戏体验不受影响。
+安装依赖并启动开发服务器：：
+   
+```
+#安装依赖
+npm install
+#启动开发服务器
+npm run dev
+```
+> 项目将在 http://localhost:3000 启动并运行。
 
-## 加入我们的社区
+注意事项
 
-### QQ 群
-加入我们的 QQ 群，获取最新信息、技术支持，并与其他玩家交流。点击以下链接加入：
+- 许可证：本项目遵循 GNU 许可证，你可以自由使用、分发和修改代码，但请务必遵守许可证的相关规定。
+- 自行修改：如果你对代码进行了自行修改并导致问题，请不要提交 issues，除非你确定该问题是源代码本身存在的。
+- 问题反馈：如果你发现了源代码中的问题，或者有好的建议，欢迎提交 issues。
+- 代码贡献：如果你已经实现了某项功能或修复了某个问题，欢迎提交 pull requests。
 
-[870594910](https://qun.qq.com/universal-share/share?ac=1&authKey=non%2BvymLt1Z%2FIcqz68gdEdvTIL48t06Bj4N7Hjx2R6msFKmFGiAFCq6hlHmiQt38&busi_data=eyJncm91cENvZGUiOiI4NzA1OTQ5MTAiLCJ0b2tlbiI6ImxQOXVjbDdJcWFiejBYVXFhWGg1SFNUQUFhVEhHZDlqck9JdHJoY1BYOFJCMUZVbEFjeU5HM2FtMjJiYXBNbkIiLCJ1aW4iOiIyMjY3ODQ4NTAxIn0%3D&data=ZCYm1Hw1bSUXqKoszG1qT3fAC8KXODEN0f7UCEN109wJd7-a1JneXzEMRyHyIgAlKJL3cnY123oKtKTMpVI-9w&svctype=4&tempid=h5_group_info)
+贡献指南
 
-期待你在无尽像素服务器上畅玩！
+提交 Issues
+
+- 在提交 issue 之前，请先搜索现有的 issues，避免重复。
+- 请详细描述问题，包括但不限于：
+  - 问题出现的环境（操作系统、浏览器等）
+  - 问题复现的步骤
+  - 预期结果与实际结果
+
+提交 Pull Requests
+
+- 请确保你的代码风格与项目保持一致。
+- 为你的代码提交添加清晰的注释和文档说明。
+- 在提交 pull request 之前，确保你的代码已经通过本地测试。
+
+感谢你对 EndlessPixel 项目的关注和支持！
