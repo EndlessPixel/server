@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast"
 import ReactMarkdown from "react-markdown"
 import rehypeRaw from "rehype-raw"
 import remarkGfm from "remark-gfm"
+import { Input } from "@/components/ui/input"
 
 interface GitHubRelease {
   id: number
@@ -47,6 +48,7 @@ export function DownloadSection() {
   const [releases, setReleases] = useState<ParsedRelease[]>([])
   const [loading, setLoading] = useState(true)
   const [activeBranch, setActiveBranch] = useState<"main" | "real">("main")
+  const [search, setSearch] = useState("") // 新增搜索状态
   const { toast } = useToast()
 
   useEffect(() => {
@@ -134,8 +136,14 @@ export function DownloadSection() {
     }
   }
 
+  // 新增：根据搜索过滤
   const filteredReleases = releases
     .filter(release => release.branch === activeBranch)
+    .filter(release =>
+      release.name.toLowerCase().includes(search.toLowerCase()) ||
+      release.version.toLowerCase().includes(search.toLowerCase()) ||
+      release.mcVersion.toLowerCase().includes(search.toLowerCase())
+    )
     .sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime())
 
   if (loading) {
@@ -156,6 +164,13 @@ export function DownloadSection() {
             选择适合您游戏风格的分支版本
           </p>
         </div>
+        {/* 新增搜索框 */}
+        <Input
+          className="w-64"
+          placeholder="搜索版本号、名称、MC版本…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
       </div>
 
       <Tabs defaultValue="main" onValueChange={(value) => setActiveBranch(value as "main" | "real")}>
@@ -318,20 +333,71 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {release.files.map((file) => (
-            <div key={file.name} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">{file.name}</span>
-                <span className="text-xs text-muted-foreground">下载次数: {file.downloadCount}</span>
+          {release.files.map((file) => {
+            // 镜像链接生成
+            const mirrors = [
+              {
+                name: "Cloudflare 主站（全球加速）",
+                url: `https://gh-proxy.com/${file.downloadUrl}`,
+                tag: "全球",
+              },
+              {
+                name: "Fastly CDN",
+                url: `https://cdn.gh-proxy.com/${file.downloadUrl}`,
+                tag: "Fastly",
+              },
+              {
+                name: "香港（国内优化，secbit.ai赞助）",
+                url: `https://hk.gh-proxy.com/${file.downloadUrl}`,
+                tag: "香港",
+                tip: "大文件下载不建议使用！",
+              },
+            ]
+            return (
+              <div key={file.name} className="flex flex-col gap-2 p-3 bg-muted/50 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">{file.name}</span>
+                    <span className="text-xs text-muted-foreground">下载次数: {file.downloadCount}</span>
+                  </div>
+                  <Button size="sm" asChild>
+                    <a href={file.downloadUrl} target="_blank" rel="noopener noreferrer">
+                      <Download className="w-4 h-4 mr-1" />
+                      官方下载
+                    </a>
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {mirrors.map((mirror) => (
+                    <Button
+                      key={mirror.url}
+                      size="xs"
+                      variant="outline"
+                      asChild
+                      className="flex items-center gap-1"
+                      title={mirror.tip || ""}
+                    >
+                      <a href={mirror.url} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-3 h-3" />
+                        {mirror.tag}
+                        <span className="sr-only">{mirror.name}</span>
+                      </a>
+                    </Button>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  <span className="text-[11px] text-muted-foreground">
+                    镜像下载：<span className="text-muted-foreground/70">如遇GitHub下载缓慢可尝试</span>
+                  </span>
+                  {mirrors.some(m => m.tip) && (
+                    <span className="text-[11px] text-orange-500">
+                      香港线路大文件不建议用
+                    </span>
+                  )}
+                </div>
               </div>
-              <Button size="sm" asChild>
-                <a href={file.downloadUrl} target="_blank" rel="noopener noreferrer">
-                  <Download className="w-4 h-4 mr-1" />
-                  下载
-                </a>
-              </Button>
-            </div>
-          ))}
+            )
+          })}
         </div>
         <div>
           <Button
