@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "zh_CN",
-    url: "https://endlesspixel.com",
+    url: "https://ep.endlesspixel.fun",
     siteName: "EndlessPixel",
     title: "EndlessPixel - Minecraft Java 服务器官网",
     description: "EndlessPixel是一个由热爱游戏的玩家组成的Minecraft社区，致力于提供有趣、自由、开放的游戏世界。",
@@ -112,7 +112,7 @@ html {
               name: "EndlessPixel",
               description:
                 "EndlessPixel是一个由热爱游戏的玩家组成的Minecraft社区，致力于提供有趣、自由、开放的游戏世界。",
-              url: "https://endlesspixel.com",
+              url: "https://ep.endlesspixel.fun",
               logo: "https://s21.ax1x.com/2024/12/11/pAHvtKS.png",
               sameAs: [],
               contactPoint: {
