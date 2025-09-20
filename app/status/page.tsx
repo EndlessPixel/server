@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "服务器状态 | EndlessPixel",
     description: "实时查看 EndlessPixel 服务器的运行状态、在线玩家和性能指标。",
-    url: "https://endlesspixel.com/status",
+    url: "https://ep.endlesspixel.fun/status",
   },
 }
 
