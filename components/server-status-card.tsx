@@ -1,6 +1,6 @@
-// "use client"
+"use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -135,7 +135,7 @@ export function ServerStatusCard() {
   const [serverTime, setServerTime] = useState<string | null>(null);
 
   // 节点切换
-  const handleNodeChange = (ip: string) => {
+  const handleNodeChange = useCallback((ip: string) => {
     const params = new URLSearchParams(Array.from(searchParams.entries()));
     params.set("serverip", ip);
     router.replace(`?${params.toString()}`);
@@ -143,10 +143,10 @@ export function ServerStatusCard() {
     setPingData({ code: 500, host: pingIp, location: "网络测试失败" });
     setLoading(true);
     setPingLoading(true);
-  };
+  }, [searchParams, pingIp, router]);
 
   // 数据请求
-  const fetchServerStatus = async () => {
+  const fetchServerStatus = useCallback(async () => {
     try {
       setLoading(true);
       const controller = new AbortController();
@@ -159,14 +159,15 @@ export function ServerStatusCard() {
       clearTimeout(timeoutId);
       if (!response.ok) throw new Error(`Server returned ${response.status}`);
       setServerData(await response.json());
-    } catch {
+    } catch (error) {
+      console.error("获取服务器状态失败:", error);
       setServerData(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, [serverIp]);
 
-  const fetchPingData = async () => {
+  const fetchPingData = useCallback(async () => {
     try {
       setPingLoading(true);
       const controller = new AbortController();
@@ -179,15 +180,16 @@ export function ServerStatusCard() {
       clearTimeout(timeoutId);
       if (!response.ok) throw new Error(`Ping API returned ${response.status}`);
       setPingData(await response.json());
-    } catch {
+    } catch (error) {
+      console.error("获取ping数据失败:", error);
       setPingData({ code: 500, host: pingIp, location: "网络测试失败" });
     } finally {
       setPingLoading(false);
     }
-  };
+  }, [pingIp]);
 
   // 服务器运行时间
-  const updateServerTime = () => {
+  const updateServerTime = useCallback(() => {
     const startDate = new Date("2024-09-16T15:34:43");
     const now = new Date();
     let diff = now.getTime() - startDate.getTime();
@@ -205,35 +207,35 @@ export function ServerStatusCard() {
     setServerTime(
       `${years}年 ${months}月 ${days}日 ${hours}时 ${minutes}分 ${seconds}秒`
     )
-  }
+  }, []);
 
   // 刷新
-  const refreshAllData = () => {
-    fetchServerStatus()
-    fetchPingData()
-  }
+  const refreshAllData = useCallback(() => {
+    fetchServerStatus();
+    fetchPingData();
+  }, [fetchServerStatus, fetchPingData]);
 
   useEffect(() => {
-    fetchServerStatus()
-    fetchPingData()
-    updateServerTime()
-    const statusInterval = setInterval(fetchServerStatus, 60000)
-    const pingInterval = setInterval(fetchPingData, 120000)
-    const timeInterval = setInterval(updateServerTime, 1000)
+    fetchServerStatus();
+    fetchPingData();
+    updateServerTime();
+    const statusInterval = setInterval(fetchServerStatus, 60000);
+    const pingInterval = setInterval(fetchPingData, 120000);
+    const timeInterval = setInterval(updateServerTime, 1000);
+    
     return () => {
-      clearInterval(statusInterval)
-      clearInterval(pingInterval)
-      clearInterval(timeInterval)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serverIp, pingIp])
+      clearInterval(statusInterval);
+      clearInterval(pingInterval);
+      clearInterval(timeInterval);
+    };
+  }, [fetchServerStatus, fetchPingData, updateServerTime]);
 
   if (loading && !serverData) return <ServerStatusSkeleton />
 
   const safeText = (val: any, fallback = "未知") => {
-    if (typeof val === "string" || typeof val === "number") return val
-    return fallback
-  }
+    if (typeof val === "string" || typeof val === "number") return val;
+    return fallback;
+  };
 
   return (
     <Card className="w-full max-w-[1200px] mx-auto shadow-2xl border-0 bg-white/90 dark:bg-zinc-900/90 relative transition-all px-8 py-6">
@@ -263,10 +265,10 @@ export function ServerStatusCard() {
         disabled={loading || pingLoading}
         variant="outline"
         size="icon"
-        className="absolute top-6 right-8 z-10 bg-white/80 dark:bg-zinc-800/80 shadow-md hover:bg-white dark:hover:bg-zinc-700"
+        className="absolute top-6 right-8 z-10 bg-white/80 dark:bg-zinc-800/80 shadow-md hover:bg-white dark:hover:bg-zinc-700 transition-all duration-300"
         aria-label="刷新"
       >
-        <RefreshCw className={`h-6 w-6 ${loading || pingLoading ? "animate-spin" : ""}`} />
+        <RefreshCw className={`h-6 w-6 transition-transform duration-500 ${loading || pingLoading ? "animate-spin" : ""}`} />
       </Button>
 
       <CardHeader className="pb-4 border-b border-muted dark:border-zinc-700 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-zinc-900 dark:to-zinc-800 rounded-t-xl mb-8">
