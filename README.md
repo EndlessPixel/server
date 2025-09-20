@@ -2,10 +2,6 @@
 
 本仓库存放的是 EndlessPixel 服务器官网的源代码，基于 [Next.js](https://nextjs.org/) 构建，采用 [GNU](https://www.gnu.org/licenses/) 许可证进行开源。
 
-## 项目结构
-
-- **`/code-next.js/`**：存放官网的源代码。
-
 ## 开发环境
 
 ### 前提条件
@@ -49,3 +45,4 @@ npm run dev
 - 在提交 pull request 之前，确保你的代码已经通过本地测试。
 
 感谢你对 EndlessPixel 项目的关注和支持！
+
