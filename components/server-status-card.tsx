@@ -194,14 +194,14 @@ export function ServerStatusCard() {
     if (diff < 0) return setServerTime("计算错误!");
     const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
     diff -= years * (1000 * 60 * 60 * 24 * 365.25);
-    const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30.44)
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    diff -= days * (1000 * 60 * 60 * 24)
-    const hours = Math.floor(diff / (1000 * 60 * 60))
-    diff -= hours * (1000 * 60 * 60)
-    const minutes = Math.floor(diff / (1000 * 60))
-    diff -= minutes * (1000 * 60)
-    const seconds = Math.floor(diff / 1000)
+    const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30.44));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= days * (1000 * 60 * 60 * 24);
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+    const minutes = Math.floor(diff / (1000 * 60));
+    diff -= minutes * (1000 * 60);
+    const seconds = Math.floor(diff / 1000);
     setServerTime(
       `${years}年 ${months}月 ${days}日 ${hours}时 ${minutes}分 ${seconds}秒`
     )
