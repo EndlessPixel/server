@@ -126,7 +126,7 @@ export function ServerStatusCard() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const serverIp = searchParams.get("serverip") || NODES[0].ip;
-  const pingIp = searchParams.get("pingip") || "modrinth.com";
+  const pingIp = searchParams.get("pingip") || "ld.frp.one";
 
   const [serverData, setServerData] = useState<ServerData | null>(null);
   const [pingData, setPingData] = useState<PingData>({ code: 500, host: pingIp, location: "网络测试失败" });
