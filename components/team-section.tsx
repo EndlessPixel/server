@@ -38,8 +38,8 @@ export function TeamSection() {
       description: "负责服务器硬件提供和基础设施支持。",
       roleColor: "bg-green-100 text-green-800 dark:bg-green-950/20 dark:text-green-200",
       icon: Server,
-      departments: ["服务器"],
-      responsibilities: ["服务器提供"],
+      departments: ["摸鱼部"],
+      responsibilities: ["摸鱼"],
     },
     {
       name: "Alice_Ctoy",

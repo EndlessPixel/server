@@ -14,7 +14,7 @@ export function TechStackSection() {
       title: "开发工具",
       icon: Code,
       color: "text-green-600",
-      technologies: ["ESLint", "Prettier", "Git"],
+      technologies: ["ESLint", "Prettier", "Git", "GitHub Copilot", "Vercel"],
     },
     {
       title: "UI组件",
@@ -26,13 +26,13 @@ export function TechStackSection() {
       title: "API服务",
       icon: Database,
       color: "text-orange-600",
-      technologies: ["api.mcsrvstat.us", "uapis.cn", "api.github.com"],
+      technologies: ["api.mcsrvstat.us", "uapis.cn", "api.github.com", "cf-v2.uapis.cn"],
     },
     {
       title: "服务器环境",
       icon: Server,
       color: "text-red-600",
-      technologies: ["Java 21", "Minecraft 1.21.8", "LeafCore", "Windows Server 2022"],
+      technologies: ["Java 21", "Minecraft 1.21.8", "LeafCore", "Ub"],
     },
   ]
 
