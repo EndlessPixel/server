@@ -1,16 +1,18 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Download, Package, ChevronDown, ChevronUp, Loader2, ExternalLink, Star, Shield, Zap } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import ReactMarkdown from "react-markdown"
-import rehypeRaw from "rehype-raw"
-import remarkGfm from "remark-gfm"
-import { Input } from "@/components/ui/input"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Download, Package, ChevronDown, ChevronUp, Loader2, ExternalLink, Star, Shield, Zap, ArrowUp, ArrowDown } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
+import { Input } from "@/components/ui/input";
+import { ParsedRelease } from "@/lib/utils"; // 确保正确导入类型
+import { useRouter } from "next/navigation";
 
 interface GitHubRelease {
   id: number
@@ -27,87 +29,75 @@ interface GitHubRelease {
   }>
 }
 
-interface ParsedRelease {
-  name: string
-  version: string
-  mcVersion: string
-  releaseDate: string
-  isPrerelease: boolean
-  isLatest: boolean
-  downloadCount: number
-  files: Array<{
-    name: string
-    downloadUrl: string
-    downloadCount: number
-  }>
-  changelog: string
-  branch: "main" | "real"
-}
-
 export function DownloadSection() {
-  const [releases, setReleases] = useState<ParsedRelease[]>([])
-  const [loading, setLoading] = useState(true)
-  const [activeBranch, setActiveBranch] = useState<"main" | "real">("main")
-  const [search, setSearch] = useState("") // 新增搜索状态
-  const { toast } = useToast()
+  const router = useRouter();
+  const [releases, setReleases] = useState<ParsedRelease[]>([]); // 确保 releases 使用正确的类型
+  const [loading, setLoading] = useState(true);
+  const [activeBranch, setActiveBranch] = useState<"main" | "real">("main");
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"releaseDate" | "downloadCount">("releaseDate");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [tags, setTags] = useState<string[]>([]);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    fetchReleases()
-  }, [])
+    fetchReleases();
+  }, []);
 
   const fetchReleases = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const response = await fetch("https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases", {
         headers: {
           Accept: "application/vnd.github.v3+json",
         },
-      })
+      });
 
       if (!response.ok) {
-        throw new Error(`GitHub API error: ${response.status}`)
+        throw new Error(`GitHub API error: ${response.status}`);
       }
 
-      const data: GitHubRelease[] = await response.json()
+      const data: GitHubRelease[] = await response.json();
 
       // 首先确定每个分支的最新版本
       const mainReleases = data.filter(release =>
         !release.name.toLowerCase().includes("real") &&
         !release.tag_name.toLowerCase().includes("real")
-      )
+      );
 
       const realReleases = data.filter(release =>
         release.name.toLowerCase().includes("real") ||
         release.tag_name.toLowerCase().includes("real")
-      )
+      );
 
-      const latestMain = mainReleases.length > 0 && !mainReleases[0].prerelease ? mainReleases[0].id : null
-      const latestReal = realReleases.length > 0 && !realReleases[0].prerelease ? realReleases[0].id : null
+      const latestMain = mainReleases.length > 0 && !mainReleases[0].prerelease ? mainReleases[0].id : null;
+      const latestReal = realReleases.length > 0 && !realReleases[0].prerelease ? realReleases[0].id : null;
 
       const parsedReleases: ParsedRelease[] = data.map((release) => {
-        const mcVersionMatch = release.tag_name.match(/^(\d+\.\d+\.\d+)/)
-        const mcVersion = mcVersionMatch ? mcVersionMatch[1] : "Unknown"
+        const mcVersionMatch = release.tag_name.match(/^(\d+\.\d+\.\d+)/);
+        const mcVersion = mcVersionMatch ? mcVersionMatch[1] : "Unknown";
 
         // 确定分支 - 更精确的判断
-        let branch: "main" | "real" = "main"
+        let branch: "main" | "real" = "main";
         if (release.name.toLowerCase().includes("real") ||
           release.tag_name.toLowerCase().includes("real")) {
-          branch = "real"
+          branch = "real";
         }
 
         const files = release.assets.map((asset) => ({
           name: asset.name,
           downloadUrl: asset.browser_download_url,
           downloadCount: asset.download_count,
-        }))
+        }));
 
-        const downloadCount = files.reduce((total, file) => total + file.downloadCount, 0)
+        const downloadCount = files.reduce((total, file) => total + file.downloadCount, 0);
 
-        const releaseDate = new Date(release.published_at).toLocaleDateString("zh-CN")
+        const releaseDate = new Date(release.published_at).toLocaleDateString("zh-CN");
 
         // 确定是否为最新版本（非预发布版本）
         const isLatest = (branch === "main" && release.id === latestMain) ||
-          (branch === "real" && release.id === latestReal)
+          (branch === "real" && release.id === latestReal);
 
         return {
           name: release.name || release.tag_name,
@@ -121,30 +111,51 @@ export function DownloadSection() {
           changelog: release.body || "暂无更新日志。",
           branch,
         }
-      })
+      });
 
-      setReleases(parsedReleases)
+      setReleases(parsedReleases);
+
+      // 提取所有标签
+      const allTags = Array.from(new Set(parsedReleases.flatMap((release) => release.tags || [])));
+      setTags(allTags);
     } catch (error) {
-      console.error("Failed to fetch releases:", error)
+      console.error("Failed to fetch releases:", error);
       toast({
         title: "获取版本信息失败",
         description: "无法从GitHub获取最新版本信息，请稍后重试。",
         variant: "destructive",
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  // 新增：根据搜索过滤
+  const handleSortChange = (criteria: "releaseDate" | "downloadCount") => {
+    if (sortBy === criteria) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(criteria);
+      setSortOrder("desc");
+    }
+  }
+
   const filteredReleases = releases
-    .filter(release => release.branch === activeBranch)
-    .filter(release =>
+    .filter((release) => release.branch === activeBranch)
+    .filter((release) =>
       release.name.toLowerCase().includes(search.toLowerCase()) ||
       release.version.toLowerCase().includes(search.toLowerCase()) ||
       release.mcVersion.toLowerCase().includes(search.toLowerCase())
     )
-    .sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime())
+    .filter((release) => (selectedTag ? release.tags?.includes(selectedTag) : true))
+    .sort((a, b) => {
+      const compare = (key: "releaseDate" | "downloadCount") => {
+        if (key === "releaseDate") {
+          return new Date(a[key]).getTime() - new Date(b[key]).getTime();
+        }
+        return a[key] - b[key];
+      };
+      return sortOrder === "asc" ? compare(sortBy) : -compare(sortBy);
+    });
 
   if (loading) {
     return (
@@ -152,7 +163,7 @@ export function DownloadSection() {
         <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
         <span className="ml-2 text-muted-foreground">正在获取版本信息...</span>
       </div>
-    )
+    );
   }
 
   return (
@@ -164,13 +175,64 @@ export function DownloadSection() {
             选择适合您游戏风格的分支版本
           </p>
         </div>
-        {/* 新增搜索框 */}
-        <Input
-          className="w-64"
-          placeholder="搜索版本号、名称、MC版本…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
+        <div className="flex gap-4">
+          <Input
+            className="w-64"
+            placeholder="搜索版本号、名称、MC版本…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Button variant="outline" onClick={() => router.push("/downloads/issues")}>查看问题</Button>
+        </div>
+      </div>
+
+      <div className="flex justify-end items-center gap-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => handleSortChange("releaseDate")}
+          className="flex items-center gap-2"
+        >
+          {sortBy === "releaseDate" && sortOrder === "asc" ? (
+            <ArrowUp className="w-4 h-4" />
+          ) : (
+            <ArrowDown className="w-4 h-4" />
+          )}
+          按发布日期排序
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => handleSortChange("downloadCount")}
+          className="flex items-center gap-2"
+        >
+          {sortBy === "downloadCount" && sortOrder === "asc" ? (
+            <ArrowUp className="w-4 h-4" />
+          ) : (
+            <ArrowDown className="w-4 h-4" />
+          )}
+          按下载量排序
+        </Button>
+      </div>
+
+      <div className="flex gap-2 flex-wrap">
+        <Button
+          variant={selectedTag === null ? "default" : "outline"}
+          size="sm"
+          onClick={() => setSelectedTag(null)}
+        >
+          全部标签
+        </Button>
+        {tags.map((tag) => (
+          <Button
+            key={tag}
+            variant={selectedTag === tag ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSelectedTag(tag)}
+          >
+            {tag}
+          </Button>
+        ))}
       </div>
 
       <Tabs defaultValue="main" onValueChange={(value) => setActiveBranch(value as "main" | "real")}>
@@ -233,12 +295,6 @@ export function DownloadSection() {
               <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300">
                 真实版
               </Badge>
-              <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300">
-                挑战版
-              </Badge>
-              <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300">
-                硬核版
-              </Badge>
             </div>
           </div>
 
@@ -258,30 +314,34 @@ export function DownloadSection() {
           )}
         </TabsContent>
       </Tabs>
+
+      <div className="text-xs text-muted-foreground mt-4">
+        加速下载由 <a href="https://gh-proxy.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">gh-proxy.com</a> 提供。
+      </div>
     </div>
-  )
+  );
 }
 
 function ReleaseCard({ release }: { release: ParsedRelease }) {
-  const [showChangelog, setShowChangelog] = useState(false)
+  const [showChangelog, setShowChangelog] = useState(false);
 
   // 判断版本类型
   const getVersionType = () => {
-    if (release.isPrerelease) return "预发布版"
-    if (release.branch === "real") return "真实版"
-    return "正式版"
+    if (release.isPrerelease) return "预发布版";
+    if (release.branch === "real") return "真实版";
+    return "正式版";
   }
 
   const getVersionBadgeVariant = () => {
-    if (release.isPrerelease) return "secondary"
-    if (release.branch === "real") return "outline"
-    return "default"
+    if (release.isPrerelease) return "secondary";
+    if (release.branch === "real") return "outline";
+    return "default";
   }
 
   const getVersionBadgeColor = () => {
-    if (release.isPrerelease) return "bg-yellow-100 text-yellow-800 border-yellow-300"
-    if (release.branch === "real") return "bg-purple-100 text-purple-800 border-purple-300"
-    return "bg-blue-100 text-blue-800 border-blue-300"
+    if (release.isPrerelease) return "bg-yellow-100 text-yellow-800 border-yellow-300";
+    if (release.branch === "real") return "bg-purple-100 text-purple-800 border-purple-300";
+    return "bg-blue-100 text-blue-800 border-blue-300";
   }
 
   return (
@@ -333,7 +393,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {release.files.map((file) => {
+          {release.files && release.files.map((file) => {
             // 镜像链接生成
             const mirrors = [
               {
@@ -368,6 +428,16 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
                   </Button>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-1">
+                  <span className="text-[11px] text-muted-foreground">
+                    镜像下载：<span className="text-muted-foreground/70">如遇GitHub下载缓慢可尝试</span>
+                  </span>
+                  {mirrors.some(m => m.tip) && (
+                    <span className="text-[11px] text-orange-500">
+                      香港线路大文件不建议用
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2 mt-1">
                   {mirrors.map((mirror) => (
                     <Button
                       key={mirror.url}
@@ -385,16 +455,6 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
                     </Button>
                   ))}
                 </div>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  <span className="text-[11px] text-muted-foreground">
-                    镜像下载：<span className="text-muted-foreground/70">如遇GitHub下载缓慢可尝试</span>
-                  </span>
-                  {mirrors.some(m => m.tip) && (
-                    <span className="text-[11px] text-orange-500">
-                      香港线路大文件不建议用
-                    </span>
-                  )}
-                </div>
               </div>
             )
           })}
@@ -410,7 +470,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
             {showChangelog ? "隐藏更新日志" : "查看更新日志"}
           </Button>
           {showChangelog && (
-            <div className="mt-4 p-4 bg-muted rounded-lg border prose prose-sm max-w-none dark:prose-invert">
+            <div className="mt-4 p-4 bg-muted rounded-lg border prose prose-sm max-w-none dark:prose-invert break-words">
               <ReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}

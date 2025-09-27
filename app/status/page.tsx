@@ -1,43 +1,16 @@
-import { Suspense } from 'react';
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import { ServerStatusCard } from "@/components/server-status-card"
-import { ServerStatusSkeleton } from "@/components/server-status-skeleton";
-import type { Metadata } from "next"
 
-export const metadata: Metadata = {
-  title: "服务器状态",
-  description:
-    "实时查看EndlessPixel Minecraft服务器的运行状态、在线玩家数量、服务器性能指标和延迟信息。24小时实时监控服务器健康状况。",
-  keywords: ["服务器状态", "在线玩家", "服务器监控", "Minecraft状态", "实时状态", "服务器性能", "延迟查询"],
-  openGraph: {
-    title: "服务器状态 | EndlessPixel",
-    description: "实时查看 EndlessPixel 服务器的运行状态、在线玩家和性能指标。",
-    url: "https://ep.endlesspixel.fun/status",
-  },
-}
+const NODES = [
+  { name: "湖北十堰-2", path: "/status/frpnode/hbsy-2" },
+  { name: "湖南娄底联通", path: "/status/frpnode/hnldlt" },
+  { name: "四川成都电信", path: "/status/frpnode/sccddx" },
+  { name: "四川成都联通", path: "/status/frpnode/sccdlt" },
+];
 
-// 加载状态组件 - 与ServerStatusCard结构匹配的骨架屏
-function ServerStatusFallback() {
-  return (
-    <div className="w-full max-w-[1200px] mx-auto shadow-2xl border-0 bg-white/90 dark:bg-zinc-900/90 rounded-lg p-8 animate-pulse">
-      <div className="flex flex-wrap gap-4 px-2 pt-2 pb-6 justify-center mb-8">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="rounded-full px-7 py-2 bg-gray-200 dark:bg-gray-700 w-32 h-10"></div>
-        ))}
-      </div>
-      <div className="h-40 bg-gray-200 dark:bg-gray-700 rounded-lg mb-8"></div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <div className="rounded-xl bg-gray-200 dark:bg-gray-700 p-7 h-40"></div>
-        <div className="rounded-xl bg-gray-200 dark:bg-gray-700 p-7 h-40"></div>
-      </div>
-      <div className="rounded-xl bg-gray-200 dark:bg-gray-700 p-7 h-16 mb-8"></div>
-      <div className="rounded-xl bg-gray-200 dark:bg-gray-700 p-7 h-32"></div>
-    </div>
-  );
-}
-
-export default function StatusPage() {
+export default function StatusIndexPage() {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -45,20 +18,49 @@ export default function StatusPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-foreground mb-4">服务器状态</h1>
+            <h1 className="text-4xl font-bold text-foreground mb-4">节点状态导航</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               实时查看 EndlessPixel 服务器的运行状态、在线玩家和性能指标
             </p>
           </div>
 
-          {/* 使用Suspense包裹客户端组件，解决useSearchParams的构建错误 */}
-          <Suspense fallback={<ServerStatusFallback />}>
-            <ServerStatusCard />
-          </Suspense>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {NODES.map((node) => (
+              <Card key={node.name} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium text-gray-800 dark:text-gray-200">
+                    {node.name}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    查看 {node.name} 的详细状态。
+                  </p>
+                  <Link href={node.path} className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">
+                    查看详情
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+            <Card key={"Minecraft 服务器"} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium text-gray-800 dark:text-gray-200">
+                    {"Minecraft 服务器"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    查看 {"Minecraft 服务器"} 的详细状态。
+                  </p>
+                  <Link href={"/status/mcserverstatus"} className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">
+                    查看详情
+                  </Link>
+                </CardContent>
+              </Card>
+          </div>
         </div>
       </main>
       <Footer />
     </div>
-  )
+  );
 }
-    
