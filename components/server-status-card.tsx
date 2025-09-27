@@ -66,7 +66,7 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
     async function fetchNodeData() {
       try {
         const response = await fetch(
-          `http://cf-v2.uapis.cn/node_status_info?nodename=${encodeURIComponent(node)}`
+          `https://cf-v2.uapis.cn/node_status_info?nodename=${encodeURIComponent(node)}`
         );
         if (!response.ok) throw new Error(`Failed to fetch node data: ${response.statusText}`);
         const data = await response.json();
