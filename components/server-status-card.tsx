@@ -32,25 +32,22 @@ const GRADIENT_COLORS = [
 
 const chartOptions = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: "top" as const,
+      position: "top" as const, // ✅ 字面量 "top"
     },
-    title: {
-      display: false,
-    },
+    title: { display: false },
   },
-  maintainAspectRatio: false,
   elements: {
-    line: {
-      tension: 0.4, // Add curve to the lines
-    },
-    point: {
-      radius: 4,
-      hoverRadius: 6,
-    },
+    line: { tension: 0 }, // 直线
+    point: { radius: 0 }, // 不画点
   },
-};
+  scales: {
+    x: { grid: { display: false } },
+    y: { grid: { color: "rgba(128,128,128,0.1" } },
+  },
+} as const; // ✅ 整个对象也锁定，避免其他推导错误
 
 interface ServerStatusCardProps {
   node: string;
@@ -73,10 +70,10 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
         console.log("Fetched node data:", data); // Debug log for fetched data
         setNodeData(data);
 
-        // Only keep the last 50 entries
-        const statusList = data.data?.status_list?.slice(-50) || [];
+        const raw = data.data?.status_list || [];
+        const step = Math.max(1, Math.floor(raw.length / 50));
+        const statusList = raw.filter((_: any, i: number) => i % step === 0).slice(-50);
 
-        // Format timestamps
         const timestamps = statusList.map((item: any) =>
           new Date(item.timestamp).toLocaleTimeString("zh-CN", {
             hour: "2-digit",
@@ -85,7 +82,6 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
           })
         );
 
-        // Update CPU usage chart data
         const cpuUsages = statusList.map((item: any) => item.cpu_usage);
         setCpuChartData({
           labels: timestamps,
@@ -93,14 +89,19 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
             {
               label: "CPU Usage (%)",
               data: cpuUsages,
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              backgroundColor: (ctx: any) => {
+                const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
+                g.addColorStop(0, `rgba(75, 192, 192, 0.2)`);
+                g.addColorStop(1, `rgba(75, 192, 192, 0)`);
+                return g;
+              },
               borderColor: "rgba(75, 192, 192, 1)",
               borderWidth: 2,
+              fill: true,
             },
           ],
         });
 
-        // Update traffic chart data
         const uploadBandwidth = statusList.map((item: any) => item.upload_bandwidth);
         const downloadBandwidth = statusList.map((item: any) => item.recv_packets);
         setTrafficChartData({
@@ -109,16 +110,28 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
             {
               label: "Upload Bandwidth (MB/s)",
               data: uploadBandwidth,
-              backgroundColor: "rgba(255, 99, 132, 0.2)",
+              backgroundColor: (ctx: any) => {
+                const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
+                g.addColorStop(0, `rgba(255, 99, 132, 0.2)`);
+                g.addColorStop(1, `rgba(255, 99, 132, 0)`);
+                return g;
+              },
               borderColor: "rgba(255, 99, 132, 1)",
               borderWidth: 2,
+              fill: true,
             },
             {
               label: "Download Bandwidth (MB/s)",
               data: downloadBandwidth,
-              backgroundColor: "rgba(54, 162, 235, 0.2)",
+              backgroundColor: (ctx: any) => {
+                const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
+                g.addColorStop(0, `rgba(54, 162, 235, 0.2)`);
+                g.addColorStop(1, `rgba(54, 162, 235, 0)`);
+                return g;
+              },
               borderColor: "rgba(54, 162, 235, 1)",
               borderWidth: 2,
+              fill: true,
             },
           ],
         });
