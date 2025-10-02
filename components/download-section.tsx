@@ -35,8 +35,8 @@ export function DownloadSection() {
   const [loading, setLoading] = useState(true);
   const [activeBranch, setActiveBranch] = useState<"main" | "real">("main");
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<"releaseDate" | "downloadCount">("releaseDate");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortBy, setSortBy] = useState<"semantic" | "releaseDate" | "downloadCount">("semantic");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { toast } = useToast();
@@ -130,7 +130,7 @@ export function DownloadSection() {
     }
   }
 
-  const handleSortChange = (criteria: "releaseDate" | "downloadCount") => {
+  const handleSortChange = (criteria: "semantic" | "releaseDate" | "downloadCount") => {
     if (sortBy === criteria) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
@@ -138,6 +138,16 @@ export function DownloadSection() {
       setSortOrder("desc");
     }
   }
+
+  /** 语义版本排序（字典序，v7-2.10 > v7-2.9） */
+  const semanticCompare = (a: ParsedRelease, b: ParsedRelease) => {
+    // 先比 MC 主版本
+    const mcA = a.mcVersion.split('.').map(Number);
+    const mcB = b.mcVersion.split('.').map(Number);
+    for (let i = 0; i < 3; i++) if (mcA[i] !== mcB[i]) return mcA[i] - mcB[i];
+    // 再比 tag 字符串（localeCompare 带 numeric 可正确处理 v7-2.10 > v7-2.9）
+    return a.version.localeCompare(b.version, undefined, { numeric: true, sensitivity: 'base' });
+  };
 
   const filteredReleases = releases
     .filter((release) => release.branch === activeBranch)
@@ -148,13 +158,16 @@ export function DownloadSection() {
     )
     .filter((release) => (selectedTag ? release.tags?.includes(selectedTag) : true))
     .sort((a, b) => {
-      const compare = (key: "releaseDate" | "downloadCount") => {
-        if (key === "releaseDate") {
-          return new Date(a[key]).getTime() - new Date(b[key]).getTime();
-        }
-        return a[key] - b[key];
-      };
-      return sortOrder === "asc" ? compare(sortBy) : -compare(sortBy);
+       if (sortBy === "semantic") {
+         return sortOrder === "asc" ? semanticCompare(a, b) : -semanticCompare(a, b);
+       }
+        const compare = (key: "releaseDate" | "downloadCount") => {
+            if (key === "releaseDate") {
+              return new Date(a[key]).getTime() - new Date(b[key]).getTime();
+            }
+            return a[key] - b[key];
+        };
+        return sortOrder === "asc" ? compare(sortBy) : -compare(sortBy);
     });
 
   if (loading) {
@@ -187,32 +200,25 @@ export function DownloadSection() {
       </div>
 
       <div className="flex justify-end items-center gap-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => handleSortChange("releaseDate")}
-          className="flex items-center gap-2"
-        >
-          {sortBy === "releaseDate" && sortOrder === "asc" ? (
-            <ArrowUp className="w-4 h-4" />
-          ) : (
-            <ArrowDown className="w-4 h-4" />
-          )}
-          按发布日期排序
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => handleSortChange("downloadCount")}
-          className="flex items-center gap-2"
-        >
-          {sortBy === "downloadCount" && sortOrder === "asc" ? (
-            <ArrowUp className="w-4 h-4" />
-          ) : (
-            <ArrowDown className="w-4 h-4" />
-          )}
-          按下载量排序
-        </Button>
+        {/* 排序按钮组：高亮当前选中 */}
+        {(["semantic", "releaseDate", "downloadCount"] as const).map((key) => (
+          <Button
+            key={key}
+            variant={sortBy === key ? "default" : "ghost"}
+            size="sm"
+            onClick={() => handleSortChange(key)}
+            className="flex items-center gap-2"
+          >
+            {sortBy === key && sortOrder === "asc" ? (
+              <ArrowUp className="w-4 h-4" />
+            ) : (
+              <ArrowDown className="w-4 h-4" />
+            )}
+            {key === "semantic" && "按版本号排序"}
+            {key === "releaseDate" && "按发布日期排序"}
+            {key === "downloadCount" && "按下载量排序"}
+          </Button>
+        ))}
       </div>
 
       <div className="flex gap-2 flex-wrap">
