@@ -48,7 +48,7 @@ export function DownloadSection() {
   const fetchReleases = async () => {
     try {
       setLoading(true);
-      const response = await fetch("https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases", {
+      const response = await fetch("https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases?per_page=200", {
         headers: {
           Accept: "application/vnd.github.v3+json",
         },
