@@ -36,7 +36,7 @@ export function DownloadSection() {
   const [activeBranch, setActiveBranch] = useState<"main" | "real">("main");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"semantic" | "releaseDate" | "downloadCount">("semantic");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("desc"); // 默认降序
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { toast } = useToast();
