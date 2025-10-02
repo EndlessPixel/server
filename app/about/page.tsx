@@ -8,6 +8,8 @@ import { LuckTest } from "@/components/luck-test"
 import { Card, CardContent } from "@/components/ui/card"
 import { Server, Heart, Users } from "lucide-react"
 import type { Metadata } from "next"
+import { differenceInMonths } from "date-fns"
+import { FloatingInquiryButton } from "@/components/floating-inquiry-button"
 
 export const metadata: Metadata = {
   title: "关于我们",
@@ -20,6 +22,10 @@ export const metadata: Metadata = {
     url: "https://ep.endlesspixel.fun/about",
   },
 }
+
+const startDate = new Date(2024, 8, 16) // 2024/09/16
+const currentDate = new Date()
+const operatingMonths = differenceInMonths(currentDate, startDate)
 
 export default function AboutPage() {
   return (
@@ -81,7 +87,7 @@ export default function AboutPage() {
             <Card className="text-center">
               <CardContent className="p-6">
                 <Server className="w-8 h-8 text-green-600 mx-auto mb-3" />
-                <div className="text-2xl font-bold text-foreground mb-1">84.2%</div>
+                <div className="text-2xl font-bold text-foreground mb-1">86.2%</div>
                 <div className="text-sm text-muted-foreground">在线时间</div>
               </CardContent>
             </Card>
@@ -89,7 +95,7 @@ export default function AboutPage() {
             <Card className="text-center">
               <CardContent className="p-6">
                 <Heart className="w-8 h-8 text-red-600 mx-auto mb-3" />
-                <div className="text-2xl font-bold text-foreground mb-1">10</div>
+                <div className="text-2xl font-bold text-foreground mb-1">{operatingMonths}</div>
                 <div className="text-sm text-muted-foreground">运营月数</div>
               </CardContent>
             </Card>
@@ -97,6 +103,7 @@ export default function AboutPage() {
         </div>
       </main>
       <Footer />
+      <FloatingInquiryButton />
     </div>
   )
 }
