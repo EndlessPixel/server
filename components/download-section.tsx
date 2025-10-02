@@ -158,16 +158,16 @@ export function DownloadSection() {
     )
     .filter((release) => (selectedTag ? release.tags?.includes(selectedTag) : true))
     .sort((a, b) => {
-       if (sortBy === "semantic") {
-         return sortOrder === "asc" ? semanticCompare(a, b) : -semanticCompare(a, b);
-       }
-        const compare = (key: "releaseDate" | "downloadCount") => {
-            if (key === "releaseDate") {
-              return new Date(a[key]).getTime() - new Date(b[key]).getTime();
-            }
-            return a[key] - b[key];
-        };
-        return sortOrder === "asc" ? compare(sortBy) : -compare(sortBy);
+      if (sortBy === "semantic") {
+        return sortOrder === "asc" ? semanticCompare(a, b) : -semanticCompare(a, b);
+      }
+      const compare = (key: "releaseDate" | "downloadCount") => {
+        if (key === "releaseDate") {
+          return new Date(a[key]).getTime() - new Date(b[key]).getTime();
+        }
+        return a[key] - b[key];
+      };
+      return sortOrder === "asc" ? compare(sortBy) : -compare(sortBy);
     });
 
   if (loading) {
