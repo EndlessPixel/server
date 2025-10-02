@@ -23,6 +23,14 @@ export function LuckTest() {
       hash = hash & hash // 转换为32位整数
     }
 
+    // 获取用户设备信息
+    const userAgent = navigator.userAgent
+    for (let i = 0; i < userAgent.length; i++) {
+      const char = userAgent.charCodeAt(i)
+      hash = (hash << 5) - hash + char
+      hash = hash & hash // 转换为32位整数
+    }
+
     // 添加额外的混淆因子，避免规律性
     const mixedHash = Math.abs(hash * 9301 + 49297) % 233280
     const luck = Math.floor((mixedHash / 233280) * 101)
