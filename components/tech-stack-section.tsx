@@ -14,7 +14,7 @@ export function TechStackSection() {
       title: "开发工具",
       icon: Code,
       color: "text-green-600",
-      technologies: ["ESLint", "Prettier", "Git", "GitHub Copilot", "Vercel"],
+      technologies: ["ESLint", "Prettier", "Git", "GitHub Copilot", "Vercel v0 AI"],
     },
     {
       title: "UI组件",
@@ -32,7 +32,7 @@ export function TechStackSection() {
       title: "服务器环境",
       icon: Server,
       color: "text-red-600",
-      technologies: ["Java 21", "Minecraft 1.21.8", "LeafCore", "Ubuntu Server 22.04"],
+      technologies: ["Temurin Java 21", "Minecraft 1.21.8", "LeafCore", "Velocity", "Ubuntu Server 13.3.0-6ubuntu2~24.04"],
     },
   ]
 
@@ -76,7 +76,7 @@ export function TechStackSection() {
             <p className="text-muted-foreground text-sm">
               我们使用最新的Web技术栈构建了这个网站，确保快速、安全、响应式的用户体验。
               采用服务端渲染(SSR)和静态生成(SSG)技术，提供卓越的性能和SEO优化。 服务器运行在Java
-              21环境上，使用LeafCore核心在Ubuntu Server 22.04系统中为玩家提供稳定可靠的游戏体验。
+              21环境上，使用LeafCore核心在基于Linux buildd@lcy02-amd64-011 的 Ubuntu Server 13.3.0-6ubuntu2~24.04系统中为玩家提供稳定可靠的游戏体验。
             </p>
           </div>
         </div>
