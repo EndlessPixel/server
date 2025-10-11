@@ -11,7 +11,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import { Input } from "@/components/ui/input";
-import { ParsedRelease } from "@/lib/utils"; // 确保正确导入类型
+import { ParsedRelease } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 interface GitHubRelease {
@@ -28,23 +28,20 @@ interface GitHubRelease {
     browser_download_url: string
   }>
 }
-
 export function DownloadSection() {
   const router = useRouter();
-  const [releases, setReleases] = useState<ParsedRelease[]>([]); // 确保 releases 使用正确的类型
+  const [releases, setReleases] = useState<ParsedRelease[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeBranch, setActiveBranch] = useState<"main" | "real">("main");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"semantic" | "releaseDate" | "downloadCount">("semantic");
-  const [sortOrder, setSortOrder] = useState("desc"); // 默认降序
+  const [sortOrder, setSortOrder] = useState("desc");
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { toast } = useToast();
-
   useEffect(() => {
     fetchReleases();
   }, []);
-
   const fetchReleases = async () => {
     try {
       setLoading(true);
@@ -53,52 +50,37 @@ export function DownloadSection() {
           Accept: "application/vnd.github.v3+json",
         },
       });
-
       if (!response.ok) {
         throw new Error(`GitHub API error: ${response.status}`);
       }
-
       const data: GitHubRelease[] = await response.json();
-
-      // 首先确定每个分支的最新版本
       const mainReleases = data.filter(release =>
         !release.name.toLowerCase().includes("real") &&
         !release.tag_name.toLowerCase().includes("real")
       );
-
       const realReleases = data.filter(release =>
         release.name.toLowerCase().includes("real") ||
         release.tag_name.toLowerCase().includes("real")
       );
-
       const latestMain = mainReleases.length > 0 && !mainReleases[0].prerelease ? mainReleases[0].id : null;
       const latestReal = realReleases.length > 0 && !realReleases[0].prerelease ? realReleases[0].id : null;
-
       const parsedReleases: ParsedRelease[] = data.map((release) => {
         const mcVersionMatch = release.tag_name.match(/^(\d+\.\d+\.\d+)/);
         const mcVersion = mcVersionMatch ? mcVersionMatch[1] : "Unknown";
-
-        // 确定分支 - 更精确的判断
         let branch: "main" | "real" = "main";
         if (release.name.toLowerCase().includes("real") ||
           release.tag_name.toLowerCase().includes("real")) {
           branch = "real";
         }
-
         const files = release.assets.map((asset) => ({
           name: asset.name,
           downloadUrl: asset.browser_download_url,
           downloadCount: asset.download_count,
         }));
-
         const downloadCount = files.reduce((total, file) => total + file.downloadCount, 0);
-
         const releaseDate = new Date(release.published_at).toLocaleDateString("zh-CN");
-
-        // 确定是否为最新版本（非预发布版本）
         const isLatest = (branch === "main" && release.id === latestMain) ||
           (branch === "real" && release.id === latestReal);
-
         return {
           name: release.name || release.tag_name,
           version: release.tag_name,
@@ -112,10 +94,7 @@ export function DownloadSection() {
           branch,
         }
       });
-
       setReleases(parsedReleases);
-
-      // 提取所有标签
       const allTags = Array.from(new Set(parsedReleases.flatMap((release) => release.tags || [])));
       setTags(allTags);
     } catch (error) {
@@ -129,7 +108,6 @@ export function DownloadSection() {
       setLoading(false);
     }
   }
-
   const handleSortChange = (criteria: "semantic" | "releaseDate" | "downloadCount") => {
     if (sortBy === criteria) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -138,17 +116,69 @@ export function DownloadSection() {
       setSortOrder("desc");
     }
   }
+  // 比较两个版本字符串的语义顺序。
+  // 先比较 Minecraft 版本（mcVersion）的三段数值，然后比较 release.tag 语义化版本。
+  const compareVersionStrings = (v1: string, v2: string) => {
+    // 将字符串切分为数字段和非数字段的序列，例如 "v8-b5-1.0" => ["v", 8, "-b", 5, "-", 1, ".", 0]
+    const tokenize = (s: string) => {
+      const parts: Array<string | number> = [];
+      let cur = '';
+      let mode: 'digit' | 'other' | null = null;
+      for (let i = 0; i < s.length; i++) {
+        const ch = s[i];
+        const isDigit = /[0-9]/.test(ch);
+        if (mode === null) {
+          mode = isDigit ? 'digit' : 'other';
+          cur = ch;
+        } else if ((mode === 'digit' && isDigit) || (mode === 'other' && !isDigit)) {
+          cur += ch;
+        } else {
+          // flush
+          if (mode === 'digit') parts.push(Number(cur));
+          else parts.push(cur.toLowerCase());
+          cur = ch;
+          mode = isDigit ? 'digit' : 'other';
+        }
+      }
+      if (cur.length > 0) {
+        if (mode === 'digit') parts.push(Number(cur));
+        else parts.push(cur.toLowerCase());
+      }
+      return parts;
+    };
 
-  /** 语义版本排序（字典序，v7-2.10 > v7-2.9） */
+    const p1 = tokenize(v1);
+    const p2 = tokenize(v2);
+    const len = Math.max(p1.length, p2.length);
+    for (let i = 0; i < len; i++) {
+      const a = p1[i];
+      const b = p2[i];
+      if (a === undefined) return -1; // shorter sorts before longer when prefix-equal
+      if (b === undefined) return 1;
+      const aIsNum = typeof a === 'number';
+      const bIsNum = typeof b === 'number';
+      if (aIsNum && bIsNum) {
+        if (a !== b) return (a as number) - (b as number);
+      } else if (!aIsNum && !bIsNum) {
+        if (a !== b) return (a as string) < (b as string) ? -1 : 1;
+      } else {
+        // 数字段通常被认为大于字母字段（例如 '1' > 'b'），但在语义版本控制中通常数字优先于字母，
+        // 为匹配用户期望：把字母前缀（如 'b'）视为较小（pre-release），所以字母 < 数字
+        return aIsNum ? 1 : -1;
+      }
+    }
+    return 0;
+  };
+
   const semanticCompare = (a: ParsedRelease, b: ParsedRelease) => {
-    // 先比 MC 主版本
     const mcA = a.mcVersion.split('.').map(Number);
     const mcB = b.mcVersion.split('.').map(Number);
     for (let i = 0; i < 3; i++) if (mcA[i] !== mcB[i]) return mcA[i] - mcB[i];
-    // 再比 tag 字符串（localeCompare 带 numeric 可正确处理 v7-2.10 > v7-2.9）
-    return a.version.localeCompare(b.version, undefined, { numeric: true, sensitivity: 'base' });
+    // strip leading v/ V from tag names for comparison
+    const va = a.version.replace(/^v/i, '');
+    const vb = b.version.replace(/^v/i, '');
+    return compareVersionStrings(va, vb);
   };
-
   const filteredReleases = releases
     .filter((release) => release.branch === activeBranch)
     .filter((release) =>
@@ -169,7 +199,6 @@ export function DownloadSection() {
       };
       return sortOrder === "asc" ? compare(sortBy) : -compare(sortBy);
     });
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -178,7 +207,6 @@ export function DownloadSection() {
       </div>
     );
   }
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -198,7 +226,6 @@ export function DownloadSection() {
           <Button variant="outline" onClick={() => router.push("/downloads/issues")}>查看问题</Button>
         </div>
       </div>
-
       <div className="flex justify-end items-center gap-4">
         {/* 排序按钮组：高亮当前选中 */}
         {(["semantic", "releaseDate", "downloadCount"] as const).map((key) => (
@@ -220,7 +247,6 @@ export function DownloadSection() {
           </Button>
         ))}
       </div>
-
       <div className="flex gap-2 flex-wrap">
         <Button
           variant={selectedTag === null ? "default" : "outline"}
@@ -240,7 +266,6 @@ export function DownloadSection() {
           </Button>
         ))}
       </div>
-
       <Tabs defaultValue="main" onValueChange={(value) => setActiveBranch(value as "main" | "real")}>
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="main" className="flex items-center gap-2">
@@ -252,7 +277,6 @@ export function DownloadSection() {
             Real分支
           </TabsTrigger>
         </TabsList>
-
         <TabsContent value="main" className="space-y-4 mt-4">
           <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
             <h3 className="font-semibold text-blue-800 dark:text-blue-200 flex items-center">
@@ -271,7 +295,6 @@ export function DownloadSection() {
               </Badge>
             </div>
           </div>
-
           {filteredReleases.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
@@ -287,7 +310,6 @@ export function DownloadSection() {
             ))
           )}
         </TabsContent>
-
         <TabsContent value="real" className="space-y-4 mt-4">
           <div className="bg-purple-50 dark:bg-purple-950/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
             <h3 className="font-semibold text-purple-800 dark:text-purple-200 flex items-center">
@@ -303,7 +325,6 @@ export function DownloadSection() {
               </Badge>
             </div>
           </div>
-
           {filteredReleases.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
@@ -320,14 +341,12 @@ export function DownloadSection() {
           )}
         </TabsContent>
       </Tabs>
-
       <div className="text-xs text-muted-foreground mt-4">
         加速下载由 <a href="https://gh-proxy.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">gh-proxy.com</a> 提供。
       </div>
     </div>
   );
 }
-
 function ReleaseCard({ release }: { release: ParsedRelease }) {
   const [showChangelog, setShowChangelog] = useState(false);
 
