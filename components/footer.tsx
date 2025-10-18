@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Server, Github, MessageCircle, Video, Smartphone } from "lucide-react"
+import { Server, Github, MessageCircle, Video, Smartphone, Gamepad2 } from "lucide-react"
 
 export function Footer() {
   return (
@@ -33,6 +33,13 @@ export function Footer() {
                 className="text-gray-300 dark:text-gray-400 hover:text-white transition-colors"
               >
                 <MessageCircle className="w-5 h-5" />
+              </a>
+              <a href="https://discord.gg/k63hRWt3fF"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-300 dark:text-gray-400 hover:text-white transition-colors"
+              >
+                <Gamepad2 className="w-5 h-5" />
               </a>
               <a
                 href="https://space.bilibili.com/3546799478409405"

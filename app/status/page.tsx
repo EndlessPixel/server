@@ -4,10 +4,9 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 
 const NODES = [
-  { name: "湖北十堰-2", path: "/status/frpnode/hbsy-2" },
-  { name: "湖南娄底联通", path: "/status/frpnode/hnldlt" },
-  { name: "四川成都电信", path: "/status/frpnode/sccddx" },
-  { name: "四川成都联通", path: "/status/frpnode/sccdlt" },
+  { name: "四川成都联通", path: "/status/frpnode/cd2" },
+  { name: "四川成都电信", path: "/status/frpnode/cd1" },
+  { name: "四川成都多线", path: "/status/frpnode/cd3" },
 ];
 
 export default function StatusIndexPage() {
