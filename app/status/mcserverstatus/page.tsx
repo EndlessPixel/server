@@ -23,12 +23,10 @@ interface ServerData {
 
 /* ---------------- 节点 ---------------- */
 const NODES = [
-  { name: "四川成都联通", ip: "cd2.epmc.top" },
-  { name: "四川成都电信", ip: "cd1.epmc.top" },
-  { name: "湖南娄底联通", ip: "ld.epmc.top" },
-  { name: "湖北十堰电信", ip: "hbdx.epmc.top" },
-  { name: "湖北十堰飞讯", ip: "hb.epmc.top" },
-  { name: "中国北京阿里", ip: "bj.epmc.top" },
+  { name: "四川成都联通", ip: "cd1.epmc.top" },
+  { name: "四川成都电信", ip: "cd2.epmc.top" },
+  { name: "四川成都多线", ip: "cd3.epmc.top" },
+  { name: "四川成都移动", ip: "cd4.epmc.top" },
 ] as const;
 
 /* ---------------- SVG 图标 ---------------- */

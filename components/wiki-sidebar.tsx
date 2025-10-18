@@ -17,7 +17,7 @@ export function WikiSidebar() {
       items: [
         { title: "整合包安装指南", id: "launcher-guide" },
         { title: "服务器玩家命令", id: "server-commands" },
-        { title: "如何创建领地", id: "create-claims" },
+        { title: "领地管理", id: "create-claims" },
       ],
     },
     {
@@ -53,6 +53,18 @@ export function WikiSidebar() {
       icon: ExternalLink,
       items: [
         {
+          title: "Minecraft 1.21.10",
+          id: "minecraft-1.21.10",
+          external: true,
+          url: "https://zh.minecraft.wiki/w/1.21.10",
+        },
+        {
+          title: "Minecraft 1.21.9",
+          id: "minecraft-1.21.9",
+          external: true,
+          url: "https://zh.minecraft.wiki/w/1.21.9",
+        },
+        {
           title: "Minecraft 1.21.8",
           id: "minecraft-1.21.8",
           external: true,
@@ -82,13 +94,14 @@ export function WikiSidebar() {
           external: true,
           url: "https://zh.minecraft.wiki/w/1.21.2",
         },
-        {
-          title: "Minecraft 1.21.1",
-          id: "minecraft-1.21.1",
-          external: true,
-          url: "https://zh.minecraft.wiki/w/1.21.1",
-        },
+        { title: "Minecraft 1.21.1", id: "minecraft-1.21.1", external: true, url: "https://zh.minecraft.wiki/w/1.21.1", },
         { title: "Minecraft 1.21", id: "minecraft-1.21", external: true, url: "https://zh.minecraft.wiki/w/1.21" },
+        { title: "Minecraft 1.20.6", id: "minecraft-1.20.6", external: true, url: "https://zh.minecraft.wiki/w/1.20.6", },
+        { title: "Minecraft 1.20.5", id: "minecraft-1.20.5", external: true, url: "https://zh.minecraft.wiki/w/1.20.5", },
+        { title: "Minecraft 1.20.4", id: "minecraft-1.20.4", external: true, url: "https://zh.minecraft.wiki/w/1.20.4", },
+        { title: "Minecraft 1.20.3", id: "minecraft-1.20.3", external: true, url: "https://zh.minecraft.wiki/w/1.20.3", },
+        { title: "Minecraft 1.20.2", id: "minecraft-1.20.2", external: true, url: "https://zh.minecraft.wiki/w/1.20.2", },
+        { title: "Minecraft 1.20.1", id: "minecraft-1.20.1", external: true, url: "https://zh.minecraft.wiki/w/1.20.1", },
         { title: "Minecraft 1.20", id: "minecraft-1.20", external: true, url: "https://zh.minecraft.wiki/w/1.20" },
       ],
     },
@@ -149,11 +162,10 @@ export function WikiSidebar() {
                       <Button
                         key={item.id}
                         variant="ghost"
-                        className={`w-full justify-start px-4 py-3 h-auto text-sm min-h-[44px] active:bg-accent/80 ${
-                          selectedArticle === item.id && (!("external" in item) || !item.external)
+                        className={`w-full justify-start px-4 py-3 h-auto text-sm min-h-[44px] active:bg-accent/80 ${selectedArticle === item.id && (!("external" in item) || !item.external)
                             ? "text-primary bg-accent font-medium"
                             : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                        }`}
+                          }`}
                         onClick={() => handleItemClick(item)}
                       >
                         <div className="flex items-center justify-between w-full">

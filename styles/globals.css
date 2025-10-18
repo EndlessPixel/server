@@ -1,7 +1,17 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@custom-variant dark (&:is(.dark *));
+/* Removed unknown at-rule @custom-variant — custom Tailwind variants must be defined in tailwind.config.js.
+   Example (tailwind.config.js):
+   module.exports = {
+     // ...
+     plugins: [
+       function ({ addVariant }) {
+         addVariant('dark', '&:is(.dark *)')
+       }
+     ]
+   }
+*/
 
 :root {
   --background: oklch(1 0 0);
@@ -74,7 +84,7 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
-@theme inline {
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -115,9 +125,11 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--color-border);
+    outline-color: var(--color-ring);
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
   }
 }

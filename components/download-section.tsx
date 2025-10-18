@@ -11,8 +11,25 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import { Input } from "@/components/ui/input";
-import { ParsedRelease } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+
+interface ParsedRelease {
+  name: string
+  version: string
+  mcVersion: string
+  releaseDate: string
+  isPrerelease: boolean
+  isLatest: boolean
+  downloadCount: number
+  files: Array<{
+    name: string
+    downloadUrl: string
+    downloadCount: number
+  }>
+  changelog: string
+  branch: "main" | "real"
+  tags?: string[]
+}
 
 interface GitHubRelease {
   id: number
@@ -119,65 +136,98 @@ export function DownloadSection() {
   // 比较两个版本字符串的语义顺序。
   // 先比较 Minecraft 版本（mcVersion）的三段数值，然后比较 release.tag 语义化版本。
   const compareVersionStrings = (v1: string, v2: string) => {
-    // 将字符串切分为数字段和非数字段的序列，例如 "v8-b5-1.0" => ["v", 8, "-b", 5, "-", 1, ".", 0]
-    const tokenize = (s: string) => {
-      const parts: Array<string | number> = [];
-      let cur = '';
-      let mode: 'digit' | 'other' | null = null;
-      for (let i = 0; i < s.length; i++) {
-        const ch = s[i];
-        const isDigit = /[0-9]/.test(ch);
-        if (mode === null) {
-          mode = isDigit ? 'digit' : 'other';
-          cur = ch;
-        } else if ((mode === 'digit' && isDigit) || (mode === 'other' && !isDigit)) {
-          cur += ch;
-        } else {
-          // flush
-          if (mode === 'digit') parts.push(Number(cur));
-          else parts.push(cur.toLowerCase());
-          cur = ch;
-          mode = isDigit ? 'digit' : 'other';
+    // Parse version components from the full version string
+    const parseVersion = (version: string) => {
+      // Extract Minecraft version, mod version, and build info
+      const match = version.match(/^EndlessPixel-(\d+\.\d+\.\d+)-v(\d+)-(.*)$/i);
+      
+      if (!match) {
+        return {
+          mcVersion: "0.0.0",
+          modVersion: 0,
+          buildType: "",
+          buildNum: 0,
+          fullVersion: version
+        };
+      }
+      
+      const [, mcVersion, modVersionStr, buildInfo] = match;
+      const modVersion = parseInt(modVersionStr, 10);
+      
+      // Determine if it's a pre-release and extract build number
+      let buildType = "release";
+      let buildNum = 0;
+      
+      const betaMatch = buildInfo.match(/^b(\d+)$/i);
+      if (betaMatch) {
+        buildType = "beta";
+        buildNum = parseInt(betaMatch[1], 10);
+      } else {
+        // For release versions, parse the version number for comparison
+        const releaseMatch = buildInfo.match(/^(\d+(?:\.\d+)*)$/);
+        if (releaseMatch) {
+          // Convert version string to a numeric value for comparison
+          const versionParts = releaseMatch[1].split(".").map(Number);
+          // Simple conversion to a comparable number (supports up to 3 decimal places)
+          buildNum = versionParts[0] * 1000 + (versionParts[1] || 0) * 10 + (versionParts[2] || 0);
         }
       }
-      if (cur.length > 0) {
-        if (mode === 'digit') parts.push(Number(cur));
-        else parts.push(cur.toLowerCase());
-      }
-      return parts;
+      
+      return {
+        mcVersion,
+        modVersion,
+        buildType,
+        buildNum,
+        fullVersion: version
+      };
     };
-
-    const p1 = tokenize(v1);
-    const p2 = tokenize(v2);
-    const len = Math.max(p1.length, p2.length);
-    for (let i = 0; i < len; i++) {
-      const a = p1[i];
-      const b = p2[i];
-      if (a === undefined) return -1; // shorter sorts before longer when prefix-equal
-      if (b === undefined) return 1;
-      const aIsNum = typeof a === 'number';
-      const bIsNum = typeof b === 'number';
-      if (aIsNum && bIsNum) {
-        if (a !== b) return (a as number) - (b as number);
-      } else if (!aIsNum && !bIsNum) {
-        if (a !== b) return (a as string) < (b as string) ? -1 : 1;
-      } else {
-        // 数字段通常被认为大于字母字段（例如 '1' > 'b'），但在语义版本控制中通常数字优先于字母，
-        // 为匹配用户期望：把字母前缀（如 'b'）视为较小（pre-release），所以字母 < 数字
-        return aIsNum ? 1 : -1;
+    
+    const v1Info = parseVersion(v1);
+    const v2Info = parseVersion(v2);
+    
+    // 1. Compare Minecraft versions (from highest to lowest)
+    if (v1Info.mcVersion !== v2Info.mcVersion) {
+      const mcParts1 = v1Info.mcVersion.split(".").map(Number);
+      const mcParts2 = v2Info.mcVersion.split(".").map(Number);
+      
+      for (let i = 0; i < 3; i++) {
+        if (mcParts1[i] !== mcParts2[i]) {
+          return mcParts2[i] - mcParts1[i]; // Higher Minecraft version comes first
+        }
       }
     }
-    return 0;
+    
+    // 2. Compare mod versions (from highest to lowest)
+    if (v1Info.modVersion !== v2Info.modVersion) {
+      return v2Info.modVersion - v1Info.modVersion; // Higher mod version comes first
+    }
+    
+    // 3. Compare build types and numbers
+    // Release versions should come before beta versions
+    if (v1Info.buildType !== v2Info.buildType) {
+      // Release > Beta
+      if (v1Info.buildType === "release") return -1;
+      if (v2Info.buildType === "release") return 1;
+    }
+    
+    // 4. For same build type, compare build numbers
+    // For beta versions: b5 > b4 > b3 > b2 > b1
+    // For release versions: Higher version numbers come first
+    if (v1Info.buildNum !== v2Info.buildNum) {
+      return v2Info.buildNum - v1Info.buildNum;
+    }
+    
+    // 5. If all else is equal, compare full version strings
+    return v1Info.fullVersion.localeCompare(v2Info.fullVersion);
   };
 
   const semanticCompare = (a: ParsedRelease, b: ParsedRelease) => {
-    const mcA = a.mcVersion.split('.').map(Number);
-    const mcB = b.mcVersion.split('.').map(Number);
-    for (let i = 0; i < 3; i++) if (mcA[i] !== mcB[i]) return mcA[i] - mcB[i];
-    // strip leading v/ V from tag names for comparison
-    const va = a.version.replace(/^v/i, '');
-    const vb = b.version.replace(/^v/i, '');
-    return compareVersionStrings(va, vb);
+    // 1. Latest version has highest priority
+    if (a.isLatest && !b.isLatest) return -1;
+    if (!a.isLatest && b.isLatest) return 1;
+    
+    // 2. Use the new comprehensive version comparison
+    return compareVersionStrings(a.name, b.name);
   };
   const filteredReleases = releases
     .filter((release) => release.branch === activeBranch)
@@ -189,15 +239,22 @@ export function DownloadSection() {
     .filter((release) => (selectedTag ? release.tags?.includes(selectedTag) : true))
     .sort((a, b) => {
       if (sortBy === "semantic") {
-        return sortOrder === "asc" ? semanticCompare(a, b) : -semanticCompare(a, b);
+        // semanticCompare 已经实现了从高到低的排序
+        // 当 sortOrder 为 "asc" 时，我们需要反转排序结果
+        return sortOrder === "asc" ? -semanticCompare(a, b) : semanticCompare(a, b);
       }
+      
       const compare = (key: "releaseDate" | "downloadCount") => {
         if (key === "releaseDate") {
-          return new Date(a[key]).getTime() - new Date(b[key]).getTime();
+          // 降序排序（最新日期在前）
+          return new Date(b[key]).getTime() - new Date(a[key]).getTime();
         }
-        return a[key] - b[key];
+        // 降序排序（下载量多的在前）
+        return b[key] - a[key];
       };
-      return sortOrder === "asc" ? compare(sortBy) : -compare(sortBy);
+      
+      // 当 sortOrder 为 "asc" 时，反转排序结果
+      return sortOrder === "asc" ? -compare(sortBy) : compare(sortBy);
     });
   if (loading) {
     return (

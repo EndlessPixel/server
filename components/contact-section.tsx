@@ -3,7 +3,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Mail, MessageCircle, Github, Users, Clock, MapPin, Phone } from "lucide-react"
+// 修改为
+import { Mail, MessageCircle, GithubIcon, Users, Clock, MapPin, Phone, Gamepad2 } from "lucide-react"
 
 export function ContactSection() {
   const contactMethods = [
@@ -26,10 +27,19 @@ export function ContactSection() {
       onClick: () => window.open("mailto:2267848501@qq.com", "_blank"),
     },
     {
+      name: "Discord",
+      value: "EndlessPixel Server",
+      description: "与其他玩家实时交流",
+      icon: Gamepad2,
+      color: "text-blue-600",
+      action: "加入服务器",
+      onClick: () => window.open("https://discord.gg/k63hRWt3fF", "_blank"),
+    },
+    {
       name: "GitHub",
       value: "EndlessPixel",
       description: "开源项目和技术交流",
-      icon: Github,
+      icon: GithubIcon,
       color: "text-gray-600 dark:text-gray-400",
       action: "访问仓库",
       onClick: () => window.open("https://github.com/EndlessPixel", "_blank"),

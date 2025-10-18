@@ -1,10 +1,10 @@
-import Link from "next/link";
+import React from "react";
 import { NodeCard } from "@/components/node-card";
 
 const NODES = [
   {
-    name: "湖北十堰-2",
-    path: "/status/frpnode/hbsy-2",
+    name: "四川成都多线",
+    path: "/status/frpnode/cd3",
     status: "在线",
     ip: "192.168.1.1",
     port: "8080",
@@ -15,20 +15,8 @@ const NODES = [
     hostname: "localhost",
   },
   {
-    name: "湖南娄底联通",
-    path: "/status/frpnode/hnldlt",
-    status: "在线",
-    ip: "192.168.1.2",
-    port: "8081",
-    version: "v2.1",
-    protocol: "HTTP/1.1",
-    software: "Nginx",
-    players: "N/A",
-    hostname: "localhost",
-  },
-  {
     name: "四川成都电信",
-    path: "/status/frpnode/sccddx",
+    path: "/status/frpnode/cd1",
     status: "在线",
     ip: "192.168.1.3",
     port: "8082",
@@ -40,7 +28,7 @@ const NODES = [
   },
   {
     name: "四川成都联通",
-    path: "/status/frpnode/sccdlt",
+    path: "/status/frpnode/cd2",
     status: "在线",
     ip: "192.168.1.4",
     port: "8083",
@@ -54,13 +42,13 @@ const NODES = [
     name: "Minecraft 服务器",
     path: "/status/mcserverstatus",
     status: "未知",
-    ip: "example.com",
-    port: "25565",
-    version: "1.20.1",
-    protocol: "340 (1.12.2)",
-    software: "BungeeCord",
-    players: "2 / 100",
-    hostname: "server.mymcserver.tld",
+    ip: "-",
+    port: "-",
+    version: "-",
+    protocol: "-",
+    software: "-",
+    players: "0 / 0",
+    hostname: "-",
   },
 ];
 
