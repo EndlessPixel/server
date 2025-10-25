@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Server, Users, Heart, Shield, Gamepad2, Coins } from "lucide-react"
+import { Server, Users, Heart, Shield, Gamepad2, Coins, Play } from "lucide-react"
 import Link from "next/link"
 
 export function HeroSection() {
@@ -9,7 +9,7 @@ export function HeroSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
-            欢迎来到 <span className="text-green-600">无尽像素</span>
+            欢迎来到 <span className="text-green-600">无尽像素 服务器</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-4 max-w-3xl mx-auto">
             一个充满无限可能的 Minecraft 社区！支持离线模式，允许所有类型的玩家加入
@@ -22,7 +22,7 @@ export function HeroSection() {
             <Link href="/status">
               <Button size="lg" className="bg-green-600 hover:bg-green-700">
                 <Server className="w-5 h-5 mr-2" />
-                立即加入服务器
+                查看服务器状态
               </Button>
             </Link>
             <Link href="/downloads">
@@ -31,6 +31,18 @@ export function HeroSection() {
                 下载客户端
               </Button>
             </Link>
+            {/* 在移动端隐藏：hidden 在小屏幕，sm 及以上显示 */}
+            <a
+              href="minecraft://cd1.epmc.top?version=1.21.10"
+              rel="noopener noreferrer"
+              title="需安装Minecraft官方客户端，或支持minecraft://协议的第三方客户端"
+              className="hidden sm:inline-block"
+            >
+              <Button size="lg" variant="outline" className="inline-flex items-center">
+                <Play className="w-5 h-5 mr-2" />
+                一键加入服务器
+              </Button>
+            </a>
           </div>
 
           {/* Server Info Cards */}
