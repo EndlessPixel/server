@@ -84,6 +84,11 @@ export function Footer() {
                   关于我们
                 </Link>
               </li>
+              <li>
+                <Link href="https://stats.uptimerobot.com/uHTdCauXWA" className="text-gray-300 dark:text-gray-400 hover:text-white transition-colors">
+                  服务器状态监控
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -91,7 +96,7 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4">服务器信息</h3>
             <ul className="space-y-2 text-gray-300 dark:text-gray-400">
-              <li>版本: Java Minecraft 1.21.8</li>
+              <li>版本: Java Minecraft 1.21.10</li>
               <li>QQ群: 870594910</li>
               <li>模式: 离线模式</li>
               <li>费用: 完全免费</li>
@@ -100,7 +105,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-700 dark:border-gray-800 mt-8 pt-8 text-center text-gray-300 dark:text-gray-400">
-          <p>&copy; 2024~2025 EndlessPixel Team. All rights reserved.</p>
+          <p>&copy; 2024~2025 EndlessPixel Studio. All rights reserved.</p>
         </div>
       </div>
     </footer>

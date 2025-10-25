@@ -9,7 +9,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Server, Heart, Users } from "lucide-react"
 import type { Metadata } from "next"
 import { differenceInMonths } from "date-fns"
-import { FloatingInquiryButton } from "@/components/floating-inquiry-button"
 
 export const metadata: Metadata = {
   title: "关于我们",
@@ -103,7 +102,6 @@ export default function AboutPage() {
         </div>
       </main>
       <Footer />
-      <FloatingInquiryButton />
     </div>
   )
 }

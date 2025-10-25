@@ -6,7 +6,6 @@ import { Footer } from "@/components/footer"
 const NODES = [
   { name: "四川成都联通", path: "/status/frpnode/cd2" },
   { name: "四川成都电信", path: "/status/frpnode/cd1" },
-  { name: "四川成都多线", path: "/status/frpnode/cd3" },
 ];
 
 export default function StatusIndexPage() {
@@ -42,20 +41,35 @@ export default function StatusIndexPage() {
               </Card>
             ))}
             <Card key={"Minecraft 服务器"} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg font-medium text-gray-800 dark:text-gray-200">
-                    {"Minecraft 服务器"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    查看 {"Minecraft 服务器"} 的详细状态。
-                  </p>
-                  <Link href={"/status/mcserverstatus"} className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">
-                    查看详情
-                  </Link>
-                </CardContent>
-              </Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-medium text-gray-800 dark:text-gray-200">
+                  {"Minecraft 服务器"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  查看 {"Minecraft 服务器"} 的详细状态。
+                </p>
+                <Link href={"/status/mcserverstatus"} className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">
+                  查看详情
+                </Link>
+              </CardContent>
+            </Card>
+            <Card key={"服务状态监控"} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="text-lg font-medium text-gray-800 dark:text-gray-200">
+                  {"服务状态监控"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  查看 {"服务状态监控"} 的详细状态。
+                </p>
+                <Link href={"https://stats.uptimerobot.com/uHTdCauXWA"} className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">
+                  查看详情
+                </Link>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>

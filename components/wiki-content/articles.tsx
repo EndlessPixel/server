@@ -165,7 +165,8 @@ export const articles: Record<string, ArticleData> = {
         author: "system_mini",
         readTime: "5分钟",
         content: (
-            <div className="space-y-6">
+            <div className="space-y-8">
+                {/* 头部信息 */}
                 <div className="flex items-center space-x-3 mb-6">
                     <Terminal className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                     <div>
@@ -173,78 +174,151 @@ export const articles: Record<string, ArticleData> = {
                         <div className="flex items-center space-x-4 mt-2 text-sm text-muted-foreground">
                             <span>分类：新手入门</span>
                             <span>•</span>
-                            <span>最后编辑：2025/10/18</span>
+                            <span>最后编辑：2025/10/24</span>
                             <span>•</span>
                             <span>作者：system_mini</span>
                             <span>•</span>
-                            <span>阅读时间：5分钟</span>
+                            <span>阅读时间：4分钟</span>
                         </div>
                     </div>
                 </div>
 
                 <div className="prose max-w-none">
+                    {/* 登录命令 */}
+                    <h2 className="text-xl font-semibold text-foreground mb-4">登录命令</h2>
+                    <div className="bg-muted/50 p-4 rounded-lg mb-6">
+                        <div className="grid gap-3">
+                            {[
+                                { command: "/register <密码> <重复密码>", desc: "注册账号" },
+                                { command: "/reg <密码> <重复密码>", desc: "注册账号（简写）" },
+                                { command: "/login <密码>", desc: "登录服务器" },
+                                { command: "/l <密码>", desc: "登录账号（简写）" },
+                                { command: "/changepassword <旧密码> <新密码> <重复新密码>", desc: "修改密码" },
+                                { command: "/changepw <旧密码> <新密码> <重复新密码>", desc: "修改密码（简写）" },
+                                { command: "/bindemail set <邮箱地址>", desc: "绑定邮箱" },
+                                { command: "/bdmail set <邮箱地址>", desc: "绑定邮箱（简写）" },
+                                { command: "/bindemail verify <验证码>", desc: "验证邮箱验证码" },
+                                { command: "/bdmail verify <验证码>", desc: "验证邮箱验证码（简写）" },
+                                { command: "/resetpassword forget", desc: "忘记密码重置" },
+                                { command: "/repw forget", desc: "忘记密码重置（简写）" },
+                                { command: "/bindemail re <验证码> <新密码>", desc: "使用验证码重置密码" },
+                                { command: "/bdmail re <验证码> <新密码>", desc: "使用验证码重置密码（简写）" }
+                            ].map((item, index) => (
+                                <div key={index} className="flex items-start space-x-3 p-2 hover:bg-muted/30 rounded transition-colors">
+                                    <div className="flex-shrink-0 w-2 h-2 mt-2.5 bg-blue-500 rounded-full"></div>
+                                    <div className="flex-1">
+                                        <code className="bg-muted px-2 py-1 rounded text-sm">{item.command}</code>
+                                        <span className="ml-3 text-sm text-muted-foreground">{item.desc}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                     {/* 传送命令 */}
                     <h2 className="text-xl font-semibold text-foreground mb-4">传送命令</h2>
-                    <div className="bg-muted/50 p-4 rounded-lg mb-4">
-                        <ul className="space-y-2">
-                            <li><code className="bg-muted px-2 py-1 rounded">/spawn</code> - 传送到主城</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/home</code> - 传送到家</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/sethome [名称]</code> - 设置家的位置</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/delhome [名称]</code> - 删除家</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpa [玩家名]</code> - 请求传送到某玩家</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpahere [玩家名]</code> - 请求某玩家传送到自己身边</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpaignore [玩家名]</code> - 忽略某玩家的传送请求</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpauto</code> - 自动接受他人传送请求</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpahereall</code> - 请求所有玩家传送到自己身边</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpaccept</code> - 接受传送请求</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpatoggle</code> - 开启/关闭他人向自己发送传送请求</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpatoggle [玩家名]</code> - 开启/关闭特定玩家的传送请求权限</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpdeny</code> - 拒绝传送请求</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/back</code> - 传送到自己上一个位置</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/back [玩家名]</code> - 将某玩家传送回其上个位置</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/tpcancel [玩家名]</code> - 取消向特定玩家的传送请求</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/simpletpa</code> - 打开传送主菜单</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/simpletpa debug</code> - 显示插件和服务器信息</li>
-                            <li><code className="bg-muted px-2 py-1 rounded">/simpletpa reload</code> - 重新加载插件</li>
-                        </ul>
+                    <div className="bg-muted/50 p-4 rounded-lg mb-6">
+                        <div className="grid gap-3">
+                            {[
+                                { command: "/tpa <玩家名>", desc: "请求传送到某玩家" },
+                                { command: "/tpahere <玩家名>", desc: "请求某玩家传送到自己身边" },
+                                { command: "/tpaignore <玩家名>", desc: "忽略某玩家的传送请求" },
+                                { command: "/tpauto", desc: "自动接受他人传送请求" },
+                                { command: "/tpahereall", desc: "请求所有玩家传送到自己身边" },
+                                { command: "/tpaccept", desc: "接受传送请求" },
+                                { command: "/tpatoggle", desc: "开启/关闭他人向自己发送传送请求" },
+                                { command: "/tpatoggle <玩家名>", desc: "开启/关闭特定玩家的传送请求权限" },
+                                { command: "/tpdeny", desc: "拒绝传送请求" },
+                                { command: "/back", desc: "传送到自己上一个位置" },
+                                { command: "/back <玩家名>", desc: "将某玩家传送回其上个位置" },
+                                { command: "/tpcancel <玩家名>", desc: "取消向特定玩家的传送请求" },
+                                { command: "/simpletpa", desc: "打开传送主菜单" }
+                            ].map((item, index) => (
+                                <div key={index} className="flex items-start space-x-3 p-2 hover:bg-muted/30 rounded transition-colors">
+                                    <div className="flex-shrink-0 w-2 h-2 mt-2.5 bg-purple-500 rounded-full"></div>
+                                    <div className="flex-1">
+                                        <code className="bg-muted px-2 py-1 rounded text-sm">{item.command}</code>
+                                        <span className="ml-3 text-sm text-muted-foreground">{item.desc}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {/* 皮肤管理 */}
                     <h2 className="text-xl font-semibold text-foreground mb-4">皮肤管理</h2>
-                    <div className="bg-blue-50 dark:bg-blue-950/30 p-4 rounded-lg mb-4">
-                        <ul className="space-y-2">
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin set &lt;正版玩家名&gt;</code> - 设置皮肤</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin set &lt;皮肤名&gt; &lt;目标玩家&gt;</code> - 为目标玩家设置皮肤</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin url &lt;链接&gt;</code> - 通过链接设置自己的皮肤</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skins</code> - 打开皮肤菜单</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin clear</code> - 清除自己的皮肤</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin clear &lt;目标玩家&gt;</code> - 清除目标玩家的皮肤</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin update</code> - 更新自己的皮肤</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin update &lt;目标玩家&gt;</code> - 更新目标玩家的皮肤</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin search &lt;关键词&gt;</code> - 搜索皮肤</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin &lt;皮肤名&gt;</code> - 更换自己的皮肤</li>
-                            <li><code className="bg-blue-200 dark:bg-blue-800 px-2 py-1 rounded">/skin help</code> - 显示皮肤命令帮助</li>
-                        </ul>
+                    <div className="bg-muted/50 p-4 rounded-lg mb-6">
+                        <div className="grid gap-3">
+                            {[
+                                { command: "/skin set <正版玩家名>", desc: "设置皮肤" },
+                                { command: "/skin set <皮肤名> <目标玩家>", desc: "为目标玩家设置皮肤" },
+                                { command: "/skin url <链接>", desc: "通过链接设置自己的皮肤" },
+                                { command: "/skins", desc: "打开皮肤菜单" },
+                                { command: "/skin clear", desc: "清除自己的皮肤" },
+                                { command: "/skin clear <目标玩家>", desc: "清除目标玩家的皮肤" },
+                                { command: "/skin update", desc: "更新自己的皮肤" },
+                                { command: "/skin update <目标玩家>", desc: "更新目标玩家的皮肤" },
+                                { command: "/skin search <关键词>", desc: "搜索皮肤" },
+                                { command: "/skin <皮肤名>", desc: "更换自己的皮肤" },
+                                { command: "/skin help", desc: "显示皮肤命令帮助" }
+                            ].map((item, index) => (
+                                <div key={index} className="flex items-start space-x-3 p-2 hover:bg-muted/30 rounded transition-colors">
+                                    <div className="flex-shrink-0 w-2 h-2 mt-2.5 bg-cyan-500 rounded-full"></div>
+                                    <div className="flex-1">
+                                        <code className="bg-muted px-2 py-1 rounded text-sm">{item.command}</code>
+                                        <span className="ml-3 text-sm text-muted-foreground">{item.desc}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {/* 技能系统 */}
                     <h2 className="text-xl font-semibold text-foreground mb-4">技能系统</h2>
-                    <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg mb-4">
-                        <ul className="space-y-2">
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/skills</code> - 打开技能菜单，查看所有技能进度</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/stats</code> - 打开统计菜单，查看所有统计数据</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/[技能名]</code> - 直接打开特定技能的等级进度（如/farming）</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/sk lang [语言]</code> - 更改个人消息和菜单的语言</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/abtoggle 或 /sk toggle</code> - 切换个人动作栏显示</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/sk top [页码] 或 /skilltop [页码]</code> - 查看所有技能等级总和排行榜</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/sk top &lt;技能名&gt; [页码]</code> - 查看特定技能排行榜</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/sk top average [页码]</code> - 查看平均技能等级排行榜</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/sk rank 或 /skillrank</code> - 查看自己的技能排名</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/mana</code> - 显示当前法力值</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/sk claimitems</code> - 打开物品认领菜单</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/sk sources &lt;技能名&gt; [排序]</code> - 查看技能经验获取方式</li>
-                            <li><code className="bg-green-200 dark:bg-green-800 px-2 py-1 rounded">/sk help</code> - 显示技能命令帮助</li>
-                        </ul>
+                    <div className="bg-muted/50 p-4 rounded-lg mb-6">
+                        <div className="grid gap-3">
+                            {[
+                                { command: "/skills", desc: "打开技能菜单，查看所有技能进度" },
+                                { command: "/stats", desc: "打开统计菜单，查看所有统计数据" },
+                                { command: "/[技能名]", desc: "直接打开特定技能的等级进度（如/farming）" },
+                                { command: "/sk lang [语言]", desc: "更改个人消息和菜单的语言" },
+                                { command: "/abtoggle 或 /sk toggle", desc: "切换个人动作栏显示" },
+                                { command: "/sk top [页码] 或 /skilltop [页码]", desc: "查看所有技能等级总和排行榜" },
+                                { command: "/sk top <技能名> [页码]", desc: "查看特定技能排行榜" },
+                                { command: "/sk top average [页码]", desc: "查看平均技能等级排行榜" },
+                                { command: "/sk rank 或 /skillrank", desc: "查看自己的技能排名" },
+                                { command: "/mana", desc: "显示当前法力值" },
+                                { command: "/sk claimitems", desc: "打开物品认领菜单" },
+                                { command: "/sk sources <技能名> [排序]", desc: "查看技能经验获取方式" },
+                                { command: "/sk help", desc: "显示技能命令帮助" }
+                            ].map((item, index) => (
+                                <div key={index} className="flex items-start space-x-3 p-2 hover:bg-muted/30 rounded transition-colors">
+                                    <div className="flex-shrink-0 w-2 h-2 mt-2.5 bg-emerald-500 rounded-full"></div>
+                                    <div className="flex-1">
+                                        <code className="bg-muted px-2 py-1 rounded text-sm">{item.command}</code>
+                                        <span className="ml-3 text-sm text-muted-foreground">{item.desc}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* 其他命令 */}
+                    <h2 className="text-xl font-semibold text-foreground mb-4">其他命令</h2>
+                    <div className="bg-muted/50 p-4 rounded-lg mb-6">
+                        <div className="grid gap-3">
+                            {[
+                                { command: "/killme", desc: "自杀" }
+                            ].map((item, index) => (
+                                <div key={index} className="flex items-start space-x-3 p-2 hover:bg-muted/30 rounded transition-colors">
+                                    <div className="flex-shrink-0 w-2 h-2 mt-2.5 bg-amber-500 rounded-full"></div>
+                                    <div className="flex-1">
+                                        <code className="bg-muted px-2 py-1 rounded text-sm">{item.command}</code>
+                                        <span className="ml-3 text-sm text-muted-foreground">{item.desc}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {/* 提示信息 */}
@@ -918,13 +992,13 @@ proxies:
         ),
     },
     "special-features": {
-        title: "服务器特殊功能指南",
-        category: "特色功能",
-        icon: Trophy,
-        lastUpdated: "2025/10/18",
-        author: "system_mini",
-        readTime: "15分钟",
-        content: (
+        "title": "服务器特殊功能指南",
+        "category": "特色功能",
+        "icon": "Trophy",
+        "lastUpdated": "2025/10/18",
+        "author": "system_mini",
+        "readTime": "15分钟",
+        "content": (
             <div className="space-y-6">
                 <div className="flex items-center space-x-3 mb-6">
                     <Trophy className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
@@ -944,99 +1018,356 @@ proxies:
 
                 <div className="prose max-w-none">
                     {/* 基础交互功能 */}
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">基础交互功能</h2>
-                    <div className="space-y-4 mb-8">
-                        <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg">
-                            <p className="text-green-800 dark:text-green-200">
-                                <strong>坐下功能</strong>：空手右键点击下半砖或楼梯即可坐下，再次右键或移动可站起。
-                            </p>
+                    <section className="mb-12">
+                        <div className="flex items-center mb-6">
+                            <div className="w-3 h-8 bg-green-500 rounded-full mr-4"></div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">基础交互功能</h2>
                         </div>
-                        <div className="bg-blue-50 dark:bg-blue-950/30 p-4 rounded-lg">
-                            <p className="text-blue-800 dark:text-blue-200">
-                                <strong>连锁挖掘</strong>：蹲下并使用对应工具，可连锁挖掘最多128个相同方块；按下Shift开采矿石，还能打破同一矿石的全部矿脉，大幅提升挖掘效率。
-                            </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border-l-4 border-green-500 hover:shadow-lg transition-all duration-300">
+                                <div className="flex items-center mb-3">
+                                    <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mr-3">
+                                        <span className="text-green-600 dark:text-green-300">🪑</span>
+                                    </div>
+                                    <h3 className="font-semibold text-green-900 dark:text-green-100">坐下功能</h3>
+                                </div>
+                                <p className="text-green-800 dark:text-green-200 text-sm leading-relaxed">
+                                    手持空手状态时，右键点击下半砖或楼梯方块即可优雅坐下，体验真实的休息姿势。再次按下Shift键即可自然站起，为社交互动增添更多沉浸感。
+                                </p>
+                            </div>
+
+                            <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border-l-4 border-blue-500 hover:shadow-lg transition-all duration-300">
+                                <div className="flex items-center mb-3">
+                                    <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg mr-3">
+                                        <span className="text-blue-600 dark:text-blue-300">⛏️</span>
+                                    </div>
+                                    <h3 className="font-semibold text-blue-900 dark:text-blue-100">连锁挖掘</h3>
+                                </div>
+                                <p className="text-blue-800 dark:text-blue-200 text-sm leading-relaxed">
+                                    蹲下状态下使用对应工具，可一次性挖掘最多64个相同类型的矿石，大幅提升采集效率。特别优化了开采体验——按下Shift键开采时，可自动破坏同一矿脉内的全部矿石，让矿物收集更加便捷高效。
+                                </p>
+                                <img 
+                                    src="https://cdn-raw.modrinth.com/data/OhduvhIc/images/f4c0ad7fa3b8b579753c1f757e80151798717c68.gif" 
+                                    alt="连锁挖掘演示" 
+                                    className="mt-4 rounded-lg border border-gray-200 dark:border-gray-700 w-full h-auto"
+                                />
+                            </div>
+
+                            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-xl border-l-4 border-yellow-500 hover:shadow-lg transition-all duration-300">
+                                <div className="flex items-center mb-3">
+                                    <div className="bg-yellow-100 dark:bg-yellow-800 p-2 rounded-lg mr-3">
+                                        <span className="text-yellow-600 dark:text-yellow-300">🌾</span>
+                                    </div>
+                                    <h3 className="font-semibold text-yellow-900 dark:text-yellow-100">农田防踩踏</h3>
+                                </div>
+                                <p className="text-yellow-800 dark:text-yellow-200 text-sm leading-relaxed">
+                                    农田被踩踏后不会退化为泥土，有效保护精心种植的农作物免受意外损害。这一贴心设计让农业管理更加轻松，不再担心因误操作而破坏农田生态系统。
+                                </p>
+                            </div>
                         </div>
-                        <div className="bg-yellow-50 dark:bg-yellow-950/30 p-4 rounded-lg">
-                            <p className="text-yellow-800 dark:text-yellow-200">
-                                <strong>农田防踩踏</strong>：农田被踩踏后不会破坏，保护农作物免受意外损害。
-                            </p>
-                        </div>
-                    </div>
+                    </section>
 
                     {/* 下界生物群落与结构升级 */}
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">下界升级：生物群落与新结构</h2>
-                    <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg mb-8">
-                        <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">1. 生物群落优化</h3>
-                        <ul className="text-red-800 dark:text-red-200 space-y-2 mb-4">
-                            <li>• 下界荒原：新增下界尖刺（石笋、钟乳石）及黑石、岩浆“湖”，从“沙漠风”转变为充满敌意的洞穴式生物群落。</li>
-                            <li>• 猩红森林/扭曲森林：添加黑石岩石、倒下的真菌茎、新型蔓延巨大真菌，适度增加植被密度，提升生态感。</li>
-                        </ul>
-                        <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">2. 新结构：猩红塔与扭曲塔</h3>
-                        <ul className="text-red-800 dark:text-red-200 space-y-2">
-                            <li>• 高度近100个方块，兼具视觉冲击与实用功能。</li>
-                            <li>• 提供专属战利品与生物，可作为下界不同垂直层之间的“电梯”，方便快速移动。</li>
-                        </ul>
-                    </div>
+                    <section className="mb-12">
+                        <div className="flex items-center mb-6">
+                            <div className="w-3 h-8 bg-red-500 rounded-full mr-4"></div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">下界维度全面升级</h2>
+                        </div>
 
-                    {/* 昂船切割机功能扩展 */}
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">昂船切割机：500+新食谱与功能</h2>
-                    <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded-lg mb-8">
-                        <div className="space-y-3">
-                            <div>
-                                <h3 className="font-semibold text-indigo-900 dark:text-indigo-100 mb-1">核心功能分类</h3>
-                                <ul className="text-indigo-800 dark:text-indigo-200 space-y-1">
-                                    <li>• 🪓 木材切割：支持原木直接切割加工。</li>
-                                    <li>• 🔮 增强型基石切割：精准处理各类基石方块。</li>
-                                    <li>• ♻ 回收功能：切割楼梯、门、活板门等块状衍生物，实现资源复用。</li>
-                                    <li>• 🔨 取消制作：逆向拆解已制作的物品，回收原材料。</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-indigo-900 dark:text-indigo-100 mb-1">额外便利功能</h3>
-                                <ul className="text-indigo-800 dark:text-indigo-200 space-y-1">
-                                    <li>• 方块变体切换：同一方块可在不同形态间转换（如抛光块→底座形式）。</li>
-                                    <li>• 特殊材料处理：深板岩、石头可直接切割为鹅卵石或其衍生物。</li>
-                                    <li>• 铁块加工：提供铁块衍生物的便捷制作与取消制作选项，与原版制作网格兼容。</li>
-                                </ul>
+                        <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-2xl border border-red-200 dark:border-red-800">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div>
+                                    <div className="flex items-center mb-4">
+                                        <div className="bg-red-100 dark:bg-red-800 p-2 rounded-lg mr-3">
+                                            <span className="text-red-600 dark:text-red-300">🌋</span>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-red-900 dark:text-red-100">生物群落深度优化</h3>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="bg-white/50 dark:bg-gray-700/50 p-4 rounded-lg">
+                                            <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">下界荒原重构</h4>
+                                            <p className="text-red-700 dark:text-red-300 text-sm">
+                                                从原本单调的"下界沙漠"彻底转变为充满敌意的洞穴式生态。新增壮观的下界尖刺结构，包含石笋与钟乳石群，配合黑石岩层与岩浆"湖泊"，营造出更具挑战性的探索环境。
+                                            </p>
+                                        </div>
+
+                                        <div className="bg-white/50 dark:bg-gray-700/50 p-4 rounded-lg">
+                                            <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">森林生态增强</h4>
+                                            <p className="text-red-700 dark:text-red-300 text-sm">
+                                                猩红森林与扭曲森林中新增黑石岩石群、倒下的真菌茎残骸，以及新型蔓延的巨大真菌物种。适度增加的植被密度让生态系统更加丰富，提升了生物群落的真实感与探索价值。
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div className="flex items-center mb-4">
+                                        <div className="bg-purple-100 dark:bg-purple-800 p-2 rounded-lg mr-3">
+                                            <span className="text-purple-600 dark:text-purple-300">🏰</span>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-purple-900 dark:text-purple-100">史诗级新结构</h3>
+                                    </div>
+
+                                    <div className="bg-white/50 dark:bg-gray-700/50 p-6 rounded-lg">
+                                        <h4 className="font-semibold text-purple-800 dark:text-purple-200 mb-3">猩红塔与扭曲塔</h4>
+                                        <ul className="text-purple-700 dark:text-purple-300 space-y-2 text-sm">
+                                            <li className="flex items-start">
+                                                <span className="text-purple-500 mr-2">•</span>
+                                                <span>近100方块高度的宏伟建筑，成为下界天际线的标志性存在</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <span className="text-purple-500 mr-2">•</span>
+                                                <span>提供专属战利品箱与特殊生物生成点，奖励丰厚</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <span className="text-purple-500 mr-2">•</span>
+                                                <span>巧妙设计的垂直交通系统，可作为下界不同高度层之间的快速"电梯"</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <span className="text-purple-500 mr-2">•</span>
+                                                <span>完美融入下界环境，兼具视觉冲击力与实用功能性</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
+
+                    {/* 主世界结构扩展 */}
+                    <section className="mb-12">
+                        <div className="flex items-center mb-6">
+                            <div className="w-3 h-8 bg-emerald-500 rounded-full mr-4"></div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">主世界结构扩展</h2>
+                        </div>
+
+                        <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-800">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h3 className="text-xl font-bold text-emerald-900 dark:text-emerald-100 mb-4 flex items-center">
+                                        <span className="bg-emerald-100 dark:bg-emerald-800 p-2 rounded-lg mr-3">🏰</span>
+                                        多样化建筑结构
+                                    </h3>
+                                    <p className="text-emerald-800 dark:text-emerald-200 text-sm leading-relaxed mb-4">
+                                        主世界新增大量精心设计的建筑结构，包括中世纪城堡、乡村小屋、神秘塔楼等，为探索带来更多惊喜和挑战。每个结构都经过精心设计，完美融入自然环境。
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <img src="https://cdn.modrinth.com/data/HSfsxuTo/images/e803f27353f096a399acf8a2c416470e4f08e423.jpeg" alt="主世界结构1" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                        <img src="https://cdn.modrinth.com/data/HSfsxuTo/images/45ef89657520cc71a44303931e3447b97f177397.png" alt="主世界结构2" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-emerald-900 dark:text-emerald-100 mb-4 flex items-center">
+                                        <span className="bg-emerald-100 dark:bg-emerald-800 p-2 rounded-lg mr-3">🌄</span>
+                                        环境融合设计
+                                    </h3>
+                                    <p className="text-emerald-800 dark:text-emerald-200 text-sm leading-relaxed mb-4">
+                                        所有新增结构都经过精心布局，确保与原有生物群落完美融合。从雪山之巅到丛林深处，每个结构都有其独特的生成逻辑和环境适配。
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <img src="https://cdn.modrinth.com/data/HSfsxuTo/images/7f442e33491c428fcc8f4f906d25943f605471c2.jpeg" alt="主世界结构3" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                        <img src="https://cdn.modrinth.com/data/HSfsxuTo/images/3e667720d586dc49c15099f23817a1d0405dc36e.jpeg" alt="主世界结构4" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* 切割机功能扩展 */}
+                    <section className="mb-12">
+                        <div className="flex items-center mb-6">
+                            <div className="w-3 h-8 bg-indigo-500 rounded-full mr-4"></div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">大师切割机：革命性制造系统</h2>
+                        </div>
+
+                        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-2xl border border-indigo-200 dark:border-indigo-800">
+                            <div className="text-center mb-8">
+                                <div className="inline-flex items-center bg-indigo-100 dark:bg-indigo-800 px-4 py-2 rounded-full mb-4">
+                                    <span className="text-indigo-600 dark:text-indigo-300 mr-2">⚡</span>
+                                    <span className="text-indigo-800 dark:text-indigo-200 font-semibold">500+ 新增配方与功能</span>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div className="space-y-6">
+                                    <div className="bg-white/50 dark:bg-gray-700/50 p-6 rounded-xl">
+                                        <h3 className="font-bold text-indigo-900 dark:text-indigo-100 mb-4 flex items-center">
+                                            <span className="bg-indigo-100 dark:bg-indigo-800 p-2 rounded-lg mr-3">🪓</span>
+                                            核心制造功能
+                                        </h3>
+                                        <ul className="space-y-3 text-indigo-800 dark:text-indigo-200 mb-4">
+                                            <li className="flex items-start">
+                                                <span className="text-indigo-500 mr-2">•</span>
+                                                <span><strong>木材精加工：</strong>支持原木直接切割为各类木制品，跳过中间加工步骤</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <span className="text-indigo-500 mr-2">•</span>
+                                                <span><strong>基石精准处理：</strong>增强型切割算法，完美处理各类基石方块</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <span className="text-indigo-500 mr-2">•</span>
+                                                <span><strong>智能回收系统：</strong>可切割楼梯、门、活板门等块状衍生物，实现资源循环利用</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <span className="text-indigo-500 mr-2">•</span>
+                                                <span><strong>逆向制作：</strong>拆解已制作物品，按配方比例回收原材料</span>
+                                            </li>
+                                        </ul>
+                                        <div className="grid grid-cols-2 gap-2 mt-4">
+                                            <img src="https://cdn.modrinth.com/data/DuUMFIfX/images/2042569b7a8ae6f195ce13b656f101c9ac5bd8eb.png" alt="切割机界面1" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                            <img src="https://cdn.modrinth.com/data/DuUMFIfX/images/46228f5a5f7eb9eb64b420914e6689cdf6b1ce42.png" alt="切割机界面2" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="bg-white/50 dark:bg-gray-700/50 p-6 rounded-xl">
+                                        <h3 className="font-bold text-indigo-900 dark:text-indigo-100 mb-4 flex items-center">
+                                            <span className="bg-indigo-100 dark:bg-indigo-800 p-2 rounded-lg mr-3">🔧</span>
+                                            高级特性扩展
+                                        </h3>
+                                        <ul className="space-y-3 text-indigo-800 dark:text-indigo-200">
+                                            <li className="flex items-start">
+                                                <span className="text-indigo-500 mr-2">•</span>
+                                                <span><strong>形态转换：</strong>同一方块可在不同形态间自由切换（如抛光块↔底座形式）</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <span className="text-indigo-500 mr-2">•</span>
+                                                <span><strong>特殊材料优化：</strong>深板岩、石头直接切割为鹅卵石及其衍生物</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <span className="text-indigo-500 mr-2">•</span>
+                                                <span><strong>铁艺加工：</strong>提供铁块衍生物的便捷制作与逆向拆解，完美兼容原版制作网格</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <span className="text-indigo-500 mr-2">•</span>
+                                                <span><strong>无缝集成：</strong>所有功能均与原版系统深度整合，保持游戏体验一致性</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     {/* 船只系统升级 */}
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">船只系统：新结构与变体</h2>
-                    <div className="bg-teal-50 dark:bg-teal-950/30 p-4 rounded-lg mb-8">
-                        <ul className="text-teal-800 dark:text-teal-200 space-y-2">
-                            <li>• 漂浮村庄：多块浮木组成，漂浮于海浪之上，提供独特的水上探索点。</li>
-                            <li>• 修复版沉船：还原原版沉船“鼎盛时期”外观（新增帆、灯笼等细节），自然生成于世界中，保留香草设计风格。</li>
-                            <li>• 7种基础舰船变体：仅使用原版木材组合，搭配白色帆，风格统一。</li>
-                            <li>• 扩展舰船类型：包含所有木材+帆颜色组合，以及下界专用木材制作的“下界飞船”。</li>
-                            <li>• 船员系统：部分舰船配备船员（村民、掠夺者、下界船配猪灵），战利品布局与原版不同。</li>
-                        </ul>
-                    </div>
+                    <section className="mb-12">
+                        <div className="flex items-center mb-6">
+                            <div className="w-3 h-8 bg-teal-500 rounded-full mr-4"></div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">海洋探索：船只系统全面进化</h2>
+                        </div>
+
+                        <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-2xl border border-teal-200 dark:border-teal-800">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div>
+                                    <h3 className="text-xl font-bold text-teal-900 dark:text-teal-100 mb-6 flex items-center">
+                                        <span className="bg-teal-100 dark:bg-teal-800 p-2 rounded-lg mr-3">🏝️</span>
+                                        全新海洋结构
+                                    </h3>
+
+                                    <div className="space-y-4">
+                                        <div className="bg-white/50 dark:bg-gray-700/50 p-5 rounded-lg">
+                                            <h4 className="font-semibold text-teal-800 dark:text-teal-200 mb-2">漂浮村庄</h4>
+                                            <p className="text-teal-700 dark:text-teal-300 text-sm mb-3">
+                                                由多块浮木精心构建而成，优雅漂浮于海浪之上，为海洋探索提供独特的栖息地与交易点。这种创新的水上建筑风格重新定义了海洋生态的居住体验。
+                                            </p>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <img src="https://wsrv.nl/?url=https%3A%2F%2Fjoshie.app%2Ffiles%2Ftidal_towns_screenshot_1.png&n=-1" alt="漂浮村庄1" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                                <img src="https://wsrv.nl/?url=https%3A%2F%2Fjoshie.app%2Ffiles%2Ftidal_towns_screenshot_2.png&n=-1" alt="漂浮村庄2" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-white/50 dark:bg-gray-700/50 p-5 rounded-lg">
+                                            <h4 className="font-semibold text-teal-800 dark:text-teal-200 mb-2">修复版沉船</h4>
+                                            <p className="text-teal-700 dark:text-teal-300 text-sm mb-3">
+                                                精心还原原版沉船在"鼎盛时期"的完整外观，新增风帆、灯笼等细节装饰，既保留了香草设计的经典风格，又增添了更多历史厚重感与探索价值。
+                                            </p>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <img src="https://cdn.modrinth.com/data/ae8EZLiC/images/5253cba3aeb39e9e709c83999d898cf58acd86bb.png" alt="修复沉船1" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                                <img src="https://cdn.modrinth.com/data/ae8EZLiC/images/8c1dba4e41fdb8abdf7e6b6e18b966872661b03c.png" alt="修复沉船2" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-xl font-bold text-teal-900 dark:text-teal-100 mb-6 flex items-center">
+                                        <span className="bg-teal-100 dark:bg-teal-800 p-2 rounded-lg mr-3">⛵</span>
+                                        多样化舰船体系
+                                    </h3>
+
+                                    <div className="bg-white/50 dark:bg-gray-700/50 p-5 rounded-lg">
+                                        <div className="space-y-4">
+                                            <div>
+                                                <h4 className="font-semibold text-teal-800 dark:text-teal-200 mb-2">基础舰船系列</h4>
+                                                <p className="text-teal-700 dark:text-teal-300 text-sm mb-3">
+                                                    7种精心设计的基础舰船变体，仅使用原版木材组合，搭配统一的白色风帆，保持视觉风格的一致性。
+                                                </p>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <img src="https://cdn.modrinth.com/data/ae8EZLiC/images/81af9abf0c87e4a80bd95a37fe7f590bcf6c7f9e.png" alt="舰船变体1" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                                    <img src="https://cdn.modrinth.com/data/ae8EZLiC/images/5855713fabe83ae687dd2d7f566dd2c559888c52.png" alt="舰船变体2" className="rounded-lg border border-gray-200 dark:border-gray-700" />
+                                                </div>
+                                            </div>
+                                            
+                                            <div>
+                                                <h4 className="font-semibold text-teal-800 dark:text-teal-200 mb-2">扩展舰船类型</h4>
+                                                <p className="text-teal-700 dark:text-teal-300 text-sm">
+                                                    包含所有木材类型与帆颜色组合，以及使用下界专用木材制作的独特"下界飞船"，满足不同维度的航行需求。
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     {/* 其他特殊功能 */}
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">其他特殊功能</h2>
-                    <div className="space-y-4">
-                        <div className="bg-purple-50 dark:bg-purple-950/30 p-4 rounded-lg">
-                            <p className="text-purple-800 dark:text-purple-200">
-                                <strong>无限附魔</strong>：附魔不再受等级限制，可打造极致属性装备。
-                            </p>
+                    <section>
+                        <div className="flex items-center mb-6">
+                            <div className="w-3 h-8 bg-purple-500 rounded-full mr-4"></div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">进阶功能与系统优化</h2>
                         </div>
-                        <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
-                            <p className="text-gray-800 dark:text-gray-200">
-                                <strong>Nullscape末地升级</strong>：末地高度提升至384格，利用1.18现代生成功能，打造多样化地形（破碎岛屿、漂浮山谷、结晶山峰等）；不同区域在大尺度上拥有独特属性与风格，地形变化几乎无限，避免探索单调感。
-                            </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300">
+                                <div className="flex items-center mb-4">
+                                    <div className="bg-purple-100 dark:bg-purple-800 p-2 rounded-lg mr-3">
+                                        <span className="text-purple-600 dark:text-purple-300">✨</span>
+                                    </div>
+                                    <h3 className="font-bold text-purple-900 dark:text-purple-100">无限附魔系统</h3>
+                                </div>
+                                <p className="text-purple-800 dark:text-purple-200 text-sm leading-relaxed">
+                                    突破传统附魔等级限制，允许打造极致属性的顶级装备。这一系统为装备定制提供了无限可能性，让玩家能够真正打造出符合个人游戏风格的完美装备组合。
+                                </p>
+                            </div>
+
+                            <div className="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl border border-gray-300 dark:border-gray-700 hover:shadow-lg transition-all duration-300">
+                                <div className="flex items-center mb-4">
+                                    <div className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg mr-3">
+                                        <span className="text-gray-600 dark:text-gray-300">🌌</span>
+                                    </div>
+                                    <h3 className="font-bold text-gray-900 dark:text-gray-100">Nullscape末地维度升级</h3>
+                                </div>
+                                <p className="text-gray-800 dark:text-gray-200 text-sm leading-relaxed">
+                                    末地高度大幅提升至384格，充分利用1.18现代地形生成功能，创造多样化的外星景观。包含破碎岛屿、漂浮山谷、结晶山峰等独特地形，不同区域拥有独特的属性与风格，确保探索过程充满新鲜感与挑战性。
+                                </p>
+                            </div>
                         </div>
-                        <div className="bg-orange-50 dark:bg-orange-950/30 p-4 rounded-lg">
-                            <p className="text-orange-800 dark:text-orange-200">
-                                <strong>蘑菇块与蜘蛛网优化</strong>：1.20.5+版本中，蘑菇茎和蘑菇块可像原木一样“剥离”，露出毛孔纹理；蜘蛛网剪断后可获得9根弦，白色羊毛切割可获得4根绳子（与制作羊毛块的材料数量匹配）。
-                            </p>
-                        </div>
-                    </div>
+                    </section>
+                </div>
+
+                {/* 页脚 */}
+                <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl text-center border border-gray-200 dark:border-gray-700">
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">
+                        🎮 以上所有功能均已在服务器中实装，欢迎体验探索！如有疑问可联系管理员咨询。
+                    </p>
                 </div>
             </div>
-        ),
-    },
+        )
+    }
 }
 
 export default articles
