@@ -3,8 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-// 修改为
-import { Mail, MessageCircle, GithubIcon, Users, Clock, MapPin, Phone, Gamepad2 } from "lucide-react"
+import { Mail, MessageCircle, GithubIcon, Users, Clock, MapPin, Phone, Gamepad2, Play } from "lucide-react"
 
 export function ContactSection() {
   const contactMethods = [
@@ -49,7 +48,7 @@ export function ContactSection() {
   const supportInfo = [
     {
       title: "在线时间",
-      value: "24/7 全天候",
+      value: "周一至周五 18:30-22:30 周六至周日 08:00-23:30",
       icon: Clock,
     },
     {
@@ -59,7 +58,7 @@ export function ContactSection() {
     },
     {
       title: "技术支持",
-      value: "工作日 9:00-18:00",
+      value: "周六至周日 08:00-23:30",
       icon: Phone,
     },
   ]
@@ -125,6 +124,19 @@ export function ContactSection() {
               </div>
             )
           })}
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <CardTitle className="flex items-center space-x-2">
+            <Play className="w-5 h-5 text-blue-600" />
+            <span>构建信息</span>
+          </CardTitle>
+          <br />
+          <hr />
+          <br />
+          <h4>版本：<span className="ml-auto text-sm text-muted-foreground">EndlessPixel Website 8.9.1-dev2</span></h4>
+          <h4>构建时间：<span className="ml-auto text-sm text-muted-foreground">2025-10-25 17:40</span></h4>
         </CardContent>
       </Card>
     </div>
