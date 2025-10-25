@@ -60,17 +60,20 @@ const Icons = {
 /* ---------------- 独立卡片组件 ---------------- */
 function InfoCard({ icon, label, value }: { icon: JSX.Element; label: string; value?: React.ReactNode }) {
   return (
-    <Card className="bg-white/60 dark:bg-gray-800/60 border border-gray-300 dark:border-gray-700 rounded-xl">
-      <CardContent className="flex items-center gap-4 p-4">
+    <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+      <CardContent className="flex items-center gap-4 p-3">
         <div className="text-cyan-600 dark:text-cyan-400">{icon}</div>
-        <div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
-          <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">{value ?? "—"}</div>
+        <div className="flex-1">
+          <div className="text-xs text-slate-500 dark:text-slate-400">{label}</div>
+          <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">{value ?? "—"}</div>
         </div>
       </CardContent>
     </Card>
   );
 }
+const MemoInfoCard = ({ icon, label, value }: { icon: JSX.Element; label: string; value?: React.ReactNode }) => (
+  <InfoCard icon={icon} label={label} value={value} />
+);
 
 /* ---------------- 主页面 ---------------- */
 export default function IssuesPage() {
@@ -79,15 +82,47 @@ export default function IssuesPage() {
   const router = useRouter();
 
   useEffect(() => {
+    // try sessionStorage cache first, then fetch with timeout and cache result
+    const cacheKey = "gh:issues:all";
+    try {
+      const raw = sessionStorage.getItem(cacheKey);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed._ts && Date.now() - parsed._ts < 30_000) {
+          setIssues(parsed.data as GitHubIssue[]);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch {}
+
+    const controller = new AbortController();
+    const to = setTimeout(() => controller.abort(), 8000);
     fetch("https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/issues?state=all", {
       headers: { Accept: "application/vnd.github.v3+json" },
+      signal: controller.signal,
     })
-      .then((res) => res.json())
+      .then((res) => {
+        clearTimeout(to);
+        return res.json();
+      })
       .then((data: GitHubIssue[]) => {
-        if (Array.isArray(data)) setIssues(data);
+        if (Array.isArray(data)) {
+          setIssues(data);
+          try {
+            sessionStorage.setItem(cacheKey, JSON.stringify({ _ts: Date.now(), data }));
+          } catch {}
+        }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        // fallback to cached data if available
+        try {
+          const raw = sessionStorage.getItem(cacheKey);
+          if (raw) setIssues(JSON.parse(raw).data as GitHubIssue[]);
+        } catch {}
+        setLoading(false);
+      });
   }, []);
 
   const handleRedirect = (url: string) => {
@@ -103,7 +138,7 @@ export default function IssuesPage() {
         <Navigation />
         <div className="flex items-center justify-center py-12 gap-2">
           <Loader2 className="w-6 h-6 animate-spin text-cyan-500" />
-          <span className="text-gray-600 dark:text-gray-300">正在加载 issues...</span>
+          <span className="text-slate-600 dark:text-slate-300">正在加载 issues...</span>
         </div>
         <Footer />
       </>
@@ -117,13 +152,13 @@ export default function IssuesPage() {
     <>
       <Navigation />
       <main className="p-6 space-y-6">
-        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-600">Issues 列表</h1>
+  <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Issues 列表</h1>
 
         {/* 统计卡片 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <InfoCard icon={Icons.issue} label="开放问题" value={openIssues.length} />
-          <InfoCard icon={Icons.issue} label="已关闭" value={closedIssues.length} />
-          <InfoCard icon={Icons.comment} label="总评论" value={issues.reduce((a, i) => a + i.comments, 0)} />
+          <MemoInfoCard icon={Icons.issue} label="开放问题" value={openIssues.length} />
+          <MemoInfoCard icon={Icons.issue} label="已关闭" value={closedIssues.length} />
+          <MemoInfoCard icon={Icons.comment} label="总评论" value={issues.reduce((a, i) => a + i.comments, 0)} />
         </div>
 
         {/* 开放问题 */}
@@ -136,7 +171,7 @@ export default function IssuesPage() {
               {openIssues.map((issue) => (
                 <Card
                   key={issue.id}
-                  className="bg-white/70 dark:bg-gray-800/70 border border-gray-300 dark:border-gray-700 rounded-xl hover:shadow-lg transition"
+                  className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-lg transition"
                   onClick={() => handleRedirect(issue.html_url)}
                 >
                   <CardHeader>
@@ -147,7 +182,7 @@ export default function IssuesPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                       {Icons.user} <span>{issue.user.login}</span>
                       {Icons.calendar} <span>{new Date(issue.created_at).toLocaleDateString("zh-CN")}</span>
                       {Icons.comment} <span>{issue.comments}</span>
@@ -177,7 +212,7 @@ export default function IssuesPage() {
 
         {/* 已关闭问题 */}
         <section>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">已关闭问题</h2>
+    <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">已关闭问题</h2>
           {closedIssues.length === 0 ? (
             <p className="text-gray-500 dark:text-gray-400">暂无已关闭问题</p>
           ) : (
@@ -185,7 +220,7 @@ export default function IssuesPage() {
               {closedIssues.map((issue) => (
                 <Card
                   key={issue.id}
-                  className="bg-white/70 dark:bg-gray-800/70 border border-gray-300 dark:border-gray-700 rounded-xl hover:shadow-lg transition"
+                  className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-lg transition"
                   onClick={() => handleRedirect(issue.html_url)}
                 >
                   <CardHeader>
@@ -196,7 +231,7 @@ export default function IssuesPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                       {Icons.user} <span>{issue.user.login}</span>
                       {Icons.calendar} <span>{new Date(issue.created_at).toLocaleDateString("zh-CN")}</span>
                       {Icons.comment} <span>{issue.comments}</span>

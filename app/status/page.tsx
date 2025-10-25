@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer"
 const NODES = [
   { name: "四川成都联通", path: "/status/frpnode/cd2" },
   { name: "四川成都电信", path: "/status/frpnode/cd1" },
+  { name: "上海多线", path: "/status/frpnode/sh" },
 ];
 
 export default function StatusIndexPage() {

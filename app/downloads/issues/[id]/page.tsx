@@ -6,7 +6,7 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Calendar, User, MessageSquare, ExternalLink, Tag } from "lucide-react";
+import { ArrowLeft, Calendar, User, MessageSquare, ExternalLink, Tag } from "lucide-react";
 
 /* ---------------- 类型 ---------------- */
 interface GitHubIssueDetail {
@@ -19,6 +19,14 @@ interface GitHubIssueDetail {
   comments: number;
   labels: { name: string; color: string }[];
   state: "open" | "closed";
+}
+
+// 扩展字段（可选）：让页面能显示更多来自 GitHub API 的信息
+interface GitHubIssueDetailExtended extends GitHubIssueDetail {
+  assignees?: { login: string; avatar_url?: string }[];
+  milestone?: { title: string; description?: string } | null;
+  reactions?: Record<string, number>;
+  body_html?: string;
 }
 
 interface GitHubComment {
@@ -40,17 +48,20 @@ const Icons = {
 /* ---------------- 独立信息卡片 ---------------- */
 function InfoCard({ icon, label, value }: { icon: JSX.Element; label: string; value?: React.ReactNode }) {
   return (
-    <Card className="bg-white/60 dark:bg-gray-800/60 border border-gray-300 dark:border-gray-700 rounded-xl">
-      <CardContent className="flex items-center gap-4 p-4">
+    <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+      <CardContent className="flex items-center gap-4 p-3">
         <div className="text-cyan-600 dark:text-cyan-400">{icon}</div>
-        <div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
-          <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">{value ?? "—"}</div>
+        <div className="flex-1">
+          <div className="text-xs text-slate-500 dark:text-slate-400">{label}</div>
+          <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">{value ?? "—"}</div>
         </div>
       </CardContent>
     </Card>
   );
 }
+const MemoInfoCard = ({ icon, label, value }: { icon: JSX.Element; label: string; value?: React.ReactNode }) => (
+  <InfoCard icon={icon} label={label} value={value} />
+);
 
 /* ---------------- 骨架屏 ---------------- */
 function SkeletonCard() {
@@ -82,22 +93,75 @@ export default function IssueDetailPage({ params }: { params: { id: string } }) 
     try {
       setLoading(true);
       setError(null);
-      // 1. 基础详情
-      const issueRes = await fetch(`https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/issues/${id}`, {
-        headers: { Accept: "application/vnd.github.v3+json" },
-      });
-      if (!issueRes.ok) throw new Error(`GitHub API error: ${issueRes.status}`);
-      const issueData: GitHubIssueDetail = await issueRes.json();
-      setIssue(issueData);
+      // use sessionStorage cache to reduce repeated requests
+      const issueKey = `gh:issue:${id}`;
+      const commentsKey = `gh:issue:${id}:comments`;
 
-      // 2. 评论列表
-      const commentsRes = await fetch(
-        `https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/issues/${id}/comments`,
-        { headers: { Accept: "application/vnd.github.v3+json" } }
-      );
-      if (commentsRes.ok) {
-        const commentsData: GitHubComment[] = await commentsRes.json();
-        setComments(commentsData);
+      // try cache first (short TTL)
+      try {
+        const raw = sessionStorage.getItem(issueKey);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed._ts && Date.now() - parsed._ts < 30_000) {
+            setIssue(parsed.data as GitHubIssueDetail);
+          }
+        }
+      } catch {}
+
+      // fetch with timeout and fallback to cache
+      const controller = new AbortController();
+      const to = setTimeout(() => controller.abort(), 8000);
+      try {
+        const issueRes = await fetch(`https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/issues/${id}`, {
+          headers: { Accept: "application/vnd.github.v3+json" },
+          signal: controller.signal,
+        });
+        clearTimeout(to);
+        if (!issueRes.ok) throw new Error(`GitHub API error: ${issueRes.status}`);
+        const issueData: GitHubIssueDetailExtended = await issueRes.json();
+        setIssue(issueData);
+        try {
+          sessionStorage.setItem(issueKey, JSON.stringify({ _ts: Date.now(), data: issueData }));
+        } catch {}
+      } catch (e) {
+        // on abort or network error, try to use cached value even if expired
+        try {
+          const raw = sessionStorage.getItem(issueKey);
+          if (raw) setIssue(JSON.parse(raw).data as GitHubIssueDetail);
+        } catch {}
+      }
+
+      // comments
+      try {
+        const rawc = sessionStorage.getItem(commentsKey);
+        if (rawc) {
+          const parsed = JSON.parse(rawc);
+          if (parsed._ts && Date.now() - parsed._ts < 30_000) {
+            setComments(parsed.data as GitHubComment[]);
+          }
+        }
+      } catch {}
+
+      const controller2 = new AbortController();
+      const to2 = setTimeout(() => controller2.abort(), 8000);
+      try {
+        const commentsRes = await fetch(
+          `https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/issues/${id}/comments`,
+          { headers: { Accept: "application/vnd.github.v3+json" }, signal: controller2.signal }
+        );
+        clearTimeout(to2);
+        if (commentsRes.ok) {
+          const commentsData: GitHubComment[] = await commentsRes.json();
+          setComments(commentsData);
+          try {
+            sessionStorage.setItem(commentsKey, JSON.stringify({ _ts: Date.now(), data: commentsData }));
+          } catch {}
+        }
+      } catch (e) {
+        try {
+          const rawc = sessionStorage.getItem(commentsKey);
+          if (rawc) setComments(JSON.parse(rawc).data as GitHubComment[]);
+        } catch {}
       }
     } catch (e: any) {
       setError(e.message);

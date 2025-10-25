@@ -13,12 +13,21 @@ interface ServerData {
   online: boolean;
   ip?: string;
   port?: number;
+  hostname?: string;
   version?: string;
   protocol?: { name?: string; version?: number };
   icon?: string;
   software?: string;
-  motd?: { html?: string[] };
+  map?: { raw?: string; clean?: string; html?: string };
+  gamemode?: string;
+  serverid?: string;
+  eula_blocked?: boolean;
+  motd?: { raw?: string[]; clean?: string[]; html?: string[] };
   players?: { online: number; max: number; list?: Player[] };
+  plugins?: { name?: string; version?: string }[];
+  mods?: { name?: string; version?: string }[];
+  info?: { raw?: string[]; clean?: string[]; html?: string[] };
+  debug?: Record<string, any>;
 }
 
 /* ---------------- 节点 ---------------- */
@@ -26,6 +35,8 @@ const NODES = [
   { name: "四川成都联通", ip: "cd1.epmc.top" },
   { name: "四川成都电信", ip: "cd2.epmc.top" },
   { name: "江苏宿迁电信", ip: "sq.epmc.top" },
+  { name: "上海多线IPV4", ip: "ipv4.sh.endlesspixel.fun:26884" },
+  { name: "上海多线IPV6", ip: "ipv6.sh.endlesspixel.fun:26884" },
 ] as const;
 
 /* ---------------- SVG 图标 ---------------- */
@@ -73,29 +84,57 @@ const Icons = {
 };
 
 /* ---------------- 请求 ---------------- */
+// Fetch with simple in-memory/session cache and timeout to improve responsiveness
 async function fetchNode(ip: string): Promise<ServerData | null> {
+  if (!ip) return null;
+  const cacheKey = `mcsrv:${ip}`;
   try {
-    const res = await fetch(`https://api.mcsrvstat.us/3/${ip}`);
+    // Try sessionStorage cache first (short TTL)
+    const raw = sessionStorage.getItem(cacheKey);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const now = Date.now();
+      // cache TTL 30s
+      if (parsed._ts && now - parsed._ts < 30_000) {
+        return parsed.data as ServerData;
+      }
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(`https://api.mcsrvstat.us/3/${ip}`, { signal: controller.signal });
+    clearTimeout(timeout);
     if (!res.ok) return null;
-    return await res.json();
-  } catch {
+    const data = (await res.json()) as ServerData;
+    // store in session cache with timestamp
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify({ _ts: Date.now(), data }));
+    } catch {}
+    return data;
+  } catch (e) {
+    // fetch aborted or network error: fallback to cached value if exists (even expired)
+    try {
+      const raw = sessionStorage.getItem(`mcsrv:${ip}`);
+      if (raw) return JSON.parse(raw).data as ServerData;
+    } catch {}
     return null;
   }
 }
 
-function InfoCard({ icon, label, value }: { icon: JSX.Element; label: string; value?: string | number }) {
+function InfoCard({ icon, label, value }: { icon: JSX.Element; label: string; value?: React.ReactNode }) {
   return (
-    <Card className="bg-white/70 dark:bg-gray-800/70 border border-gray-300 dark:border-gray-700 rounded-xl">
-      <CardContent className="flex items-center gap-4 p-4">
+    <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+      <CardContent className="flex items-center gap-4 p-3">
         <div className="text-cyan-600 dark:text-cyan-400">{icon}</div>
-        <div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
-          <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">{value ?? "—"}</div>
+        <div className="flex-1">
+          <div className="text-xs text-slate-500 dark:text-slate-400">{label}</div>
+          <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">{value ?? "—"}</div>
         </div>
       </CardContent>
     </Card>
   );
 }
+const MemoInfoCard = React.memo(InfoCard);
 
 /* ---------------- 主页面 ---------------- */
 export default function McServerStatusPage() {
@@ -116,7 +155,7 @@ export default function McServerStatusPage() {
     <>
       <Navigation />
       <main className="p-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Minecraft 服务器状态</h1>
+  <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-4">Minecraft 服务器状态</h1>
 
         {/* 6 按钮 */ }
         <div className="flex flex-wrap gap-3 mb-6">
@@ -146,26 +185,28 @@ export default function McServerStatusPage() {
 
         {!loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InfoCard icon={Icons.ip} label="IP 地址" value={data?.ip} />
-            <InfoCard icon={Icons.port} label="端口" value={data?.port ?? 25565} />
-            <InfoCard icon={Icons.version} label="版本" value={data?.version} />
-            <InfoCard icon={Icons.software} label="核心" value={data?.software} />
-            <InfoCard
+            <MemoInfoCard icon={Icons.ip} label="IP 地址" value={data?.ip} />
+            <MemoInfoCard icon={Icons.port} label="端口" value={data?.port ?? 25565} />
+            <MemoInfoCard icon={Icons.version} label="版本" value={data?.version ?? (data?.protocol?.name ?? "—")} />
+            <MemoInfoCard icon={Icons.software} label="核心/软件" value={data?.software ?? "—"} />
+            <MemoInfoCard
               icon={Icons.users}
               label="在线玩家"
               value={data?.players ? `${data.players.online} / ${data.players.max}` : undefined}
             />
-            <Card className="bg-white/70 dark:bg-gray-800/70 border border-gray-300 dark:border-gray-700 rounded-xl">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
+
+            {/* MOTD */}
+            <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl">
+              <CardContent className="p-3">
+                <div className="flex items-start gap-4">
                   <div className="text-cyan-600 dark:text-cyan-400">{Icons.motd}</div>
-                  <div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">MOTD</div>
-                    <div className="text-sm text-gray-800 dark:text-gray-100 mt-1">
+                  <div className="flex-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400">MOTD</div>
+                    <div className="text-sm text-slate-900 dark:text-slate-100 mt-1">
                       {data?.motd?.html ? (
                         <div
                           dangerouslySetInnerHTML={{
-                            __html: data.motd.html.join("<br>").replace(/<[^>]+>/g, (t) => (t === "<br>" ? t : "")),
+                            __html: (data.motd.html || []).join("<br>").replace(/<[^>]+>/g, (t) => (t === "<br>" ? t : "")),
                           }}
                         />
                       ) : (
@@ -177,10 +218,10 @@ export default function McServerStatusPage() {
               </CardContent>
             </Card>
 
-            {/* 服务器图标独立卡片 */ }
+            {/* Server icon */}
             {data?.icon && (
-              <Card className="md:col-span-2 bg-white/70 dark:bg-gray-800/70 border border-gray-300 dark:border-gray-700 rounded-xl">
-                <CardContent className="p-4 flex items-center gap-4">
+              <Card className="md:col-span-2 bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl">
+                <CardContent className="p-3 flex items-center gap-4">
                   <div className="text-cyan-600 dark:text-cyan-400">
                     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
@@ -189,12 +230,88 @@ export default function McServerStatusPage() {
                     </svg>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">服务器图标</div>
-                    <img src={data.icon} alt="" className="w-16 h-16 mt-2 rounded-lg border border-gray-200 dark:border-gray-700" />
+                    <div className="text-xs text-slate-500 dark:text-slate-400">服务器图标</div>
+                    <img src={data.icon} alt="" className="w-16 h-16 mt-2 rounded-lg border border-slate-200 dark:border-slate-800" />
                   </div>
                 </CardContent>
               </Card>
             )}
+
+            {/* Extra data: hostname, debug, protocol, map, plugins, mods, info */}
+            <Card className="md:col-span-2 bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-sm font-medium text-slate-800 dark:text-slate-100">更多服务器信息</div>
+                  <div className="text-xs text-slate-500">实时数据来自 api.mcsrvstat.us</div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="text-sm text-slate-700 dark:text-slate-300"><span className="font-medium">Hostname:</span> {data?.hostname ?? "—"}</div>
+                  <div className="text-sm text-slate-700 dark:text-slate-300"><span className="font-medium">Server ID:</span> {data?.serverid ?? "—"}</div>
+                  <div className="text-sm text-slate-700 dark:text-slate-300"><span className="font-medium">EULA Blocked:</span> {data?.eula_blocked ? "Yes" : "No"}</div>
+                  <div className="text-sm text-slate-700 dark:text-slate-300"><span className="font-medium">Map:</span> {data?.map?.clean ?? data?.map?.raw ?? "—"}</div>
+                  <div className="text-sm text-slate-700 dark:text-slate-300"><span className="font-medium">Gamemode:</span> {data?.gamemode ?? "—"}</div>
+                  <div className="text-sm text-slate-700 dark:text-slate-300"><span className="font-medium">Protocol:</span> {data?.protocol ? `${data.protocol.name ?? ""} (${data.protocol.version ?? "-"})` : "—"}</div>
+                </div>
+
+                {/* Debug summary */}
+                {data?.debug && (
+                  <details className="mt-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-md border border-slate-100 dark:border-slate-700">
+                    <summary className="text-sm font-medium cursor-pointer">调试信息（展开查看）</summary>
+                    <pre className="mt-2 text-xs overflow-auto text-slate-700 dark:text-slate-300">{JSON.stringify(data.debug, null, 2)}</pre>
+                  </details>
+                )}
+
+                {/* plugins/mods/info/players */}
+                <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <div className="text-xs text-slate-500">Players</div>
+                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">{data?.players ? `${data.players.online} / ${data.players.max}` : "—"}</div>
+                    {data?.players?.list && data.players.list.length > 0 && (
+                      <details className="mt-2 text-sm text-slate-700 dark:text-slate-300">
+                        <summary className="cursor-pointer">玩家名单（{data.players.list.length}）</summary>
+                        <ul className="mt-2 list-disc list-inside">
+                          {data.players.list.map((p) => (
+                            <li key={p.uuid} className="text-sm">{p.name}</li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+                  </div>
+
+                  <div>
+                    <div className="text-xs text-slate-500">Plugins</div>
+                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">{data?.plugins?.length ?? 0}</div>
+                    {data?.plugins && data.plugins.length > 0 && (
+                      <details className="mt-2 text-sm text-slate-700 dark:text-slate-300">
+                        <summary className="cursor-pointer">查看插件</summary>
+                        <ul className="mt-2 list-disc list-inside">
+                          {data.plugins.map((pl, i) => (
+                            <li key={i}>{pl.name} {pl.version ? <span className="text-xs text-slate-500">({pl.version})</span> : null}</li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+                  </div>
+
+                  <div>
+                    <div className="text-xs text-slate-500">Mods</div>
+                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">{data?.mods?.length ?? 0}</div>
+                    {data?.mods && data.mods.length > 0 && (
+                      <details className="mt-2 text-sm text-slate-700 dark:text-slate-300">
+                        <summary className="cursor-pointer">查看 Mods</summary>
+                        <ul className="mt-2 list-disc list-inside">
+                          {data.mods.map((m, i) => (
+                            <li key={i}>{m.name} {m.version ? <span className="text-xs text-slate-500">({m.version})</span> : null}</li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
           </div>
         )}
       </main>
