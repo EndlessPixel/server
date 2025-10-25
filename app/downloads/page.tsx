@@ -6,7 +6,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "资源下载",
   description:
-    "下载EndlessPixel Minecraft服务器最新客户端整合包。支持1.21.8最新版、1.21.4稳定版，包含Fabric模组包和优化配置。",
+    "下载EndlessPixel Minecraft服务器最新客户端整合包。支持1.21.10最新版、1.21.9，1.21.8，1.21.4稳定版，包含Fabric模组包和优化配置。",
   keywords: ["Minecraft下载", "模组包下载", "Fabric", "客户端下载", "1.21.8", "EndlessPixel"],
   openGraph: {
     title: "资源下载 | EndlessPixel",

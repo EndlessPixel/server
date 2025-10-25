@@ -25,8 +25,7 @@ interface ServerData {
 const NODES = [
   { name: "四川成都联通", ip: "cd1.epmc.top" },
   { name: "四川成都电信", ip: "cd2.epmc.top" },
-  { name: "四川成都多线", ip: "cd3.epmc.top" },
-  { name: "四川成都移动", ip: "cd4.epmc.top" },
+  { name: "江苏宿迁电信", ip: "sq.epmc.top" },
 ] as const;
 
 /* ---------------- SVG 图标 ---------------- */
