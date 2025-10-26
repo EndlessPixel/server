@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Mail, MessageCircle, GithubIcon, Users, Clock, MapPin, Phone, Gamepad2, Play } from "lucide-react"
+import { Mail, MessageCircle, GithubIcon, Users, Clock, MapPin, Phone, Gamepad2, Play, FacebookIcon } from "lucide-react"
 
 export function ContactSection() {
   const contactMethods = [
@@ -16,14 +16,24 @@ export function ContactSection() {
       action: "加入群聊",
       onClick: () => window.open("https://qm.qq.com/cgi-bin/qm/qr?k=870594910", "_blank"),
     },
+        {
+      name: "邮箱",
+      value: "3319182533@qq.com",
+      description: "主官方邮箱，处理重要事务",
+      icon: Mail,
+      color: "text-green-600",
+      action: "发送邮件",
+      onClick: () => window.open("mailto:3319182533@qq.com", "_blank"),
+    },
     {
       name: "邮箱",
       value: "2267848501@qq.com",
-      description: "官方邮箱，处理重要事务",
+      description: "备用官方邮箱，处理重要事务",
       icon: Mail,
       color: "text-green-600",
       action: "发送邮件",
       onClick: () => window.open("mailto:2267848501@qq.com", "_blank"),
+      
     },
     {
       name: "Discord",
@@ -35,6 +45,15 @@ export function ContactSection() {
       onClick: () => window.open("https://discord.gg/k63hRWt3fF", "_blank"),
     },
     {
+      name: "Facebook",
+      value: "system_mini",
+      description: "与我们在 Facebook 上互动",
+      icon: FacebookIcon,
+      color: "text-blue-600",
+      action: "关注我们",
+      onClick: () => window.open("https://t.pineal.cn/system_mini", "_blank"),
+    },
+    {
       name: "GitHub",
       value: "EndlessPixel",
       description: "开源项目和技术交流",
@@ -42,6 +61,15 @@ export function ContactSection() {
       color: "text-gray-600 dark:text-gray-400",
       action: "访问仓库",
       onClick: () => window.open("https://github.com/EndlessPixel", "_blank"),
+    },
+    {
+      name: "Gitee",
+      value: "system_mini",
+      description: "与我们在 Gitee 上互动",
+      icon: GithubIcon,
+      color: "text-gray-600 dark:text-gray-400",
+      action: "关注我们",
+      onClick: () => window.open("https://gitee.com/system_mini", "_blank"),
     },
   ]
 
@@ -53,7 +81,12 @@ export function ContactSection() {
     },
     {
       title: "服务器位置",
-      value: "中国",
+      value: "中国江苏宿迁",
+      icon: MapPin,
+    },
+    {
+      title: "网站位置",
+      value: "香港 （东）",
       icon: MapPin,
     },
     {
@@ -135,8 +168,15 @@ export function ContactSection() {
           <br />
           <hr />
           <br />
+          <h3>EndlessPixel Website 最新构建信息</h3>
+          <h4>版本：<span className="ml-auto text-sm text-muted-foreground">EndlessPixel Website 8.9.1-dev3</span></h4>
+          <h4>构建时间：<span className="ml-auto text-sm text-muted-foreground">2025-10-26 11:24</span></h4>
+          <h4>许可证：<span className="ml-auto text-sm text-muted-foreground">GPL-3.0</span></h4>
+          <br />
+          <h3>EndlessPixel Website 上一次构建信息</h3>
           <h4>版本：<span className="ml-auto text-sm text-muted-foreground">EndlessPixel Website 8.9.1-dev2</span></h4>
           <h4>构建时间：<span className="ml-auto text-sm text-muted-foreground">2025-10-25 17:40</span></h4>
+          <h4>许可证：<span className="ml-auto text-sm text-muted-foreground">GPL-3.0</span></h4>
         </CardContent>
       </Card>
     </div>

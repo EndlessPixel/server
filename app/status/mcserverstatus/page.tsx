@@ -35,8 +35,8 @@ const NODES = [
   { name: "四川成都联通", ip: "cd1.epmc.top" },
   { name: "四川成都电信", ip: "cd2.epmc.top" },
   { name: "江苏宿迁电信", ip: "sq.epmc.top" },
-  { name: "上海多线IPV4", ip: "ipv4.sh.endlesspixel.fun:26884" },
-  { name: "上海多线IPV6", ip: "ipv6.sh.endlesspixel.fun:26884" },
+  { name: "上海多线IPV4", ip: "sh.epmc.top" },
+  { name: "上海多线IPV6", ip: "ipv6.sh.epmc.top" },
 ] as const;
 
 /* ---------------- SVG 图标 ---------------- */
@@ -141,7 +141,6 @@ export default function McServerStatusPage() {
   const [active, setActive] = useState(0);
   const [data, setData] = useState<ServerData | null>(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     setLoading(true);
     setData(null);
@@ -150,13 +149,16 @@ export default function McServerStatusPage() {
       setLoading(false);
     });
   }, [active]);
-
   return (
     <>
       <Navigation />
       <main className="p-6">
-  <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-4">Minecraft 服务器状态</h1>
-
+  <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-4">Minecraft 服务器状态 v3</h1>
+        <button className="px-4 py-2 rounded-full text-sm font-medium transition border border-cyan-500 text-cyan-500 hover:bg-cyan-500 hover:text-white"><a href="/status">返回</a></button><br /><br />
+        <div className="mb-6 text-sm text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 rounded-md p-4">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Warning: </h2>
+          <p className="mt-2">由于服务器地址经常变更，请以官方群内公告为准，此处更新可能不及时。</p>
+        </div>
         {/* 6 按钮 */ }
         <div className="flex flex-wrap gap-3 mb-6">
           {NODES.map((n, i) => (

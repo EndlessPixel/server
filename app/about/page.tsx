@@ -32,14 +32,6 @@ export default function AboutPage() {
       <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Page Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-foreground mb-4">关于我们</h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              了解 EndlessPixel 团队和我们的故事，以及如何与我们取得联系
-            </p>
-          </div>
-
           {/* About Us Section */}
           <div className="mb-12 text-center">
             <div className="max-w-4xl mx-auto">
