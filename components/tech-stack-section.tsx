@@ -139,11 +139,11 @@ export function TechStackSection() {
           
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="text-center p-4 bg-white/50 dark:bg-slate-800/30 rounded-lg backdrop-blur-sm">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">99.9%</div>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">~92.9%</div>
               <div className="text-sm text-slate-600 dark:text-slate-400">可用性</div>
             </div>
             <div className="text-center p-4 bg-white/50 dark:bg-slate-800/30 rounded-lg backdrop-blur-sm">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">&lt;100ms</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">&lt;~200ms</div>
               <div className="text-sm text-slate-600 dark:text-slate-400">响应时间</div>
             </div>
             <div className="text-center p-4 bg-white/50 dark:bg-slate-800/30 rounded-lg backdrop-blur-sm">
@@ -234,10 +234,10 @@ export function TechStackSection() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { name: "Minecraft 服务器状态", url: "api.mcsrvstat.us" },
+              { name: "Minecraft 服务器状态API", url: "api.mcsrvstat.us" },
               { name: "多功能 API", url: "uapis.cn" },
               { name: "GitHub API", url: "api.github.com" },
-              { name: "Cloudflare 验证", url: "cf-v2.uapis.cn" }
+              { name: "ChmlFrp 状态API", url: "cf-v2.uapis.cn" }
             ].map((api) => (
               <div key={api.url} className="bg-white/50 dark:bg-slate-800/30 rounded-lg p-4 border border-green-200 dark:border-green-800 backdrop-blur-sm">
                 <div className="font-medium text-slate-900 dark:text-slate-100">{api.name}</div>

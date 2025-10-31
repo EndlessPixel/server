@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,6 +15,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { ArrowLeft, Cpu, Network, HardDrive, Activity, Clock, Database } from "lucide-react";
 
 ChartJS.register(
   CategoryScale,
@@ -24,30 +27,62 @@ ChartJS.register(
   Legend
 );
 
-const GRADIENT_COLORS = [
-  "from-blue-200 to-purple-200",
-  "from-green-200 to-blue-200",
-  "from-purple-200 to-green-200",
-];
-
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: "top" as const, // ✅ 字面量 "top"
+      position: "top" as const,
+      labels: {
+        usePointStyle: true,
+        padding: 15,
+        font: {
+          size: 11
+        }
+      }
     },
     title: { display: false },
   },
   elements: {
-    line: { tension: 0 }, // 直线
-    point: { radius: 0 }, // 不画点
+    line: { 
+      tension: 0.4,
+      borderWidth: 2
+    },
+    point: { 
+      radius: 2,
+      hoverRadius: 5
+    },
+  },
+  interaction: {
+    intersect: false,
+    mode: 'index' as const,
   },
   scales: {
-    x: { grid: { display: false } },
-    y: { grid: { color: "rgba(128,128,128,0.1" } },
+    x: { 
+      grid: { 
+        display: false,
+        drawBorder: false
+      },
+      ticks: {
+        maxTicksLimit: 8,
+        font: {
+          size: 10
+        }
+      }
+    },
+    y: { 
+      grid: { 
+        color: "rgba(128,128,128,0.1)",
+        drawBorder: false
+      },
+      ticks: {
+        font: {
+          size: 10
+        }
+      }
+    },
   },
-} as const; // ✅ 整个对象也锁定，避免其他推导错误
+} as const;
 
 interface ServerStatusCardProps {
   node: string;
@@ -57,17 +92,22 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
   const [nodeData, setNodeData] = useState<any>(null);
   const [cpuChartData, setCpuChartData] = useState<any>({ labels: [], datasets: [] });
   const [trafficChartData, setTrafficChartData] = useState<any>({ labels: [], datasets: [] });
-  const [gradientIndex, setGradientIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [latestSample, setLatestSample] = useState<any>(null);
 
   const fetchNodeData = useCallback(async () => {
     try {
+      setLoading(true);
+      setError(null);
+      
       const response = await fetch(
         `https://cf-v2.uapis.cn/node_status_info?nodename=${encodeURIComponent(node)}`
       );
-      if (!response.ok) throw new Error(`Failed to fetch node data: ${response.statusText}`);
+      
+      if (!response.ok) throw new Error(`请求失败: ${response.statusText}`);
+      
       const data = await response.json();
-      console.log("Fetched node data:", data); // Debug log for fetched data
       setNodeData(data);
 
       const raw = data.data?.status_list || [];
@@ -78,187 +118,300 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
         new Date(item.timestamp).toLocaleTimeString("zh-CN", {
           hour: "2-digit",
           minute: "2-digit",
-          second: "2-digit",
         })
       );
 
+      // CPU 图表数据
       const cpuUsages = statusList.map((item: any) => item.cpu_usage);
       setCpuChartData({
         labels: timestamps,
         datasets: [
           {
-            label: "CPU Usage (%)",
+            label: "CPU 使用率",
             data: cpuUsages,
-            backgroundColor: (ctx: any) => {
-              const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
-              g.addColorStop(0, `rgba(75, 192, 192, 0.2)`);
-              g.addColorStop(1, `rgba(75, 192, 192, 0)`);
-              return g;
-            },
-            borderColor: "rgba(75, 192, 192, 1)",
+            backgroundColor: "rgba(59, 130, 246, 0.1)",
+            borderColor: "rgba(59, 130, 246, 1)",
             borderWidth: 2,
             fill: true,
+            tension: 0.4,
           },
         ],
       });
 
-      // 柔性取字段：有些 API 可能使用 tx/rx、upload_bandwidth、recv_bandwidth、tx_bytes 等不同字段名
+      // 网络流量数据
       const pickNumber = (obj: any, keys: string[]) => {
         for (const k of keys) {
           const v = obj?.[k];
-          if (v !== undefined && v !== null && !Number.isNaN(Number(v))) return Number(v);
+          if (v !== undefined && v !== null && !Number.isNaN(Number(v))) return Number(v) / 1e6; // 转换为 MB
         }
         return 0;
       };
 
       const uploadBandwidth = statusList.map((item: any) =>
-        // 常见字段优先级：upload_bandwidth, tx, tx_bytes, upload_bytes, total_traffic_out
         pickNumber(item, ["upload_bandwidth", "tx", "tx_bytes", "upload_bytes", "out_bytes", "total_traffic_out", "sent"])
       );
       const downloadBandwidth = statusList.map((item: any) =>
-        // 常见字段优先级：download_bandwidth, recv_bandwidth, rx, rx_bytes, total_traffic_in, recv_packets
         pickNumber(item, ["download_bandwidth", "recv_bandwidth", "rx", "rx_bytes", "download_bytes", "total_traffic_in", "recv_packets", "received"])
       );
-      // 保存最近一条原始样本，供 UI 展示更多实时字段
+
       setLatestSample(raw.length ? raw[raw.length - 1] : null);
 
       setTrafficChartData({
         labels: timestamps,
         datasets: [
           {
-            label: "Upload Bandwidth (MB/s)",
+            label: "上传带宽",
             data: uploadBandwidth,
-            backgroundColor: (ctx: any) => {
-              const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
-              g.addColorStop(0, `rgba(255, 99, 132, 0.2)`);
-              g.addColorStop(1, `rgba(255, 99, 132, 0)`);
-              return g;
-            },
-            borderColor: "rgba(255, 99, 132, 1)",
+            backgroundColor: "rgba(239, 68, 68, 0.1)",
+            borderColor: "rgba(239, 68, 68, 1)",
             borderWidth: 2,
             fill: true,
+            tension: 0.4,
           },
           {
-            label: "Download Bandwidth (MB/s)",
+            label: "下载带宽",
             data: downloadBandwidth,
-            backgroundColor: (ctx: any) => {
-              const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
-              g.addColorStop(0, `rgba(54, 162, 235, 0.2)`);
-              g.addColorStop(1, `rgba(54, 162, 235, 0)`);
-              return g;
-            },
-            borderColor: "rgba(54, 162, 235, 1)",
+            backgroundColor: "rgba(34, 197, 94, 0.1)",
+            borderColor: "rgba(34, 197, 94, 1)",
             borderWidth: 2,
             fill: true,
+            tension: 0.4,
           },
         ],
       });
-    } catch (error) {
-      console.error("Error fetching node data:", error);
+
+    } catch (err) {
+      console.error("获取节点数据失败:", err);
+      setError(err instanceof Error ? err.message : "未知错误");
+    } finally {
+      setLoading(false);
     }
   }, [node]);
 
   useEffect(() => {
     fetchNodeData();
-
-    const interval = setInterval(fetchNodeData, 20000); // Auto-update every 20 seconds
-    return () => clearInterval(interval); // Cleanup on component unmount
+    const interval = setInterval(fetchNodeData, 20000);
+    return () => clearInterval(interval);
   }, [fetchNodeData]);
 
+  if (loading && !nodeData) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <div className="text-center">
+          <Activity className="w-8 h-8 animate-pulse text-blue-500 mx-auto mb-4" />
+          <p className="text-slate-600 dark:text-slate-400">加载节点数据中...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Activity className="w-8 h-8 text-red-500" />
+          </div>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">加载失败</h3>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">{error}</p>
+          <Button onClick={fetchNodeData} variant="outline">
+            重试
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const nodeDetails = nodeData?.data?.node_details;
+
   return (
-    <div className={`p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-2xl shadow-md border border-slate-200 dark:border-slate-800`}>
-      <Card className="bg-transparent shadow-none">
-        <CardHeader>
-          <CardTitle className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-2">
-            Frp 节点状态监控 Beta2  -- {node}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <button className="px-4 py-2 rounded-md bg-cyan-500 text-white"><a href="/status/">返回</a></button>
-          <br/><br/>
-          {nodeData && nodeData.data && nodeData.data.node_details ? (
-            <div className="space-y-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    <span className="text-slate-700 dark:text-slate-200 font-medium">节点名称：</span>
-                    <span className="ml-2">{node}</span>
-                  </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                    <span className="text-slate-700 dark:text-slate-200 font-medium">CPU 信息：</span>
-                    <span className="ml-2">{nodeData.data.node_details.cpu_info} ({nodeData.data.node_details.num_cores} 核心)</span>
-                  </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                    <span className="text-slate-700 dark:text-slate-200 font-medium">存储：</span>
-                    <span className="ml-2">已用 {Math.round(nodeData.data.node_details.storage_used / 1e9)} GB / 总计 {Math.round(nodeData.data.node_details.storage_total / 1e9)} GB</span>
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    <span className="text-slate-700 dark:text-slate-200 font-medium">系统负载：</span>
-                    <span className="ml-2">1m: {nodeData.data.node_details.load1} • 5m: {nodeData.data.node_details.load5} • 15m: {nodeData.data.node_details.load15}</span>
-                  </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                    <span className="text-slate-700 dark:text-slate-200 font-medium">今日流量：</span>
-                    <span className="ml-2 font-mono">下载 {Math.round(nodeData.data.node_details.total_traffic_in / 1e6)} MB</span>
-                    <span className="mx-2 text-slate-400">/</span>
-                    <span className="ml-2 font-mono">上传 {Math.round(nodeData.data.node_details.total_traffic_out / 1e6)} MB</span>
-                  </p>
-                </div>
+    <div className="space-y-6">
+      {/* 头部信息 */}
+      <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-0">
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="sm" asChild>
+                <a href="/status/" className="flex items-center space-x-2">
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>返回状态页</span>
+                </a>
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {node} 节点监控
+                </h1>
+                <p className="text-slate-600 dark:text-slate-400 text-sm">
+                  实时监控节点性能和网络状态
+                </p>
               </div>
+            </div>
+            <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+              Beta 2
+            </Badge>
+          </div>
 
-              {latestSample ? (
-                <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-                  <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
-                    <strong>最新样本时间：</strong>
-                    {new Date(latestSample.timestamp).toLocaleString("zh-CN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })}
+          {/* 节点概览 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-white/50 dark:bg-slate-800/30 rounded-lg p-4 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <Cpu className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">CPU 信息</p>
+                  <p className="font-semibold text-slate-900 dark:text-white">
+                    {nodeDetails?.cpu_info} ({nodeDetails?.num_cores} 核心)
                   </p>
-                  <div className="grid grid-cols-2 gap-2 text-sm text-slate-700 dark:text-slate-300">
-                    <div className="flex justify-between"><span className="text-slate-600">当前连接</span><span className="font-mono">{latestSample.cur_conns ?? latestSample.active_conn ?? "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">活跃连接</span><span className="font-mono">{latestSample.active_conn ?? "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">被动连接</span><span className="font-mono">{latestSample.passive_conn ?? "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">客户端数</span><span className="font-mono">{latestSample.client_counts ?? "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">内存使用</span><span className="font-mono">{latestSample.memory_used !== undefined ? Math.round(latestSample.memory_used / 1e6) + " MB" : "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">CPU 使用</span><span className="font-mono">{latestSample.cpu_usage !== undefined ? latestSample.cpu_usage + " %" : "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">已发送报文</span><span className="font-mono">{latestSample.sent_packets !== undefined ? Intl.NumberFormat("zh-CN").format(latestSample.sent_packets) : "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">已接收报文</span><span className="font-mono">{latestSample.recv_packets !== undefined ? Intl.NumberFormat("zh-CN").format(latestSample.recv_packets) : "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">下载 使用率</span><span className="font-mono">{latestSample.download_bandwidth_usage_percent !== undefined ? latestSample.download_bandwidth_usage_percent + " %" : "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">上传 使用率</span><span className="font-mono">{latestSample.upload_bandwidth_usage_percent !== undefined ? latestSample.upload_bandwidth_usage_percent + " %" : "-"}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">代理 HTTP</span><span className="font-mono">{latestSample.proxy_http ?? 0}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">代理 TCP</span><span className="font-mono">{latestSample.proxy_tcp ?? 0}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">代理 UDP</span><span className="font-mono">{latestSample.proxy_udp ?? 0}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-600">代理 HTTPS</span><span className="font-mono">{latestSample.proxy_https ?? 0}</span></div>
-                  </div>
-                </div>
-              ) : null}
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="h-64 bg-transparent rounded-md p-2 border border-slate-100 dark:border-slate-800">
-                  <div className="text-xs text-slate-500 mb-2">CPU 使用趋势</div>
-                  <div className="h-[calc(100%-1rem)]">
-                    <Line data={cpuChartData} options={chartOptions} />
-                  </div>
-                </div>
-                <div className="h-64 bg-transparent rounded-md p-2 border border-slate-100 dark:border-slate-800">
-                  <div className="text-xs text-slate-500 mb-2">网络流量趋势</div>
-                  <div className="h-[calc(100%-1rem)]">
-                    <Line data={trafficChartData} options={chartOptions} />
-                  </div>
                 </div>
               </div>
             </div>
-          ) : (
-            <p className="text-gray-600 dark:text-gray-400">加载中...</p>
-          )}
+
+            <div className="bg-white/50 dark:bg-slate-800/30 rounded-lg p-4 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                  <HardDrive className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">存储使用</p>
+                  <p className="font-semibold text-slate-900 dark:text-white">
+                    {Math.round(nodeDetails?.storage_used / 1e9)} / {Math.round(nodeDetails?.storage_total / 1e9)} GB
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white/50 dark:bg-slate-800/30 rounded-lg p-4 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                  <Network className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">今日流量</p>
+                  <p className="font-semibold text-slate-900 dark:text-white">
+                    ↓{Math.round(nodeDetails?.total_traffic_in / 1e6)} MB / ↑{Math.round(nodeDetails?.total_traffic_out / 1e6)} MB
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 系统负载 */}
+          <div className="bg-white/50 dark:bg-slate-800/30 rounded-lg p-4 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+            <div className="flex items-center space-x-2 mb-3">
+              <Activity className="w-4 h-4 text-orange-500" />
+              <span className="font-medium text-slate-900 dark:text-white">系统负载</span>
+            </div>
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">{nodeDetails?.load1}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">1分钟</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">{nodeDetails?.load5}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">5分钟</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">{nodeDetails?.load15}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">15分钟</div>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
+
+      {/* 图表区域 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* CPU 使用率图表 */}
+        <Card className="border-0 bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center space-x-2 text-sm">
+              <Cpu className="w-4 h-4 text-blue-500" />
+              <span>CPU 使用率趋势</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <Line data={cpuChartData} options={chartOptions} />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 网络流量图表 */}
+        <Card className="border-0 bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center space-x-2 text-sm">
+              <Network className="w-4 h-4 text-green-500" />
+              <span>网络带宽趋势 (MB/s)</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <Line data={trafficChartData} options={chartOptions} />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* 实时状态 */}
+      {latestSample && (
+        <Card className="border-0 bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2 text-sm">
+              <Clock className="w-4 h-4 text-purple-500" />
+              <span>实时状态</span>
+              <span className="text-xs font-normal text-slate-500 ml-auto">
+                更新时间: {new Date(latestSample.timestamp).toLocaleTimeString("zh-CN")}
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              <div className="text-center p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                <div className="text-lg font-bold text-slate-900 dark:text-white">
+                  {latestSample.cur_conns ?? latestSample.active_conn ?? "0"}
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">当前连接</div>
+              </div>
+              
+              <div className="text-center p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                <div className="text-lg font-bold text-slate-900 dark:text-white">
+                  {latestSample.cpu_usage ?? "0"}%
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">CPU 使用</div>
+              </div>
+
+              <div className="text-center p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                <div className="text-lg font-bold text-slate-900 dark:text-white">
+                  {latestSample.memory_used ? Math.round(latestSample.memory_used / 1e6) : "0"}
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">内存 (MB)</div>
+              </div>
+
+              <div className="text-center p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                <div className="text-lg font-bold text-slate-900 dark:text-white">
+                  {latestSample.client_counts ?? "0"}
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">客户端数</div>
+              </div>
+
+              <div className="text-center p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                <div className="text-lg font-bold text-slate-900 dark:text-white">
+                  {(latestSample.proxy_tcp ?? 0) + (latestSample.proxy_udp ?? 0)}
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">TCP/UDP 代理</div>
+              </div>
+
+              <div className="text-center p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                <div className="text-lg font-bold text-slate-900 dark:text-white">
+                  {(latestSample.proxy_http ?? 0) + (latestSample.proxy_https ?? 0)}
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">HTTP(S) 代理</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
