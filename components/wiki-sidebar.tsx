@@ -153,82 +153,82 @@ export function WikiSidebar() {
     },
   ]
 
-const toggleSection = (sectionId: string) => {
-  setExpandedSections((prev) =>
-    prev.includes(sectionId) ? prev.filter((id) => id !== sectionId) : [...prev, sectionId],
-  )
-}
-
-const selectArticle = (articleId: string) => {
-  setSelectedArticle(articleId)
-  // Trigger content update
-  window.dispatchEvent(new CustomEvent("wiki-article-change", { detail: { articleId } }))
-}
-
-const handleItemClick = (item: any) => {
-  if (item.external && item.url) {
-    window.open(item.url, "_blank", "noopener,noreferrer")
-  } else {
-    selectArticle(item.id)
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections((prev) =>
+      prev.includes(sectionId) ? prev.filter((id) => id !== sectionId) : [...prev, sectionId],
+    )
   }
-}
 
-return (
-  <Card className="sticky top-24">
-    <CardHeader>
-      <CardTitle className="text-lg">目录导航</CardTitle>
-    </CardHeader>
-    <CardContent className="p-0">
-      <div className="space-y-1">
-        {wikiSections.map((section) => {
-          const Icon = section.icon
-          const isExpanded = expandedSections.includes(section.id)
+  const selectArticle = (articleId: string) => {
+    setSelectedArticle(articleId)
+    // Trigger content update
+    window.dispatchEvent(new CustomEvent("wiki-article-change", { detail: { articleId } }))
+  }
 
-          return (
-            <div key={section.id}>
-              <Button
-                variant="ghost"
-                className="w-full justify-start px-4 py-3 h-auto font-medium min-h-[48px] active:bg-accent/80"
-                onClick={() => toggleSection(section.id)}
-              >
-                <div className="flex items-center space-x-3 flex-1">
-                  <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                  <span className="text-left">{section.title}</span>
-                </div>
-                {isExpanded ? (
-                  <ChevronDown className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                ) : (
-                  <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+  const handleItemClick = (item: any) => {
+    if (item.external && item.url) {
+      window.open(item.url, "_blank", "noopener,noreferrer")
+    } else {
+      selectArticle(item.id)
+    }
+  }
+
+  return (
+    <Card className="sticky top-24">
+      <CardHeader>
+        <CardTitle className="text-lg">目录导航</CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="space-y-1">
+          {wikiSections.map((section) => {
+            const Icon = section.icon
+            const isExpanded = expandedSections.includes(section.id)
+
+            return (
+              <div key={section.id}>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start px-4 py-3 h-auto font-medium min-h-[48px] active:bg-accent/80"
+                  onClick={() => toggleSection(section.id)}
+                >
+                  <div className="flex items-center space-x-3 flex-1">
+                    <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                    <span className="text-left">{section.title}</span>
+                  </div>
+                  {isExpanded ? (
+                    <ChevronDown className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                  )}
+                </Button>
+
+                {isExpanded && (
+                  <div className="ml-4 space-y-1">
+                    {section.items.map((item) => (
+                      <Button
+                        key={item.id}
+                        variant="ghost"
+                        className={`w-full justify-start px-4 py-3 h-auto text-sm min-h-[44px] active:bg-accent/80 ${selectedArticle === item.id && (!("external" in item) || !item.external)
+                          ? "text-primary bg-accent font-medium"
+                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                          }`}
+                        onClick={() => handleItemClick(item)}
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <span className="text-left leading-relaxed">{item.title}</span>
+                          {"external" in item && item.external && (
+                            <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 ml-2" />
+                          )}
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
                 )}
-              </Button>
-
-              {isExpanded && (
-                <div className="ml-4 space-y-1">
-                  {section.items.map((item) => (
-                    <Button
-                      key={item.id}
-                      variant="ghost"
-                      className={`w-full justify-start px-4 py-3 h-auto text-sm min-h-[44px] active:bg-accent/80 ${selectedArticle === item.id && (!("external" in item) || !item.external)
-                        ? "text-primary bg-accent font-medium"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                        }`}
-                      onClick={() => handleItemClick(item)}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <span className="text-left leading-relaxed">{item.title}</span>
-                        {"external" in item && item.external && (
-                          <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 ml-2" />
-                        )}
-                      </div>
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
-    </CardContent>
-  </Card>
-)
+              </div>
+            )
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  )
 }

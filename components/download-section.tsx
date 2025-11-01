@@ -584,7 +584,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
               {
                 name: "Cloudflare 主站（全球加速）",
                 url: `https://gh-proxy.com/${file.downloadUrl}`,
-                tag: "全球",
+                tag: "Cloudflare",
               },
               {
                 name: "Fastly CDN",
@@ -592,7 +592,24 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
                 tag: "Fastly",
               },
               {
-                name: "香港（国内优化，secbit.ai赞助）",
+                name: "Edgeone 全球加速",
+                url: `https://edgeone.gh-proxy.com/${file.downloadUrl}`,
+                tag: "Edgeone",
+              },
+              {
+                name: "Jasonzeng 文件代理加速",
+                url: `https://gh.jasonzeng.dev/${file.downloadUrl}`,
+                tag: "Jasonzeng",
+                tip: "大文件下载不建议使用！",
+              },
+              {
+                name: "Imixc 国内高速下载",
+                url: `https://gh.imixc.top/${file.downloadUrl}`,
+                tag: "Imixc",
+                tip: "大文件下载不建议使用！",
+              },
+              {
+                name: "香港 国内线路优化,secbit.ai&Sharon CDN赞助",
                 url: `https://hk.gh-proxy.com/${file.downloadUrl}`,
                 tag: "香港",
                 tip: "大文件下载不建议使用！",
