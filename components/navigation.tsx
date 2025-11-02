@@ -53,16 +53,24 @@ export function Navigation() {
                 >
                   <Icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   <span className="text-xs font-medium">{item.label}</span>
-                  
+
                   {/* Active indicator */}
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-transparent group-hover:bg-blue-500 rounded-full transition-colors duration-200"></div>
                 </Link>
               )
             })}
-            
             {/* Separator */}
             <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2"></div>
-            
+
+            <Button variant="outline" size="sm" className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 py-2 px-4 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 group relative min-w-[80px]">
+              <a href="/users/login" className="flex items-center justify-center h-full w-full">
+                登录
+              </a>
+            </Button>
+
+            {/* Separator */}
+            <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2"></div>
+
             {/* Theme Toggle */}
             <div className="pl-2">
               <ThemeToggle />
@@ -72,10 +80,10 @@ export function Navigation() {
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-2">
             <ThemeToggle />
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="h-11 w-11 p-0 relative"
             >
               {isMenuOpen ? (
@@ -113,7 +121,7 @@ export function Navigation() {
                   </Link>
                 )
               })}
-              
+
               {/* Mobile Footer */}
               <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
                 <div className="text-center text-xs text-slate-500 dark:text-slate-400 px-4">
