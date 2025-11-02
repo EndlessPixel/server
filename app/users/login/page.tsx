@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Github, Lock, UserCheck, Shield, ArrowRight, Sparkles } from "lucide-react";
 
 const AUTHORIZE_URL =
-  "https://github.com/login/oauth/authorize?client_id=Ov23lirB3OziFtPWOy9X&redirect_uri=https://ep.endlesspixel.fun/login/success&scope=read:user user:email&state=RANDOM_STRING";
+  "https://github.com/login/oauth/authorize?client_id=Ov23lirB3OziFtPWOy9X&redirect_uri=https://ep.endlesspixel.fun/users/login/success&scope=read:user user:email&state=RANDOM_STRING";
 
 export default function LoginPage(): JSX.Element {
   const [loading, setLoading] = useState(false);
