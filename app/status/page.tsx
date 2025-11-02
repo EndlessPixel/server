@@ -8,13 +8,6 @@ import { Server, Globe, Wifi, Activity, Monitor, MapPin, ArrowRight, Users, Cpu,
 
 const NODES = [
   { 
-    name: "四川成都联通", 
-    path: "/status/frpnode/cd2",
-    region: "西南",
-    status: "online",
-    description: "成都联通节点，提供稳定连接"
-  },
-  { 
     name: "四川成都电信", 
     path: "/status/frpnode/cd1",
     region: "西南", 
@@ -58,12 +51,6 @@ export default function StatusIndexPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>所有系统运行正常</span>
-              </div>
-            </div>
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-900 via-blue-700 to-purple-600 dark:from-slate-100 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-6">
               服务状态监控
             </h1>
@@ -100,10 +87,6 @@ export default function StatusIndexPage() {
                             <p className="text-slate-600 dark:text-slate-400 text-sm">{service.description}</p>
                           </div>
                         </div>
-                        <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-0">
-                          <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
-                          在线
-                        </Badge>
                       </div>
                       
                       <div className="flex items-center justify-between mt-6">
@@ -166,10 +149,6 @@ export default function StatusIndexPage() {
                           </Badge>
                         </div>
                       </div>
-                      <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-0">
-                        <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
-                        在线
-                      </Badge>
                     </div>
                     
                     <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
@@ -177,16 +156,6 @@ export default function StatusIndexPage() {
                     </p>
 
                     <div className="flex items-center justify-between mt-6">
-                      <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                        <span className="flex items-center gap-1">
-                          <Cpu className="w-3 h-3" />
-                          正常
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <BarChart3 className="w-3 h-3" />
-                          监控中
-                        </span>
-                      </div>
                       <Button 
                         asChild 
                         size="sm" 
