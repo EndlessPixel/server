@@ -2,115 +2,213 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Scale, Check, AlertTriangle, Info } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Scale, Check, AlertTriangle, Info, ChevronDown, ChevronUp, FileText, ExternalLink } from "lucide-react"
 import { useState } from "react"
 
 export function LicenseSection() {
   const [showFullLicense, setShowFullLicense] = useState(false)
 
   const permissions = [
-    "商业用途",
-    "修改",
-    "分配",
+    "商业使用",
+    "修改代码",
+    "代码分发",
     "专利使用",
     "私人使用"
   ]
 
   const limitations = [
-    "责任", 
-    "保证"
+    "责任限制",
+    "无担保"
   ]
 
   const conditions = [
-    "许可和版权声明",
-    "状态变化",
-    "披露来源",
-    "相同的许可证"
+    "许可证和版权声明",
+    "状态变更通知",
+    "公开源代码",
+    "网络使用视为分发",
+    "相同许可证"
+  ]
+
+  const licenseFeatures = [
+    {
+      icon: "🔄",
+      title: "Copyleft 保护",
+      description: "确保衍生作品保持开源"
+    },
+    {
+      icon: "🌐",
+      title: "网络服务条款",
+      description: "覆盖网络服务使用场景"
+    },
+    {
+      icon: "🛡️",
+      title: "用户权益保障",
+      description: "保护最终用户的自由"
+    },
+    {
+      icon: "📜",
+      title: "GPLv3 兼容",
+      description: "与 GNU GPLv3 完全兼容"
+    }
   ]
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Scale className="w-5 h-5 text-blue-600" />
-          <span>开源许可证</span>
-        </CardTitle>
-        <CardDescription>EndlessPixel/server 项目采用 GNU Affero General Public License v3.0 开源许可证</CardDescription>
+    <Card className="border-2 border-gray-200 dark:border-gray-800 shadow-xl overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 pb-6">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-2xl shadow-lg">
+            <Scale className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              开源许可证
+            </CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400 text-base mt-1">
+              EndlessPixel/server 项目采用 GNU Affero General Public License v3.0 开源许可证
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent>
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <Scale className="w-8 h-8 text-blue-600" />
+      
+      <CardContent className="p-0">
+        <div className="p-6">
+          {/* License Overview */}
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/10 dark:to-purple-950/10 rounded-2xl p-6 border-2 border-blue-200 dark:border-blue-800 mb-6">
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0">
+                <FileText className="w-12 h-12 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 sm:mb-0">
+                    GNU Affero General Public License v3.0
+                  </h3>
+                  <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-3 py-1 text-sm font-semibold">
+                    许可证版本: GPL-3.0
+                  </Badge>
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-4">
+                  这种强大的 copyleft 许可证的许可条件是在同一许可证下提供许可作品和修改的完整源代码，其中包括使用许可作品的较大作品。版权和许可声明必须保留。贡献者明确授予专利权。
+                </p>
+
+                {/* Features Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  {licenseFeatures.map((feature, index) => (
+                    <div key={index} className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-xl border border-blue-100 dark:border-blue-800 text-center">
+                      <div className="text-2xl mb-2">{feature.icon}</div>
+                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm mb-1">
+                        {feature.title}
+                      </h4>
+                      <p className="text-gray-600 dark:text-gray-400 text-xs">
+                        {feature.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* License Details Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                  <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-xl border-2 border-green-200 dark:border-green-800">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg">
+                        <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <h4 className="font-bold text-green-900 dark:text-green-100">权限</h4>
+                    </div>
+                    <div className="space-y-2">
+                      {permissions.map((permission) => (
+                        <div key={permission} className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm text-green-800 dark:text-green-300">{permission}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-orange-50 dark:bg-orange-950/20 p-4 rounded-xl border-2 border-orange-200 dark:border-orange-800">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <div className="bg-orange-100 dark:bg-orange-800 p-2 rounded-lg">
+                        <AlertTriangle className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                      </div>
+                      <h4 className="font-bold text-orange-900 dark:text-orange-100">局限性</h4>
+                    </div>
+                    <div className="space-y-2">
+                      {limitations.map((limitation) => (
+                        <div key={limitation} className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                          <span className="text-sm text-orange-800 dark:text-orange-300">{limitation}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg">
+                        <Info className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <h4 className="font-bold text-blue-900 dark:text-blue-100">条件</h4>
+                    </div>
+                    <div className="space-y-2">
+                      {conditions.map((condition) => (
+                        <div key={condition} className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-sm text-blue-800 dark:text-blue-300">{condition}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="font-semibold">自由软件基金会批准:</span> 是
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => window.open("https://www.gnu.org/licenses/agpl-3.0.html", "_blank")}
+                      className="border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      官方文档
+                    </Button>
+                    <Button
+                      onClick={() => setShowFullLicense(!showFullLicense)}
+                      className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg"
+                    >
+                      {showFullLicense ? (
+                        <>
+                          <ChevronUp className="w-4 h-4 mr-2" />
+                          隐藏完整许可证
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          查看完整许可证
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-2">
-                <h3 className="text-lg font-semibold text-gray-900">GNU Affero General Public License v3.0</h3>
+          </div>
+
+          {/* Full License Text */}
+          {showFullLicense && (
+            <div className="mt-6 p-6 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-gray-200 dark:border-gray-800 transition-all duration-300">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-bold text-gray-900 dark:text-gray-100 text-lg">完整许可证文本</h4>
+                <Badge variant="outline" className="text-gray-600 dark:text-gray-400">
+                  GNU AGPL v3.0
+                </Badge>
               </div>
-              <p className="text-gray-600 mb-4">
-                这种强大的 copyleft 许可证的许可条件是在同一许可证下提供许可作品和修改的完整源代码，其中包括使用许可作品的较大作品。版权和许可声明必须保留。贡献者明确授予专利权。
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Check className="w-4 h-4 text-green-600" />
-                    <h4 className="font-medium text-green-700">权限</h4>
-                  </div>
-                  <div className="space-y-1">
-                    {permissions.map((permission) => (
-                      <Badge key={permission} variant="outline" className="text-xs text-green-700 border-green-200">
-                        {permission}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <AlertTriangle className="w-4 h-4 text-orange-600" />
-                    <h4 className="font-medium text-orange-700">局限性</h4>
-                  </div>
-                  <div className="space-y-1">
-                    {limitations.map((limitation) => (
-                      <Badge key={limitation} variant="outline" className="text-xs text-orange-700 border-orange-200">
-                        {limitation}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Info className="w-4 h-4 text-blue-600" />
-                    <h4 className="font-medium text-blue-700">条件</h4>
-                  </div>
-                  <div className="space-y-1">
-                    {conditions.map((condition) => (
-                      <Badge key={condition} variant="outline" className="text-xs text-blue-700 border-blue-200">
-                        {condition}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600">
-                  <span className="font-medium">许可证版本:</span> GPL-3.0
-                </div>
-                <button
-                  onClick={() => setShowFullLicense(!showFullLicense)}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  {showFullLicense ? "隐藏" : "查看"} 完整许可证
-                </button>
-              </div>
-
-              {showFullLicense && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-lg border">
-                  <pre className="text-xs text-gray-700 whitespace-pre-wrap max-h-96 overflow-y-auto">
-                    {`
+              <div className="relative">
+                <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap max-h-96 overflow-y-auto p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                  {`
                     GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 
@@ -772,10 +870,55 @@ specific requirements.
 if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
-`}
-                  </pre>
-                </div>
-              )}
+                  `}
+                </pre>
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white dark:from-gray-800 to-transparent pointer-events-none"></div>
+              </div>
+              <div className="text-center mt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => window.open("https://www.gnu.org/licenses/agpl-3.0.html", "_blank")}
+                  className="border-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/20"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  查看完整许可证文本
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Additional Information */}
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/10 dark:to-emerald-950/10 rounded-2xl p-6 border-2 border-green-200 dark:border-green-800 mt-6">
+            <div className="flex items-start space-x-4">
+              <div className="bg-green-100 dark:bg-green-800 p-3 rounded-xl">
+                <span className="text-2xl">💡</span>
+              </div>
+              <div>
+                <h4 className="font-bold text-green-900 dark:text-green-100 text-lg mb-2">
+                  许可证使用说明
+                </h4>
+                <p className="text-green-800 dark:text-green-300 mb-4">
+                  使用本项目代码时，请确保遵守 AGPL v3.0 许可证的要求，包括但不限于：
+                </p>
+                <ul className="text-green-700 dark:text-green-400 space-y-2 text-sm">
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2 mt-1">•</span>
+                    <span>保留原始版权和许可证声明</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2 mt-1">•</span>
+                    <span>修改后的代码必须使用相同许可证开源</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2 mt-1">•</span>
+                    <span>网络服务使用必须提供源代码访问</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2 mt-1">•</span>
+                    <span>明确说明对原始代码的修改</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

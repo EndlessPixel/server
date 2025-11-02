@@ -35,7 +35,7 @@ interface ServerData {
 
 /* ---------------- 节点 ---------------- */
 const NODES = [
-  { name: "四川成都电信", ip: "cd1.epmc.top", region: "西南" },
+  { name: "四川成都电信", ip: "cd.epmc.top", region: "西南" },
   { name: "江苏宿迁电信", ip: "sq.epmc.top", region: "华东" },
   { name: "上海多线IPV4", ip: "sh.epmc.top", region: "华东" },
   { name: "上海多线IPV6", ip: "ipv6.sh.epmc.top", region: "华东" },
