@@ -27,11 +27,6 @@ export default function LoginPage(): JSX.Element {
       description: "通过 GitHub OAuth 安全协议进行身份验证"
     },
     {
-      icon: <Lock className="w-5 h-5" />,
-      title: "隐私保护",
-      description: "仅获取必要的公开信息和邮箱权限"
-    },
-    {
       icon: <UserCheck className="w-5 h-5" />,
       title: "快速登录",
       description: "无需注册新账号，使用现有 GitHub 账户"
@@ -96,24 +91,6 @@ export default function LoginPage(): JSX.Element {
                   ))}
                 </div>
 
-                {/* Permissions */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm mb-3">
-                    请求的权限范围
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-0 px-3 py-1">
-                      read:user
-                    </Badge>
-                    <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-0 px-3 py-1">
-                      user:email
-                    </Badge>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-xs mt-2">
-                    我们仅请求基础公开资料和邮箱权限，用于创建您的账户。
-                  </p>
-                </div>
-
                 {/* Login Button */}
                 <div className="space-y-4">
                   <Button 
@@ -149,33 +126,8 @@ export default function LoginPage(): JSX.Element {
                     </a>
                   </div>
                 </div>
-
-                {/* Additional Info */}
-                <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/10 dark:to-emerald-950/10 rounded-xl border-2 border-green-200 dark:border-green-800">
-                  <div className="flex items-start space-x-3">
-                    <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg">
-                      <span className="text-green-600 dark:text-green-300 text-lg">💡</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-green-900 dark:text-green-100 text-sm mb-1">
-                        登录说明
-                      </h4>
-                      <p className="text-green-700 dark:text-green-300 text-xs">
-                        登录成功后，您将自动跳转回 EndlessPixel 社区，可以立即开始使用所有功能。
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </CardContent>
             </Card>
-
-            {/* Security Notice */}
-            <div className="mt-6 text-center">
-              <div className="flex items-center justify-center space-x-2 text-gray-500 dark:text-gray-400 text-sm">
-                <Shield className="w-4 h-4" />
-                <span>您的信息安全受到保护，我们不会存储您的 GitHub 密码</span>
-              </div>
-            </div>
           </div>
         </div>
       </main>
