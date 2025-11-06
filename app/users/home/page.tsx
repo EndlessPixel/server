@@ -90,9 +90,6 @@ export default function UsersHomePage(): JSX.Element {
                                         </div>
 
                                         <div className="flex gap-2 mt-4">
-                                            <Button onClick={() => router.push('/users/login/success')}>
-                                                <ArrowRight className="w-4 h-4 mr-2" /> 查看会话信息
-                                            </Button>
                                             <Button variant="destructive" onClick={handleLogout}>
                                                 <LogOut className="w-4 h-4 mr-2" /> 登出
                                             </Button>
