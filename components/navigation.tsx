@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
-import { Menu, X, Server, Download, Activity, BookOpen, Users, Sparkles, Home } from "lucide-react"
+import { Menu, X, Download, Activity, BookOpen, Users, Sparkles, Home } from "lucide-react"
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -35,19 +35,9 @@ export function Navigation() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center space-x-3 py-2 px-3 rounded-xl transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-800 group"
-          >
-            <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                <Server className="w-5 h-5 text-white" />
-              </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-            </div>
+            className="flex items-center space-x-3 py-2 px-3 rounded-xl transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-800 group">
             <div className="flex flex-col">
-              <span className="font-bold text-lg bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
-                EndlessPixel
-              </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400 -mt-1">Minecraft Server</span>
+              <img src="/EndlessPixel.png" alt="EndlessPixel Logo" className="h-6 w-auto" />
             </div>
           </Link>
 
