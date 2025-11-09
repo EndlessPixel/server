@@ -29,9 +29,7 @@ export function LauncherListPage() {
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform">
                 {getIcon(((r as any).introCards?.[0]?.icon) ?? "Settings")}
               </div>
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                {r.repo}
-              </h3>
+              <h3>{r.displayName}</h3>
               <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
                 {((r as any).introCards?.[0]?.desc) ?? ""}
               </p>
