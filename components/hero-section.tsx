@@ -61,10 +61,10 @@ export function HeroSection() {
                 <div className="ml-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
               </Button>
             </Link>
-            <Link href="/downloads">
+            <Link href="/downloads/modpack">
               <Button size="lg" variant="outline" className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                 <Users className="w-5 h-5 mr-2" />
-                下载客户端
+                下载官方整合包
                 <Sparkles className="w-4 h-4 ml-2 text-blue-500" />
               </Button>
             </Link>
