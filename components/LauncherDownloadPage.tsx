@@ -5,14 +5,16 @@ import { Github, ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
 
 export interface LauncherDownloadPageProps {
-  description: string;
+  owner: string;
+  repo: string;
   repoOwner: string;
   repoName: string;
+  description?: string;
   issuesHref: string;
   introCards?: { title: string; desc: string; icon: ReactNode }[];
   archived?: boolean;
   archivedDate?: string;
-  backHref?: string;
+  backHref?: string; // ★ 补上
 }
 
 export function LauncherDownloadPage({
