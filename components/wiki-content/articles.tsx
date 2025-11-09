@@ -107,6 +107,11 @@ export const articles: Record<string, ArticleData> = {
                                                 由 Mojang 官方开发，稳定性强，支持正版账号直接登录，适合偏好官方工具的玩家。
                                             </p>
                                         </div>
+                                        <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                            <a href="/downloads/launcher" className="text-white font-medium">
+                                                下载启动器
+                                            </a>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

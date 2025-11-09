@@ -1,5 +1,9 @@
 "use client";
-
+export interface GitHubIssueDetailProps {
+  owner: string;
+  repo: string;
+  backHref?: string; // ★ 新增
+}
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Navigation } from "@/components/navigation";
@@ -118,9 +122,11 @@ const SkeletonCard = () => (
 export default function GitHubIssueDetail({
   owner,
   repo,
+  backHref,
 }: {
   owner: string;
   repo: string;
+  backHref?: string;
 }) {
   const router = useRouter();
   const params = useParams();
