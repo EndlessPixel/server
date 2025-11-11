@@ -8,34 +8,6 @@ import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UserCheck, LogOut } from "lucide-react";
-import type { Metadata } from "next"
-
-export const metadata: Metadata = {
-  title: "用户中心 - EndlessPixel Minecraft 服务器",
-  description:
-    "用户中心 - EndlessPixel Minecraft 服务器",
-  keywords: ["用户中心", "EndlessPixel", "Minecraft服务器"],
-  openGraph: {
-    title: "用户中心 | EndlessPixel Minecraft 服务器",
-    description: "用户中心 - EndlessPixel Minecraft 服务器",
-    url: "https://ep.endlesspixel.fun/users/home/",
-    images: [
-      {
-        url: "/og-downloads.jpg",
-        width: 1200,
-        height: 630,
-        alt: "EndlessPixel 用户中心",
-      },
-    ],
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  icons: {
-    icon: "/icon.ico"
-  }
-}
 
 type UserInfo = {
     provider: string;

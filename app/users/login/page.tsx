@@ -5,7 +5,6 @@ import type { JSX } from "react";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Github, Lock, UserCheck, Shield, ArrowRight, Sparkles } from "lucide-react";
 
