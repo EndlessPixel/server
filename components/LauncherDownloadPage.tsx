@@ -29,12 +29,12 @@ export function LauncherDownloadPage({
 }: LauncherDownloadPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-cyan-950/20">
+      <Navigation />
       {archived && (
         <div className="w-full bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 px-4 py-3 text-center text-sm font-medium">
-          ⚠️ 此仓库已被所有者于 {archivedDate} 归档，现为只读状态。
+          ⚠️ 此仓库已被所有者于 {archivedDate} 归档，可能不再会有更新或支持。
         </div>
       )}
-      <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -62,6 +62,31 @@ export function LauncherDownloadPage({
           </div>
 
           <div className="bg-white/50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
+            <button
+              className="group inline-flex items-center gap-2 
+             px-4 py-2 rounded-full
+             bg-white/5 dark:bg-black/20
+             text-slate-700 dark:text-slate-200
+             border border-slate-200 dark:border-slate-700
+             shadow-sm dark:shadow-none
+             hover:bg-slate-50 dark:hover:bg-slate-800
+             hover:border-slate-300 dark:hover:border-slate-600
+             hover:scale-[1.03] active:scale-[0.98]
+             transition-all duration-200 ease-out
+             focus:outline-none focus-visible:ring-2
+             focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400"
+            >
+              <a href="/downloads/launcher">
+                <svg
+                  className="w-4 h-4 transition group-hover:-translate-x-0.5"
+                  fill="none" stroke="currentColor" strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round"
+                    d="M15 19l-7-7 7-7" />
+                </svg>
+                <span className="text-sm font-medium">返回</span></a>
+            </button>
             <DownloadSection
               githubApiUrl={`https://api.github.com/repos/${repoOwner}/${repoName}/releases`}
               itemsPerPage={20}
@@ -88,7 +113,7 @@ export function LauncherDownloadPage({
                     className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 rounded-lg text-sm font-medium text-purple-700 dark:text-purple-300 transition-colors"
                   >
                     <ArrowUpRight className="w-4 h-4" />
-                    本地 Issue 列表
+                    Issue 列表
                   </a>
                 </div>
               </div>
