@@ -58,7 +58,7 @@ export default function AboutPage() {
                 EndlessPixel 是一个由热爱游戏的玩家组成的社区，我们致力于提供一个有趣、自由、开放的游戏世界。
                 在这里，每个像素都蕴含着无限的可能性，每个玩家都能找到属于自己的乐趣和成就感。
               </p>
-              
+
               {/* Mission Statement */}
               <div className="bg-white/80 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
                 <div className="flex items-start gap-4">
@@ -172,7 +172,7 @@ export default function AboutPage() {
             <div className="lg:col-span-1 space-y-8">
               <ContactSection />
               <LuckTest />
-              
+
               {/* Quick Facts */}
               <Card className="bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl backdrop-blur-sm">
                 <CardContent className="p-6">
@@ -217,14 +217,14 @@ export default function AboutPage() {
                   让我们一起创造更多精彩的游戏回忆！
                 </p>
                 <div className="flex flex-wrap gap-4 justify-center">
-                  <a 
+                  <a
                     href="/downloads"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
                   >
                     <Download className="w-4 h-4" />
                     下载客户端
                   </a>
-                  <a 
+                  <a
                     href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -248,9 +248,9 @@ export default function AboutPage() {
 function Download({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <polyline points="7 10 12 15 17 10" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <line x1="12" y1="15" x2="12" y2="3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points="7 10 12 15 17 10" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <line x1="12" y1="15" x2="12" y2="3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

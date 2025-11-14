@@ -96,7 +96,7 @@ export function ServerFeatures() {
           {stats.map((stat, index) => {
             const Icon = stat.icon
             return (
-              <div 
+              <div
                 key={stat.label}
                 className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
@@ -115,7 +115,7 @@ export function ServerFeatures() {
           {features.map((feature) => {
             const Icon = feature.icon
             return (
-              <Card 
+              <Card
                 key={feature.title}
                 className={`
                   group bg-gradient-to-br ${feature.gradient} backdrop-blur-sm border-2 ${feature.borderColor}
@@ -125,10 +125,10 @@ export function ServerFeatures() {
               >
                 {/* 悬停效果装饰 */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
+
                 <CardHeader className="text-center pb-6 relative z-10">
                   <div className="flex justify-center mb-4">
-                    <div 
+                    <div
                       className={`
                         w-16 h-16 ${feature.bgColor} rounded-2xl flex items-center justify-center
                         group-hover:scale-110 transition-transform duration-300 shadow-lg
@@ -161,15 +161,15 @@ export function ServerFeatures() {
               加入我们的服务器，体验这些丰富的特色功能，开启你的 Minecraft 新篇章
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <a 
-                href="/downloads" 
+              <a
+                href="/downloads"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 <Zap className="w-5 h-5" />
                 下载客户端
               </a>
-              <a 
-                href="/status" 
+              <a
+                href="/status"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-white/80 dark:bg-slate-700/50 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-600 hover:border-blue-300 dark:hover:border-blue-600 text-slate-700 dark:text-slate-300 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 <Users className="w-5 h-5" />

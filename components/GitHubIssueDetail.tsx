@@ -157,7 +157,7 @@ export default function GitHubIssueDetail({
             setIssue(parsed.data);
           }
         }
-      } catch {}
+      } catch { }
 
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), 8_000);
@@ -172,7 +172,7 @@ export default function GitHubIssueDetail({
       setIssue(issueData);
       try {
         sessionStorage.setItem(issueKey, JSON.stringify({ _ts: Date.now(), data: issueData }));
-      } catch {}
+      } catch { }
 
       // 评论
       const ctrl2 = new AbortController();
@@ -187,7 +187,7 @@ export default function GitHubIssueDetail({
         setComments(commentsData);
         try {
           sessionStorage.setItem(commentsKey, JSON.stringify({ _ts: Date.now(), data: commentsData }));
-        } catch {}
+        } catch { }
       }
     } catch (e: any) {
       setError(e.message);
@@ -249,7 +249,7 @@ export default function GitHubIssueDetail({
       <Navigation />
       <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
         <div className="max-w-6xl mx-auto space-y-8">
-                  {/* 头部 */}  
+          {/* 头部 */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
@@ -288,7 +288,7 @@ export default function GitHubIssueDetail({
             </div>
           </div>
 
-          {/* 统计卡片 */}  
+          {/* 统计卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
               <CardContent className="p-4">
@@ -346,8 +346,8 @@ export default function GitHubIssueDetail({
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
                     {isPR ? <GitPullRequest className="w-5 h-5" /> :
-                     issue.state === "open" ? <AlertCircle className="w-5 h-5" /> :
-                     <CheckCircle className="w-5 h-5" />}
+                      issue.state === "open" ? <AlertCircle className="w-5 h-5" /> :
+                        <CheckCircle className="w-5 h-5" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">状态</div>
@@ -372,7 +372,7 @@ export default function GitHubIssueDetail({
             </Card>
           </div>
 
-          {/* 标签 */}  
+          {/* 标签 */}
           {issue.labels.length > 0 && (
             <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm">
               <CardContent className="p-6">
@@ -400,13 +400,13 @@ export default function GitHubIssueDetail({
             </Card>
           )}
 
-          {/* 问题内容 */}  
+          {/* 问题内容 */}
           <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl flex items-center gap-3">
                 {isPR ? <GitPullRequest className="w-6 h-6 text-purple-500" /> :
-                 issue.state === "open" ? <AlertCircle className="w-6 h-6 text-green-500" /> :
-                 <CheckCircle className="w-6 h-6 text-purple-500" />}
+                  issue.state === "open" ? <AlertCircle className="w-6 h-6 text-green-500" /> :
+                    <CheckCircle className="w-6 h-6 text-purple-500" />}
                 <span className="text-slate-900 dark:text-white">{issue.title}</span>
               </CardTitle>
               <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
@@ -467,7 +467,7 @@ export default function GitHubIssueDetail({
             </CardContent>
           </Card>
 
-          {/* 评论列表 */}  
+          {/* 评论列表 */}
           {comments.length > 0 ? (
             <section>
               <div className="flex items-center gap-3 mb-6">
@@ -526,7 +526,7 @@ export default function GitHubIssueDetail({
             </Card>
           )}
 
-          {/* 页脚说明 */}  
+          {/* 页脚说明 */}
           <Card className="bg-white/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
             <CardContent className="p-6 text-center text-sm text-slate-600 dark:text-slate-400">
               <p>

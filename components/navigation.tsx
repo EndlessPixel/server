@@ -147,7 +147,7 @@ export function Navigation() {
                   onClick={() => {
                     try {
                       localStorage.removeItem("ep_user")
-                    } catch (e) {}
+                    } catch (e) { }
                     // reload to reflect changes
                     window.location.reload()
                   }}

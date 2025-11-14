@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const startTime = Date.now();
-  
+
   try {
     const body = await req.json();
     const { code } = body || {};
@@ -14,11 +14,11 @@ export async function POST(req: Request) {
     if (!code) {
       console.error("❌ GitHub OAuth: Missing authorization code");
       return NextResponse.json(
-        { 
+        {
           error: "授权码缺失",
           message: "GitHub 授权流程未完成，请重新尝试登录",
           code: "MISSING_AUTH_CODE"
-        }, 
+        },
         { status: 400 }
       );
     }
@@ -27,11 +27,11 @@ export async function POST(req: Request) {
     if (typeof code !== "string" || code.length < 10) {
       console.error("❌ GitHub OAuth: Invalid code format");
       return NextResponse.json(
-        { 
+        {
           error: "无效的授权码格式",
           message: "授权码格式不正确，请重新尝试登录",
           code: "INVALID_CODE_FORMAT"
-        }, 
+        },
         { status: 400 }
       );
     }
@@ -42,19 +42,19 @@ export async function POST(req: Request) {
     const missing: string[] = [];
     if (!client_id) missing.push("GITHUB_CLIENT_ID");
     if (!client_secret) missing.push("GITHUB_CLIENT_SECRET");
-    
+
     if (missing.length > 0) {
       console.error(`🔧 GitHub OAuth: Missing environment variables: ${missing.join(", ")}`);
-      
+
       // In production we must have the secrets. In development provide a mock user
       if (process.env.NODE_ENV === "production") {
         return NextResponse.json(
-          { 
+          {
             error: "服务器配置错误",
             message: "身份验证服务暂时不可用，请稍后重试",
             code: "SERVER_CONFIG_ERROR",
             details: `Missing environment variables: ${missing.join(", ")}`
-          }, 
+          },
           { status: 500 }
         );
       }
@@ -71,15 +71,15 @@ export async function POST(req: Request) {
         html_url: "https://github.com/devuser",
         bio: "开发环境测试用户",
         location: "Beijing, China",
-        raw: { 
+        raw: {
           dev: true,
           message: "This is a mock user for development"
         },
       };
 
-      return NextResponse.json({ 
-        ok: true, 
-        user: mockUser, 
+      return NextResponse.json({
+        ok: true,
+        user: mockUser,
         warning: `开发环境: 缺少环境变量 ${missing.join(", ")}，使用模拟用户`,
         execution_time: Date.now() - startTime
       });
@@ -100,9 +100,9 @@ export async function POST(req: Request) {
           "Content-Type": "application/json",
           "User-Agent": "EndlessPixel-Server/1.0"
         },
-        body: JSON.stringify({ 
-          client_id, 
-          client_secret, 
+        body: JSON.stringify({
+          client_id,
+          client_secret,
           code,
           redirect_uri: process.env.GITHUB_REDIRECT_URI || "https://ep.endlesspixel.fun/login/success"
         }),
@@ -112,11 +112,11 @@ export async function POST(req: Request) {
       if (error.name === 'AbortError') {
         console.error("❌ GitHub OAuth: Token exchange timeout");
         return NextResponse.json(
-          { 
+          {
             error: "请求超时",
             message: "GitHub 服务响应超时，请稍后重试",
             code: "TIMEOUT_ERROR"
-          }, 
+          },
           { status: 504 }
         );
       }
@@ -128,10 +128,10 @@ export async function POST(req: Request) {
     if (!tokenRes.ok) {
       const errorText = await tokenRes.text();
       console.error(`❌ GitHub OAuth: Token exchange failed - ${tokenRes.status}`, errorText);
-      
+
       let errorMessage = "GitHub 身份验证服务暂时不可用";
       let errorCode = "GITHUB_SERVICE_ERROR";
-      
+
       if (tokenRes.status === 400) {
         errorMessage = "无效的授权码，请重新登录";
         errorCode = "INVALID_GRANT";
@@ -141,12 +141,12 @@ export async function POST(req: Request) {
       }
 
       return NextResponse.json(
-        { 
+        {
           error: "身份验证失败",
           message: errorMessage,
           code: errorCode,
           status: tokenRes.status
-        }, 
+        },
         { status: 502 }
       );
     }
@@ -157,12 +157,12 @@ export async function POST(req: Request) {
     if (!access_token) {
       console.error("❌ GitHub OAuth: No access token returned", tokenJson);
       return NextResponse.json(
-        { 
+        {
           error: "身份验证失败",
           message: "未能获取访问令牌，请重新尝试登录",
           code: "NO_ACCESS_TOKEN",
           details: tokenJson.error_description || tokenJson.error
-        }, 
+        },
         { status: 502 }
       );
     }
@@ -176,8 +176,8 @@ export async function POST(req: Request) {
     let userRes;
     try {
       userRes = await fetch("https://api.github.com/user", {
-        headers: { 
-          Authorization: `Bearer ${access_token}`, 
+        headers: {
+          Authorization: `Bearer ${access_token}`,
           Accept: "application/vnd.github.v3+json",
           "User-Agent": "EndlessPixel-Server/1.0"
         },
@@ -187,11 +187,11 @@ export async function POST(req: Request) {
       if (error.name === 'AbortError') {
         console.error("❌ GitHub OAuth: User info fetch timeout");
         return NextResponse.json(
-          { 
+          {
             error: "请求超时",
             message: "获取用户信息超时，请稍后重试",
             code: "TIMEOUT_ERROR"
-          }, 
+          },
           { status: 504 }
         );
       }
@@ -203,14 +203,14 @@ export async function POST(req: Request) {
     if (!userRes.ok) {
       const errorText = await userRes.text();
       console.error(`❌ GitHub OAuth: User info fetch failed - ${userRes.status}`, errorText);
-      
+
       return NextResponse.json(
-        { 
+        {
           error: "获取用户信息失败",
           message: "无法从 GitHub 获取用户信息，请检查账户权限",
           code: "USER_INFO_FETCH_FAILED",
           status: userRes.status
-        }, 
+        },
         { status: 502 }
       );
     }
@@ -221,22 +221,22 @@ export async function POST(req: Request) {
     // Try to fetch primary email if not present
     let primaryEmail: string | null = null;
     let verifiedEmail: string | null = null;
-    
+
     if (!user.email) {
       console.log("📧 GitHub OAuth: Fetching user emails...");
       const emailsRes = await fetch("https://api.github.com/user/emails", {
-        headers: { 
-          Authorization: `Bearer ${access_token}`, 
+        headers: {
+          Authorization: `Bearer ${access_token}`,
           Accept: "application/vnd.github.v3+json",
           "User-Agent": "EndlessPixel-Server/1.0"
         },
       });
-      
+
       if (emailsRes.ok) {
         const emails = await emailsRes.json();
         const primary = (emails || []).find((e: any) => e.primary && e.verified);
         const firstVerified = (emails || []).find((e: any) => e.verified);
-        
+
         if (primary) {
           primaryEmail = primary.email;
           verifiedEmail = primary.email;
@@ -246,7 +246,7 @@ export async function POST(req: Request) {
         } else if (emails.length > 0) {
           primaryEmail = emails[0].email;
         }
-        
+
         console.log(`📧 GitHub OAuth: Found ${emails.length} email(s), using: ${primaryEmail}`);
       }
     } else {
@@ -277,8 +277,8 @@ export async function POST(req: Request) {
     const executionTime = Date.now() - startTime;
     console.log(`✅ GitHub OAuth: Successfully authenticated user ${user.login} in ${executionTime}ms`);
 
-    return NextResponse.json({ 
-      ok: true, 
+    return NextResponse.json({
+      ok: true,
       user: result,
       execution_time: executionTime
     });
@@ -286,14 +286,14 @@ export async function POST(req: Request) {
   } catch (err: any) {
     const executionTime = Date.now() - startTime;
     console.error("💥 GitHub OAuth: Unexpected error:", err);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: "服务器内部错误",
         message: "身份验证过程中出现意外错误，请稍后重试",
         code: "INTERNAL_SERVER_ERROR",
         execution_time: executionTime
-      }, 
+      },
       { status: 500 }
     );
   }

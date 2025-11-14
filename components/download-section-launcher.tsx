@@ -5,24 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Download, 
-  Package, 
-  ChevronDown, 
-  ChevronUp, 
-  Loader2, 
-  ExternalLink, 
-  Star, 
-  Shield, 
-  Zap, 
-  ArrowUp, 
-  ArrowDown, 
-  Search, 
-  Filter, 
-  Rocket, 
-  Calendar, 
-  TrendingUp, 
-  ChevronLeft, 
+import {
+  Download,
+  Package,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  ExternalLink,
+  Star,
+  Shield,
+  Zap,
+  ArrowUp,
+  ArrowDown,
+  Search,
+  Filter,
+  Rocket,
+  Calendar,
+  TrendingUp,
+  ChevronLeft,
   ChevronRight,
   RefreshCw // 添加缺失的RefreshCw导入
 } from "lucide-react";
@@ -140,19 +140,19 @@ export function DownloadSection({
       // 如果没有分页信息，说明只有一页或者数据量小于每页数量
       return dataLength < itemsPerPage ? 1 : Math.ceil(dataLength / itemsPerPage);
     }
-    
+
     const links = parseLinkHeader(linkHeader);
     if (links.last) {
       const url = new URL(links.last);
       const lastPage = Number(url.searchParams.get("page") || 1);
       return lastPage;
     }
-    
+
     // 如果没有last链接，但当前页数据量小于每页数量，说明当前页是最后一页
     if (dataLength < itemsPerPage) {
       return currentPage;
     }
-    
+
     // 保守估计，返回当前页+1作为总页数
     return currentPage + 1;
   };
@@ -171,11 +171,11 @@ export function DownloadSection({
           Accept: "application/vnd.github.v3+json",
         },
       });
-      
+
       if (!response.ok) {
         throw new Error(`GitHub API error: ${response.status}`);
       }
-      
+
       const data: GitHubRelease[] = await response.json();
 
       // 解析分页链接
@@ -368,10 +368,10 @@ export function DownloadSection({
   const generatePaginationButtons = () => {
     const buttons = [];
     const maxVisiblePages = 5;
-    
+
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-    
+
     // 调整起始页，确保显示maxVisiblePages个按钮
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
@@ -393,7 +393,7 @@ export function DownloadSection({
         </Button>
       );
     }
-    
+
     return buttons;
   };
 
@@ -509,53 +509,53 @@ export function DownloadSection({
       {/* Releases List */}
       <Tabs defaultValue="releases" className="w-full">
         <div className="space-y-4">
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
-                  <div className="text-sm text-slate-500 dark:text-slate-400">
-                    第 {currentPage} 页，共 {totalPages} 页，总计 {filteredReleases.length} 个版本
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => {
-                        if (currentPage > 1) {
-                          const newPage = currentPage - 1;
-                          setCurrentPage(newPage);
-                          updateUrlParams({ page: newPage });
-                        }
-                      }}
-                      disabled={currentPage === 1}
-                      className="rounded-full"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </Button>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
+              <div className="text-sm text-slate-500 dark:text-slate-400">
+                第 {currentPage} 页，共 {totalPages} 页，总计 {filteredReleases.length} 个版本
+              </div>
 
-                    <div className="flex items-center gap-1">
-                      {generatePaginationButtons()}
-                    </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    if (currentPage > 1) {
+                      const newPage = currentPage - 1;
+                      setCurrentPage(newPage);
+                      updateUrlParams({ page: newPage });
+                    }
+                  }}
+                  disabled={currentPage === 1}
+                  className="rounded-full"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
 
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => {
-                        if (currentPage < totalPages) {
-                          const newPage = currentPage + 1;
-                          setCurrentPage(newPage);
-                          updateUrlParams({ page: newPage });
-                        }
-                      }}
-                      disabled={currentPage === totalPages}
-                      className="rounded-full"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
-                  </div>
+                <div className="flex items-center gap-1">
+                  {generatePaginationButtons()}
                 </div>
-              )}
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    if (currentPage < totalPages) {
+                      const newPage = currentPage + 1;
+                      setCurrentPage(newPage);
+                      updateUrlParams({ page: newPage });
+                    }
+                  }}
+                  disabled={currentPage === totalPages}
+                  className="rounded-full"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
+          )}
+        </div>
 
         <TabsContent value="releases" className="space-y-4">
           {filteredReleases.length === 0 ? (
@@ -581,7 +581,7 @@ export function DownloadSection({
                   <div className="text-sm text-slate-500 dark:text-slate-400">
                     第 {currentPage} 页，共 {totalPages} 页，总计 {filteredReleases.length} 个版本
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <Button
                       variant="outline"

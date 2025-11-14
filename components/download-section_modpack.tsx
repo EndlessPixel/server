@@ -141,7 +141,7 @@ export function DownloadSection() {
   const compareVersionStrings = (v1: string, v2: string) => {
     const parseVersion = (version: string) => {
       const match = version.match(/^EndlessPixel-(\d+\.\d+\.\d+)-v(\d+)-(.*)$/i);
-      
+
       if (!match) {
         return {
           mcVersion: "0.0.0",
@@ -151,13 +151,13 @@ export function DownloadSection() {
           fullVersion: version
         };
       }
-      
+
       const [, mcVersion, modVersionStr, buildInfo] = match;
       const modVersion = parseInt(modVersionStr, 10);
-      
+
       let buildType = "release";
       let buildNum = 0;
-      
+
       const betaMatch = buildInfo.match(/^b(\d+)$/i);
       if (betaMatch) {
         buildType = "beta";
@@ -169,7 +169,7 @@ export function DownloadSection() {
           buildNum = versionParts[0] * 1000 + (versionParts[1] || 0) * 10 + (versionParts[2] || 0);
         }
       }
-      
+
       return {
         mcVersion,
         modVersion,
@@ -178,41 +178,41 @@ export function DownloadSection() {
         fullVersion: version
       };
     };
-    
+
     const v1Info = parseVersion(v1);
     const v2Info = parseVersion(v2);
-    
+
     if (v1Info.mcVersion !== v2Info.mcVersion) {
       const mcParts1 = v1Info.mcVersion.split(".").map(Number);
       const mcParts2 = v2Info.mcVersion.split(".").map(Number);
-      
+
       for (let i = 0; i < 3; i++) {
         if (mcParts1[i] !== mcParts2[i]) {
           return mcParts2[i] - mcParts1[i];
         }
       }
     }
-    
+
     if (v1Info.modVersion !== v2Info.modVersion) {
       return v2Info.modVersion - v1Info.modVersion;
     }
-    
+
     if (v1Info.buildType !== v2Info.buildType) {
       if (v1Info.buildType === "release") return -1;
       if (v2Info.buildType === "release") return 1;
     }
-    
+
     if (v1Info.buildNum !== v2Info.buildNum) {
       return v2Info.buildNum - v1Info.buildNum;
     }
-    
+
     return v1Info.fullVersion.localeCompare(v2Info.fullVersion);
   };
 
   const semanticCompare = (a: ParsedRelease, b: ParsedRelease) => {
     if (a.isLatest && !b.isLatest) return -1;
     if (!a.isLatest && b.isLatest) return 1;
-    
+
     return compareVersionStrings(a.name, b.name);
   };
 
@@ -228,14 +228,14 @@ export function DownloadSection() {
       if (sortBy === "semantic") {
         return sortOrder === "asc" ? -semanticCompare(a, b) : semanticCompare(a, b);
       }
-      
+
       const compare = (key: "releaseDate" | "downloadCount") => {
         if (key === "releaseDate") {
           return new Date(b[key]).getTime() - new Date(a[key]).getTime();
         }
         return b[key] - a[key];
       };
-      
+
       return sortOrder === "asc" ? -compare(sortBy) : compare(sortBy);
     });
 
@@ -280,7 +280,7 @@ export function DownloadSection() {
               />
             </div>
           </div>
-          
+
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={fetchReleases} className="flex items-center gap-2">
               <RefreshCw className="w-4 h-4" />
@@ -295,7 +295,7 @@ export function DownloadSection() {
             <Filter className="w-4 h-4 text-slate-500" />
             <span className="text-sm font-medium text-slate-700 dark:text-slate-300">排序方式：</span>
           </div>
-          
+
           <div className="flex flex-wrap gap-2">
             {([
               { key: "semantic" as const, label: "版本号", icon: Rocket },
@@ -324,7 +324,7 @@ export function DownloadSection() {
               <Filter className="w-4 h-4 text-slate-500" />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">标签筛选：</span>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
               <Button
                 variant={selectedTag === null ? "default" : "outline"}
@@ -351,8 +351,8 @@ export function DownloadSection() {
       {/* Branch Tabs */}
       <Tabs defaultValue="main" onValueChange={(value) => setActiveBranch(value as "main" | "real")}>
         <TabsList className="grid w-full grid-cols-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
-          <TabsTrigger 
-            value="main" 
+          <TabsTrigger
+            value="main"
             className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 rounded-lg transition-all"
           >
             <Star className="w-4 h-4" />
@@ -363,8 +363,8 @@ export function DownloadSection() {
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger 
-            value="real" 
+          <TabsTrigger
+            value="real"
             className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 rounded-lg transition-all"
           >
             <Shield className="w-4 h-4" />
@@ -500,7 +500,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
   return (
     <Card className={`
       relative overflow-hidden transition-all duration-300 hover:shadow-lg
-      ${release.isLatest 
+      ${release.isLatest
         ? release.branch === "main"
           ? "border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 dark:border-green-800"
           : "border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 dark:border-purple-800"
@@ -520,24 +520,22 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3 flex-1">
-            <div className={`p-2 rounded-lg ${
-              release.branch === "main" 
-                ? "bg-blue-100 dark:bg-blue-900/30" 
+            <div className={`p-2 rounded-lg ${release.branch === "main"
+                ? "bg-blue-100 dark:bg-blue-900/30"
                 : "bg-purple-100 dark:bg-purple-900/30"
-            }`}>
-              <Package className={`w-5 h-5 ${
-                release.branch === "main" 
-                  ? "text-blue-600 dark:text-blue-400" 
+              }`}>
+              <Package className={`w-5 h-5 ${release.branch === "main"
+                  ? "text-blue-600 dark:text-blue-400"
                   : "text-purple-600 dark:text-purple-400"
-              }`} />
+                }`} />
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <CardTitle className="text-lg text-slate-900 dark:text-white truncate">
                   {release.name}
                 </CardTitle>
-                
+
                 <Badge className={getVersionBadgeColor()}>
                   {getVersionType()}
                 </Badge>
@@ -611,7 +609,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
                 tip: "大文件下载不建议使用！",
               },
             ]
-            
+
             return (
               <div key={file.name} className="bg-white/50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600 backdrop-blur-sm">
                 <div className="flex items-center justify-between mb-3">
@@ -637,7 +635,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
                   <div className="text-xs text-slate-500 dark:text-slate-400">
                     镜像下载（如遇GitHub下载缓慢可尝试）：
                   </div>
-                  
+
                   {mirrors.some(m => m.tip) && (
                     <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded border border-amber-200 dark:border-amber-800">
                       ⚠️ 香港线路大文件不建议使用
@@ -678,7 +676,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
             {showChangelog ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             {showChangelog ? "隐藏更新日志" : "查看更新日志"}
           </Button>
-          
+
           {showChangelog && (
             <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 prose prose-sm max-w-none dark:prose-invert break-words">
               <ReactMarkdown
@@ -704,10 +702,10 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
 function RefreshCw({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M3 3v5h5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M16 16h5v5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 3v5h5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 16h5v5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

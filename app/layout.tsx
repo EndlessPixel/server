@@ -95,7 +95,8 @@ html {
 }
         `}</style>
         <script
-          dangerouslySetInnerHTML={{__html:`
+          dangerouslySetInnerHTML={{
+            __html: `
             // 检测Internet Explorer浏览器
             const isIE = /Trident|MSIE/.test(navigator.userAgent);
             if (isIE) {

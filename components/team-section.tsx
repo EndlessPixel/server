@@ -115,8 +115,8 @@ export function TeamSection() {
           {teamMembers.map((member) => {
             const Icon = member.icon
             return (
-              <div 
-                key={member.name} 
+              <div
+                key={member.name}
                 className={`border rounded-lg p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] ${member.bgColor} ${member.borderColor} group`}
               >
                 <div className="flex items-start space-x-4">
@@ -151,9 +151,9 @@ export function TeamSection() {
                           {member.departments.map((dept) => {
                             const DeptIcon = getDepartmentIcon(dept)
                             return (
-                              <Badge 
-                                key={dept} 
-                                variant="outline" 
+                              <Badge
+                                key={dept}
+                                variant="outline"
                                 className="text-xs bg-background/50 dark:bg-background/80 flex items-center space-x-1 px-2 py-1"
                               >
                                 <DeptIcon className="w-3 h-3" />

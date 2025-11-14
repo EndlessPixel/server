@@ -131,7 +131,7 @@ export function HeroSection() {
             ].map((feature, index) => {
               const Icon = feature.icon
               return (
-                <Card 
+                <Card
                   key={feature.title}
                   className="group bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 hover:shadow-xl transform hover:-translate-y-2 cursor-pointer"
                 >
