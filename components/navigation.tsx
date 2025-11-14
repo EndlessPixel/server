@@ -2,12 +2,74 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { Menu, X, Download, Activity, BookOpen, Users, Sparkles, Home } from "lucide-react"
 
+function ExplorerBar() {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // prefer router.asPath if available (pages router compatibility), fallback to usePathname
+  const asPath = (router as any)?.asPath ?? pathname ?? "/"
+
+  const [value, setValue] = useState(asPath)
+
+  useEffect(() => {
+    setValue(asPath)
+  }, [asPath])
+
+  const parts = (asPath || "/").split("/").filter(Boolean)
+  const crumbs: Array<{ href: string; label: string }> = [{ href: "/", label: "/" }]
+  let acc = ""
+  parts.forEach((p: string) => {
+    acc += `/${p}`
+    crumbs.push({ href: acc, label: p })
+  })
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      const target = value.trim() || "/"
+      router.push(target)
+    }
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="h-12 flex items-center gap-4">
+        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 overflow-hidden">
+          {crumbs.map((c, i) => (
+            <div
+              key={c.href}
+              onClick={() => router.push(c.href)}
+              className={`flex items-center gap-2 ${i === crumbs.length - 1 ? 'font-medium text-slate-900 dark:text-white' : 'cursor-pointer hover:text-slate-900 dark:hover:text-white'}`}
+            >
+              <span className="truncate max-w-[14rem]">{c.label}</span>
+              {i !== crumbs.length - 1 && <span className="text-slate-400 dark:text-slate-500">/</span>}
+            </div>
+          ))}
+        </div>
+
+        <input
+          aria-label="资源地址栏"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={onKeyDown}
+          className="ml-2 px-3 py-1 w-full max-w-lg text-sm rounded-lg bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none"
+          title="按 Enter 导航到输入路径"
+        />
+      </div>
+    </div>
+  )
+}
+
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const router = useRouter()
+  const pathname = usePathname()
 
   const navItems = [
     { href: "/", label: "首页", icon: Home, description: "返回主页" },
@@ -45,18 +107,22 @@ export function Navigation() {
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon
+              const segments = (pathname || "/").split("/").filter(Boolean)
+              const activeRoot = segments.length > 0 ? `/${segments[0]}` : "/"
+              const isActive = activeRoot === item.href
+
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex flex-col items-center space-y-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 py-2 px-4 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 group relative min-w-[80px]"
+                  className={`flex flex-col items-center space-y-1 text-slate-600 dark:text-slate-400 transition-all duration-200 py-2 px-4 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 group relative min-w-[80px] ${isActive ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800' : 'hover:text-slate-900 dark:hover:text-white'}`}
                   title={item.description}
                 >
                   <Icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   <span className="text-xs font-medium">{item.label}</span>
 
                   {/* Active indicator */}
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-transparent group-hover:bg-blue-500 rounded-full transition-colors duration-200"></div>
+                  <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full transition-colors duration-200 ${isActive ? 'bg-blue-500' : 'bg-transparent group-hover:bg-blue-500'}`}></div>
                 </Link>
               )
             })}
@@ -100,6 +166,8 @@ export function Navigation() {
 
             {/* Separator */}
             <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2"></div>
+
+            {/* (Explorer removed from left nav - moved below as full-width ExplorerBar) */}
 
             {/* Theme Toggle */}
             <div className="pl-2">
@@ -162,6 +230,11 @@ export function Navigation() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* ✅ 新增 ExplorerBar 地址栏 - 全宽、仅桌面显示 */}
+      <div className="hidden md:block border-t border-slate-200 dark:border-slate-800">
+        <ExplorerBar />
       </div>
     </nav>
   )
