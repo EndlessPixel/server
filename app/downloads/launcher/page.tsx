@@ -1,5 +1,13 @@
 import { LauncherListPage } from "@/components/LauncherListPage";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
 
 export default function Page() {
-  return <LauncherListPage />;
+  return (
+    <>
+      <Navigation />
+      <LauncherListPage />
+      <Footer />
+    </>
+  );
 }
