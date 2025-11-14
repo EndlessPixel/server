@@ -1,9 +1,5 @@
 node_modules
 .next
-package-lock.json      # 忽略 npm 锁文件
+package-lock.json
 *.log
 .DS_Store
-.env
-.env.local
-.env.*.local
-.env.example

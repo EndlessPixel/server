@@ -61,29 +61,11 @@ export function LauncherDownloadPage({
             ))}
           </div>
 
-          <div className="bg-white/50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
-            <button
-              className="group inline-flex items-center gap-2 
-             px-4 py-2 rounded-full
-             bg-white/5 dark:bg-black/20
-             text-slate-700 dark:text-slate-200
-             border border-slate-200 dark:border-slate-700
-             shadow-sm dark:shadow-none
-             hover:bg-slate-50 dark:hover:bg-slate-800
-             hover:border-slate-300 dark:hover:border-slate-600
-             hover:scale-[1.03] active:scale-[0.98]
-             transition-all duration-200 ease-out
-             focus:outline-none focus-visible:ring-2
-             focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400"
-            >
+          <div className="bg-white/100 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
+            <button className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 dark:bg-black/20 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400">
               <a href="/downloads/launcher">
-                <svg
-                  className="w-4 h-4 transition group-hover:-translate-x-0.5"
-                  fill="none" stroke="currentColor" strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M15 19l-7-7 7-7" />
+                <svg className="w-4 h-4 transition group-hover:-translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
                 <span className="text-sm font-medium">返回</span></a>
             </button>

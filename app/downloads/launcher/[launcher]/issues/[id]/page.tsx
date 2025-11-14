@@ -1,8 +1,8 @@
 import GitHubIssueDetail from "@/components/GitHubIssueDetail";
 import { launcherRepos } from "@/lib/launcherMeta";
 
-export default function IssueDetailPage({ params }: { params: { launcher: string; id: string } }) {
-  const key = params.launcher;
+export default async function IssueDetailPage({ params }: { params: { launcher: string; id: string } }) {
+  const { launcher: key } = await params as { launcher: string; id: string };
   const meta = launcherRepos.find(r => r.key === key);
   if (!meta) return <div>未知的启动器</div>;
 
