@@ -1,48 +1,92 @@
-# EndlessPixel 服务器官网源代码
+# EndlessPixel 官方网站
 
-本仓库存放的是 EndlessPixel 服务器官网的源代码，基于 [Next.js](https://nextjs.org/) 构建，采用 [GNU](https://www.gnu.org/licenses/) 许可证进行开源。
+[![Next.js](https://img.shields.io/badge/Next.js-13.0+-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-## 开发环境
+EndlessPixel 服务器的官方网站源代码，基于 Next.js 构建。
 
-### 前提条件
+## 🚀 快速开始
 
-- Node.js（建议使用 [Node.js 官方网站](https://nodejs.org/) 下载并安装）
-- npm（随 Node.js 安装）
+### 环境要求
 
-### 启动项目
+- **Node.js** 18.0 或更高版本
+- **npm** 9.0 或更高版本
 
-安装依赖并启动开发服务器：：
-   
+### 本地开发
+
+1. **安装依赖**
+   ```bash
+   npm install
+   ```
+
+2. **启动开发服务器**
+   ```bash
+   npm run dev
+   ```
+
+3. **访问项目**
+   打开浏览器访问 [http://localhost:3000](http://localhost:3000)
+
+### 其他命令
+
+```bash
+# 构建生产版本
+npm run build
+
+# 启动生产服务器
+npm start
+
+# 运行代码检查
+npm run lint
 ```
-#安装依赖
-npm install
-#启动开发服务器
-npm run dev
-```
-> 项目将在 http://localhost:3000 启动并运行。
 
-注意事项
+## 📋 项目概况
 
-- 许可证：本项目遵循 GNU 许可证，你可以自由使用、分发和修改代码，但请务必遵守许可证的相关规定。
-- 自行修改：如果你对代码进行了自行修改并导致问题，请不要提交 issues，除非你确定该问题是源代码本身存在的。
-- 问题反馈：如果你发现了源代码中的问题，或者有好的建议，欢迎提交 issues。
-- 代码贡献：如果你已经实现了某项功能或修复了某个问题，欢迎提交 pull requests。
+- **框架**: Next.js 13+
+- **许可证**: GNU General Public License v3.0
+- **状态**: 积极维护中
 
-贡献指南
+## 🤝 参与贡献
 
-提交 Issues
+我们欢迎并感谢所有形式的贡献！
 
-- 在提交 issue 之前，请先搜索现有的 issues，避免重复。
-- 请详细描述问题，包括但不限于：
-  - 问题出现的环境（操作系统、浏览器等）
-  - 问题复现的步骤
-  - 预期结果与实际结果
+### 报告问题
 
-提交 Pull Requests
+在提交问题前，请：
 
-- 请确保你的代码风格与项目保持一致。
-- 为你的代码提交添加清晰的注释和文档说明。
-- 在提交 pull request 之前，确保你的代码已经通过本地测试。
+1. 搜索[现有 Issues](../../issues) 避免重复
+2. 提供详细的问题描述，包括：
+   - 环境信息（操作系统、Node.js 版本、浏览器）
+   - 重现步骤
+   - 预期与实际结果
+   - 相关日志或截图
 
-感谢你对 EndlessPixel 项目的关注和支持！
+### 提交代码
 
+1. Fork 本仓库
+2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add some amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 开启 Pull Request
+
+### 贡献指南
+
+- 保持代码风格与项目一致
+- 为新增功能添加适当的注释和文档
+- 确保代码通过所有测试
+- 更新相关文档
+
+## 📄 许可证
+
+本项目基于 GNU GPLv3 许可证开源 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+## ❓ 获取帮助
+
+- 查看 [文档](docs/)
+- 搜索 [现有问题](../../issues)
+- 创建 [新 Issue](../../issues/new)
+
+---
+
+感谢您对 EndlessPixel 项目的关注与支持！
