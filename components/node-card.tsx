@@ -30,28 +30,27 @@ export function NodeCard({
   hostname,
 }: NodeCardProps) {
   const isOnline = status.toLowerCase().includes("在线");
-  
+
   return (
     <Card className="group bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${
-              isOnline 
-                ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400" 
+            <div className={`p-2 rounded-lg ${isOnline
+                ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
                 : "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
-            }`}>
+              }`}>
               {isOnline ? <Wifi className="w-5 h-5" /> : <WifiOff className="w-5 h-5" />}
             </div>
             <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               {name}
             </CardTitle>
           </div>
-          <Badge 
-            variant={isOnline ? "default" : "destructive"} 
+          <Badge
+            variant={isOnline ? "default" : "destructive"}
             className={
-              isOnline 
-                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800" 
+              isOnline
+                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800"
                 : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-800"
             }
           >
@@ -59,7 +58,7 @@ export function NodeCard({
           </Badge>
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {/* 服务器连接信息 */}
         <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
@@ -147,9 +146,9 @@ export function NodeCard({
             <Clock className="w-3 h-3" />
             <span>实时监控</span>
           </div>
-          <Button 
-            asChild 
-            size="sm" 
+          <Button
+            asChild
+            size="sm"
             className="bg-blue-600 hover:bg-blue-700 text-white group"
           >
             <Link href={path} className="flex items-center gap-2">

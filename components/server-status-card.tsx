@@ -44,11 +44,11 @@ const chartOptions = {
     title: { display: false },
   },
   elements: {
-    line: { 
+    line: {
       tension: 0.4,
       borderWidth: 2
     },
-    point: { 
+    point: {
       radius: 2,
       hoverRadius: 5
     },
@@ -58,8 +58,8 @@ const chartOptions = {
     mode: 'index' as const,
   },
   scales: {
-    x: { 
-      grid: { 
+    x: {
+      grid: {
         display: false,
         drawBorder: false
       },
@@ -70,8 +70,8 @@ const chartOptions = {
         }
       }
     },
-    y: { 
-      grid: { 
+    y: {
+      grid: {
         color: "rgba(128,128,128,0.1)",
         drawBorder: false
       },
@@ -100,13 +100,13 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch(
         `https://cf-v2.uapis.cn/node_status_info?nodename=${encodeURIComponent(node)}`
       );
-      
+
       if (!response.ok) throw new Error(`请求失败: ${response.statusText}`);
-      
+
       const data = await response.json();
       setNodeData(data);
 
@@ -373,7 +373,7 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
                 </div>
                 <div className="text-xs text-slate-600 dark:text-slate-400">当前连接</div>
               </div>
-              
+
               <div className="text-center p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
                 <div className="text-lg font-bold text-slate-900 dark:text-white">
                   {latestSample.cpu_usage ?? "0"}%

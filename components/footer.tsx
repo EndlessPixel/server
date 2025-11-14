@@ -70,7 +70,7 @@ export function Footer() {
                 const Icon = link.icon
                 return (
                   <li key={link.label}>
-                    <Link 
+                    <Link
                       href={link.href}
                       className="flex items-center space-x-2 text-slate-300 hover:text-white transition-all duration-200 group py-1"
                       target={link.external ? "_blank" : undefined}
@@ -122,7 +122,7 @@ export function Footer() {
               <span className="text-slate-600">•</span>
               <span>All rights reserved</span>
             </div>
-            
+
             <div className="flex items-center space-x-2 text-slate-400 text-sm">
               <span>Made with</span>
               <Heart className="w-4 h-4 text-red-400 fill-current animate-pulse" />

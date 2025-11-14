@@ -108,7 +108,7 @@ export function TechStackSection() {
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {stack.technologies.map((tech) => (
-                    <Badge 
+                    <Badge
                       key={tech.name}
                       variant="secondary"
                       className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700"
@@ -136,7 +136,7 @@ export function TechStackSection() {
               使用 PurpurCore + Velocity 核心，为玩家提供稳定流畅的游戏体验。
             </p>
           </div>
-          
+
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="text-center p-4 bg-white/50 dark:bg-slate-800/30 rounded-lg backdrop-blur-sm">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">~92.9%</div>
@@ -199,11 +199,11 @@ export function TechStackSection() {
                   {expandedCategory === "all-deps" ? "收起" : "展开"}
                 </span>
               </div>
-              
+
               {expandedCategory === "all-deps" && (
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
                   {[
-                    "autoprefixer", "date-fns", "embla-carousel-react", "geist", 
+                    "autoprefixer", "date-fns", "embla-carousel-react", "geist",
                     "input-otp", "next-themes", "react-day-picker", "react-markdown",
                     "react-resizable-panels", "rehype-raw", "remark-gfm", "tailwindcss-animate",
                     "@types/node", "@types/react", "@types/react-dom", "postcss", "typescript"

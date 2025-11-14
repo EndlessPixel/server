@@ -257,10 +257,10 @@ export default function GitHubIssuesList({
   };
 
   /* 统计数据 */
-  const openCnt  = issues.filter(i => i.state === "open"  && !i.pull_request).length;
+  const openCnt = issues.filter(i => i.state === "open" && !i.pull_request).length;
   const closeCnt = issues.filter(i => i.state === "closed" && !i.pull_request).length;
-  const openPRCnt = issues.filter(i => i.state === "open"  && !!i.pull_request).length;
-  const totalCmt  = issues.reduce((a, i) => a + i.comments, 0);
+  const openPRCnt = issues.filter(i => i.state === "open" && !!i.pull_request).length;
+  const totalCmt = issues.reduce((a, i) => a + i.comments, 0);
 
   if (loading)
     return (
@@ -295,7 +295,7 @@ export default function GitHubIssuesList({
       <Navigation />
       <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
         <div className="max-w-7xl mx-auto space-y-8">
-          {/* 头部 */}  
+          {/* 头部 */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
@@ -341,7 +341,7 @@ export default function GitHubIssuesList({
             </div>
           </div>
 
-          {/* 统计卡片 */}  
+          {/* 统计卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatsCard icon={<AlertCircle className="w-6 h-6" />} label="开放问题" value={openCnt} />
             <StatsCard icon={<CheckCircle className="w-6 h-6" />} label="已关闭问题" value={closeCnt} />
@@ -349,10 +349,10 @@ export default function GitHubIssuesList({
             <StatsCard icon={<MessageSquare className="w-6 h-6" />} label="总评论" value={totalCmt} />
           </div>
 
-          {/* 分页 */}  
+          {/* 分页 */}
           <Pagination pagination={pagination} onChange={handlePage} />
 
-          {/*  issues 列表 */}  
+          {/*  issues 列表 */}
           <section>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
@@ -385,10 +385,10 @@ export default function GitHubIssuesList({
             )}
           </section>
 
-          {/* 分页 */}  
+          {/* 分页 */}
           <Pagination pagination={pagination} onChange={handlePage} />
 
-          {/* 页脚说明 */}  
+          {/* 页脚说明 */}
           <Card className="bg-white/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
             <CardContent className="p-6 text-center text-sm text-slate-600 dark:text-slate-400">
               <p>

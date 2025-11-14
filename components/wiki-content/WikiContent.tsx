@@ -128,7 +128,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
             <p className="text-gray-600 dark:text-gray-400 text-lg mb-8">
               请从左侧导航选择一篇文章进行阅读。
             </p>
-            <Button 
+            <Button
               onClick={() => window.dispatchEvent(new CustomEvent("wiki-article-change", { detail: { articleId: "server-commands" } }))}
               className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-3 rounded-xl"
             >
@@ -160,11 +160,10 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
               variant={feedback === "helpful" ? "default" : "outline"}
               onClick={() => handleFeedback("helpful")}
               disabled={feedback === "helpful"}
-              className={`px-6 py-3 rounded-xl transition-all duration-200 ${
-                feedback === "helpful" 
-                  ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg" 
+              className={`px-6 py-3 rounded-xl transition-all duration-200 ${feedback === "helpful"
+                  ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg"
                   : "border-2 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-950/20"
-              }`}
+                }`}
             >
               <ThumbsUp className="mr-2 h-5 w-5" />
               非常有帮助
@@ -173,11 +172,10 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
               variant={feedback === "not-helpful" ? "default" : "outline"}
               onClick={() => handleFeedback("not-helpful")}
               disabled={feedback === "not-helpful"}
-              className={`px-6 py-3 rounded-xl transition-all duration-200 ${
-                feedback === "not-helpful" 
-                  ? "bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 shadow-lg" 
+              className={`px-6 py-3 rounded-xl transition-all duration-200 ${feedback === "not-helpful"
+                  ? "bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 shadow-lg"
                   : "border-2 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/20"
-              }`}
+                }`}
             >
               <ThumbsDown className="mr-2 h-5 w-5" />
               不太有帮助
@@ -185,8 +183,8 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
           </div>
 
           {/* Share Button */}
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={handleShare}
             className="px-6 py-3 rounded-xl border-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/20"
           >
@@ -202,18 +200,18 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
           <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0 px-4 py-2 rounded-full text-sm font-semibold">
             {currentArticleData.category}
           </Badge>
-          
+
           <div className="flex flex-wrap items-center gap-3">
             <Badge variant="outline" className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 px-3 py-2 rounded-full">
               <Clock className="w-4 h-4 mr-2 text-gray-500" />
               {currentArticleData.readTime}
             </Badge>
-            
+
             <Badge variant="outline" className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 px-3 py-2 rounded-full">
               <User className="w-4 h-4 mr-2 text-gray-500" />
               {currentArticleData.author}
             </Badge>
-            
+
             <Badge variant="outline" className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 px-3 py-2 rounded-full">
               <Calendar className="w-4 h-4 mr-2 text-gray-500" />
               {currentArticleData.lastUpdated}
@@ -227,7 +225,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
               <Heart className="w-4 h-4 text-pink-500" />
               <span className="text-pink-700 dark:text-pink-300 font-semibold">{currentStats.likes}</span>
             </div>
-            
+
             <div className="flex items-center space-x-2 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 px-4 py-2 rounded-full border-2 border-purple-200 dark:border-purple-800">
               <Eye className="w-4 h-4 text-purple-500" />
               <span className="text-purple-700 dark:text-purple-300 font-semibold">{currentStats.skim}</span>

@@ -70,7 +70,7 @@ export function LicenseSection() {
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-0">
         <div className="p-6">
           {/* License Overview */}
