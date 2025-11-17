@@ -24,7 +24,14 @@ import {
   TrendingUp,
   ChevronLeft,
   ChevronRight,
-  RefreshCw // 添加缺失的RefreshCw导入
+  RefreshCw,
+  Github,
+  Archive,
+  Tag,
+  Users,
+  Eye,
+  GitBranch,
+  Clock
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
@@ -32,6 +39,18 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import { Input } from "@/components/ui/input";
 import { useSearchParams, useRouter } from "next/navigation";
+
+// 添加 launcherMeta.ts 的类型定义
+interface LauncherMeta {
+  id: string;
+  name: string;
+  description: string;
+  githubRepo: string;
+  category: string;
+  tags: string[];
+  icon?: string;
+  featured?: boolean;
+}
 
 interface ParsedRelease {
   name: string
@@ -65,12 +84,24 @@ interface GitHubRelease {
   }>
 }
 
+interface GitHubRepoInfo {
+  description: string;
+  stargazers_count: number;
+  archived: boolean;
+  topics: string[];
+  updated_at: string;
+  language: string;
+  forks_count: number;
+  watchers_count: number;
+}
+
 interface DownloadSectionProps {
   githubApiUrl: string;
   title?: string;
   description?: string;
   showPrereleases?: boolean;
   itemsPerPage?: number;
+  launcherMeta?: LauncherMeta; // 添加 launcherMeta 参数
 }
 
 export function DownloadSection({
@@ -78,7 +109,8 @@ export function DownloadSection({
   title = "下载 Minecraft 启动器",
   description = "选择适合您的版本进行下载",
   showPrereleases = true,
-  itemsPerPage = 20
+  itemsPerPage = 20,
+  launcherMeta
 }: DownloadSectionProps) {
   const [releases, setReleases] = useState<ParsedRelease[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,6 +127,8 @@ export function DownloadSection({
     next?: string;
     last?: string;
   }>({});
+  const [repoInfo, setRepoInfo] = useState<GitHubRepoInfo | null>(null);
+  const [expandedFiles, setExpandedFiles] = useState<Set<string>>(new Set());
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -113,7 +147,41 @@ export function DownloadSection({
   // 当githubApiUrl或currentPage变化时，重新获取数据
   useEffect(() => {
     fetchReleases();
+    fetchRepoInfo();
   }, [githubApiUrl, currentPage]);
+
+  const fetchRepoInfo = async () => {
+    try {
+      // 从 GitHub API URL 提取仓库信息
+      const match = githubApiUrl.match(/repos\/([^/]+\/[^/]+)\/releases/);
+      if (!match) return;
+
+      const repoPath = match[1];
+      const response = await fetch(`https://api.github.com/repos/${repoPath}`, {
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`GitHub API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setRepoInfo({
+        description: data.description,
+        stargazers_count: data.stargazers_count,
+        archived: data.archived,
+        topics: data.topics || [],
+        updated_at: data.updated_at,
+        language: data.language,
+        forks_count: data.forks_count,
+        watchers_count: data.watchers_count,
+      });
+    } catch (error) {
+      console.error("Failed to fetch repo info:", error);
+    }
+  };
 
   // 解析GitHub API返回的分页链接
   const parseLinkHeader = (header: string | null) => {
@@ -397,6 +465,17 @@ export function DownloadSection({
     return buttons;
   };
 
+  // 处理文件展开/折叠
+  const toggleFileExpansion = (releaseVersion: string) => {
+    const newExpanded = new Set(expandedFiles);
+    if (newExpanded.has(releaseVersion)) {
+      newExpanded.delete(releaseVersion);
+    } else {
+      newExpanded.add(releaseVersion);
+    }
+    setExpandedFiles(newExpanded);
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 space-y-4">
@@ -417,11 +496,85 @@ export function DownloadSection({
       {/* Header Section */}
       <div className="text-center space-y-4">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-          {title}
+          {launcherMeta?.name || title}
         </h1>
         <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-          {description}
+          {launcherMeta?.description || description}
         </p>
+        
+        {/* Repository Info Card */}
+        {repoInfo && (
+          <Card className="max-w-6xl mx-auto bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm border border-slate-200 dark:border-slate-700">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  <div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                      {repoInfo.stargazers_count.toLocaleString()}
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">Stars</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <GitBranch className="w-4 h-4 text-blue-500" />
+                  <div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                      {repoInfo.forks_count.toLocaleString()}
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">Forks</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Eye className="w-4 h-4 text-green-500" />
+                  <div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                      {repoInfo.watchers_count.toLocaleString()}
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">Watchers</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-purple-500" />
+                  <div>
+                    <div className="text-sm font-semibold text-slate-900 dark:text-white">
+                      {new Date(repoInfo.updated_at).toLocaleDateString("zh-CN")}
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">最后更新</div>
+                  </div>
+                </div>
+              </div>
+              
+              {repoInfo.archived && (
+                <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+                    <Archive className="w-4 h-4" />
+                    <span className="font-medium">此仓库已归档</span>
+                  </div>
+                </div>
+              )}
+              
+              {repoInfo.topics.length > 0 && (
+                <div className="mt-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Tag className="w-4 h-4 text-slate-500" />
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">主题标签：</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {repoInfo.topics.map((topic) => (
+                      <Badge key={topic} variant="secondary" className="text-xs">
+                        {topic}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Search and Controls */}
@@ -572,7 +725,12 @@ export function DownloadSection({
           ) : (
             <div className="space-y-4">
               {filteredReleases.map((release) => (
-                <ReleaseCard key={release.version} release={release} />
+                <ReleaseCard 
+                  key={release.version} 
+                  release={release} 
+                  isExpanded={expandedFiles.has(release.version)}
+                  onToggleExpand={() => toggleFileExpansion(release.version)}
+                />
               ))}
 
               {/* Pagination */}
@@ -629,7 +787,7 @@ export function DownloadSection({
       {/* Footer Note */}
       <div className="text-center text-sm text-slate-500 dark:text-slate-400 mt-8 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-slate-200 dark:border-slate-700">
         <p>
-          加速下载由 <a href="https://gh-proxy.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com</a> 提供。
+          加速下载由 <a href="https://gh-proxy.com/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com</a> 提供。
           如遇下载问题，请尝试不同的镜像链接。
         </p>
       </div>
@@ -637,8 +795,16 @@ export function DownloadSection({
   );
 }
 
-function ReleaseCard({ release }: { release: ParsedRelease }) {
+interface ReleaseCardProps {
+  release: ParsedRelease;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
+}
+
+function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) {
   const [showChangelog, setShowChangelog] = useState(false);
+  const hasManyFiles = release.files.length > 4;
+  const displayFiles = isExpanded ? release.files : release.files.slice(0, 4);
 
   const getVersionType = () => {
     if (release.isPrerelease) return "预发布版";
@@ -709,37 +875,37 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
 
       <CardContent className="space-y-4">
         {/* Download Files */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {release.files && release.files.map((file) => {
+        <div className="space-y-4">
+          {displayFiles.map((file) => {
             const mirrors = [
               {
                 name: "Cloudflare 主站（全球加速）",
-                url: `https://gh-proxy.com/${file.downloadUrl}`,
+                url: `https://gh-proxy.com/ ${file.downloadUrl}`,
                 tag: "Cloudflare",
               },
               {
                 name: "Fastly CDN",
-                url: `https://cdn.gh-proxy.com/${file.downloadUrl}`,
+                url: `https://cdn.gh-proxy.com/ ${file.downloadUrl}`,
                 tag: "Fastly",
               },
               {
                 name: "Edgeone 全球加速",
-                url: `https://edgeone.gh-proxy.com/${file.downloadUrl}`,
+                url: `https://edgeone.gh-proxy.com/ ${file.downloadUrl}`,
                 tag: "Edgeone",
               },
               {
                 name: "Jasonzeng 文件代理加速",
-                url: `https://gh.jasonzeng.dev/${file.downloadUrl}`,
+                url: `https://gh.jasonzeng.dev/ ${file.downloadUrl}`,
                 tag: "Jasonzeng",
               },
               {
                 name: "Imixc 国内高速下载",
-                url: `https://gh.imixc.top/${file.downloadUrl}`,
+                url: `https://gh.imixc.top/ ${file.downloadUrl}`,
                 tag: "Imixc",
               },
               {
                 name: "香港 国内线路优化,secbit.ai&Sharon CDN赞助",
-                url: `https://hk.gh-proxy.com/${file.downloadUrl}`,
+                url: `https://hk.gh-proxy.com/ ${file.downloadUrl}`,
                 tag: "香港",
                 tip: "大文件下载不建议使用！",
               },
@@ -798,6 +964,28 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
               </div>
             )
           })}
+          
+          {/* Expand/Collapse Button */}
+          {hasManyFiles && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onToggleExpand}
+              className="flex items-center gap-2 w-full justify-center py-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  收起 {release.files.length - 4} 个文件
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  展开全部 {release.files.length} 个文件
+                </>
+              )}
+            </Button>
+          )}
         </div>
 
         {/* Changelog */}
