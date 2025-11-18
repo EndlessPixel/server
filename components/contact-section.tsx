@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { Mail, MessageCircle, GithubIcon, Users, Clock, MapPin, Phone, Gamepad2, Play, FacebookIcon, Calendar, Award, Star } from "lucide-react"
+import { Mail, MessageCircle, GithubIcon, Users, Clock, MapPin, Phone, Gamepad2, Star } from "lucide-react"
 
 export function ContactSection() {
   const contactMethods = [
@@ -57,18 +57,6 @@ export function ContactSection() {
       onClick: () => window.open("https://discord.gg/k63hRWt3fF", "_blank"),
     },
     {
-      name: "Facebook",
-      value: "system_mini",
-      description: "与我们在 Facebook 上互动",
-      icon: FacebookIcon,
-      color: "text-blue-600 dark:text-blue-400",
-      bgColor: "bg-blue-50 dark:bg-blue-950/30",
-      borderColor: "border-blue-200 dark:border-blue-800",
-      hoverColor: "hover:bg-blue-100 dark:hover:bg-blue-900/30",
-      action: "关注我们",
-      onClick: () => window.open("https://t.pineal.cn/system_mini", "_blank"),
-    },
-    {
       name: "GitHub",
       value: "EndlessPixel",
       description: "开源项目和技术交流",
@@ -108,21 +96,7 @@ export function ContactSection() {
       icon: MapPin,
       color: "text-red-500 dark:text-red-400",
       bgColor: "bg-red-50 dark:bg-red-950/20",
-    },
-    {
-      title: "网站位置",
-      value: "香港 （东）",
-      icon: MapPin,
-      color: "text-blue-500 dark:text-blue-400",
-      bgColor: "bg-blue-50 dark:bg-blue-950/20",
-    },
-    {
-      title: "技术支持",
-      value: "周六至周日 08:00-23:30",
-      icon: Phone,
-      color: "text-green-500 dark:text-green-400",
-      bgColor: "bg-green-50 dark:bg-green-950/20",
-    },
+    }
   ]
 
   return (

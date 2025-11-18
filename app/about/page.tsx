@@ -1,10 +1,8 @@
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { TeamSection } from "@/components/team-section"
-import { TechStackSection } from "@/components/tech-stack-section"
 import { LicenseSection } from "@/components/license-section"
 import { ContactSection } from "@/components/contact-section"
-import { LuckTest } from "@/components/luck-test"
 import { Card, CardContent } from "@/components/ui/card"
 import { Server, Heart, Users, Calendar, Zap, Globe, Star, Rocket } from "lucide-react"
 import type { Metadata } from "next"
@@ -46,10 +44,6 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Rocket className="w-4 h-4" />
-              始于 2024 年 9 月
-            </div>
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-900 via-purple-700 to-blue-600 dark:from-slate-100 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent mb-6">
               关于 EndlessPixel
             </h1>
@@ -75,49 +69,6 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-            <Card className="bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl backdrop-blur-sm text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">50+</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">活跃玩家</div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl backdrop-blur-sm text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Server className="w-6 h-6 text-green-600 dark:text-green-400" />
-                </div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">~92.9%</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">服务可用性</div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl backdrop-blur-sm text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Calendar className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                </div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{operatingMonths}+</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">运营月数</div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl backdrop-blur-sm text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Zap className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                </div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">周六至周日 08:00-23:30</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">技术支持</div>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Values Section */}
@@ -164,46 +115,12 @@ export default function AboutPage() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
               <TeamSection />
-              <TechStackSection />
               <LicenseSection />
             </div>
 
             {/* Sidebar */}
             <div className="lg:col-span-1 space-y-8">
               <ContactSection />
-              <LuckTest />
-
-              {/* Quick Facts */}
-              <Card className="bg-white/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4 flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-amber-500" />
-                    快速了解
-                  </h3>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="text-slate-600 dark:text-slate-400">成立时间</span>
-                      <span className="font-medium text-slate-900 dark:text-white">2024年9月</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="text-slate-600 dark:text-slate-400">服务器类型</span>
-                      <span className="font-medium text-slate-900 dark:text-white">生存/RPG</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="text-slate-600 dark:text-slate-400">游戏版本</span>
-                      <span className="font-medium text-slate-900 dark:text-white">1.21.10</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="text-slate-600 dark:text-slate-400">运营模式</span>
-                      <span className="font-medium text-slate-900 dark:text-white">免费开放</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-slate-600 dark:text-slate-400">社区规模</span>
-                      <span className="font-medium text-slate-900 dark:text-white">50+ 玩家</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
 
@@ -216,24 +133,6 @@ export default function AboutPage() {
                   无论你是想体验我们的服务器，还是对我们的项目感兴趣，我们都欢迎你加入 EndlessPixel 社区。
                   让我们一起创造更多精彩的游戏回忆！
                 </p>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <a
-                    href="/downloads"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                    下载客户端
-                  </a>
-                  <a
-                    href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
-                  >
-                    <Users className="w-4 h-4" />
-                    加入 QQ 群
-                  </a>
-                </div>
               </CardContent>
             </Card>
           </div>
@@ -243,7 +142,7 @@ export default function AboutPage() {
     </div>
   )
 }
-
+ 
 // Add missing Download icon component
 function Download({ className }: { className?: string }) {
   return (
