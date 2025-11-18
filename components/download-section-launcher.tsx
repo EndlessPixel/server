@@ -13,7 +13,6 @@ import {
   Loader2,
   ExternalLink,
   Star,
-  Shield,
   Zap,
   ArrowUp,
   ArrowDown,
@@ -28,7 +27,6 @@ import {
   Github,
   Archive,
   Tag,
-  Users,
   Eye,
   GitBranch,
   Clock
@@ -106,7 +104,6 @@ interface DownloadSectionProps {
 
 export function DownloadSection({
   githubApiUrl,
-  title = "下载 Minecraft 启动器",
   description = "选择适合您的版本进行下载",
   showPrereleases = true,
   itemsPerPage = 20,
@@ -495,13 +492,6 @@ export function DownloadSection({
     <div className="space-y-6">
       {/* Header Section */}
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-          {launcherMeta?.name || title}
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-          {launcherMeta?.description || description}
-        </p>
-        
         {/* Repository Info Card */}
         {repoInfo && (
           <Card className="max-w-6xl mx-auto bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm border border-slate-200 dark:border-slate-700">
