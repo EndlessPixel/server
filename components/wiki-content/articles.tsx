@@ -16,8 +16,8 @@ export const articles: Record<string, ArticleData> = {
         content: (
             <div className="space-y-8">
                 {/* 页面头部 */}
-                <div className="flex items-center space-x-4 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-blue-200 dark:border-blue-800">
-                    <div className="flex-shrink-0">
+                <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-blue-200 dark:border-blue-800">
+                    <div className="shrink-0">
                         <Download className="h-12 w-12 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="flex-1">
@@ -39,9 +39,9 @@ export const articles: Record<string, ArticleData> = {
                         <div className="w-2 h-10 bg-blue-500 rounded-full mr-4"></div>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">快速开始</h2>
                     </div>
-                    <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                    <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
                         <div className="flex items-start space-x-4">
-                            <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl flex-shrink-0">
+                            <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl shrink-0">
                                 <span className="text-2xl text-blue-600 dark:text-blue-300">⚡</span>
                             </div>
                             <div>
@@ -63,9 +63,9 @@ export const articles: Record<string, ArticleData> = {
 
                     <div className="space-y-6">
                         {/* 步骤1 */}
-                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
+                        <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
                             <div className="flex items-start space-x-4">
-                                <div className="bg-purple-100 dark:bg-purple-800 w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div className="bg-purple-100 dark:bg-purple-800 w-10 h-10 rounded-full flex items-center justify-center shrink-0">
                                     <span className="text-purple-600 dark:text-purple-300 font-bold text-lg">1</span>
                                 </div>
                                 <div className="flex-1">
@@ -118,9 +118,9 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 步骤2 */}
-                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                        <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
                             <div className="flex items-start space-x-4">
-                                <div className="bg-blue-100 dark:bg-blue-800 w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div className="bg-blue-100 dark:bg-blue-800 w-10 h-10 rounded-full flex items-center justify-center shrink-0">
                                     <span className="text-blue-600 dark:text-blue-300 font-bold text-lg">2</span>
                                 </div>
                                 <div className="flex-1">
@@ -145,9 +145,9 @@ export const articles: Record<string, ArticleData> = {
                                                 </li>
                                             </ol>
                                         </div>
-                                        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-lg border-2 border-yellow-200 dark:border-yellow-800">
+                                        <div className="bg-linear-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-lg border-2 border-yellow-200 dark:border-yellow-800">
                                             <div className="flex items-start space-x-3">
-                                                <div className="bg-yellow-100 dark:bg-yellow-800 p-2 rounded-lg flex-shrink-0">
+                                                <div className="bg-yellow-100 dark:bg-yellow-800 p-2 rounded-lg shrink-0">
                                                     <span className="text-yellow-600 dark:text-yellow-300">⚠️</span>
                                                 </div>
                                                 <div>
@@ -164,9 +164,9 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 步骤3 */}
-                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
+                        <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
                             <div className="flex items-start space-x-4">
-                                <div className="bg-green-100 dark:bg-green-800 w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div className="bg-green-100 dark:bg-green-800 w-10 h-10 rounded-full flex items-center justify-center shrink-0">
                                     <span className="text-green-600 dark:text-green-300 font-bold text-lg">3</span>
                                 </div>
                                 <div className="flex-1">
@@ -208,9 +208,9 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 步骤4 */}
-                        <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
+                        <div className="bg-linear-to-r from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
                             <div className="flex items-start space-x-4">
-                                <div className="bg-orange-100 dark:bg-orange-800 w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div className="bg-orange-100 dark:bg-orange-800 w-10 h-10 rounded-full flex items-center justify-center shrink-0">
                                     <span className="text-orange-600 dark:text-orange-300 font-bold text-lg">4</span>
                                 </div>
                                 <div className="flex-1">
@@ -242,7 +242,7 @@ export const articles: Record<string, ArticleData> = {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-lg mt-4">
+                                    <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-lg mt-4">
                                         <p className="text-blue-700 dark:text-blue-300 text-sm">
                                             <span className="font-semibold">提示：</span> 导入后启动器会自动下载依赖资源（如模组、材质包），请耐心等待进度条完成（需保持网络稳定）。
                                         </p>
@@ -252,9 +252,9 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 步骤5 */}
-                        <div className="bg-gradient-to-br from-red-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-red-200 dark:border-red-800">
+                        <div className="bg-linear-to-r from-red-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-red-200 dark:border-red-800">
                             <div className="flex items-start space-x-4">
-                                <div className="bg-red-100 dark:bg-red-800 w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div className="bg-red-100 dark:bg-red-800 w-10 h-10 rounded-full flex items-center justify-center shrink-0">
                                     <span className="text-red-600 dark:text-red-300 font-bold text-lg">5</span>
                                 </div>
                                 <div className="flex-1">
@@ -294,7 +294,7 @@ export const articles: Record<string, ArticleData> = {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {/* 启动失败 */}
-                        <div className="bg-gradient-to-br from-red-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-red-200 dark:border-red-800">
+                        <div className="bg-linear-to-r from-red-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-red-200 dark:border-red-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-red-100 dark:bg-red-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-red-600 dark:text-red-300">❌</span>
@@ -325,7 +325,7 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 内存不足 */}
-                        <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
+                        <div className="bg-linear-to-r from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-orange-100 dark:bg-orange-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-orange-600 dark:text-orange-300">💾</span>
@@ -352,7 +352,7 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 导入后找不到游戏 */}
-                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
+                        <div className="bg-linear-to-r from-purple-50 to-violet-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-purple-100 dark:bg-purple-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-purple-600 dark:text-purple-300">🔍</span>
@@ -385,9 +385,9 @@ export const articles: Record<string, ArticleData> = {
                 </div>
 
                 {/* 帮助提示 */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 border-2 border-green-300 dark:border-green-700">
+                <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 border-2 border-green-300 dark:border-green-700">
                     <div className="flex items-start space-x-4">
-                        <div className="bg-green-100 dark:bg-green-800 p-3 rounded-xl flex-shrink-0">
+                        <div className="bg-green-100 dark:bg-green-800 p-3 rounded-xl shrink-0">
                             <span className="text-2xl text-green-600 dark:text-green-300">💡</span>
                         </div>
                         <div>
@@ -411,8 +411,8 @@ export const articles: Record<string, ArticleData> = {
         content: (
             <div className="space-y-8">
                 {/* 页面头部 */}
-                <div className="flex items-center space-x-4 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-blue-200 dark:border-blue-800">
-                    <div className="flex-shrink-0">
+                <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-blue-200 dark:border-blue-800">
+                    <div className="shrink-0">
                         <Terminal className="h-12 w-12 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="flex-1">
@@ -453,7 +453,7 @@ export const articles: Record<string, ArticleData> = {
                                 { command: "/bindemail re <验证码> <新密码>", desc: "使用验证码重置密码" },
                                 { command: "/bdmail re <验证码> <新密码>", desc: "使用验证码重置密码（简写）" }
                             ].map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all">
+                                <div key={index} className="flex items-center space-x-3 p-3 bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all">
                                     <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg">
                                         <span className="text-blue-600 dark:text-blue-300 text-sm">🔐</span>
                                     </div>
@@ -488,7 +488,7 @@ export const articles: Record<string, ArticleData> = {
                                 { command: "/tpcancel <玩家名>", desc: "取消向特定玩家的传送请求" },
                                 { command: "/simpletpa", desc: "打开传送主菜单" }
                             ].map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-600 transition-all">
+                                <div key={index} className="flex items-center space-x-3 p-3 bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-600 transition-all">
                                     <div className="bg-purple-100 dark:bg-purple-800 p-2 rounded-lg">
                                         <span className="text-purple-600 dark:text-purple-300 text-sm">🚀</span>
                                     </div>
@@ -521,7 +521,7 @@ export const articles: Record<string, ArticleData> = {
                                 { command: "/skin <皮肤名>", desc: "更换自己的皮肤" },
                                 { command: "/skin help", desc: "显示皮肤命令帮助" }
                             ].map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-cyan-200 dark:border-cyan-800 hover:border-cyan-300 dark:hover:border-cyan-600 transition-all">
+                                <div key={index} className="flex items-center space-x-3 p-3 bg-linear-to-r from-cyan-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-cyan-200 dark:border-cyan-800 hover:border-cyan-300 dark:hover:border-cyan-600 transition-all">
                                     <div className="bg-cyan-100 dark:bg-cyan-800 p-2 rounded-lg">
                                         <span className="text-cyan-600 dark:text-cyan-300 text-sm">👤</span>
                                     </div>
@@ -556,7 +556,7 @@ export const articles: Record<string, ArticleData> = {
                                 { command: "/sk sources <技能名> [排序]", desc: "查看技能经验获取方式" },
                                 { command: "/sk help", desc: "显示技能命令帮助" }
                             ].map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-emerald-200 dark:border-emerald-800 hover:border-emerald-300 dark:hover:border-emerald-600 transition-all">
+                                <div key={index} className="flex items-center space-x-3 p-3 bg-linear-to-r from-emerald-50 to-green-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-emerald-200 dark:border-emerald-800 hover:border-emerald-300 dark:hover:border-emerald-600 transition-all">
                                     <div className="bg-emerald-100 dark:bg-emerald-800 p-2 rounded-lg">
                                         <span className="text-emerald-600 dark:text-emerald-300 text-sm">⭐</span>
                                     </div>
@@ -582,7 +582,7 @@ export const articles: Record<string, ArticleData> = {
                             { command: "/4", desc: "自杀", icon: "💀" },
                             { command: "/killme:4", desc: "自杀", icon: "💀" }
                         ].map((item, index) => (
-                            <div key={index} className="flex items-center space-x-3 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-gray-700 dark:to-gray-800 rounded-xl border border-amber-200 dark:border-amber-800 hover:border-amber-300 dark:hover:border-amber-600 transition-all">
+                            <div key={index} className="flex items-center space-x-3 p-4 bg-linear-to-r from-amber-50 to-yellow-50 dark:from-gray-700 dark:to-gray-800 rounded-xl border border-amber-200 dark:border-amber-800 hover:border-amber-300 dark:hover:border-amber-600 transition-all">
                                 <div className="bg-amber-100 dark:bg-amber-800 p-3 rounded-lg">
                                     <span className="text-amber-600 dark:text-amber-300 text-lg">{item.icon}</span>
                                 </div>
@@ -596,9 +596,9 @@ export const articles: Record<string, ArticleData> = {
                 </div>
 
                 {/* 提示信息 */}
-                <div className="bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 border-2 border-yellow-300 dark:border-yellow-700">
+                <div className="bg-linear-to-r from-yellow-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 border-2 border-yellow-300 dark:border-yellow-700">
                     <div className="flex items-start space-x-4">
-                        <div className="bg-yellow-100 dark:bg-yellow-800 p-3 rounded-xl flex-shrink-0">
+                        <div className="bg-yellow-100 dark:bg-yellow-800 p-3 rounded-xl shrink-0">
                             <span className="text-2xl text-yellow-600 dark:text-yellow-300">💡</span>
                         </div>
                         <div>
@@ -622,8 +622,8 @@ export const articles: Record<string, ArticleData> = {
         content: (
             <div className="space-y-8">
                 {/* 页面头部 */}
-                <div className="flex items-center space-x-4 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-green-200 dark:border-green-800">
-                    <div className="flex-shrink-0">
+                <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-green-200 dark:border-green-800">
+                    <div className="shrink-0">
                         <Shield className="h-12 w-12 text-green-600 dark:text-green-400" />
                     </div>
                     <div className="flex-1">
@@ -647,7 +647,7 @@ export const articles: Record<string, ArticleData> = {
                             <div className="w-2 h-10 bg-blue-500 rounded-full mr-4"></div>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">主菜单</h2>
                         </div>
-                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                        <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-xl border-2 border-blue-200 dark:border-blue-800">
                             <div className="flex items-center space-x-3 p-3">
                                 <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg">
                                     <span className="text-blue-600 dark:text-blue-300">📋</span>
@@ -674,7 +674,7 @@ export const articles: Record<string, ArticleData> = {
                                 { command: "/dominion auto_create_sub <name> <dominion_name>", desc: "自动在指定领地下创建子领地" },
                                 { command: "/dominion delete <dominion_name> [force]", desc: "删除指定的领地" }
                             ].map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-purple-200 dark:border-purple-800">
+                                <div key={index} className="flex items-center space-x-3 p-3 bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-purple-200 dark:border-purple-800">
                                     <div className="bg-purple-100 dark:bg-purple-800 p-2 rounded-lg">
                                         <span className="text-purple-600 dark:text-purple-300 text-sm">🏗️</span>
                                     </div>
@@ -704,7 +704,7 @@ export const articles: Record<string, ArticleData> = {
                                 { command: "/dominion rename <name> <newName>", desc: "重命名领地" },
                                 { command: "/dominion give <name> <player> [force]", desc: "转让领地" }
                             ].map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-green-200 dark:border-green-800">
+                                <div key={index} className="flex items-center space-x-3 p-3 bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-green-200 dark:border-green-800">
                                     <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg">
                                         <span className="text-green-600 dark:text-green-300 text-sm">⚙️</span>
                                     </div>
@@ -729,7 +729,7 @@ export const articles: Record<string, ArticleData> = {
                                 { command: "/dominion member_remove <name> <member>", desc: "从领地中移除指定成员" },
                                 { command: "/dominion member_set_pri <name> <member> <flag> <true|false>", desc: "设置成员的权限标志" }
                             ].map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                                <div key={index} className="flex items-center space-x-3 p-3 bg-linear-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-yellow-200 dark:border-yellow-800">
                                     <div className="bg-yellow-100 dark:bg-yellow-800 p-2 rounded-lg">
                                         <span className="text-yellow-600 dark:text-yellow-300 text-sm">👥</span>
                                     </div>
@@ -762,7 +762,7 @@ export const articles: Record<string, ArticleData> = {
                                 { command: "/dominion group_rename <name> <group> <new_group>", desc: "重命名权限组" },
                                 { command: "/dominion group_delete <name> <group>", desc: "删除权限组" }
                             ].map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-red-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-red-200 dark:border-red-800">
+                                <div key={index} className="flex items-center space-x-3 p-3 bg-linear-to-r from-red-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-red-200 dark:border-red-800">
                                     <div className="bg-red-100 dark:bg-red-800 p-2 rounded-lg">
                                         <span className="text-red-600 dark:text-red-300 text-sm">🔐</span>
                                     </div>
@@ -785,7 +785,7 @@ export const articles: Record<string, ArticleData> = {
                                 { command: "/dominion title_use <title_id>", desc: "使用称号" },
                                 { command: "/dominion tp <name>", desc: "传送到领地" }
                             ].map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-indigo-200 dark:border-indigo-800">
+                                <div key={index} className="flex items-center space-x-3 p-3 bg-linear-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-indigo-200 dark:border-indigo-800">
                                     <div className="bg-indigo-100 dark:bg-indigo-800 p-2 rounded-lg">
                                         <span className="text-indigo-600 dark:text-indigo-300 text-sm">📄</span>
                                     </div>
@@ -811,8 +811,8 @@ export const articles: Record<string, ArticleData> = {
         content: (
             <div className="space-y-8">
                 {/* 页面头部 */}
-                <div className="flex items-center space-x-4 p-6 bg-gradient-to-r from-red-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-red-200 dark:border-red-800">
-                    <div className="flex-shrink-0">
+                <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-red-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-red-200 dark:border-red-800">
+                    <div className="shrink-0">
                         <Shield className="h-12 w-12 text-red-600 dark:text-red-400" />
                     </div>
                     <div className="flex-1">
@@ -829,9 +829,9 @@ export const articles: Record<string, ArticleData> = {
                 </div>
 
                 {/* 重要提醒 */}
-                <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 border-2 border-red-300 dark:border-red-700">
+                <div className="bg-linear-to-r from-red-50 to-pink-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 border-2 border-red-300 dark:border-red-700">
                     <div className="flex items-start space-x-4">
-                        <div className="bg-red-100 dark:bg-red-800 p-3 rounded-xl flex-shrink-0">
+                        <div className="bg-red-100 dark:bg-red-800 p-3 rounded-xl shrink-0">
                             <span className="text-2xl text-red-600 dark:text-red-300">⚠️</span>
                         </div>
                         <div>
@@ -863,9 +863,9 @@ export const articles: Record<string, ArticleData> = {
                             { rule: "礼品码使用规则", desc: "礼品兑换代码禁止二次高价出售，需通过官方售卖渠道获取", icon: "🎁" },
                             { rule: "经验交易提醒", desc: "请勿相信售卖经验的玩家，仅认可附魔之瓶形式的经验交易（普通玩家无XP命令使用权限）", icon: "⭐" }
                         ].map((item, index) => (
-                            <div key={index} className="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300">
+                            <div key={index} className="bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300">
                                 <div className="flex items-start space-x-3">
-                                    <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg flex-shrink-0">
+                                    <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-lg shrink-0">
                                         <span className="text-blue-600 dark:text-blue-300 text-lg">{item.icon}</span>
                                     </div>
                                     <div>
@@ -889,7 +889,7 @@ export const articles: Record<string, ArticleData> = {
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">违规处罚机制</h2>
                     </div>
 
-                    <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-red-200 dark:border-red-800">
+                    <div className="bg-linear-to-r from-red-50 to-orange-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-red-200 dark:border-red-800">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div className="bg-white/60 dark:bg-gray-600/30 p-4 rounded-lg text-center border-2 border-red-100 dark:border-red-800">
                                 <div className="bg-red-100 dark:bg-red-800 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -942,8 +942,8 @@ export const articles: Record<string, ArticleData> = {
         content: (
             <div className="space-y-8">
                 {/* 页面头部 */}
-                <div className="flex items-center space-x-4 p-6 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-orange-200 dark:border-orange-800">
-                    <div className="flex-shrink-0">
+                <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-orange-200 dark:border-orange-800">
+                    <div className="shrink-0">
                         <Wrench className="h-12 w-12 text-orange-600 dark:text-orange-400" />
                     </div>
                     <div className="flex-1">
@@ -966,7 +966,7 @@ export const articles: Record<string, ArticleData> = {
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">支持版本</h2>
                     </div>
 
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
+                    <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-4">
                                 <div className="flex items-center space-x-3">
@@ -1024,7 +1024,7 @@ export const articles: Record<string, ArticleData> = {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* 最佳体验 */}
-                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                        <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-blue-600 dark:text-blue-300">🏆</span>
@@ -1037,7 +1037,7 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 兼容版本 */}
-                        <div className="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800">
+                        <div className="bg-linear-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-yellow-100 dark:bg-yellow-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-yellow-600 dark:text-yellow-300">🔧</span>
@@ -1058,13 +1058,13 @@ export const articles: Record<string, ArticleData> = {
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">版本兼容范围</h2>
                     </div>
 
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
+                    <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-purple-700 dark:text-purple-300 text-sm">1.7.2</span>
                             <span className="text-purple-700 dark:text-purple-300 text-sm">1.21.10+</span>
                         </div>
                         <div className="bg-purple-200 dark:bg-purple-700 h-4 rounded-full overflow-hidden">
-                            <div className="bg-gradient-to-r from-green-400 to-blue-500 h-full w-full rounded-full"></div>
+                            <div className="bg-linear-to-r from-green-400 to-blue-500 h-full w-full rounded-full"></div>
                         </div>
                         <div className="flex justify-between mt-2">
                             <span className="text-purple-600 dark:text-purple-400 text-xs">最低兼容</span>
@@ -1100,8 +1100,8 @@ export const articles: Record<string, ArticleData> = {
         content: (
             <div className="space-y-8">
                 {/* 页面头部 */}
-                <div className="flex items-center space-x-4 p-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-purple-200 dark:border-purple-800">
-                    <div className="flex-shrink-0">
+                <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-purple-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-purple-200 dark:border-purple-800">
+                    <div className="shrink-0">
                         <HelpCircle className="h-12 w-12 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div className="flex-1">
@@ -1133,7 +1133,7 @@ export const articles: Record<string, ArticleData> = {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* 连接超时 */}
-                        <div className="bg-gradient-to-br from-red-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-red-200 dark:border-red-800">
+                        <div className="bg-linear-to-r from-red-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-red-200 dark:border-red-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-red-100 dark:bg-red-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-red-600 dark:text-red-300">⏱️</span>
@@ -1160,7 +1160,7 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 版本不兼容 */}
-                        <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
+                        <div className="bg-linear-to-r from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-orange-100 dark:bg-orange-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-orange-600 dark:text-orange-300">🔧</span>
@@ -1187,7 +1187,7 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 节点异常 */}
-                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                        <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-blue-600 dark:text-blue-300">🌐</span>
@@ -1214,7 +1214,7 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 服务器维护 */}
-                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
+                        <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-green-100 dark:bg-green-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-green-600 dark:text-green-300">🛠️</span>
@@ -1241,7 +1241,7 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 服务器负载过高 */}
-                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
+                        <div className="bg-linear-to-r from-purple-50 to-violet-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-purple-100 dark:bg-purple-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-purple-600 dark:text-purple-300">🔥</span>
@@ -1268,7 +1268,7 @@ export const articles: Record<string, ArticleData> = {
                         </div>
 
                         {/* 本地网络异常 */}
-                        <div className="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800">
+                        <div className="bg-linear-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-yellow-100 dark:bg-yellow-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-yellow-600 dark:text-yellow-300">📶</span>
@@ -1303,7 +1303,7 @@ export const articles: Record<string, ArticleData> = {
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">其他疑难问题</h2>
                     </div>
 
-                    <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-gray-200 dark:border-gray-700">
+                    <div className="bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-gray-200 dark:border-gray-700">
                         <p className="text-gray-800 dark:text-gray-200 text-lg mb-6">
                             如果遇到的问题不在上述范围内，可尝试以下通用解决方法：
                         </p>
@@ -1363,8 +1363,8 @@ export const articles: Record<string, ArticleData> = {
         content: (
             <div className="space-y-8">
                 {/* 页面头部 */}
-                <div className="flex items-center space-x-4 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-blue-200 dark:border-blue-800">
-                    <div className="flex-shrink-0">
+                <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-blue-200 dark:border-blue-800">
+                    <div className="shrink-0">
                         <Wrench className="h-12 w-12 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="flex-1">
@@ -1386,9 +1386,9 @@ export const articles: Record<string, ArticleData> = {
                         <div className="w-2 h-10 bg-blue-500 rounded-full mr-4"></div>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">什么是FRP</h2>
                     </div>
-                    <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                    <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
                         <div className="flex items-start space-x-4">
-                            <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl flex-shrink-0">
+                            <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl shrink-0">
                                 <span className="text-2xl text-blue-600 dark:text-blue-300">🚀</span>
                             </div>
                             <p className="text-blue-800 dark:text-blue-200 text-lg leading-relaxed">
@@ -1404,7 +1404,7 @@ export const articles: Record<string, ArticleData> = {
                         <div className="w-2 h-10 bg-green-500 rounded-full mr-4"></div>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">配置要求</h2>
                     </div>
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
+                    <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="flex items-start space-x-3">
                                 <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mt-1">
@@ -1455,7 +1455,7 @@ export const articles: Record<string, ArticleData> = {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* INI格式 */}
-                        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-indigo-200 dark:border-indigo-800">
+                        <div className="bg-linear-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-indigo-200 dark:border-indigo-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-indigo-100 dark:bg-indigo-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-indigo-600 dark:text-indigo-300">📄</span>
@@ -1476,7 +1476,7 @@ local_port = 25566`}
                         </div>
 
                         {/* TOML格式 */}
-                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
+                        <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-purple-100 dark:bg-purple-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-purple-600 dark:text-purple-300">📄</span>
@@ -1498,7 +1498,7 @@ local_port = 25566`}
                         </div>
 
                         {/* YAML格式 */}
-                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
+                        <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-green-100 dark:bg-green-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-green-600 dark:text-green-300">📄</span>
@@ -1520,7 +1520,7 @@ proxies:
                         </div>
 
                         {/* JSON格式 */}
-                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+                        <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-blue-600 dark:text-blue-300">📄</span>
@@ -1557,7 +1557,7 @@ proxies:
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* 推荐端口 */}
-                        <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
+                        <div className="bg-linear-to-r from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
                             <h3 className="font-bold text-orange-900 dark:text-orange-100 mb-4 flex items-center">
                                 <span className="bg-orange-100 dark:bg-orange-800 p-2 rounded-lg mr-3">🔌</span>
                                 推荐使用端口
@@ -1574,7 +1574,7 @@ proxies:
                         </div>
 
                         {/* 提交流程 */}
-                        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800">
+                        <div className="bg-linear-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800">
                             <h3 className="font-bold text-yellow-900 dark:text-yellow-100 mb-4 flex items-center">
                                 <span className="bg-yellow-100 dark:bg-yellow-800 p-2 rounded-lg mr-3">📤</span>
                                 节点提交流程
@@ -1629,8 +1629,8 @@ proxies:
         "content": (
             <div className="space-y-8">
                 {/* 页面头部 */}
-                <div className="flex items-center space-x-4 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-yellow-200 dark:border-yellow-800">
-                    <div className="flex-shrink-0">
+                <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-yellow-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-yellow-200 dark:border-yellow-800">
+                    <div className="shrink-0">
                         <Trophy className="h-12 w-12 text-yellow-600 dark:text-yellow-400" />
                     </div>
                     <div className="flex-1">
@@ -1655,7 +1655,7 @@ proxies:
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {/* 坐下功能卡片 */}
-                        <div className="group bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600 transition-all duration-300">
+                        <div className="group bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600 transition-all duration-300">
                             <div className="flex items-center mb-4">
                                 <div className="bg-green-100 dark:bg-green-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl">🪑</span>
@@ -1668,7 +1668,7 @@ proxies:
                         </div>
 
                         {/* 连锁挖掘卡片 */}
-                        <div className="group bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-300">
+                        <div className="group bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-300">
                             <div className="flex items-center mb-4">
                                 <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl">⛏️</span>
@@ -1686,7 +1686,7 @@ proxies:
                         </div>
 
                         {/* 农田防踩踏卡片 */}
-                        <div className="group bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800 hover:border-yellow-400 dark:hover:border-yellow-600 transition-all duration-300">
+                        <div className="group bg-linear-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800 hover:border-yellow-400 dark:hover:border-yellow-600 transition-all duration-300">
                             <div className="flex items-center mb-4">
                                 <div className="bg-yellow-100 dark:bg-yellow-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl">🌾</span>
@@ -1701,7 +1701,7 @@ proxies:
                 </section>
 
                 {/* 下界维度升级 */}
-                <section className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border border-red-200 dark:border-red-800">
+                <section className="bg-linear-to-r from-red-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border border-red-200 dark:border-red-800">
                     <div className="flex items-center mb-8">
                         <div className="w-2 h-10 bg-red-500 rounded-full mr-4"></div>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">下界维度全面升级</h2>
@@ -1775,7 +1775,7 @@ proxies:
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">主世界结构扩展</h2>
                     </div>
 
-                    <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-800">
+                    <div className="bg-linear-to-r from-emerald-50 to-green-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-800">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <h3 className="text-xl font-bold text-emerald-900 dark:text-emerald-100 mb-4 flex items-center">
@@ -1814,7 +1814,7 @@ proxies:
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">大师切割机：革命性制造系统</h2>
                     </div>
 
-                    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-2xl border border-indigo-200 dark:border-indigo-800">
+                    <div className="bg-linear-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-2xl border border-indigo-200 dark:border-indigo-800">
                         <div className="text-center mb-8">
                             <div className="inline-flex items-center bg-indigo-100 dark:bg-indigo-800 px-4 py-2 rounded-full mb-4">
                                 <span className="text-indigo-600 dark:text-indigo-300 mr-2">⚡</span>
@@ -1891,7 +1891,7 @@ proxies:
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">海洋探索：船只系统全面进化</h2>
                     </div>
 
-                    <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-2xl border border-teal-200 dark:border-teal-800">
+                    <div className="bg-linear-to-r from-teal-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-2xl border border-teal-200 dark:border-teal-800">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div>
                                 <h3 className="text-xl font-bold text-teal-900 dark:text-teal-100 mb-6 flex items-center">
@@ -1963,7 +1963,7 @@ proxies:
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">BlazeandCave 进阶包：1202项进度挑战</h2>
                     </div>
 
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-2xl border border-purple-200 dark:border-purple-800">
+                    <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-2xl border border-purple-200 dark:border-purple-800">
                         <div className="text-center mb-8">
                             <div className="inline-flex items-center bg-purple-100 dark:bg-purple-800 px-4 py-2 rounded-full mb-4">
                                 <span className="text-purple-600 dark:text-purple-300 mr-2">🏆</span>
@@ -2038,7 +2038,7 @@ proxies:
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-2xl border border-purple-200 dark:border-purple-800">
+                        <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-2xl border border-purple-200 dark:border-purple-800">
                             <div className="flex items-center mb-4">
                                 <div className="bg-purple-100 dark:bg-purple-800 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-purple-600 dark:text-purple-300">✨</span>
@@ -2050,7 +2050,7 @@ proxies:
                             </p>
                         </div>
 
-                        <div className="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-2xl border border-gray-300 dark:border-gray-700">
+                        <div className="bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-2xl border border-gray-300 dark:border-gray-700">
                             <div className="flex items-center mb-4">
                                 <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-xl mr-4">
                                     <span className="text-2xl text-gray-600 dark:text-gray-300">🌌</span>
@@ -2065,7 +2065,7 @@ proxies:
                 </section>
 
                 {/* 页脚 */}
-                <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl text-center border border-gray-200 dark:border-gray-700">
+                <div className="bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl text-center border border-gray-200 dark:border-gray-700">
                     <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
                         🎮 以上所有功能均已在服务器中实装，欢迎体验探索！如有疑问可联系管理员咨询。
                     </p>

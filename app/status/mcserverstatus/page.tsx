@@ -212,7 +212,7 @@ function PluginModList({
           >
             <span className="text-slate-600 dark:text-slate-400 truncate">{item.name}</span>
             {item.version && (
-              <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
+              <Badge variant="outline" className="text-xs ml-2 shrink-0">
                 v{item.version}
               </Badge>
             )}
@@ -257,7 +257,7 @@ export default function McServerStatusPage() {
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
+      <main className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
         <div className="max-w-7xl mx-auto">
           {/* 头部 */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
@@ -273,7 +273,7 @@ export default function McServerStatusPage() {
                   v3
                 </Badge>
               </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-blue-700 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-linear-to-r from-slate-900 to-blue-700 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
                 Minecraft 服务器状态
               </h1>
               <p className="text-slate-600 dark:text-slate-400">
@@ -309,7 +309,7 @@ export default function McServerStatusPage() {
           <Card className="mb-8 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
                 <div className="flex-1">
                   <h3 className="font-semibold text-amber-800 dark:text-amber-300 mb-1">重要提示</h3>
                   <p className="text-amber-700 dark:text-amber-400 text-sm">

@@ -124,7 +124,7 @@ export function ContactSection() {
                 onClick={method.onClick}
               >
                 <div className="flex items-start space-x-3">
-                  <div className={`p-2 rounded-lg ${method.bgColor} mt-0.5 flex-shrink-0 group-hover:scale-105 transition-transform`}>
+                  <div className={`p-2 rounded-lg ${method.bgColor} mt-0.5 shrink-0 group-hover:scale-105 transition-transform`}>
                     <Icon className={`w-5 h-5 ${method.color}`} />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -187,11 +187,11 @@ export function ContactSection() {
       </Card>
 
       {/* Anniversary Card */}
-      <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 border-l-4 border-l-yellow-500 dark:border-l-yellow-600">
+      <Card className="bg-linear-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 border-l-4 border-l-yellow-500 dark:border-l-yellow-600">
         <CardContent className="pt-6">
           <div className="flex items-start justify-between mb-3">
             <CardTitle className="flex items-center space-x-2">
-              <span className="bg-gradient-to-r from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400 bg-clip-text text-transparent">
                 我们一岁啦！🎉
               </span>
             </CardTitle>

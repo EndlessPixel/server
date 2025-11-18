@@ -35,10 +35,10 @@ export function LicenseSection() {
   return (
     <section className="space-y-6">
       {/* Header Card */}
-      <Card className="border-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
+      <Card className="border-0 bg-linear-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
         <CardHeader>
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+            <div className="p-3 rounded-2xl bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-lg">
               <Scale className="w-6 h-6" />
             </div>
             <div>
@@ -140,7 +140,7 @@ export function LicenseSection() {
       </div>
 
       {/* 使用提示 */}
-      <Card className="border-0 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/10 dark:to-emerald-950/10">
+      <Card className="border-0 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-950/10 dark:to-emerald-950/10">
         <CardHeader>
           <CardTitle className="text-base">使用提示</CardTitle>
           <CardDescription>

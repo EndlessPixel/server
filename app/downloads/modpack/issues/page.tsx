@@ -96,9 +96,9 @@ function IssueCard({ issue, onClick }: { issue: GitHubIssue; onClick: (url: stri
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             {isPR ? (
-              <GitPullRequest className="w-4 h-4 text-purple-500 flex-shrink-0" />
+              <GitPullRequest className="w-4 h-4 text-purple-500 shrink-0" />
             ) : (
-              <AlertCircle className={`w-4 h-4 flex-shrink-0 ${
+              <AlertCircle className={`w-4 h-4 shrink-0 ${
                 issue.state === 'open' ? 'text-green-500' : 'text-purple-500'
               }`} />
             )}
@@ -106,7 +106,7 @@ function IssueCard({ issue, onClick }: { issue: GitHubIssue; onClick: (url: stri
               {issue.title}
             </h3>
           </div>
-          <Badge variant={issue.state === 'open' ? 'default' : 'secondary'} className="flex-shrink-0">
+          <Badge variant={issue.state === 'open' ? 'default' : 'secondary'} className="shrink-0">
             {isPR ? (
               <GitMerge className="w-3 h-3 mr-1" />
             ) : (
@@ -272,7 +272,7 @@ export default function IssuesPage() {
     return (
       <>
         <Navigation />
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 flex items-center justify-center">
+        <div className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 flex items-center justify-center">
           <div className="text-center space-y-4">
             <div className="relative">
               <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
@@ -293,7 +293,7 @@ export default function IssuesPage() {
     return (
       <>
         <Navigation />
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 flex items-center justify-center">
+        <div className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 flex items-center justify-center">
           <div className="text-center space-y-4 max-w-md mx-auto p-6">
             <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto">
               <AlertCircle className="w-8 h-8 text-red-500" />
@@ -319,7 +319,7 @@ export default function IssuesPage() {
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
+      <main className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* 头部 */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -335,7 +335,7 @@ export default function IssuesPage() {
                   GitHub Issues
                 </Badge>
               </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-blue-700 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-linear-to-r from-slate-900 to-blue-700 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
                 问题与反馈
               </h1>
               <p className="text-slate-600 dark:text-slate-400">

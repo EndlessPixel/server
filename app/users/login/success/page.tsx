@@ -86,15 +86,15 @@ export default function LoginSuccessPage(): JSX.Element {
     return (
         <>
             <Navigation />
-            <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12">
+            <main className="min-h-screen bg-linear-to-r from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12">
                 <div className="container mx-auto px-4">
                     <div className="max-w-xl mx-auto">
                         {/* Header Section */}
                         <div className="text-center mb-8">
-                            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-3xl shadow-lg mb-4">
+                            <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-r from-blue-500 to-cyan-500 rounded-3xl shadow-lg mb-4">
                                 <Sparkles className="w-10 h-10 text-white" />
                             </div>
-                            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-blue-700 dark:from-gray-100 dark:to-blue-300 bg-clip-text text-transparent mb-2">
+                            <h1 className="text-4xl font-bold bg-linear-to-r from-gray-900 to-blue-700 dark:from-gray-100 dark:to-blue-300 bg-clip-text text-transparent mb-2">
                                 登录处理中
                             </h1>
                             <p className="text-gray-600 dark:text-gray-400 text-lg">
@@ -103,9 +103,9 @@ export default function LoginSuccessPage(): JSX.Element {
                         </div>
 
                         <Card className="border-2 border-gray-200 dark:border-gray-800 shadow-xl overflow-hidden">
-                            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 pb-6">
+                            <CardHeader className="bg-linear-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 pb-6">
                                 <div className="flex items-center space-x-3">
-                                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-2 rounded-xl">
+                                    <div className="bg-linear-to-r from-blue-500 to-purple-500 p-2 rounded-xl">
                                         <Github className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
@@ -162,7 +162,7 @@ export default function LoginSuccessPage(): JSX.Element {
                                         <div className="flex flex-col sm:flex-row gap-3 justify-center">
                                             <Button 
                                                 onClick={handleRetry}
-                                                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg"
+                                                className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg"
                                             >
                                                 <RefreshCw className="w-4 h-4 mr-2" />
                                                 重新登录
@@ -192,7 +192,7 @@ export default function LoginSuccessPage(): JSX.Element {
                                         </h3>
 
                                         {/* User Info Card */}
-                                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/10 dark:to-emerald-950/10 rounded-2xl p-6 border-2 border-green-200 dark:border-green-800 mb-6">
+                                        <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-950/10 dark:to-emerald-950/10 rounded-2xl p-6 border-2 border-green-200 dark:border-green-800 mb-6">
                                             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
                                                 {user.avatar_url ? (
                                                     <img 
@@ -225,7 +225,7 @@ export default function LoginSuccessPage(): JSX.Element {
                                         </div>
 
                                         {/* Auto Redirect Notice */}
-                                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/10 dark:to-cyan-950/10 p-4 rounded-xl border-2 border-blue-200 dark:border-blue-800 mb-6">
+                                        <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-950/10 dark:to-cyan-950/10 p-4 rounded-xl border-2 border-blue-200 dark:border-blue-800 mb-6">
                                             <div className="flex items-center justify-center space-x-2 text-blue-700 dark:text-blue-300">
                                                 <RefreshCw className="w-4 h-4 animate-spin" />
                                                 <span className="text-sm font-medium">
@@ -237,7 +237,7 @@ export default function LoginSuccessPage(): JSX.Element {
                                         <div className="flex flex-col sm:flex-row gap-3 justify-center">
                                             <Button 
                                                 onClick={() => router.push('/users/home')}
-                                                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
+                                                className="bg-linear-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
                                             >
                                                 <ArrowRight className="w-4 h-4 mr-2" />
                                                 立即跳转
@@ -258,7 +258,7 @@ export default function LoginSuccessPage(): JSX.Element {
 
                         {/* Additional Help */}
                         <div className="mt-6 text-center">
-                            <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-4 border-2 border-gray-200 dark:border-gray-700">
+                            <div className="bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-4 border-2 border-gray-200 dark:border-gray-700">
                                 <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-400 text-sm">
                                     <LogIn className="w-4 h-4" />
                                     <span>遇到问题？请联系管理员或查看文档</span>

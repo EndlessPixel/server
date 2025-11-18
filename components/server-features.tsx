@@ -67,11 +67,11 @@ export function ServerFeatures() {
   ]
 
   return (
-    <section className="relative py-20 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/20 overflow-hidden">
+    <section className="relative py-20 bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/20 overflow-hidden">
       {/* 背景装饰 */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-r from-cyan-200 to-blue-200 dark:from-cyan-800/20 dark:to-blue-800/20 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-r from-emerald-200 to-green-200 dark:from-emerald-800/20 dark:to-green-800/20 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute -top-20 -right-20 w-80 h-80 bg-linear-to-r from-cyan-200 to-blue-200 dark:from-cyan-800/20 dark:to-blue-800/20 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-linear-to-r from-emerald-200 to-green-200 dark:from-emerald-800/20 dark:to-green-800/20 rounded-full blur-3xl opacity-30"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -82,7 +82,7 @@ export function ServerFeatures() {
             <span>丰富功能 • 优质体验</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">
               服务器特色功能
             </span>
           </h2>
@@ -100,7 +100,7 @@ export function ServerFeatures() {
                 key={stat.label}
                 className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 bg-linear-to-r from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{stat.value}</div>
@@ -118,13 +118,13 @@ export function ServerFeatures() {
               <Card
                 key={feature.title}
                 className={`
-                  group bg-gradient-to-br ${feature.gradient} backdrop-blur-sm border-2 ${feature.borderColor}
+                  group bg-linear-to-r ${feature.gradient} backdrop-blur-sm border-2 ${feature.borderColor}
                   transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 cursor-pointer
                   overflow-hidden relative
                 `}
               >
                 {/* 悬停效果装饰 */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <CardHeader className="text-center pb-6 relative z-10">
                   <div className="flex justify-center mb-4">
@@ -163,7 +163,7 @@ export function ServerFeatures() {
             <div className="flex flex-wrap gap-4 justify-center">
               <a
                 href="/downloads"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 <Zap className="w-5 h-5" />
                 下载客户端

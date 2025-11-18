@@ -48,7 +48,7 @@ export default function UsersHomePage(): JSX.Element {
         <>
             <Navigation />
 
-            <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12">
+            <main className="min-h-screen bg-linear-to-r from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12">
                 <div className="container mx-auto px-4">
                     <div className="max-w-2xl mx-auto">
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">用户中心</h1>

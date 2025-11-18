@@ -206,7 +206,7 @@ export default function GitHubIssueDetail({
     return (
       <>
         <Navigation />
-        <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
+        <main className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
           <div className="max-w-6xl mx-auto">
             <SkeletonCard />
           </div>
@@ -219,7 +219,7 @@ export default function GitHubIssueDetail({
     return (
       <>
         <Navigation />
-        <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
+        <main className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
           <div className="max-w-6xl mx-auto">
             <Card className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
               <CardContent className="p-8 text-center">
@@ -247,7 +247,7 @@ export default function GitHubIssueDetail({
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
+      <main className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* 头部 */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -266,7 +266,7 @@ export default function GitHubIssueDetail({
                   #{issue.number}
                 </Badge>
               </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-blue-700 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-linear-to-r from-slate-900 to-blue-700 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
                 问题详情
               </h1>
               <p className="text-slate-600 dark:text-slate-400">
