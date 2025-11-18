@@ -56,6 +56,7 @@ const itemVariants = {
     }
 };
 
+export const dynamic = 'force-dynamic'
 export default function CustomDownloadsPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
