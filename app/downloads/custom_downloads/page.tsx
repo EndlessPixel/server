@@ -33,6 +33,8 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { motion, AnimatePresence } from "framer-motion";
 
+export const dynamic = 'force-dynamic'
+
 // 修复 variants 类型定义
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -56,7 +58,6 @@ const itemVariants = {
     }
 };
 
-export const dynamic = 'force-dynamic'
 export default function CustomDownloadsPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
