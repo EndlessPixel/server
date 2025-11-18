@@ -13,8 +13,6 @@ export default async function Page({ params }: { params: { launcher: string } })
       repoOwner={meta.owner}
       repoName={meta.repo}
       issuesHref={`/downloads/launcher/${key}/issues`}
-      archived={meta.archived}
-      archivedDate={meta.archivedDate}
       backHref="/downloads"
     />
   );
