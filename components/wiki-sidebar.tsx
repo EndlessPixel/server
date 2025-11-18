@@ -188,17 +188,17 @@ export function WikiSidebar() {
               <div key={section.id}>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start px-4 py-3 h-auto font-medium min-h-[48px] active:bg-accent/80"
+                  className="w-full justify-start px-4 py-3 h-auto font-medium min-h-12 active:bg-accent/80"
                   onClick={() => toggleSection(section.id)}
                 >
                   <div className="flex items-center space-x-3 flex-1">
-                    <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                    <Icon className="w-5 h-5 text-muted-foreground shrink-0" />
                     <span className="text-left">{section.title}</span>
                   </div>
                   {isExpanded ? (
-                    <ChevronDown className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-muted-foreground shrink-0" />
                   ) : (
-                    <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                    <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
                   )}
                 </Button>
 
@@ -208,7 +208,7 @@ export function WikiSidebar() {
                       <Button
                         key={item.id}
                         variant="ghost"
-                        className={`w-full justify-start px-4 py-3 h-auto text-sm min-h-[44px] active:bg-accent/80 ${selectedArticle === item.id && (!("external" in item) || !item.external)
+                        className={`w-full justify-start px-4 py-3 h-auto text-sm min-h-11 active:bg-accent/80 ${selectedArticle === item.id && (!("external" in item) || !item.external)
                           ? "text-primary bg-accent font-medium"
                           : "text-muted-foreground hover:text-foreground hover:bg-accent"
                           }`}
@@ -217,7 +217,7 @@ export function WikiSidebar() {
                         <div className="flex items-center justify-between w-full">
                           <span className="text-left leading-relaxed">{item.title}</span>
                           {"external" in item && item.external && (
-                            <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 ml-2" />
+                            <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0 ml-2" />
                           )}
                         </div>
                       </Button>

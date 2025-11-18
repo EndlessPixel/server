@@ -227,7 +227,7 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
   return (
     <div className="space-y-6">
       {/* 头部信息 */}
-      <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-0">
+      <Card className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-0">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">

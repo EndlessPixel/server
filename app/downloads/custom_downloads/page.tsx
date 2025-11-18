@@ -161,12 +161,12 @@ export default function CustomDownloadsPage() {
     return (
         <>
             <Navigation />
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 dark:from-slate-900 dark:via-blue-950/20 dark:to-cyan-900/10 relative overflow-hidden">
+            <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50/30 to-cyan-50/20 dark:from-slate-900 dark:via-blue-950/20 dark:to-cyan-900/10 relative overflow-hidden">
                 {/* 背景装饰元素 */}
                 <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-blue-200 to-cyan-200 dark:from-blue-800/20 dark:to-cyan-800/20 rounded-full blur-3xl opacity-50 animate-pulse"></div>
-                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-800/20 dark:to-pink-800/20 rounded-full blur-3xl opacity-50 animate-pulse delay-1000"></div>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-green-200 to-emerald-200 dark:from-green-800/10 dark:to-emerald-800/10 rounded-full blur-3xl opacity-30 animate-pulse delay-500"></div>
+                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-linear-to-r from-blue-200 to-cyan-200 dark:from-blue-800/20 dark:to-cyan-800/20 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-linear-to-r from-purple-200 to-pink-200 dark:from-purple-800/20 dark:to-pink-800/20 rounded-full blur-3xl opacity-50 animate-pulse delay-1000"></div>
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-linear-to-r from-green-200 to-emerald-200 dark:from-green-800/10 dark:to-emerald-800/10 rounded-full blur-3xl opacity-30 animate-pulse delay-500"></div>
                 </div>
 
                 <div className="container mx-auto px-6 py-12 relative z-10">
@@ -182,13 +182,13 @@ export default function CustomDownloadsPage() {
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ delay: 0.2, type: "spring" }}
                         >
-                            <Badge className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-700/50 px-6 py-3 text-base font-semibold backdrop-blur-sm">
+                            <Badge className="bg-linear-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-700/50 px-6 py-3 text-base font-semibold backdrop-blur-sm">
                                 <Sparkles className="w-5 h-5 mr-2" />
                                 自定义GitHub仓库下载
                             </Badge>
                         </motion.div>
                         <motion.h1 
-                            className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-cyan-700 dark:from-slate-100 dark:via-blue-300 dark:to-cyan-400 bg-clip-text text-transparent mb-6 mt-6 leading-tight"
+                            className="text-5xl md:text-6xl font-bold bg-linear-to-r from-slate-900 via-blue-800 to-cyan-700 dark:from-slate-100 dark:via-blue-300 dark:to-cyan-400 bg-clip-text text-transparent mb-6 mt-6 leading-tight"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.6 }}
@@ -216,16 +216,16 @@ export default function CustomDownloadsPage() {
                             <Card className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/60 shadow-2xl rounded-3xl overflow-hidden hover:shadow-3xl transition-all duration-500">
                                 <CardHeader className="text-center pb-6 pt-12 relative">
                                     {/* 装饰性背景 */}
-                                    <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 via-cyan-500 to-emerald-500"></div>
+                                    <div className="absolute top-0 left-0 right-0 h-2 bg-linear-to-r from-blue-500 via-cyan-500 to-emerald-500"></div>
                                     
                                     <motion.div 
-                                        className="w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/25"
+                                        className="w-20 h-20 bg-linear-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/25"
                                         whileHover={{ scale: 1.05, rotate: 5 }}
                                         transition={{ type: "spring", stiffness: 300 }}
                                     >
                                         <Github className="w-10 h-10 text-white" />
                                     </motion.div>
-                                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-blue-700 dark:from-white dark:to-blue-300 bg-clip-text text-transparent">
+                                    <CardTitle className="text-3xl font-bold bg-linear-to-r from-slate-900 to-blue-700 dark:from-white dark:to-blue-300 bg-clip-text text-transparent">
                                         输入GitHub仓库URL
                                     </CardTitle>
                                     <CardDescription className="text-slate-600 dark:text-slate-400 text-xl mt-3">
@@ -270,7 +270,7 @@ export default function CustomDownloadsPage() {
                                                         type="submit"
                                                         disabled={isLoading || !inputUrl.trim()}
                                                         size="lg"
-                                                        className="px-10 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 transition-all duration-300 rounded-2xl font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="px-10 py-4 bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 transition-all duration-300 rounded-2xl font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed"
                                                     >
                                                         {isLoading ? (
                                                             <motion.div
@@ -300,7 +300,7 @@ export default function CustomDownloadsPage() {
 
                                     {/* 支持的URL格式 */}
                                     <motion.div 
-                                        className="bg-gradient-to-r from-slate-50/80 to-blue-50/50 dark:from-slate-800/40 dark:to-blue-900/20 rounded-2xl p-6 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm"
+                                        className="bg-linear-to-r from-slate-50/80 to-blue-50/50 dark:from-slate-800/40 dark:to-blue-900/20 rounded-2xl p-6 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm"
                                         whileHover={{ y: -2 }}
                                         transition={{ type: "spring", stiffness: 300 }}
                                     >
@@ -359,7 +359,7 @@ export default function CustomDownloadsPage() {
                                                 }}
                                                 className="text-center p-6 bg-white/60 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 group cursor-pointer"
                                             >
-                                                <div className={`w-16 h-16 bg-gradient-to-r ${feature.gradient} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300`}>
+                                                <div className={`w-16 h-16 bg-linear-to-r ${feature.gradient} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300`}>
                                                     <feature.icon className="w-8 h-8 text-white" />
                                                 </div>
                                                 <h4 className="font-bold text-slate-900 dark:text-white mb-3 text-lg group-hover:text-slate-800 dark:group-hover:text-white transition-colors">
@@ -471,7 +471,7 @@ export default function CustomDownloadsPage() {
                                         >
                                             <CardContent className="p-6">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300">
+                                                    <div className="w-12 h-12 bg-linear-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shrink-0 shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300">
                                                         <Github className="w-6 h-6 text-white" />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
@@ -487,7 +487,7 @@ export default function CustomDownloadsPage() {
                                                             {proj.description}
                                                         </p>
                                                     </div>
-                                                    <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
+                                                    <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-300 shrink-0" />
                                                 </div>
                                             </CardContent>
                                         </Card>

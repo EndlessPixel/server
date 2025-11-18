@@ -810,14 +810,14 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
     <Card className={`
       relative overflow-hidden transition-all duration-300 hover:shadow-lg
       ${release.isLatest
-        ? "border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 dark:border-green-800"
+        ? "border-green-200 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 dark:border-green-800"
         : "bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm border-slate-200 dark:border-slate-700"
       }
     `}>
       {/* Latest Version Ribbon */}
       {release.isLatest && (
         <div className="absolute top-4 right-4">
-          <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1 shadow-lg flex items-center gap-1">
+          <Badge className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-3 py-1 shadow-lg flex items-center gap-1">
             <Zap className="w-3 h-3" />
             最新版本
           </Badge>
@@ -991,7 +991,7 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
           </Button>
 
           {showChangelog && (
-            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 prose prose-sm max-w-none dark:prose-invert break-words">
+            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 prose prose-sm max-w-none dark:prose-invert wrap-break-word">
               <ReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}

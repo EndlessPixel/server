@@ -156,7 +156,7 @@ export function WikiSearch() {
               </div>
             ) : searchResults.length > 0 ? (
               <div className="divide-y divide-gray-100 dark:divide-gray-800">
-                <div className="p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 border-b border-gray-200 dark:border-gray-700">
+                <div className="p-4 bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 border-b border-gray-200 dark:border-gray-700">
                   <div className="flex items-center space-x-2">
                     <Sparkles className="w-4 h-4 text-blue-500" />
                     <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -169,7 +169,7 @@ export function WikiSearch() {
                   return (
                     <div
                       key={result.id}
-                      className={`p-4 cursor-pointer transition-all duration-200 hover:bg-gradient-to-r ${result.color} border-l-4 ${result.borderColor}`}
+                      className={`p-4 cursor-pointer transition-all duration-200 hover:bg-linear-to-r ${result.color} border-l-4 ${result.borderColor}`}
                       onClick={() => handleArticleSelect(result.id)}
                     >
                       <div className="flex items-start space-x-4">
@@ -181,7 +181,7 @@ export function WikiSearch() {
                             <h4 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight">
                               {result.title}
                             </h4>
-                            <span className={`text-xs font-semibold px-2 py-1 rounded-full ${getCategoryColor(result.category)} ml-2 flex-shrink-0`}>
+                            <span className={`text-xs font-semibold px-2 py-1 rounded-full ${getCategoryColor(result.category)} ml-2 shrink-0`}>
                               {result.category}
                             </span>
                           </div>

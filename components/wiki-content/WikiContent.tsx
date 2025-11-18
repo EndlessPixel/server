@@ -120,8 +120,8 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
     return (
       <div className="space-y-8">
         <div className="text-center py-20">
-          <div className="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-12 border-2 border-gray-200 dark:border-gray-700 max-w-2xl mx-auto">
-            <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-12 border-2 border-gray-200 dark:border-gray-700 max-w-2xl mx-auto">
+            <div className="w-24 h-24 bg-linear-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-4xl">📚</span>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">文章未找到</h2>
@@ -130,7 +130,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
             </p>
             <Button
               onClick={() => window.dispatchEvent(new CustomEvent("wiki-article-change", { detail: { articleId: "server-commands" } }))}
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-3 rounded-xl"
+              className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-3 rounded-xl"
             >
               查看新手指南
             </Button>
@@ -147,7 +147,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
       <Separator />
 
       {/* Enhanced Feedback Section */}
-      <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border-2 border-gray-200 dark:border-gray-700">
+      <div className="bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border-2 border-gray-200 dark:border-gray-700">
         <div className="text-center mb-6">
           <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">这篇文章对您有帮助吗？</h3>
           <p className="text-gray-600 dark:text-gray-400">您的反馈将帮助我们改进文档质量</p>
@@ -161,7 +161,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
               onClick={() => handleFeedback("helpful")}
               disabled={feedback === "helpful"}
               className={`px-6 py-3 rounded-xl transition-all duration-200 ${feedback === "helpful"
-                  ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg"
+                  ? "bg-linear-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg"
                   : "border-2 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-950/20"
                 }`}
             >
@@ -173,7 +173,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
               onClick={() => handleFeedback("not-helpful")}
               disabled={feedback === "not-helpful"}
               className={`px-6 py-3 rounded-xl transition-all duration-200 ${feedback === "not-helpful"
-                  ? "bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 shadow-lg"
+                  ? "bg-linear-to-r from-red-500 to-orange-500 text-white border-0 shadow-lg"
                   : "border-2 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/20"
                 }`}
             >
@@ -197,7 +197,7 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
       {/* Article Metadata */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pt-6">
         <div className="flex flex-wrap items-center gap-4">
-          <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0 px-4 py-2 rounded-full text-sm font-semibold">
+          <Badge className="bg-linear-to-r from-blue-500 to-cyan-500 text-white border-0 px-4 py-2 rounded-full text-sm font-semibold">
             {currentArticleData.category}
           </Badge>
 
@@ -221,12 +221,12 @@ export function WikiContent({ currentArticle }: WikiContentProps) {
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2 bg-gradient-to-r from-pink-50 to-red-50 dark:from-pink-950/20 dark:to-red-950/20 px-4 py-2 rounded-full border-2 border-pink-200 dark:border-pink-800">
+            <div className="flex items-center space-x-2 bg-linear-to-r from-pink-50 to-red-50 dark:from-pink-950/20 dark:to-red-950/20 px-4 py-2 rounded-full border-2 border-pink-200 dark:border-pink-800">
               <Heart className="w-4 h-4 text-pink-500" />
               <span className="text-pink-700 dark:text-pink-300 font-semibold">{currentStats.likes}</span>
             </div>
 
-            <div className="flex items-center space-x-2 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 px-4 py-2 rounded-full border-2 border-purple-200 dark:border-purple-800">
+            <div className="flex items-center space-x-2 bg-linear-to-r from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 px-4 py-2 rounded-full border-2 border-purple-200 dark:border-purple-800">
               <Eye className="w-4 h-4 text-purple-500" />
               <span className="text-purple-700 dark:text-purple-300 font-semibold">{currentStats.skim}</span>
             </div>

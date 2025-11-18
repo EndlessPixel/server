@@ -38,13 +38,13 @@ const operatingMonths = differenceInMonths(currentDate, startDate)
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 dark:from-slate-900 dark:via-purple-950/20 dark:to-blue-950/30">
+    <div className="min-h-screen bg-linear-to-r from-slate-50 via-purple-50 to-blue-50 dark:from-slate-900 dark:via-purple-950/20 dark:to-blue-950/30">
       <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section */}
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-900 via-purple-700 to-blue-600 dark:from-slate-100 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-purple-700 to-blue-600 dark:from-slate-100 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent mb-6">
               关于 EndlessPixel
             </h1>
             <div className="max-w-3xl mx-auto">
@@ -56,7 +56,7 @@ export default function AboutPage() {
               {/* Mission Statement */}
               <div className="bg-white/80 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400 flex-shrink-0">
+                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400 shrink-0">
                     <Star className="w-6 h-6" />
                   </div>
                   <div>
@@ -73,7 +73,7 @@ export default function AboutPage() {
 
           {/* Values Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+            <Card className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200 dark:border-blue-800 rounded-xl">
               <CardContent className="p-6">
                 <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
                   <Heart className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -85,7 +85,7 @@ export default function AboutPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200 dark:border-green-800 rounded-xl">
+            <Card className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200 dark:border-green-800 rounded-xl">
               <CardContent className="p-6">
                 <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
                   <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
@@ -97,7 +97,7 @@ export default function AboutPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+            <Card className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200 dark:border-purple-800 rounded-xl">
               <CardContent className="p-6">
                 <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
                   <Globe className="w-5 h-5 text-purple-600 dark:text-purple-400" />
@@ -126,7 +126,7 @@ export default function AboutPage() {
 
           {/* Call to Action */}
           <div className="mt-16 text-center">
-            <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
+            <Card className="bg-linear-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
               <CardContent className="p-8">
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">准备好加入我们了吗？</h2>
                 <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-2xl mx-auto">

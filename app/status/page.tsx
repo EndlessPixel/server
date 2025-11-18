@@ -45,13 +45,13 @@ const SERVICES = [
 
 export default function StatusIndexPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-purple-950/20">
+    <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-purple-950/20">
       <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-900 via-blue-700 to-purple-600 dark:from-slate-100 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-purple-600 dark:from-slate-100 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-6">
               服务状态监控
             </h1>
             <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
@@ -79,7 +79,7 @@ export default function StatusIndexPage() {
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <div className={`p-3 bg-gradient-to-r ${service.color} rounded-xl text-white`}>
+                          <div className={`p-3 bg-linear-to-r ${service.color} rounded-xl text-white`}>
                             <Icon className="w-6 h-6" />
                           </div>
                           <div>
@@ -184,15 +184,15 @@ export default function StatusIndexPage() {
                 </h3>
                 <ul className="space-y-3 text-slate-600 dark:text-slate-400">
                   <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 shrink-0"></div>
                     <span>所有服务状态每 30 秒自动更新一次</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 shrink-0"></div>
                     <span>节点状态包含 CPU、内存、网络流量等详细信息</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 shrink-0"></div>
                     <span>遇到问题可查看详细监控或联系技术支持</span>
                   </li>
                 </ul>

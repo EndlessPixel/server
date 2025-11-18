@@ -5,12 +5,12 @@ import Link from "next/link"
 
 export function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-950/20 dark:to-emerald-950/20 py-24 lg:py-32 overflow-hidden">
+    <section className="relative bg-linear-to-r from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-950/20 dark:to-emerald-950/20 py-24 lg:py-32 overflow-hidden">
       {/* 背景装饰元素 */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-r from-blue-200 to-cyan-200 dark:from-blue-800/20 dark:to-cyan-800/20 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-r from-green-200 to-emerald-200 dark:from-green-800/20 dark:to-emerald-800/20 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-800/20 dark:to-pink-800/20 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-linear-to-r from-blue-200 to-cyan-200 dark:from-blue-800/20 dark:to-cyan-800/20 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-linear-to-r from-green-200 to-emerald-200 dark:from-green-800/20 dark:to-emerald-800/20 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-linear-to-r from-purple-200 to-pink-200 dark:from-purple-800/20 dark:to-pink-800/20 rounded-full blur-3xl opacity-20"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,7 +24,7 @@ export function HeroSection() {
 
           {/* 主标题 */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-slate-900 via-blue-700 to-emerald-600 dark:from-slate-100 dark:via-blue-400 dark:to-emerald-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-slate-900 via-blue-700 to-emerald-600 dark:from-slate-100 dark:via-blue-400 dark:to-emerald-400 bg-clip-text text-transparent">
               无尽像素
             </span>
             <br />
@@ -55,7 +55,7 @@ export function HeroSection() {
           {/* 行动按钮 */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
             <Link href="/status">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Button size="lg" className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                 <Server className="w-5 h-5 mr-2" />
                 查看服务器状态
                 <div className="ml-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>

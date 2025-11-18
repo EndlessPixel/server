@@ -258,7 +258,7 @@ export function DownloadSection() {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
           下载模组包
         </h1>
         <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
@@ -379,7 +379,7 @@ export function DownloadSection() {
 
         <TabsContent value="main" className="space-y-4 mt-6">
           {/* Main Branch Info */}
-          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+          <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
             <div className="flex items-start gap-4">
               <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
                 <Star className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -427,7 +427,7 @@ export function DownloadSection() {
 
         <TabsContent value="real" className="space-y-4 mt-6">
           {/* Real Branch Info */}
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
+          <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
             <div className="flex items-start gap-4">
               <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
                 <Shield className="w-6 h-6 text-purple-600 dark:text-purple-400" />
@@ -502,15 +502,15 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
       relative overflow-hidden transition-all duration-300 hover:shadow-lg
       ${release.isLatest
         ? release.branch === "main"
-          ? "border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 dark:border-green-800"
-          : "border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 dark:border-purple-800"
+          ? "border-green-200 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 dark:border-green-800"
+          : "border-purple-200 bg-linear-to-r from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 dark:border-purple-800"
         : "bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm border-slate-200 dark:border-slate-700"
       }
     `}>
       {/* Latest Version Ribbon */}
       {release.isLatest && (
         <div className="absolute top-4 right-4">
-          <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1 shadow-lg flex items-center gap-1">
+          <Badge className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-3 py-1 shadow-lg flex items-center gap-1">
             <Zap className="w-3 h-3" />
             最新版本
           </Badge>
@@ -678,7 +678,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
           </Button>
 
           {showChangelog && (
-            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 prose prose-sm max-w-none dark:prose-invert break-words">
+            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 prose prose-sm max-w-none dark:prose-invert wrap-break-word">
               <ReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}
