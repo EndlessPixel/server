@@ -12,7 +12,7 @@ import "./globals.css";
 const DOMAIN = "https://ep.endlesspixel.fun";
 const LOGO = "https://ep.endlesspixel.fun/EndlessPixel.png"; // 对应 public/EndlessPixel.png
 const FAVICON_ICO = "/icon.ico"; // 对应 public/icon.ico（已包含多尺寸）
-const OG_IMAGE = "https://ep.endlesspixel.fun/EndlessPixel.png"; // 专用OG图
+const OG_IMAGE = "https://ep.endlesspixel.fun/banner.png"; // 专用OG图
 const DISCORD_INVITE = "https://discord.gg/k63hRWt3fF"; // 你的Discord邀请链接
 const BRAND_NAME = "EndlessPixel Studio"; // 修正品牌名：Studio 而非 Team
 
@@ -102,12 +102,12 @@ export const metadata: Metadata = {
       { url: FAVICON_ICO, sizes: "16x16 32x32 48x48 64x64 128x128 256x256", type: "image/x-icon" },
     ],
     apple: [
-      { url: "/EndlessPixel.png", sizes: "180x180", type: "image/png" },
+      { url: "/banner.png", sizes: "180x180", type: "image/png" },
     ],
     shortcut: FAVICON_ICO, // 强制快捷方式使用你的icon.ico
     other: {
       rel: "mask-icon",
-      url: "/EndlessPixel.png",
+      url: "/banner.png",
       color: "#0a0a0a",
     },
   },
