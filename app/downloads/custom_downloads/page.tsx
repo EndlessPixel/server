@@ -1,7 +1,6 @@
-// app/downloads/custom_downloads/page.tsx
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, Suspense } from "react"; // 新增 Suspense 导入
 import { useSearchParams, useRouter } from "next/navigation";
 import { LauncherDownloadPage } from "@/components/LauncherDownloadPage";
 import {
@@ -23,7 +22,6 @@ import {
     ExternalLink,
     Zap,
     Globe,
-    Shield,
     Clock,
     CheckCircle2,
     Share2,
@@ -34,6 +32,17 @@ import { Footer } from "@/components/footer";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const dynamic = 'force-dynamic'
+
+// 加载状态组件（新增）
+const Loading = () => (
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-slate-50 via-blue-50/30 to-cyan-50/20 dark:from-slate-900 dark:via-blue-950/20">
+        <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"
+        />
+    </div>
+);
 
 // 修复 variants 类型定义
 const containerVariants = {
@@ -58,7 +67,8 @@ const itemVariants = {
     }
 };
 
-export default function CustomDownloadsPage() {
+// 核心内容组件（抽取原有逻辑）
+const CustomDownloadsContent = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
