@@ -1,92 +1,115 @@
-# EndlessPixel 官方网站
+# EndlessPixel Web
 
-[![Next.js](https://img.shields.io/badge/Next.js-13.0+-black?style=flat&logo=next.js)](https://nextjs.org/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Next.js](https://img.shields.io/badge/Next.js-15+-000?logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178c6?logo=typescript)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3+-06b6d4?logo=tailwindcss)](https://tailwindcss.com)
+[![License](https://img.shields.io/badge/License-AGPL_v3-007098)](LICENSE)
 
-EndlessPixel 服务器的官方网站源代码，基于 Next.js 构建。
+简体中文 | [English](./README.en.md)
+
+EndlessPixel 官方网站与启动器分发平台，基于 Next.js App Router + TypeScript + Tailwind CSS 构建。
+
+## ✨ 特性
+
+- ⚡ 全栈 React 框架 Next.js 15，支持 SSR/SSG/ISR  
+- 🎨 Tailwind CSS 3 原子化样式，暗色模式开箱即用  
+- 🔐 GitHub OAuth 一键登录  
+- 📦 60+ 启动器与整合包高速下载，支持自定义镜像  
+- 🧪 严格 TypeScript 类型检查，ESLint + Prettier 自动化  
+- 🌍 国际化就绪（i18n 路由已预埋）  
+- 📱 响应式布局，PWA 离线支持（Workbox 自动生成）
 
 ## 🚀 快速开始
 
-### 环境要求
+### 前置条件
 
-- **Node.js** 18.0 或更高版本
-- **npm** 9.0 或更高版本
+- Node.js ≥ 18  
+- npm ≥ 9（推荐 pnpm 8）
 
 ### 本地开发
 
-1. **安装依赖**
-   ```bash
-   npm install
-   ```
-
-2. **启动开发服务器**
-   ```bash
-   npm run dev
-   ```
-
-3. **访问项目**
-   打开浏览器访问 [http://localhost:3000](http://localhost:3000)
-
-### 其他命令
-
 ```bash
-# 构建生产版本
-npm run build
+# 1. 克隆仓库
+git clone https://github.com/EndlessPixel/server.git
+cd server
 
-# 启动生产服务器
-npm start
+# 2. 安装依赖
+npm install
+# or pnpm install
 
-# 运行代码检查
-npm run lint
+# 3. 启动开发服务器
+npm run dev
+# or pnpm dev
 ```
 
-## 📋 项目概况
+浏览器访问 [http://localhost:3000](http://localhost:3000) 即可实时预览。
 
-- **框架**: Next.js 13+
-- **许可证**: GNU General Public License v3.0
-- **状态**: 积极维护中
+### 常用命令
 
-## 🤝 参与贡献
+| 命令 | 说明 |
+| ---- | ---- |
+| `npm run dev` | 开发服务器（热更新） |
+| `npm run build` | 构建生产版本 |
+| `npm start` | 启动生产服务器 |
+| `npm run lint` | ESLint 检查 |
+| `npm run lint:fix` | 自动修复 ESLint 问题 |
+| `npm run type-check` | TypeScript 类型检查 |
 
-我们欢迎并感谢所有形式的贡献！
+## 📁 项目结构
 
-### 报告问题
+```
+.
+├─ app/                 // Next.js App Router
+│  ├─ (auth)/           // 登录、回调
+│  ├─ (main)/           // 官网页面
+│  ├─ api/              // API 路由
+│  └─ globals.css       // 全局样式
+├─ components/          // 通用组件
+├─ hooks/               // 自定义 Hooks
+├─ lib/                 // 工具函数与配置
+├─ public/              // 静态资源
+└─ styles/              // 遗留样式（逐步迁移）
+```
 
-在提交问题前，请：
+## 🧩 环境变量
 
-1. 搜索[现有 Issues](../../issues) 避免重复
-2. 提供详细的问题描述，包括：
-   - 环境信息（操作系统、Node.js 版本、浏览器）
-   - 重现步骤
-   - 预期与实际结果
-   - 相关日志或截图
+新建 `.env.local` 并填入：
 
-### 提交代码
+```bash
+# GitHub OAuth
+GITHUB_ID=your_github_oauth_app_id
+GITHUB_SECRET=your_github_oauth_app_secret
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=openssl_rand_base64_32
+```
 
-1. Fork 本仓库
-2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m 'Add some amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
-5. 开启 Pull Request
+完整示例见 `.env.example`
 
-### 贡献指南
+## 🤝 贡献指南
 
-- 保持代码风格与项目一致
-- 为新增功能添加适当的注释和文档
-- 确保代码通过所有测试
-- 更新相关文档
+1. Fork 本仓库  
+2. 创建特性分支：`git checkout -b feat/xxx`  
+3. 提交 Commit：`git commit -m "feat: 新增 xxx"`（遵循 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/v1.0.0/)）  
+4. 推送分支并提交 Pull Request  
+5. CI 通过 & Code Review 合并
+
+### 代码规范
+
+- 使用 TypeScript 严格模式  
+- 组件名 PascalCase，文件名小写连字符  
+- 样式优先使用 Tailwind CSS，避免行内样式  
+- 提交前执行 `npm run lint && npm run type-check`
 
 ## 📄 许可证
 
-本项目基于 GNU GPLv3 许可证开源 - 查看 [LICENSE](LICENSE) 文件了解详情。
+[GNU Affero General Public License v3.0](./LICENSE)  
+允许商业使用、修改、再发布，但修改后的网络服务必须开源。
 
-## ❓ 获取帮助
+## 💬 联系我们
 
-- 查看 [文档](docs/)
-- 搜索 [现有问题](../../issues)
-- 创建 [新 Issue](../../issues/new)
+- 问题与建议：[新建 Issue](https://github.com/EndlessPixel/server/issues/new/choose)  
+- 讨论区：[GitHub Discussions](https://github.com/EndlessPixel/server/discussions)
 
 ---
 
-感谢您对 EndlessPixel 项目的关注与支持！
+Star ⭐ 与 Watch 👀 是对我们最大的支持！
