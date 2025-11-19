@@ -31,9 +31,10 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { motion, AnimatePresence } from "framer-motion";
 
-export const dynamic = 'force-dynamic'
+// 修正：将 dynamic 从函数改为字符串值
+export const dynamic = 'force-dynamic'; // 注意这里是字符串，不是函数
 
-// 加载状态组件（新增）
+// 加载状态组件
 const Loading = () => (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-slate-50 via-blue-50/30 to-cyan-50/20 dark:from-slate-900 dark:via-blue-950/20">
         <motion.div
@@ -66,6 +67,14 @@ const itemVariants = {
         }
     }
 };
+
+export default function CustomDownloadsPage() {
+    return (
+        <Suspense fallback={<Loading />}>
+            <CustomDownloadsContent />
+        </Suspense>
+    );
+}
 
 // 核心内容组件（抽取原有逻辑）
 const CustomDownloadsContent = () => {
@@ -102,10 +111,10 @@ const CustomDownloadsContent = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!inputUrl.trim()) return;
-        
+
         setIsLoading(true);
         const info = parseGithubUrl(inputUrl);
-        
+
         if (info.isValid) {
             startTransition(() => {
                 router.push(
@@ -182,7 +191,7 @@ const CustomDownloadsContent = () => {
 
                 <div className="container mx-auto px-6 py-12 relative z-10">
                     {/* 头部 */}
-                    <motion.div 
+                    <motion.div
                         className="text-center mb-16"
                         initial={{ opacity: 0, y: -30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -198,7 +207,7 @@ const CustomDownloadsContent = () => {
                                 自定义GitHub仓库下载
                             </Badge>
                         </motion.div>
-                        <motion.h1 
+                        <motion.h1
                             className="text-5xl md:text-6xl font-bold bg-linear-to-r from-slate-900 via-blue-800 to-cyan-700 dark:from-slate-100 dark:via-blue-300 dark:to-cyan-400 bg-clip-text text-transparent mb-6 mt-6 leading-tight"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -206,7 +215,7 @@ const CustomDownloadsContent = () => {
                         >
                             生成专属下载页面
                         </motion.h1>
-                        <motion.p 
+                        <motion.p
                             className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -216,7 +225,7 @@ const CustomDownloadsContent = () => {
                         </motion.p>
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         className="max-w-5xl mx-auto"
                         variants={containerVariants}
                         initial="hidden"
@@ -228,8 +237,8 @@ const CustomDownloadsContent = () => {
                                 <CardHeader className="text-center pb-6 pt-12 relative">
                                     {/* 装饰性背景 */}
                                     <div className="absolute top-0 left-0 right-0 h-2 bg-linear-to-r from-blue-500 via-cyan-500 to-emerald-500"></div>
-                                    
-                                    <motion.div 
+
+                                    <motion.div
                                         className="w-20 h-20 bg-linear-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/25"
                                         whileHover={{ scale: 1.05, rotate: 5 }}
                                         transition={{ type: "spring", stiffness: 300 }}
@@ -265,11 +274,10 @@ const CustomDownloadsContent = () => {
                                                         onChange={(e) => setInputUrl(e.target.value)}
                                                         onFocus={() => setIsFocused(true)}
                                                         onBlur={() => setIsFocused(false)}
-                                                        className={`text-lg py-4 px-6 border-2 transition-all duration-300 rounded-2xl ${
-                                                            isFocused 
-                                                                ? 'border-blue-500 shadow-lg shadow-blue-500/20 dark:shadow-blue-500/10' 
-                                                                : 'border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500'
-                                                        } bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm`}
+                                                        className={`text-lg py-4 px-6 border-2 transition-all duration-300 rounded-2xl ${isFocused
+                                                            ? 'border-blue-500 shadow-lg shadow-blue-500/20 dark:shadow-blue-500/10'
+                                                            : 'border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500'
+                                                            } bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm`}
                                                         required
                                                     />
                                                 </motion.div>
@@ -293,7 +301,7 @@ const CustomDownloadsContent = () => {
                                                                 生成中...
                                                             </motion.div>
                                                         ) : (
-                                                            <motion.div 
+                                                            <motion.div
                                                                 className="flex items-center gap-3"
                                                                 whileHover={{ x: 5 }}
                                                                 transition={{ type: "spring", stiffness: 400 }}
@@ -310,7 +318,7 @@ const CustomDownloadsContent = () => {
                                     </form>
 
                                     {/* 支持的URL格式 */}
-                                    <motion.div 
+                                    <motion.div
                                         className="bg-linear-to-r from-slate-50/80 to-blue-50/50 dark:from-slate-800/40 dark:to-blue-900/20 rounded-2xl p-6 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm"
                                         whileHover={{ y: -2 }}
                                         transition={{ type: "spring", stiffness: 300 }}
@@ -363,7 +371,7 @@ const CustomDownloadsContent = () => {
                                             <motion.div
                                                 key={index}
                                                 variants={itemVariants}
-                                                whileHover={{ 
+                                                whileHover={{
                                                     y: -8,
                                                     scale: 1.02,
                                                     transition: { type: "spring", stiffness: 300 }
@@ -384,7 +392,7 @@ const CustomDownloadsContent = () => {
                                     </div>
 
                                     {/* 分享按钮 */}
-                                    <motion.div 
+                                    <motion.div
                                         className="flex justify-center pt-4"
                                         whileHover={{ scale: 1.05 }}
                                     >
@@ -425,11 +433,11 @@ const CustomDownloadsContent = () => {
                         </motion.div>
 
                         {/* 热门项目快捷入口 */}
-                        <motion.div 
+                        <motion.div
                             className="mt-12"
                             variants={itemVariants}
                         >
-                            <motion.h3 
+                            <motion.h3
                                 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -460,7 +468,7 @@ const CustomDownloadsContent = () => {
                                 ].map((proj, i) => (
                                     <motion.div
                                         key={i}
-                                        whileHover={{ 
+                                        whileHover={{
                                             y: -6,
                                             scale: 1.02,
                                             transition: { type: "spring", stiffness: 300 }
