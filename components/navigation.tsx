@@ -1,241 +1,521 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState, useEffect } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
-import { Menu, X, Download, Activity, BookOpen, Users, Sparkles, Home } from "lucide-react"
+import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, Download, Activity, BookOpen, Users, Sparkles, Home, ChevronRight, LogOut, User, Search } from "lucide-react";
+
+// 工具函数：处理面包屑标签格式化
+const formatBreadcrumbLabel = (label: string) => {
+  if (label === "") return "首页";
+  // 首字母大写，替换连字符为空格
+  return label.replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+};
+
+// 创建 motion 版本的 Link 组件
+const MotionLink = motion(Link);
 
 function ExplorerBar() {
-  const router = useRouter()
-  const pathname = usePathname()
+  const router = useRouter();
+  const pathname = usePathname();
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // prefer router.asPath if available (pages router compatibility), fallback to usePathname
-  const asPath = (router as any)?.asPath ?? pathname ?? "/"
+  // 兼容 Pages Router 和 App Router
+  const asPath = (router as any)?.asPath ?? pathname ?? "/";
 
-  const [value, setValue] = useState(asPath)
+  const [value, setValue] = useState(asPath);
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
-    setValue(asPath)
-  }, [asPath])
+    setValue(asPath);
+  }, [asPath]);
 
-  const parts = (asPath || "/").split("/").filter(Boolean)
-  const crumbs: Array<{ href: string; label: string }> = [{ href: "/", label: "/" }]
-  let acc = ""
+  // 生成面包屑
+  const parts = (asPath || "/").split("/").filter(Boolean);
+  const crumbs: Array<{ href: string; label: string }> = [
+    { href: "/", label: "首页" },
+  ];
+  
+  let acc = "";
   parts.forEach((p: string) => {
-    acc += `/${p}`
-    crumbs.push({ href: acc, label: p })
-  })
+    acc += `/${p}`;
+    crumbs.push({ href: acc, label: formatBreadcrumbLabel(p) });
+  });
 
+  // 处理回车导航
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      e.preventDefault()
-      const target = value.trim() || "/"
-      router.push(target)
+      e.preventDefault();
+      const target = value.trim() || "/";
+      router.push(target);
     }
-  }
+  };
+
+  // 点击面包屑项时聚焦地址栏
+  const handleCrumbClick = (href: string) => {
+    router.push(href);
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="h-12 flex items-center gap-4">
-        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 overflow-hidden">
+      <div className="h-14 flex items-center gap-4">
+        {/* 面包屑导航 */}
+        <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300 overflow-hidden">
           {crumbs.map((c, i) => (
-            <div
+            <motion.div
               key={c.href}
-              onClick={() => router.push(c.href)}
-              className={`flex items-center gap-2 ${i === crumbs.length - 1 ? 'font-medium text-slate-900 dark:text-white' : 'cursor-pointer hover:text-slate-900 dark:hover:text-white'}`}
+              onClick={() => handleCrumbClick(c.href)}
+              className={`flex items-center gap-1.5 transition-all duration-300 ${
+                i === crumbs.length - 1
+                  ? "font-medium text-slate-900 dark:text-white cursor-default"
+                  : "cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
+              }`}
+              whileHover={{ scale: 1.03 }}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
             >
-              <span className="truncate max-w-56">{c.label}</span>
-              {i !== crumbs.length - 1 && <span className="text-slate-400 dark:text-slate-500">/</span>}
-            </div>
+              <span className="truncate max-w-48">{c.label}</span>
+              {i !== crumbs.length - 1 && (
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+              )}
+            </motion.div>
           ))}
         </div>
 
-        <input
-          aria-label="资源地址栏"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={onKeyDown}
-          className="ml-2 px-3 py-1 w-full max-w-lg text-sm rounded-lg bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none"
-          title="按 Enter 导航到输入路径"
-        />
+        {/* 地址栏 */}
+        <motion.div
+          className={`ml-2 flex-1 relative transition-all duration-300 ${
+            isFocused ? "scale-[1.01]" : ""
+          }`}
+        >
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+          <input
+            ref={inputRef}
+            aria-label="资源地址栏"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={onKeyDown}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className={`pl-10 pr-4 py-2 w-full max-w-2xl text-sm rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-300 dark:focus:border-blue-600 shadow-sm transition-all duration-300`}
+            title="按 Enter 导航到输入路径"
+            placeholder="输入路径导航..."
+          />
+          {/* 聚焦状态下的渐变光晕 */}
+          <motion.div
+            className="absolute inset-0 rounded-xl pointer-events-none opacity-0 blur-md"
+            style={{
+              background: "linear-gradient(90deg, rgba(59,130,246,0.2), rgba(14,165,233,0.2))",
+            }}
+            animate={{ opacity: isFocused ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+          />
+        </motion.div>
       </div>
     </div>
-  )
+  );
 }
 
 export function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeNavItem, setActiveNavItem] = useState("");
+  const [user, setUser] = useState<{ login?: string; name?: string; avatar_url?: string } | null>(null);
+  
+  const router = useRouter();
+  const pathname = usePathname();
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  const router = useRouter()
-  const pathname = usePathname()
-
+  // 导航项配置
   const navItems = [
     { href: "/", label: "首页", icon: Home, description: "返回主页" },
     { href: "/downloads", label: "资源下载", icon: Download, description: "模组包下载" },
     { href: "/status", label: "状态查询", icon: Activity, description: "服务器状态" },
     { href: "/wiki", label: "Wiki", icon: BookOpen, description: "游戏百科" },
     { href: "/about", label: "关于我们", icon: Users, description: "团队介绍" },
-  ]
+  ];
 
-  const [user, setUser] = useState<{ login?: string; name?: string; avatar_url?: string } | null>(null)
+  // 检测当前活跃导航项
+  useEffect(() => {
+    if (!pathname) return;
+    
+    const segments = pathname.split("/").filter(Boolean);
+    const activeRoot = segments.length > 0 ? `/${segments[0]}` : "/";
+    const activeItem = navItems.find((item) => item.href === activeRoot);
+    
+    setActiveNavItem(activeItem?.href || "/");
+  }, [pathname, navItems]);
 
+  // 加载用户信息
   useEffect(() => {
     try {
-      const raw = localStorage.getItem("ep_user")
-      if (raw) setUser(JSON.parse(raw))
+      const raw = localStorage.getItem("ep_user");
+      if (raw) setUser(JSON.parse(raw));
     } catch (e) {
-      // ignore
+      // 忽略解析错误
     }
-  }, [])
+  }, []);
+
+  // 点击外部关闭移动端菜单
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node) && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMenuOpen]);
+
+  // 登出处理
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem("ep_user");
+    } catch (e) {}
+    window.location.reload();
+  };
 
   return (
-    <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 sticky top-0 z-50 shadow-md transition-all duration-300 hover:shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link
+          {/* Logo 区域 */}
+          <MotionLink
             href="/"
-            className="flex items-center space-x-3 py-2 px-3 rounded-xl transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-800 group">
-            <div className="flex flex-col">
-              <img src="/EndlessPixel.png" alt="EndlessPixel Logo" className="h-6 w-auto" />
+            className="flex items-center space-x-2 py-2 px-3 rounded-xl transition-all duration-300 hover:bg-slate-100/70 dark:hover:bg-slate-800/70 group"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="relative">
+              {/* Logo 背景渐变光晕 */}
+              <motion.div
+                className="absolute inset-0 rounded-lg bg-linear-to-r from-blue-400/20 to-cyan-400/20 blur-md"
+                animate={{ opacity: [0.4, 0.7, 0.4] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              {/* Logo 图片 */}
+              <img 
+                src="/EndlessPixel.png" 
+                alt="EndlessPixel Logo" 
+                className="h-8 w-auto relative z-10" 
+              />
             </div>
-          </Link>
+          </MotionLink>
 
-          {/* Desktop Navigation */}
+          {/* 桌面端导航 */}
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
-              const Icon = item.icon
-              const segments = (pathname || "/").split("/").filter(Boolean)
-              const activeRoot = segments.length > 0 ? `/${segments[0]}` : "/"
-              const isActive = activeRoot === item.href
+              const Icon = item.icon;
+              const isActive = activeNavItem === item.href;
 
               return (
-                <Link
+                <MotionLink
                   key={item.href}
                   href={item.href}
-                  className={`flex flex-col items-center space-y-1 text-slate-600 dark:text-slate-400 transition-all duration-200 py-2 px-4 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 group relative min-w-20 ${isActive ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800' : 'hover:text-slate-900 dark:hover:text-white'}`}
+                  className={`flex flex-col items-center space-y-1 px-4 py-3 rounded-xl transition-all duration-300 min-w-20 ${
+                    isActive
+                      ? "text-blue-600 dark:text-blue-400 bg-blue-50/70 dark:bg-blue-900/20"
+                      : "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/50"
+                  }`}
                   title={item.description}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-medium">{item.label}</span>
+                  {/* 导航图标 */}
+                  <motion.div
+                    className={`p-1.5 rounded-lg ${
+                      isActive ? "bg-blue-100/80 dark:bg-blue-900/30" : ""
+                    }`}
+                  >
+                    <Icon 
+                      className={`w-5 h-5 transition-transform duration-300 ${
+                        isActive ? "scale-110" : "group-hover:scale-110"
+                      }`} 
+                    />
+                  </motion.div>
+                  {/* 导航文字 */}
+                  <span className="text-sm font-medium">{item.label}</span>
 
-                  {/* Active indicator */}
-                  <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full transition-colors duration-200 ${isActive ? 'bg-blue-500' : 'bg-transparent group-hover:bg-blue-500'}`}></div>
-                </Link>
-              )
+                  {/* 活性状态指示器 */}
+                  <motion.div
+                    className={`absolute bottom-2 left-1/2 transform -translate-x-1/2 h-1 rounded-full bg-blue-500 transition-all duration-300 ${
+                      isActive ? "w-6" : "w-0"
+                    }`}
+                    animate={{ 
+                      width: isActive ? "24px" : "0px",
+                      opacity: isActive ? 1 : 0
+                    }}
+                  />
+                </MotionLink>
+              );
             })}
-            {/* Separator */}
-            <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2"></div>
 
-            {/* 如果检测到已登录用户，显示头像/姓名与登出；否则显示登录按钮 */}
-            {user ? (
-              <div className="flex items-center gap-2">
-                <Link href="/users/home" className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
-                  {user.avatar_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={user.avatar_url} alt="avatar" className="w-8 h-8 rounded-full" />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center">EP</div>
-                  )}
-                  <span className="hidden sm:inline">{user.name || user.login}</span>
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    try {
-                      localStorage.removeItem("ep_user")
-                    } catch (e) { }
-                    // reload to reflect changes
-                    window.location.reload()
-                  }}
-                  className="text-sm"
+            {/* 分隔线 */}
+            <div className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2"></div>
+
+            {/* 用户区域 */}
+            <motion.div 
+              className="flex items-center gap-2"
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              {user ? (
+                // 已登录状态
+                <motion.div 
+                  className="flex items-center gap-2 group"
+                  whileHover={{ scale: 1.02 }}
                 >
-                  登出
-                </Button>
-              </div>
-            ) : (
-              <Button variant="outline" size="sm" className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 py-2 px-4 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 group relative min-w-20">
-                <a href="/users/login" className="flex items-center justify-center h-full w-full">
-                  登录
-                </a>
-              </Button>
-            )}
+                  {/* 用户头像 */}
+                  <motion.div
+                    className="relative cursor-pointer"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <motion.div
+                      className="absolute inset-0 rounded-full bg-linear-to-r from-blue-400/20 to-purple-400/20 blur-md"
+                      animate={{ opacity: [0.3, 0.6, 0.3] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                    {user.avatar_url ? (
+                      <img
+                        src={user.avatar_url}
+                        alt="用户头像"
+                        className="w-9 h-9 rounded-full border-2 border-white dark:border-slate-800 shadow-sm relative z-10"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-medium border-2 border-white dark:border-slate-800 shadow-sm relative z-10">
+                        {user.name?.charAt(0) || user.login?.charAt(0) || "E"}
+                      </div>
+                    )}
+                  </motion.div>
 
-            {/* Separator */}
-            <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2"></div>
+                  {/* 用户名（仅桌面显示） */}
+                  <Link href="/users/home">
+                    <span className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      {user.name || user.login}
+                    </span>
+                  </Link>
 
-            {/* (Explorer removed from left nav - moved below as full-width ExplorerBar) */}
+                  {/* 登出按钮 */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="p-1.5 rounded-full text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                  >
+                    <motion.span
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <LogOut className="w-4.5 h-4.5" />
+                    </motion.span>
+                  </Button>
+                </motion.div>
+              ) : (
+                // 未登录状态
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-md hover:shadow-lg transition-all duration-300"
+                  >
+                    <Link href="/users/login" className="flex items-center gap-1.5">
+                      <User className="w-4 h-4" />
+                      <span>登录</span>
+                    </Link>
+                  </Button>
+                </motion.div>
+              )}
 
-            {/* Theme Toggle */}
-            <div className="pl-2">
-              <ThemeToggle />
-            </div>
+              {/* 分隔线 */}
+              <div className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2"></div>
+
+              {/* 主题切换按钮 */}
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <div className="pl-1">
+                  <ThemeToggle />
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
 
-          {/* Mobile menu button */}
+          {/* 移动端菜单按钮 */}
           <div className="md:hidden flex items-center space-x-2">
-            <ThemeToggle />
+            {/* 主题切换 */}
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <ThemeToggle />
+            </motion.div>
+            
+            {/* 菜单按钮 */}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="h-11 w-11 p-0 relative"
+              className="h-11 w-11 p-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label={isMenuOpen ? "关闭菜单" : "打开菜单"}
             >
-              {isMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
+              <motion.span
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                {isMenuOpen ? (
+                  <X className="w-5.5 h-5.5 text-slate-700 dark:text-slate-300" />
+                ) : (
+                  <Menu className="w-5.5 h-5.5 text-slate-700 dark:text-slate-300" />
+                )}
+              </motion.span>
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800 shadow-xl">
-            <div className="px-4 pt-2 pb-6 space-y-1">
-              {navItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-center space-x-4 px-4 py-4 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all duration-200 active:bg-slate-200 dark:active:bg-slate-700"
-                    onClick={() => setIsMenuOpen(false)}
+        {/* 移动端菜单 */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              ref={menuRef}
+              className="md:hidden absolute top-17 left-0 right-0 bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-xl z-40"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <div className="px-4 pt-3 pb-6 space-y-1">
+                {/* 移动端用户信息（顶部） */}
+                {user && (
+                  <motion.div
+                    className="flex items-center gap-3 px-4 py-3 mb-4 border-b border-slate-200 dark:border-slate-800"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
                   >
-                    <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                      <Icon className="w-5 h-5" />
-                    </div>
+                    {user.avatar_url ? (
+                      <img
+                        src={user.avatar_url}
+                        alt="用户头像"
+                        className="w-10 h-10 rounded-full border-2 border-blue-100 dark:border-blue-900/30"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-medium">
+                        {user.name?.charAt(0) || user.login?.charAt(0) || "E"}
+                      </div>
+                    )}
                     <div className="flex-1">
-                      <span className="text-base font-medium">{item.label}</span>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        {item.description}
+                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                        {user.name || user.login}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        已登录
                       </p>
                     </div>
-                    <Sparkles className="w-4 h-4 text-slate-300 dark:text-slate-600" />
-                  </Link>
-                )
-              })}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    >
+                      <LogOut className="w-4 h-4 mr-1" />
+                      <span>登出</span>
+                    </Button>
+                  </motion.div>
+                )}
 
-              {/* Mobile Footer */}
-              <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
-                <div className="text-center text-xs text-slate-500 dark:text-slate-400 px-4">
-                  <p>EndlessPixel Minecraft Server</p>
-                  <p className="mt-1">由热爱创造，为玩家而生</p>
-                </div>
+                {/* 移动端导航项 */}
+                {navItems.map((item, index) => {
+                  const Icon = item.icon;
+                  const isActive = activeNavItem === item.href;
+
+                  return (
+                    <MotionLink
+                      key={item.href}
+                      href={item.href}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        isActive
+                          ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                          : "text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 * index }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className={`p-2 rounded-lg ${
+                        isActive 
+                          ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" 
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                      }`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-base font-medium">{item.label}</span>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          {item.description}
+                        </p>
+                      </div>
+                      <Sparkles className="w-4 h-4 text-slate-300 dark:text-slate-600 ml-auto" />
+                    </MotionLink>
+                  );
+                })}
+
+                {/* 移动端未登录按钮 */}
+                {!user && (
+                  <motion.div
+                    className="px-4 pt-2"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <Button
+                      variant="default"
+                      className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
+                    >
+                      <Link href="/users/login" className="flex items-center justify-center gap-2 w-full">
+                        <User className="w-4 h-4" />
+                        <span>登录 / 注册</span>
+                      </Link>
+                    </Button>
+                  </motion.div>
+                )}
+
+                {/* 移动端底部信息 */}
+                <motion.div
+                  className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <div className="text-center text-xs text-slate-500 dark:text-slate-400 px-4">
+                    <p>EndlessPixel Minecraft Server</p>
+                    <p className="mt-1">版本 1.21.10 | 由热爱创造，为玩家而生</p>
+                  </div>
+                </motion.div>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* ✅ 新增 ExplorerBar 地址栏 - 全宽、仅桌面显示 */}
-      <div className="hidden md:block border-t border-slate-200 dark:border-slate-800">
+      {/* 桌面端地址栏（ExplorerBar） */}
+      <div className="hidden md:block border-t border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-all duration-300">
         <ExplorerBar />
       </div>
     </nav>
-  )
+  );
 }
