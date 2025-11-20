@@ -508,7 +508,7 @@ export function DownloadSection({
                     <div className="text-xs text-slate-500 dark:text-slate-400">Stars</div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <GitBranch className="w-4 h-4 text-blue-500" />
                   <div>
@@ -518,7 +518,7 @@ export function DownloadSection({
                     <div className="text-xs text-slate-500 dark:text-slate-400">Forks</div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-green-500" />
                   <div>
@@ -528,7 +528,7 @@ export function DownloadSection({
                     <div className="text-xs text-slate-500 dark:text-slate-400">Watchers</div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-purple-500" />
                   <div>
@@ -539,7 +539,7 @@ export function DownloadSection({
                   </div>
                 </div>
               </div>
-              
+
               {repoInfo.archived && (
                 <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
                   <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
@@ -548,7 +548,7 @@ export function DownloadSection({
                   </div>
                 </div>
               )}
-              
+
               {repoInfo.topics.length > 0 && (
                 <div className="mt-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -717,9 +717,9 @@ export function DownloadSection({
           ) : (
             <div className="space-y-4">
               {filteredReleases.map((release) => (
-                <ReleaseCard 
-                  key={release.version} 
-                  release={release} 
+                <ReleaseCard
+                  key={release.version}
+                  release={release}
                   isExpanded={expandedFiles.has(release.version)}
                   onToggleExpand={() => toggleFileExpansion(release.version)}
                 />
@@ -779,7 +779,11 @@ export function DownloadSection({
       {/* Footer Note */}
       <div className="text-center text-sm text-slate-500 dark:text-slate-400 mt-8 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-slate-200 dark:border-slate-700">
         <p>
-          加速下载由 <a href="https://gh-proxy.com/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com</a> 提供。
+          加速下载由 
+          <a href="https://gh-proxy.com/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com</a>
+          <a href="https://gh.imixc.top/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh.imixc.top</a>
+          <a href="https://gh.jasonzeng.dev/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh.jasonzeng.dev</a>
+          提供。
           如遇下载问题，请尝试不同的镜像链接。
         </p>
       </div>
@@ -931,7 +935,7 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
 
                   {mirrors.some(m => m.tip) && (
                     <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded border border-amber-200 dark:border-amber-800">
-                      ⚠️ 香港线路大文件不建议使用
+                      ⚠️ 香港线路下载大文件时不建议使用
                     </div>
                   )}
 
@@ -956,7 +960,7 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
               </div>
             )
           })}
-          
+
           {/* Expand/Collapse Button */}
           {hasManyFiles && (
             <Button
