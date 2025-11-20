@@ -4,7 +4,7 @@ import { TeamSection } from "@/components/team-section"
 import { LicenseSection } from "@/components/license-section"
 import { ContactSection } from "@/components/contact-section"
 import { Card, CardContent } from "@/components/ui/card"
-import { Server, Heart, Users, Calendar, Zap, Globe, Star, Rocket } from "lucide-react"
+import { Server, Heart, Users, Globe, Star } from "lucide-react"
 import type { Metadata } from "next"
 import { differenceInMonths } from "date-fns"
 
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
 }
 
-const startDate = new Date(2024, 8, 16) // 2024/09/16
+const startDate = new Date(2024, 9, 16) // 2024/09/16
 const currentDate = new Date()
 const operatingMonths = differenceInMonths(currentDate, startDate)
 
