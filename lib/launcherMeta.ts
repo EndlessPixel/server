@@ -83,7 +83,7 @@ export const launcherRepos = [
   { key: "polymcoffline", owner: "EvilToasterDBU", repo: "PolyMC-Offline", displayName: "PolyMC Offline", },
   { key: "xelo", owner: "Xelo-Client", repo: "Xelo-Client", displayName: "Xelo Client", },
   /*
-  { key: "", owner:"", repo: "", displayName: "", archived: false, archivedDate: "",},
+  { key: "", owner:"", repo: "", displayName: "", },
   ...
   
   > > > 如需PR扩展，请复制此字段 < < <
