@@ -474,8 +474,11 @@ export function DownloadSection() {
       {/* Footer Note */}
       <div className="text-center text-sm text-slate-500 dark:text-slate-400 mt-8 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-slate-200 dark:border-slate-700">
         <p>
-          加速下载由 <a href="https://gh-proxy.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com</a> 提供。
-          如遇下载问题，请尝试不同的镜像链接。
+          加速下载由 
+          <a href="https://gh-proxy.com/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com</a>
+          <a href="https://gh.imixc.top/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh.imixc.top</a>
+          <a href="https://gh.jasonzeng.dev/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh.jasonzeng.dev</a>
+          提供。
         </p>
       </div>
     </div>
