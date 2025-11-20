@@ -46,7 +46,7 @@ function ExplorerBar() {
               onClick={() => router.push(c.href)}
               className={`flex items-center gap-2 ${i === crumbs.length - 1 ? 'font-medium text-slate-900 dark:text-white' : 'cursor-pointer hover:text-slate-900 dark:hover:text-white'}`}
             >
-              <span className="truncate max-w-[14rem]">{c.label}</span>
+              <span className="truncate max-w-56">{c.label}</span>
               {i !== crumbs.length - 1 && <span className="text-slate-400 dark:text-slate-500">/</span>}
             </div>
           ))}
@@ -115,7 +115,7 @@ export function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex flex-col items-center space-y-1 text-slate-600 dark:text-slate-400 transition-all duration-200 py-2 px-4 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 group relative min-w-[80px] ${isActive ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800' : 'hover:text-slate-900 dark:hover:text-white'}`}
+                  className={`flex flex-col items-center space-y-1 text-slate-600 dark:text-slate-400 transition-all duration-200 py-2 px-4 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 group relative min-w-20 ${isActive ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800' : 'hover:text-slate-900 dark:hover:text-white'}`}
                   title={item.description}
                 >
                   <Icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -157,7 +157,7 @@ export function Navigation() {
                 </Button>
               </div>
             ) : (
-              <Button variant="outline" size="sm" className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 py-2 px-4 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 group relative min-w-[80px]">
+              <Button variant="outline" size="sm" className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 py-2 px-4 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 group relative min-w-20">
                 <a href="/users/login" className="flex items-center justify-center h-full w-full">
                   登录
                 </a>
