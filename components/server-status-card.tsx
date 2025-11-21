@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { ArrowLeft, Cpu, Network, HardDrive, Activity, Clock, Database } from "lucide-react";
+import { ArrowLeft, Cpu, Network, HardDrive, Activity, Clock, Database, AlertCircle } from "lucide-react";
 
+// 只在组件挂载时注册一次ChartJS
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,62 +28,143 @@ ChartJS.register(
   Legend
 );
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: "top" as const,
-      labels: {
-        usePointStyle: true,
-        padding: 15,
-        font: {
-          size: 11
+// 使用useMemo优化图表配置，避免每次渲染都创建新对象
+const useChartOptions = () => {
+  return useMemo(() => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top" as const,
+        labels: {
+          usePointStyle: true,
+          padding: 15,
+          font: {
+            size: 11
+          }
         }
-      }
-    },
-    title: { display: false },
-  },
-  elements: {
-    line: {
-      tension: 0.4,
-      borderWidth: 2
-    },
-    point: {
-      radius: 2,
-      hoverRadius: 5
-    },
-  },
-  interaction: {
-    intersect: false,
-    mode: 'index' as const,
-  },
-  scales: {
-    x: {
-      grid: {
-        display: false,
-        drawBorder: false
       },
-      ticks: {
-        maxTicksLimit: 8,
-        font: {
-          size: 10
-        }
-      }
+      title: { display: false },
     },
-    y: {
-      grid: {
-        color: "rgba(128,128,128,0.1)",
-        drawBorder: false
+    elements: {
+      line: {
+        tension: 0.4,
+        borderWidth: 2
       },
-      ticks: {
-        font: {
-          size: 10
-        }
-      }
+      point: {
+        radius: 2,
+        hoverRadius: 5
+      },
     },
-  },
-} as const;
+    interaction: {
+      intersect: false,
+      mode: 'index' as const,
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+          drawBorder: false
+        },
+        ticks: {
+          maxTicksLimit: 8,
+          font: {
+            size: 10
+          }
+        }
+      },
+      y: {
+        grid: {
+          color: "rgba(128,128,128,0.1)",
+          drawBorder: false
+        },
+        ticks: {
+          font: {
+            size: 10
+          }
+        }
+      },
+    },
+  }), []);
+};
+
+// 提取数据处理逻辑为独立函数
+const processNodeData = (data: any) => {
+  const raw = data.data?.status_list || [];
+  const step = Math.max(1, Math.floor(raw.length / 50));
+  const statusList = raw.filter((_: any, i: number) => i % step === 0).slice(-50);
+
+  const timestamps = statusList.map((item: any) =>
+    new Date(item.timestamp).toLocaleTimeString("zh-CN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  );
+
+  // CPU 图表数据
+  const cpuUsages = statusList.map((item: any) => item.cpu_usage || 0);
+  const cpuChartData = {
+    labels: timestamps,
+    datasets: [
+      {
+        label: "CPU 使用率",
+        data: cpuUsages,
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        borderColor: "rgba(59, 130, 246, 1)",
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
+
+  // 网络流量数据处理函数
+  const pickNumber = (obj: any, keys: string[]) => {
+    for (const k of keys) {
+      const v = obj?.[k];
+      if (v !== undefined && v !== null && !Number.isNaN(Number(v))) {
+        return Number(v) / 1e6; // 转换为 MB
+      }
+    }
+    return 0;
+  };
+
+  const uploadBandwidth = statusList.map((item: any) =>
+    pickNumber(item, ["upload_bandwidth", "tx", "tx_bytes", "upload_bytes", "out_bytes", "total_traffic_out", "sent"])
+  );
+  
+  const downloadBandwidth = statusList.map((item: any) =>
+    pickNumber(item, ["download_bandwidth", "recv_bandwidth", "rx", "rx_bytes", "download_bytes", "total_traffic_in", "recv_packets", "received"])
+  );
+
+  const latestSample = raw.length ? raw[raw.length - 1] : null;
+
+  const trafficChartData = {
+    labels: timestamps,
+    datasets: [
+      {
+        label: "上传带宽",
+        data: uploadBandwidth,
+        backgroundColor: "rgba(239, 68, 68, 0.1)",
+        borderColor: "rgba(239, 68, 68, 1)",
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+      },
+      {
+        label: "下载带宽",
+        data: downloadBandwidth,
+        backgroundColor: "rgba(34, 197, 94, 0.1)",
+        borderColor: "rgba(34, 197, 94, 1)",
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
+
+  return { cpuChartData, trafficChartData, latestSample };
+};
 
 interface ServerStatusCardProps {
   node: string;
@@ -95,105 +177,78 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [latestSample, setLatestSample] = useState<any>(null);
+  
+  // 使用ref防止竞态条件和内存泄漏
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isMountedRef = useRef(true);
+  const chartOptions = useChartOptions();
 
   const fetchNodeData = useCallback(async () => {
+    if (!isMountedRef.current) return;
+    
     try {
       setLoading(true);
       setError(null);
 
       const response = await fetch(
-        `https://cf-v2.uapis.cn/node_status_info?nodename=${encodeURIComponent(node)}`
+        `https://cf-v2.uapis.cn/node_status_info?nodename=${encodeURIComponent(node)}`,
+        {
+          method: 'GET',
+          cache: 'no-cache',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
 
-      if (!response.ok) throw new Error(`请求失败: ${response.statusText}`);
+      if (!response.ok) throw new Error(`请求失败: ${response.status} ${response.statusText}`);
 
       const data = await response.json();
+      
+      if (!isMountedRef.current) return;
+      
       setNodeData(data);
-
-      const raw = data.data?.status_list || [];
-      const step = Math.max(1, Math.floor(raw.length / 50));
-      const statusList = raw.filter((_: any, i: number) => i % step === 0).slice(-50);
-
-      const timestamps = statusList.map((item: any) =>
-        new Date(item.timestamp).toLocaleTimeString("zh-CN", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })
-      );
-
-      // CPU 图表数据
-      const cpuUsages = statusList.map((item: any) => item.cpu_usage);
-      setCpuChartData({
-        labels: timestamps,
-        datasets: [
-          {
-            label: "CPU 使用率",
-            data: cpuUsages,
-            backgroundColor: "rgba(59, 130, 246, 0.1)",
-            borderColor: "rgba(59, 130, 246, 1)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-          },
-        ],
-      });
-
-      // 网络流量数据
-      const pickNumber = (obj: any, keys: string[]) => {
-        for (const k of keys) {
-          const v = obj?.[k];
-          if (v !== undefined && v !== null && !Number.isNaN(Number(v))) return Number(v) / 1e6; // 转换为 MB
-        }
-        return 0;
-      };
-
-      const uploadBandwidth = statusList.map((item: any) =>
-        pickNumber(item, ["upload_bandwidth", "tx", "tx_bytes", "upload_bytes", "out_bytes", "total_traffic_out", "sent"])
-      );
-      const downloadBandwidth = statusList.map((item: any) =>
-        pickNumber(item, ["download_bandwidth", "recv_bandwidth", "rx", "rx_bytes", "download_bytes", "total_traffic_in", "recv_packets", "received"])
-      );
-
-      setLatestSample(raw.length ? raw[raw.length - 1] : null);
-
-      setTrafficChartData({
-        labels: timestamps,
-        datasets: [
-          {
-            label: "上传带宽",
-            data: uploadBandwidth,
-            backgroundColor: "rgba(239, 68, 68, 0.1)",
-            borderColor: "rgba(239, 68, 68, 1)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-          },
-          {
-            label: "下载带宽",
-            data: downloadBandwidth,
-            backgroundColor: "rgba(34, 197, 94, 0.1)",
-            borderColor: "rgba(34, 197, 94, 1)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-          },
-        ],
-      });
+      
+      // 处理数据
+      const { cpuChartData, trafficChartData, latestSample } = processNodeData(data);
+      
+      setCpuChartData(cpuChartData);
+      setTrafficChartData(trafficChartData);
+      setLatestSample(latestSample);
 
     } catch (err) {
       console.error("获取节点数据失败:", err);
-      setError(err instanceof Error ? err.message : "未知错误");
+      if (isMountedRef.current) {
+        setError(err instanceof Error ? err.message : "未知错误");
+      }
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
   }, [node]);
 
   useEffect(() => {
+    isMountedRef.current = true;
+    
+    // 初始加载
     fetchNodeData();
-    const interval = setInterval(fetchNodeData, 20000);
-    return () => clearInterval(interval);
+    
+    // 设置定时器
+    intervalRef.current = setInterval(() => {
+      fetchNodeData();
+    }, 30000); // 增加到30秒刷新一次，减少请求频率
+    
+    // 清理函数
+    return () => {
+      isMountedRef.current = false;
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, [fetchNodeData]);
 
+  // 加载状态
   if (loading && !nodeData) {
     return (
       <div className="flex items-center justify-center p-12">
@@ -205,12 +260,13 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
     );
   }
 
+  // 错误状态
   if (error) {
     return (
       <div className="flex items-center justify-center p-12">
         <div className="text-center">
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Activity className="w-8 h-8 text-red-500" />
+            <AlertCircle className="w-8 h-8 text-red-500" />
           </div>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">加载失败</h3>
           <p className="text-slate-600 dark:text-slate-400 mb-4">{error}</p>
@@ -222,14 +278,14 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
     );
   }
 
-  const nodeDetails = nodeData?.data?.node_details;
+  const nodeDetails = nodeData?.data?.node_details || {};
 
   return (
     <div className="space-y-6">
       {/* 头部信息 */}
       <Card className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-0">
         <CardContent className="pt-6">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="sm" asChild>
                 <a href="/status/" className="flex items-center space-x-2">
@@ -261,7 +317,7 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
                 <div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">CPU 信息</p>
                   <p className="font-semibold text-slate-900 dark:text-white">
-                    {nodeDetails?.cpu_info} ({nodeDetails?.num_cores} 核心)
+                    {nodeDetails.cpu_info || '未知'} ({nodeDetails.num_cores || '0'} 核心)
                   </p>
                 </div>
               </div>
@@ -275,7 +331,7 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
                 <div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">存储使用</p>
                   <p className="font-semibold text-slate-900 dark:text-white">
-                    {Math.round(nodeDetails?.storage_used / 1e9)} / {Math.round(nodeDetails?.storage_total / 1e9)} GB
+                    {nodeDetails.storage_used ? Math.round(nodeDetails.storage_used / 1e9) : '0'} / {nodeDetails.storage_total ? Math.round(nodeDetails.storage_total / 1e9) : '0'} GB
                   </p>
                 </div>
               </div>
@@ -289,7 +345,7 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
                 <div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">今日流量</p>
                   <p className="font-semibold text-slate-900 dark:text-white">
-                    ↓{Math.round(nodeDetails?.total_traffic_in / 1e6)} MB / ↑{Math.round(nodeDetails?.total_traffic_out / 1e6)} MB
+                    ↓{nodeDetails.total_traffic_in ? Math.round(nodeDetails.total_traffic_in / 1e6) : '0'} MB / ↑{nodeDetails.total_traffic_out ? Math.round(nodeDetails.total_traffic_out / 1e6) : '0'} MB
                   </p>
                 </div>
               </div>
@@ -304,15 +360,15 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
             </div>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white">{nodeDetails?.load1}</div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">{nodeDetails.load1 || '0.00'}</div>
                 <div className="text-xs text-slate-500 dark:text-slate-400">1分钟</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white">{nodeDetails?.load5}</div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">{nodeDetails.load5 || '0.00'}</div>
                 <div className="text-xs text-slate-500 dark:text-slate-400">5分钟</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white">{nodeDetails?.load15}</div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">{nodeDetails.load15 || '0.00'}</div>
                 <div className="text-xs text-slate-500 dark:text-slate-400">15分钟</div>
               </div>
             </div>
@@ -332,7 +388,13 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
           </CardHeader>
           <CardContent>
             <div className="h-64">
-              <Line data={cpuChartData} options={chartOptions} />
+              {cpuChartData.labels.length > 0 ? (
+                <Line data={cpuChartData} options={chartOptions} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-slate-500">
+                  暂无数据
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -347,7 +409,13 @@ export function ServerStatusCard({ node }: ServerStatusCardProps) {
           </CardHeader>
           <CardContent>
             <div className="h-64">
-              <Line data={trafficChartData} options={chartOptions} />
+              {trafficChartData.labels.length > 0 ? (
+                <Line data={trafficChartData} options={chartOptions} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-slate-500">
+                  暂无数据
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
