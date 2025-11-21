@@ -58,57 +58,6 @@ export default function WikiPage() {
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
               游戏指南、服务器规则、新手教程和进阶攻略，助您畅游 EndlessPixel 世界
             </p>
-            
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto mt-8">
-              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-4 border-2 border-blue-200 dark:border-blue-800 shadow-sm">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-xl">
-                    <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">文档数量</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-4 border-2 border-green-200 dark:border-green-800 shadow-sm">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-green-100 dark:bg-green-800 p-2 rounded-xl">
-                    <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">5</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">分类目录</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-4 border-2 border-purple-200 dark:border-purple-800 shadow-sm">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-purple-100 dark:bg-purple-800 p-2 rounded-xl">
-                    <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">15+</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">特色功能</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-4 border-2 border-orange-200 dark:border-orange-800 shadow-sm">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-orange-100 dark:bg-orange-800 p-2 rounded-xl">
-                    <Zap className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">实时</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">持续更新</div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Search Bar */}
