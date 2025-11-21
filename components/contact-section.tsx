@@ -426,7 +426,7 @@ export function ContactSection() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <MotionBadge className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 px-3 py-1.5 flex items-center gap-1.5">
+              <MotionBadge className="bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 px-3 py-1.5 flex items-center gap-1.5">
                 <Star className="w-4 h-4 fill-yellow-300 text-yellow-300" />
                 <span>周年庆</span>
                 <Gift className="w-4 h-4" />
@@ -442,11 +442,11 @@ export function ContactSection() {
           >
             EndlessPixel 运营至今已满1周年，
             <span className="block mt-2">感谢您一直以来的信任与支持。</span>
-            <span className="font-semibold text-foreground dark:text-foreground/90 block mt-3 flex items-center gap-2">
+            <span className="font-semibold text-foreground dark:text-foreground/90 block mt-3 items-center gap-2">
               <Heart className="w-5 h-5 text-red-500 animate-pulse" />
               一年坚持，初心不改；
             </span>
-            <span className="font-semibold text-foreground dark:text-foreground/90 block mt-1 flex items-center gap-2">
+            <span className="font-semibold text-foreground dark:text-foreground/90 block mt-1 items-center gap-2">
               <Sparkles className="w-5 h-5 text-yellow-500" />
               免费服务，始终无广。
             </span>
@@ -460,7 +460,7 @@ export function ContactSection() {
             transition={{ delay: 0.7, duration: 0.6 }}
           >
             <MotionButton
-              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
+              className="bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => window.open("https://qm.qq.com/cgi-bin/qm/qr?k=870594910", "_blank")}
