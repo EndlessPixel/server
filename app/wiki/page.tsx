@@ -84,64 +84,6 @@ export default function WikiPage() {
               </div>
             </div>
           </div>
-
-          {/* Quick Links Section */}
-          <div className="mt-16">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">快速开始</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-lg">选择您需要的指南快速开始</p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div 
-                className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-2xl p-6 border-2 border-blue-200 dark:border-blue-800 cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg"
-                onClick={() => window.dispatchEvent(new CustomEvent("wiki-article-change", { detail: { articleId: "launcher-guide" } }))}
-              >
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl">
-                    <span className="text-2xl">🚀</span>
-                  </div>
-                  <h3 className="font-bold text-blue-900 dark:text-blue-100 text-lg">新手入门</h3>
-                </div>
-                <p className="text-blue-700 dark:text-blue-300 text-sm mb-4">
-                  从零开始学习如何安装整合包、连接服务器和基础操作
-                </p>
-                <div className="text-xs text-blue-600 dark:text-blue-400 font-medium">开始游戏 →</div>
-              </div>
-              
-              <div 
-                className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-2xl p-6 border-2 border-green-200 dark:border-green-800 cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg"
-                onClick={() => window.dispatchEvent(new CustomEvent("wiki-article-change", { detail: { articleId: "server-commands" } }))}
-              >
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="bg-green-100 dark:bg-green-800 p-3 rounded-xl">
-                    <span className="text-2xl">⌨️</span>
-                  </div>
-                  <h3 className="font-bold text-green-900 dark:text-green-100 text-lg">命令大全</h3>
-                </div>
-                <p className="text-green-700 dark:text-green-300 text-sm mb-4">
-                  掌握服务器所有可用命令，包括传送、皮肤管理和技能系统
-                </p>
-                <div className="text-xs text-green-600 dark:text-green-400 font-medium">查看命令 →</div>
-              </div>
-              
-              <div 
-                className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-2xl p-6 border-2 border-purple-200 dark:border-purple-800 cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg"
-                onClick={() => window.dispatchEvent(new CustomEvent("wiki-article-change", { detail: { articleId: "special-features" } }))}
-              >
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="bg-purple-100 dark:bg-purple-800 p-3 rounded-xl">
-                    <span className="text-2xl">✨</span>
-                  </div>
-                  <h3 className="font-bold text-purple-900 dark:text-purple-100 text-lg">特色功能</h3>
-                </div>
-                <p className="text-purple-700 dark:text-purple-300 text-sm mb-4">
-                  探索服务器的独特功能，包括连锁挖掘、坐下功能和领地系统
-                </p>
-                <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">探索功能 →</div>
-              </div>
-            </div>
-          </div>
         </div>
       </main>
       <Footer />
