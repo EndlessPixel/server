@@ -1623,7 +1623,7 @@ proxies:
         "title": "服务器特殊功能指南",
         "category": "特色功能",
         "icon": "Trophy",
-        "lastUpdated": "2025/10/18",
+        "lastUpdated": "2025/11/21",
         "author": "system_mini",
         "readTime": "15分钟",
         "content": (
@@ -2063,13 +2063,6 @@ proxies:
                         </div>
                     </div>
                 </section>
-
-                {/* 页脚 */}
-                <div className="bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl text-center border border-gray-200 dark:border-gray-700">
-                    <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
-                        🎮 以上所有功能均已在服务器中实装，欢迎体验探索！如有疑问可联系管理员咨询。
-                    </p>
-                </div>
             </div>
         )
     }
