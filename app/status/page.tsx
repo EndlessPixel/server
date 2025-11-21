@@ -1,12 +1,38 @@
+"use client";
+
 import Link from "next/link";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
-import { Server, Globe, Wifi, Activity, Monitor, MapPin, ArrowRight, Users, Cpu, BarChart3 } from "lucide-react";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
+import { 
+  Server, Globe, Wifi, Activity, Monitor, MapPin, ArrowRight, 
+  Users, Cpu, BarChart3, CheckCircle2, AlertCircle, Info
+} from "lucide-react";
 
-const NODES = [
+/* ---------------- 类型定义 ---------------- */
+interface ServiceItem {
+  name: string;
+  path: string;
+  icon: React.ElementType;
+  status: "online" | "offline" | "maintenance";
+  description: string;
+  color: string;
+  external?: boolean;
+}
+
+interface NodeItem {
+  name: string;
+  path: string;
+  region: string;
+  status: "online" | "offline" | "maintenance";
+  description: string;
+}
+
+/* ---------------- 常量数据 ---------------- */
+const NODES: NodeItem[] = [
   { 
     name: "四川成都电信", 
     path: "/status/frpnode/cd1",
@@ -23,7 +49,7 @@ const NODES = [
   },
 ];
 
-const SERVICES = [
+const SERVICES: ServiceItem[] = [
   {
     name: "Minecraft 服务器",
     path: "/status/mcserverstatus",
@@ -43,6 +69,153 @@ const SERVICES = [
   }
 ];
 
+/* ---------------- 组件 ---------------- */
+const StatusBadge: React.FC<{ status: string }> = React.memo(({ status }) => {
+  let icon, color, text;
+  
+  switch (status) {
+    case "online":
+      icon = <CheckCircle2 className="w-3.5 h-3.5" />;
+      color = "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
+      text = "在线";
+      break;
+    case "offline":
+      icon = <AlertCircle className="w-3.5 h-3.5" />;
+      color = "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      text = "离线";
+      break;
+    case "maintenance":
+      icon = <Info className="w-3.5 h-3.5" />;
+      color = "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400";
+      text = "维护中";
+      break;
+    default:
+      icon = <Info className="w-3.5 h-3.5" />;
+      color = "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300";
+      text = "未知";
+  }
+  
+  return (
+    <Badge className={`${color} flex items-center gap-1`}>
+      {icon}
+      {text}
+    </Badge>
+  );
+});
+
+const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service }) => {
+  const Icon = service.icon;
+  
+  return (
+    <Card className="group bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className={`p-3 bg-linear-to-r ${service.color} rounded-xl text-white`}>
+              <Icon className="w-6 h-6" aria-hidden="true" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-slate-900 dark:text-white text-lg">{service.name}</h3>
+                <StatusBadge status={service.status} />
+              </div>
+              <p className="text-slate-600 dark:text-slate-400 text-sm">{service.description}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between mt-6">
+          <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+            {service.external && (
+              <span className="flex items-center gap-1" aria-label="外部服务">
+                <Globe className="w-4 h-4" aria-hidden="true" />
+                外部服务
+              </span>
+            )}
+          </div>
+          <Button 
+            asChild 
+            size="sm" 
+            className="bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 transition-all group-hover:scale-105"
+          >
+            <Link 
+              href={service.path}
+              target={service.external ? "_blank" : undefined}
+              rel={service.external ? "noopener noreferrer" : undefined}
+              className="flex items-center gap-2"
+            >
+              查看详情
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+});
+
+const NodeCard: React.FC<{ node: NodeItem }> = React.memo(({ node }) => {
+  return (
+    <Card className="group bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+              <MapPin className="w-5 h-5" aria-hidden="true" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-slate-900 dark:text-white">{node.name}</h3>
+                <StatusBadge status={node.status} />
+              </div>
+              <Badge variant="outline" className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-xs">
+                {node.region}
+              </Badge>
+            </div>
+          </div>
+        </div>
+        
+        <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
+          {node.description}
+        </p>
+
+        <div className="flex items-center justify-between mt-6">
+          <Button 
+            asChild 
+            size="sm" 
+            variant="outline"
+            className="transition-all group-hover:scale-105"
+          >
+            <Link href={node.path} className="flex items-center gap-2">
+              节点详情
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+});
+
+const SectionHeader: React.FC<{ 
+  title: string; 
+  description: string; 
+  icon: React.ReactNode;
+}> = React.memo(({ title, description, icon }) => {
+  return (
+    <div className="flex items-center gap-3 mb-8">
+      <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+        {icon}
+      </div>
+      <div>
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{title}</h2>
+        <p className="text-slate-600 dark:text-slate-400">{description}</p>
+      </div>
+    </div>
+  );
+});
+
+/* ---------------- 主页面组件 ---------------- */
 export default function StatusIndexPage() {
   return (
     <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-purple-950/20">
@@ -60,139 +233,54 @@ export default function StatusIndexPage() {
           </div>
 
           {/* Service Overview Cards */}
-          <div className="mb-12">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                <Server className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">核心服务</h2>
-                <p className="text-slate-600 dark:text-slate-400">关键服务状态概览</p>
-              </div>
-            </div>
+          <section className="mb-12" aria-labelledby="services-heading">
+            <SectionHeader 
+              title="核心服务" 
+              description="关键服务状态概览"
+              icon={<Server className="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" />}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {SERVICES.map((service) => {
-                const Icon = service.icon;
-                return (
-                  <Card key={service.name} className="group bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className={`p-3 bg-linear-to-r ${service.color} rounded-xl text-white`}>
-                            <Icon className="w-6 h-6" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-slate-900 dark:text-white text-lg">{service.name}</h3>
-                            <p className="text-slate-600 dark:text-slate-400 text-sm">{service.description}</p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between mt-6">
-                        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                          {service.external && (
-                            <span className="flex items-center gap-1">
-                              <Globe className="w-4 h-4" />
-                              外部服务
-                            </span>
-                          )}
-                        </div>
-                        <Button 
-                          asChild 
-                          size="sm" 
-                          className="bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 transition-all group-hover:scale-105"
-                        >
-                          <Link 
-                            href={service.path}
-                            target={service.external ? "_blank" : undefined}
-                            rel={service.external ? "noopener noreferrer" : undefined}
-                            className="flex items-center gap-2"
-                          >
-                            查看详情
-                            <ArrowRight className="w-4 h-4" />
-                          </Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+              {SERVICES.map((service) => (
+                <ServiceCard key={service.name} service={service} />
+              ))}
             </div>
-          </div>
+          </section>
 
           {/* Network Nodes */}
-          <div className="mb-12">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                <Wifi className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">网络节点</h2>
-                <p className="text-slate-600 dark:text-slate-400">全球分布式网络节点状态</p>
-              </div>
-            </div>
+          <section className="mb-12" aria-labelledby="nodes-heading">
+            <SectionHeader 
+              title="网络节点" 
+              description="全球分布式网络节点状态"
+              icon={<Wifi className="w-5 h-5 text-purple-600 dark:text-purple-400" aria-hidden="true" />}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {NODES.map((node) => (
-                <Card key={node.name} className="group bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
-                          <MapPin className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-slate-900 dark:text-white">{node.name}</h3>
-                          <Badge variant="outline" className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-xs">
-                            {node.region}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
-                      {node.description}
-                    </p>
-
-                    <div className="flex items-center justify-between mt-6">
-                      <Button 
-                        asChild 
-                        size="sm" 
-                        variant="outline"
-                        className="transition-all group-hover:scale-105"
-                      >
-                        <Link href={node.path} className="flex items-center gap-2">
-                          节点详情
-                          <ArrowRight className="w-4 h-4" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <NodeCard key={node.name} node={node} />
               ))}
             </div>
-          </div>
+          </section>
 
           {/* Additional Information */}
-          <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <section className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
             <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4 flex items-center gap-2">
-                  <Monitor className="w-5 h-5 text-blue-500" />
+                  <Monitor className="w-5 h-5 text-blue-500" aria-hidden="true" />
                   监控说明
                 </h3>
                 <ul className="space-y-3 text-slate-600 dark:text-slate-400">
                   <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 shrink-0"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 shrink-0" aria-hidden="true"></div>
                     <span>所有服务状态每 30 秒自动更新一次</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 shrink-0"></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 shrink-0" aria-hidden="true"></div>
                     <span>节点状态包含 CPU、内存、网络流量等详细信息</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 shrink-0"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 shrink-0" aria-hidden="true"></div>
                     <span>遇到问题可查看详细监控或联系技术支持</span>
                   </li>
                 </ul>
@@ -202,19 +290,29 @@ export default function StatusIndexPage() {
             <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4 flex items-center gap-2">
-                  <Users className="w-5 h-5 text-green-500" />
+                  <Users className="w-5 h-5 text-green-500" aria-hidden="true" />
                   技术支持
                 </h3>
                 <div className="space-y-4 text-slate-600 dark:text-slate-400">
                   <p>如果您发现服务异常或需要技术支持：</p>
                   <div className="flex flex-wrap gap-3">
                     <Button asChild variant="outline" size="sm">
-                      <Link href="https://github.com/EndlessPixel/server/issues" target="_blank" rel="noopener noreferrer">
+                      <Link 
+                        href="https://github.com/EndlessPixel/server/issues" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        aria-label="提交问题到GitHub"
+                      >
                         提交 Issue
                       </Link>
                     </Button>
                     <Button asChild variant="outline" size="sm">
-                      <Link href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910" target="_blank" rel="noopener noreferrer">
+                      <Link 
+                        href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        aria-label="加入QQ群获取支持"
+                      >
                         加入 QQ 群
                       </Link>
                     </Button>
@@ -222,7 +320,7 @@ export default function StatusIndexPage() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </section>
         </div>
       </main>
       <Footer />
