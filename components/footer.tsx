@@ -98,8 +98,6 @@ const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
     <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
       <div className="flex items-center space-x-2 text-slate-400 text-sm">
         <span>&copy; {startYear}{currentYear > startYear ? `~${currentYear}` : ''} EndlessPixel Studio</span>
-        <span className="text-slate-600">•</span>
-        <span>All rights reserved</span>
       </div>
 
       <div className="flex items-center space-x-2 text-slate-400 text-sm">
