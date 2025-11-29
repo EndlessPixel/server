@@ -56,22 +56,6 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 | `npm run lint:fix` | Auto-fix ESLint issues |
 | `npm run type-check` | TypeScript type check |
 
-## 📁 Folder Structure
-
-```
-.
-├─ app/                 // Next.js App Router
-│  ├─ (auth)/           // login & callback
-│  ├─ (main)/           // marketing pages
-│  ├─ api/              // API routes
-│  └─ globals.css       // global styles
-├─ components/          // reusable UI components
-├─ hooks/               // custom React hooks
-├─ lib/                 // utils & config
-├─ public/              // static assets
-└─ styles/              // legacy styles (migrating)
-```
-
 ## 🧩 Environment Variables
 
 Create `.env.local`:
