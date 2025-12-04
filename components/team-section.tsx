@@ -42,15 +42,6 @@ export function TeamSection() {
       responsibilities: ["管理"],
     },
     {
-      name: "Alice_Ctoy",
-      description: "团队成员，平时啥也不干。",
-      iconColor: "text-yellow-600 dark:text-yellow-400",
-      bgColor: "bg-yellow-50 dark:bg-yellow-950/20",
-      borderColor: "border-l-4 border-l-yellow-500 dark:border-l-yellow-600",
-      departments: ["摸鱼"],
-      responsibilities: ["摸鱼"],
-    },
-    {
       name: "流浪的小李子",
       iconColor: "text-orange-600 dark:text-orange-400",
       bgColor: "bg-orange-50 dark:bg-orange-950/20",
