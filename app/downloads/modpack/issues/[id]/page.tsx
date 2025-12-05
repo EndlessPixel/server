@@ -156,7 +156,7 @@ function CommentCard({ comment }: { comment: GitHubComment }) {
               dangerouslySetInnerHTML={{ __html: comment.body_html }}
             />
           ) : (
-            <div className="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap break-words">
+            <div className="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap wrap-break-word">
               {comment.body}
             </div>
           )}
