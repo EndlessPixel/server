@@ -14,10 +14,8 @@ Official website & launcher distribution platform of EndlessPixel, built with Ne
 
 - ⚡ Next.js 15 full-stack React framework, SSR/SSG/ISR ready  
 - 🎨 Tailwind CSS 4 utility-first, dark-mode out of the box  
-- 🔐 GitHub OAuth one-click login  
 - 📦 60+ launchers & mod-packs high-speed download, custom mirror support  
-- 🧪 Strict TypeScript checking, ESLint + Prettier automated  
-- 🌍 i18n ready (routes scaffolded)  
+- 🧪 Strict TypeScript checking, ESLint + Prettier automated   
 - 📱 Responsive layout, PWA offline support (Workbox auto-generated)
 
 ## 🚀 Quick Start
