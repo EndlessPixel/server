@@ -124,8 +124,6 @@ function ExplorerBar() {
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeNavItem, setActiveNavItem] = useState("");
-  const [user, setUser] = useState<{ login?: string; name?: string; avatar_url?: string } | null>(null);
-
   const router = useRouter();
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
