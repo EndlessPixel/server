@@ -38,7 +38,7 @@ function ExplorerBar() {
   const crumbs: Array<{ href: string; label: string }> = [
     { href: "/", label: "首页" },
   ];
-  
+
   let acc = "";
   parts.forEach((p: string) => {
     acc += `/${p}`;
@@ -71,11 +71,10 @@ function ExplorerBar() {
             <motion.div
               key={c.href}
               onClick={() => handleCrumbClick(c.href)}
-              className={`flex items-center gap-1.5 transition-all duration-300 ${
-                i === crumbs.length - 1
-                  ? "font-medium text-slate-900 dark:text-white cursor-default"
-                  : "cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
-              }`}
+              className={`flex items-center gap-1.5 transition-all duration-300 ${i === crumbs.length - 1
+                ? "font-medium text-slate-900 dark:text-white cursor-default"
+                : "cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
+                }`}
               whileHover={{ scale: 1.03 }}
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -91,9 +90,8 @@ function ExplorerBar() {
 
         {/* 地址栏 */}
         <motion.div
-          className={`ml-2 flex-1 relative transition-all duration-300 ${
-            isFocused ? "scale-[1.01]" : ""
-          }`}
+          className={`ml-2 flex-1 relative transition-all duration-300 ${isFocused ? "scale-[1.01]" : ""
+            }`}
         >
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
           <input
@@ -127,7 +125,7 @@ export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeNavItem, setActiveNavItem] = useState("");
   const [user, setUser] = useState<{ login?: string; name?: string; avatar_url?: string } | null>(null);
-  
+
   const router = useRouter();
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -141,27 +139,6 @@ export function Navigation() {
     { href: "/about", label: "关于我们", icon: Users, description: "团队介绍" },
   ];
 
-  // 检测当前活跃导航项
-  useEffect(() => {
-    if (!pathname) return;
-    
-    const segments = pathname.split("/").filter(Boolean);
-    const activeRoot = segments.length > 0 ? `/${segments[0]}` : "/";
-    const activeItem = navItems.find((item) => item.href === activeRoot);
-    
-    setActiveNavItem(activeItem?.href || "/");
-  }, [pathname, navItems]);
-
-  // 加载用户信息
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("ep_user");
-      if (raw) setUser(JSON.parse(raw));
-    } catch (e) {
-      // 忽略解析错误
-    }
-  }, []);
-
   // 点击外部关闭移动端菜单
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -173,14 +150,6 @@ export function Navigation() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
-
-  // 登出处理
-  const handleLogout = () => {
-    try {
-      localStorage.removeItem("ep_user");
-    } catch (e) {}
-    window.location.reload();
-  };
 
   return (
     <nav className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 sticky top-0 z-50 shadow-md transition-all duration-300 hover:shadow-lg">
@@ -201,10 +170,10 @@ export function Navigation() {
                 transition={{ duration: 3, repeat: Infinity }}
               />
               {/* Logo 图片 */}
-              <img 
-                src="/EndlessPixel.png" 
-                alt="EndlessPixel Logo" 
-                className="h-8 w-auto relative z-10" 
+              <img
+                src="/EndlessPixel.png"
+                alt="EndlessPixel Logo"
+                className="h-8 w-auto relative z-10"
               />
             </div>
           </MotionLink>
@@ -219,25 +188,22 @@ export function Navigation() {
                 <MotionLink
                   key={item.href}
                   href={item.href}
-                  className={`flex flex-col items-center space-y-1 px-4 py-3 rounded-xl transition-all duration-300 min-w-20 ${
-                    isActive
-                      ? "text-blue-600 dark:text-blue-400 bg-blue-50/70 dark:bg-blue-900/20"
-                      : "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/50"
-                  }`}
+                  className={`flex flex-col items-center space-y-1 px-4 py-3 rounded-xl transition-all duration-300 min-w-20 ${isActive
+                    ? "text-blue-600 dark:text-blue-400 bg-blue-50/70 dark:bg-blue-900/20"
+                    : "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/50"
+                    }`}
                   title={item.description}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   {/* 导航图标 */}
                   <motion.div
-                    className={`p-1.5 rounded-lg ${
-                      isActive ? "bg-blue-100/80 dark:bg-blue-900/30" : ""
-                    }`}
+                    className={`p-1.5 rounded-lg ${isActive ? "bg-blue-100/80 dark:bg-blue-900/30" : ""
+                      }`}
                   >
-                    <Icon 
-                      className={`w-5 h-5 transition-transform duration-300 ${
-                        isActive ? "scale-110" : "group-hover:scale-110"
-                      }`} 
+                    <Icon
+                      className={`w-5 h-5 transition-transform duration-300 ${isActive ? "scale-110" : "group-hover:scale-110"
+                        }`}
                     />
                   </motion.div>
                   {/* 导航文字 */}
@@ -245,10 +211,9 @@ export function Navigation() {
 
                   {/* 活性状态指示器 */}
                   <motion.div
-                    className={`absolute bottom-2 left-1/2 transform -translate-x-1/2 h-1 rounded-full bg-blue-500 transition-all duration-300 ${
-                      isActive ? "w-6" : "w-0"
-                    }`}
-                    animate={{ 
+                    className={`absolute bottom-2 left-1/2 transform -translate-x-1/2 h-1 rounded-full bg-blue-500 transition-all duration-300 ${isActive ? "w-6" : "w-0"
+                      }`}
+                    animate={{
                       width: isActive ? "24px" : "0px",
                       opacity: isActive ? 1 : 0
                     }}
@@ -256,100 +221,16 @@ export function Navigation() {
                 </MotionLink>
               );
             })}
-
             {/* 分隔线 */}
             <div className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2"></div>
-
-            {/* 用户区域 */}
-            <motion.div 
-              className="flex items-center gap-2"
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+            {/* 主题切换按钮 */}
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
-              {user ? (
-                // 已登录状态
-                <motion.div 
-                  className="flex items-center gap-2 group"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  {/* 用户头像 */}
-                  <motion.div
-                    className="relative cursor-pointer"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <motion.div
-                      className="absolute inset-0 rounded-full bg-linear-to-r from-blue-400/20 to-purple-400/20 blur-md"
-                      animate={{ opacity: [0.3, 0.6, 0.3] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                    {user.avatar_url ? (
-                      <img
-                        src={user.avatar_url}
-                        alt="用户头像"
-                        className="w-9 h-9 rounded-full border-2 border-white dark:border-slate-800 shadow-sm relative z-10"
-                      />
-                    ) : (
-                      <div className="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-medium border-2 border-white dark:border-slate-800 shadow-sm relative z-10">
-                        {user.name?.charAt(0) || user.login?.charAt(0) || "E"}
-                      </div>
-                    )}
-                  </motion.div>
-
-                  {/* 用户名（仅桌面显示） */}
-                  <Link href="/users/home">
-                    <span className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                      {user.name || user.login}
-                    </span>
-                  </Link>
-
-                  {/* 登出按钮 */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="p-1.5 rounded-full text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
-                  >
-                    <motion.span
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <LogOut className="w-4.5 h-4.5" />
-                    </motion.span>
-                  </Button>
-                </motion.div>
-              ) : (
-                // 未登录状态
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-md hover:shadow-lg transition-all duration-300"
-                  >
-                    <Link href="/users/login" className="flex items-center gap-1.5">
-                      <User className="w-4 h-4" />
-                      <span>登录</span>
-                    </Link>
-                  </Button>
-                </motion.div>
-              )}
-
-              {/* 分隔线 */}
-              <div className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2"></div>
-
-              {/* 主题切换按钮 */}
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <div className="pl-1">
-                  <ThemeToggle />
-                </div>
-              </motion.div>
+              <div className="pl-1">
+                <ThemeToggle />
+              </div>
             </motion.div>
           </div>
 
@@ -362,7 +243,7 @@ export function Navigation() {
             >
               <ThemeToggle />
             </motion.div>
-            
+
             {/* 菜单按钮 */}
             <Button
               variant="ghost"
@@ -397,44 +278,6 @@ export function Navigation() {
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <div className="px-4 pt-3 pb-6 space-y-1">
-                {/* 移动端用户信息（顶部） */}
-                {user && (
-                  <motion.div
-                    className="flex items-center gap-3 px-4 py-3 mb-4 border-b border-slate-200 dark:border-slate-800"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                  >
-                    {user.avatar_url ? (
-                      <img
-                        src={user.avatar_url}
-                        alt="用户头像"
-                        className="w-10 h-10 rounded-full border-2 border-blue-100 dark:border-blue-900/30"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-medium">
-                        {user.name?.charAt(0) || user.login?.charAt(0) || "E"}
-                      </div>
-                    )}
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                        {user.name || user.login}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        已登录
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleLogout}
-                      className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    >
-                      <LogOut className="w-4 h-4 mr-1" />
-                      <span>登出</span>
-                    </Button>
-                  </motion.div>
-                )}
 
                 {/* 移动端导航项 */}
                 {navItems.map((item, index) => {
@@ -445,22 +288,20 @@ export function Navigation() {
                     <MotionLink
                       key={item.href}
                       href={item.href}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                        isActive
-                          ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
-                          : "text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-                      }`}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+                        ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                        : "text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        }`}
                       onClick={() => setIsMenuOpen(false)}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 * index }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      <div className={`p-2 rounded-lg ${
-                        isActive 
-                          ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" 
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
-                      }`}>
+                      <div className={`p-2 rounded-lg ${isActive
+                        ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                        }`}>
                         <Icon className="w-5 h-5" />
                       </div>
                       <div>
@@ -473,26 +314,6 @@ export function Navigation() {
                     </MotionLink>
                   );
                 })}
-
-                {/* 移动端未登录按钮 */}
-                {!user && (
-                  <motion.div
-                    className="px-4 pt-2"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    <Button
-                      variant="default"
-                      className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
-                    >
-                      <Link href="/users/login" className="flex items-center justify-center gap-2 w-full">
-                        <User className="w-4 h-4" />
-                        <span>登录 / 注册</span>
-                      </Link>
-                    </Button>
-                  </motion.div>
-                )}
 
                 {/* 移动端底部信息 */}
                 <motion.div
