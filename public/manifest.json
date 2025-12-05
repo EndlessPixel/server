@@ -17,39 +17,9 @@
   "icons": [
     {
       "src": "/EndlessPixel.png",
-      "sizes": "48x48",
+      "sizes": "667x76",
       "type": "image/png",
       "purpose": "any"
-    },
-    {
-      "src": "/EndlessPixel.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/EndlessPixel.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/EndlessPixel.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/EndlessPixel.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/EndlessPixel.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
     },
     {
       "src": "/icon.ico",
@@ -60,7 +30,7 @@
   "screenshots": [
     {
       "src": "/banner.jpg",
-      "sizes": "1280x720",
+      "sizes": "1920x1080",
       "type": "image/jpeg",
       "description": "EndlessPixel服务器首页"
     }
