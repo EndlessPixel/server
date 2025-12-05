@@ -13,10 +13,8 @@ EndlessPixel 官方网站与启动器分发平台，基于 Next.js App Router + 
 
 - ⚡ 全栈 React 框架 Next.js 15，支持 SSR/SSG/ISR  
 - 🎨 Tailwind CSS 4 原子化样式，暗色模式开箱即用  
-- 🔐 GitHub OAuth 一键登录  
 - 📦 60+ 启动器与整合包高速下载，支持自定义镜像  
 - 🧪 严格 TypeScript 类型检查，ESLint + Prettier 自动化  
-- 🌍 国际化就绪（i18n 路由已预埋）  
 - 📱 响应式布局，PWA 离线支持（Workbox 自动生成）
 
 ## 🚀 快速开始
