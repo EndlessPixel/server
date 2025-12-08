@@ -150,7 +150,7 @@ const jsonLd = [
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      email: "contact@endlesspixel.fun", // 可替换为实际邮箱
+      email: "2267848501@qq.com",
       availableLanguage: "Chinese",
     },
     address: {
@@ -170,7 +170,7 @@ const jsonLd = [
     "@type": "WebSite",
     name: "EndlessPixel",
     url: DOMAIN,
-    description: "免费、纯净、开放的Minecraft Java服务器，支持Discord社区互动",
+    description: "免费、纯净、开放的Minecraft Java服务器",
     publisher: {
       "@type": "Organization",
       name: BRAND_NAME,
@@ -204,7 +204,7 @@ const jsonLd = [
       name: BRAND_NAME,
       url: DOMAIN,
     },
-    description: "免费Minecraft Java版服务器，支持1.8-1.21.10版本，Purpur高性能核心+Discord社区",
+    description: "免费Minecraft Java版服务器，支持1.8-1.21.10版本",
     serviceType: "游戏服务",
     offers: {
       "@type": "Offer",
@@ -271,7 +271,7 @@ export default function RootLayout({
         <meta name="format-detection" content="telephone=no,email=no" />
         
         {/* Discord预览优化 */}
-        <meta property="og:description" content="EndlessPixel - 免费Minecraft服务器，加入Discord社区获取最新资讯和玩家交流" />
+        <meta property="og:description" content="EndlessPixel - 免费Minecraft服务器" />
         
         {/* 性能优化（预连接关键域名） */}
         <link rel="preconnect" href="https://github.com" />
@@ -300,21 +300,6 @@ export default function RootLayout({
           </ErrorBoundary>
           <Toaster />
         </ThemeProvider>
-        
-        {/* Discord浮窗按钮（使用你的邀请链接） */}
-        <a 
-          href={DISCORD_INVITE} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 bg-[#5865F2] text-white rounded-full p-3 shadow-lg hover:bg-[#4752C4] transition-colors z-50"
-          aria-label="加入Discord社区"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="9" cy="12" r="1"></circle>
-            <circle cx="15" cy="12" r="1"></circle>
-            <path d="M7.5 7.2C8.7 6.44 10.2 6 12 6c1.8 0 3.3.44 4.5 1.2 1.2.76 2.1 1.83 2.7 3.12.6 1.29.9 2.73.9 4.32 0 1.59-.3 3.03-.9 4.32-.6 1.29-1.5 2.36-2.7 3.12-1.2.76-2.7 1.2-4.5 1.2-1.8 0-3.3-.44-4.5-1.2-1.2-.76-2.1-1.83-2.7-3.12-.6-1.29-.9-2.73-.9-4.32 0-1.59.3-3.03.9-4.32.6-1.29 1.5-2.36 2.7-3.12Z"></path>
-          </svg>
-        </a>
       </body>
     </html>
   );
