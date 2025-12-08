@@ -7,7 +7,7 @@ import { WikiSidebar } from "@/components/wiki-sidebar"
 import { WikiContent } from "@/components/wiki-content"
 import { WikiSearch } from "@/components/wiki-search"
 import { Breadcrumb } from "@/components/breadcrumb"
-import { BookOpen, Sparkles, Users, Zap } from "lucide-react"
+import { BookOpen } from "lucide-react"
 
 const articleMetadata: Record<string, { title: string; category: string }> = {
   "server-commands": { title: "服务器玩家命令", category: "新手入门" },
@@ -49,15 +49,9 @@ export default function WikiPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Enhanced Page Header */}
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-r from-blue-500 to-cyan-500 rounded-3xl shadow-lg mb-6">
-              <BookOpen className="w-10 h-10 text-white" />
-            </div>
             <h1 className="text-5xl font-bold bg-linear-to-r from-gray-900 to-blue-700 dark:from-gray-100 dark:to-blue-300 bg-clip-text text-transparent mb-4">
               EndlessPixel Wiki
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              游戏指南、服务器规则、新手教程和进阶攻略，助您畅游 EndlessPixel 世界
-            </p>
           </div>
 
           {/* Search Bar */}
