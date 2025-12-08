@@ -854,14 +854,14 @@ export const articles: Record<string, ArticleData> = {
                         {[
                             { rule: "外挂使用限制", desc: "允许使用矿透，但需适度不可过度嚣张；严禁使用其他任何形式的作弊工具", icon: "🔍" },
                             { rule: "消息发送规范", desc: "禁止消息刷屏，单次发送10条以上视为违规", icon: "💬" },
-                            { rule: "服务器保护", desc: "严禁实施崩服行为，服务器配置有限（E5处理器），需共同维护稳定", icon: "🛡️" },
-                            { rule: "领地创建规则", desc: "禁止恶意创建领地，尤其禁止占用不属于自己的区域或公共区域", icon: "🏠" },
-                            { rule: "公共资源管理", desc: "禁止恶意给公共箱子上锁，不得独占共享资源", icon: "📦" },
-                            { rule: "特殊装置限制", desc: "严禁建造卡服机、区块抑制器等影响服务器运行的装置", icon: "⚙️" },
-                            { rule: "聊天用语要求", desc: "聊天栏需使用文明用语，禁止发送不当言论", icon: "📝" },
+                            { rule: "服务器保护", desc: "严禁崩服(本来性能就不是很好，你还崩，让不让别人玩啊)", icon: "🛡️" },
+                            { rule: "领地创建规则", desc: "禁止恶意创建领地(特别是不属于你的地方，或者公共区域，你别以为你的领地就是无敌的，我们管理员可以直接编辑，还能给你拆掉，甚至直接给你删掉)", icon: "🏠" },
+                            { rule: "公共资源管理", desc: "禁止恶意给公共箱子上锁(别人共享资源，你给别人箱子锁上了，独吞是吧，小心管理员直接给你锁铲掉)", icon: "📦" },
+                            { rule: "特殊装置限制", desc: "严禁建造卡服机，区块抑制器(你给服务器卡崩了封了，你不想玩，不要让别人不玩)", icon: "⚙️" },
+                            { rule: "聊天用语要求", desc: "聊天栏文明用语(我看谁敢说带f开头的单词，直接给你踹了)", icon: "📝" },
                             { rule: "交易安全规范", desc: "禁止使用现实现金交易，私下交易被骗服务器概不负责", icon: "💰" },
-                            { rule: "礼品码使用规则", desc: "礼品兑换代码禁止二次高价出售，需通过官方售卖渠道获取", icon: "🎁" },
-                            { rule: "经验交易提醒", desc: "请勿相信售卖经验的玩家，仅认可附魔之瓶形式的经验交易（普通玩家无XP命令使用权限）", icon: "⭐" }
+                            { rule: "礼品码使用规则", desc: "礼品兑换代码禁止二次以高价出售，请认准官方渠道(不会真有人去花钱买吧，这东西我们Discord免费送啊)", icon: "🎁" },
+                            { rule: "经验交易提醒", desc: "请不要相信那些可以售卖经验的玩家，除非他售卖的是附魔之瓶(普通玩家无法使用xp命令)", icon: "⭐" }
                         ].map((item, index) => (
                             <div key={index} className="bg-linear-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300">
                                 <div className="flex items-start space-x-3">
@@ -1361,109 +1361,93 @@ export const articles: Record<string, ArticleData> = {
         author: "system_mini",
         readTime: "12分钟",
         content: (
-            <div className="space-y-8">
-                {/* 页面头部 */}
-                <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-blue-200 dark:border-blue-800">
-                    <div className="shrink-0">
-                        <Wrench className="h-12 w-12 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div className="flex-1">
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">服务器FRP节点贡献指南</h1>
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                            <span className="inline-flex items-center px-3 py-1 bg-white dark:bg-gray-700 rounded-full">
-                                💻 技术指南
-                            </span>
-                            <span>最后编辑：2025/10/18</span>
-                            <span>作者：system_mini</span>
-                            <span>阅读时间：12分钟</span>
-                        </div>
-                    </div>
-                </div>
+<div className="space-y-8">
+  {/* 页面头部：全页面统一，PR 请勿更改 */}
+  <div className="flex items-center space-x-4 p-6 bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-blue-200 dark:border-blue-800">
+    <div className="shrink-0">
+      <Wrench className="h-12 w-12 text-blue-600 dark:text-blue-400" />
+    </div>
+    <div className="flex-1">
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">服务器FRP节点贡献指南</h1>
+      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+        <span className="inline-flex items-center px-3 py-1 bg-white dark:bg-gray-700 rounded-full">💻 技术指南</span>
+        <span>最后编辑：2025/10/18</span>
+        <span>作者：system_mini</span>
+        <span>阅读时间：12分钟</span>
+      </div>
+    </div>
+  </div>
 
-                {/* 什么是FRP */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
-                    <div className="flex items-center mb-6">
-                        <div className="w-2 h-10 bg-blue-500 rounded-full mr-4"></div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">什么是FRP</h2>
-                    </div>
-                    <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
-                        <div className="flex items-start space-x-4">
-                            <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl shrink-0">
-                                <span className="text-2xl text-blue-600 dark:text-blue-300">🚀</span>
-                            </div>
-                            <p className="text-blue-800 dark:text-blue-200 text-lg leading-relaxed">
-                                FRP（Fast Reverse Proxy）是一个高性能的反向代理应用，可帮助玩家将内网服务暴露到公网，为服务器提供多节点接入支持，提升不同地区玩家的连接稳定性。
-                            </p>
-                        </div>
-                    </div>
-                </div>
+  {/* 一句话明白 · 新增人话卡片 */}
+  <div className="mb-6 p-4 rounded-2xl border-2 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
+    <div className="flex items-center space-x-3">
+      <span className="text-2xl">⚠️</span>
+      <div>
+        <p className="font-bold text-red-800 dark:text-red-200">一句话：你有公网服务器吗？</p>
+        <p className="text-sm text-red-700 dark:text-red-300 mt-1">
+          没有 → 直接右上角关闭；有 → 继续看，10 分钟把自家服务器借给服主当跳板，帮大家降延迟。
+        </p>
+      </div>
+    </div>
+  </div>
 
-                {/* 配置要求 */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
-                    <div className="flex items-center mb-6">
-                        <div className="w-2 h-10 bg-green-500 rounded-full mr-4"></div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">配置要求</h2>
-                    </div>
-                    <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="flex items-start space-x-3">
-                                <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mt-1">
-                                    <span className="text-green-600 dark:text-green-300">🌐</span>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">网络连接</h4>
-                                    <p className="text-green-700 dark:text-green-300 text-sm">稳定的网络连接（建议丢包率＜1%，延迟＜100ms）</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start space-x-3">
-                                <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mt-1">
-                                    <span className="text-green-600 dark:text-green-300">🔗</span>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">公网资源</h4>
-                                    <p className="text-green-700 dark:text-green-300 text-sm">拥有公网IP或已解析的域名（支持IPv4/IPv6）</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start space-x-3">
-                                <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mt-1">
-                                    <span className="text-green-600 dark:text-green-300">📊</span>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">带宽支持</h4>
-                                    <p className="text-green-700 dark:text-green-300 text-sm">上行带宽≥8Mbps，满足多玩家同时连接</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start space-x-3">
-                                <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mt-1">
-                                    <span className="text-green-600 dark:text-green-300">⚙️</span>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">客户端版本</h4>
-                                    <p className="text-green-700 dark:text-green-300 text-sm">安装FRP客户端（推荐v0.50.0及以上版本）</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  {/* 什么是FRP · 内容保持与原 Wiki 一致 */}
+  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
+    <div className="flex items-center mb-6">
+      <div className="w-2 h-10 bg-blue-500 rounded-full mr-4"></div>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">什么是FRP</h2>
+    </div>
+    <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+      <div className="flex items-start space-x-4">
+        <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl shrink-0">
+          <span className="text-2xl text-blue-600 dark:text-blue-300">🚀</span>
+        </div>
+        <p className="text-blue-800 dark:text-blue-200 text-lg leading-relaxed">
+          FRP（Fast Reverse Proxy）是一个高性能的反向代理应用，可帮助玩家将内网服务暴露到公网，为服务器提供多节点接入支持，提升不同地区玩家的连接稳定性。
+        </p>
+      </div>
+    </div>
+  </div>
 
-                {/* FRP客户端配置 */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
-                    <div className="flex items-center mb-6">
-                        <div className="w-2 h-10 bg-purple-500 rounded-full mr-4"></div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">FRP客户端配置（多格式）</h2>
-                    </div>
+  {/* 配置要求 · 内容保持与原 Wiki 一致 */}
+  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
+    <div className="flex items-center mb-6">
+      <div className="w-2 h-10 bg-green-500 rounded-full mr-4"></div>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">配置要求</h2>
+    </div>
+    <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex items-start space-x-3">
+          <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mt-1"><span className="text-green-600 dark:text-green-300">🌐</span></div>
+          <div><h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">网络连接</h4><p className="text-green-700 dark:text-green-300 text-sm">稳定的网络连接（建议丢包率＜1%，延迟＜100ms）</p></div>
+        </div>
+        <div className="flex items-start space-x-3">
+          <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mt-1"><span className="text-green-600 dark:text-green-300">🔗</span></div>
+          <div><h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">公网资源</h4><p className="text-green-700 dark:text-green-300 text-sm">拥有公网IP或已解析的域名（支持IPv4/IPv6）</p></div>
+        </div>
+        <div className="flex items-start space-x-3">
+          <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mt-1"><span className="text-green-600 dark:text-green-300">📊</span></div>
+          <div><h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">带宽支持</h4><p className="text-green-700 dark:text-green-300 text-sm">上行带宽≥8Mbps，满足多玩家同时连接</p></div>
+        </div>
+        <div className="flex items-start space-x-3">
+          <div className="bg-green-100 dark:bg-green-800 p-2 rounded-lg mt-1"><span className="text-green-600 dark:text-green-300">⚙️</span></div>
+          <div><h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">服务端版本</h4><p className="text-green-700 dark:text-green-300 text-sm">安装FRP服务端（推荐v0.50.0及以上版本）</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* INI格式 */}
-                        <div className="bg-linear-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-indigo-200 dark:border-indigo-800">
-                            <div className="flex items-center mb-4">
-                                <div className="bg-indigo-100 dark:bg-indigo-800 p-3 rounded-xl mr-4">
-                                    <span className="text-2xl text-indigo-600 dark:text-indigo-300">📄</span>
-                                </div>
-                                <h3 className="font-bold text-indigo-900 dark:text-indigo-100">INI格式（frpc.ini）</h3>
-                            </div>
-                            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">
-                                {`[common]
+  {/* FRP配置文件 · 格式与官方 Wiki 完全一致 */}
+  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
+    <div className="flex items-center mb-6">
+      <div className="w-2 h-10 bg-purple-500 rounded-full mr-4"></div>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">FRP配置文件（多格式）</h2>
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* INI */}
+      <div className="bg-linear-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-indigo-200 dark:border-indigo-800">
+        <div className="flex items-center mb-4"><div className="bg-indigo-100 dark:bg-indigo-800 p-3 rounded-xl mr-4"><span className="text-2xl text-indigo-600 dark:text-indigo-300">📄</span></div><h3 className="font-bold text-indigo-900 dark:text-indigo-100">INI格式（frpc.ini）</h3></div>
+        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">{`[common]
 server_addr = xxx.xxx.xxx.xxx
 server_port = 7000
 token = xxxxxxxxxxxxxxxxxxxx
@@ -1471,20 +1455,12 @@ token = xxxxxxxxxxxxxxxxxxxx
 [your_node_name]
 type = tcp
 local_ip = 127.0.0.1
-local_port = 25566`}
-                            </pre>
-                        </div>
-
-                        {/* TOML格式 */}
-                        <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
-                            <div className="flex items-center mb-4">
-                                <div className="bg-purple-100 dark:bg-purple-800 p-3 rounded-xl mr-4">
-                                    <span className="text-2xl text-purple-600 dark:text-purple-300">📄</span>
-                                </div>
-                                <h3 className="font-bold text-purple-900 dark:text-purple-100">TOML格式（frpc.toml）</h3>
-                            </div>
-                            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">
-                                {`[common]
+local_port = 25566`}</pre>
+      </div>
+      {/* TOML */}
+      <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
+        <div className="flex items-center mb-4"><div className="bg-purple-100 dark:bg-purple-800 p-3 rounded-xl mr-4"><span className="text-2xl text-purple-600 dark:text-purple-300">📄</span></div><h3 className="font-bold text-purple-900 dark:text-purple-100">TOML格式（frpc.toml）</h3></div>
+        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">{`[common]
 server_addr = "xxx.xxx.xxx.xxx"
 server_port = 7000
 token = "xxxxxxxxxxxxxxxxxxxx"
@@ -1493,20 +1469,12 @@ token = "xxxxxxxxxxxxxxxxxxxx"
 name = "your_node_name"
 type = "tcp"
 local_ip = "127.0.0.1"
-local_port = 25566`}
-                            </pre>
-                        </div>
-
-                        {/* YAML格式 */}
-                        <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
-                            <div className="flex items-center mb-4">
-                                <div className="bg-green-100 dark:bg-green-800 p-3 rounded-xl mr-4">
-                                    <span className="text-2xl text-green-600 dark:text-green-300">📄</span>
-                                </div>
-                                <h3 className="font-bold text-green-900 dark:text-green-100">YAML格式（frpc.yaml）</h3>
-                            </div>
-                            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">
-                                {`common:
+local_port = 25566`}</pre>
+      </div>
+      {/* YAML */}
+      <div className="bg-linear-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-green-200 dark:border-green-800">
+        <div className="flex items-center mb-4"><div className="bg-green-100 dark:bg-green-800 p-3 rounded-xl mr-4"><span className="text-2xl text-green-600 dark:text-green-300">📄</span></div><h3 className="font-bold text-green-900 dark:text-green-100">YAML格式（frpc.yaml）</h3></div>
+        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">{`common:
   server_addr: xxx.xxx.xxx.xxx
   server_port: 7000
   token: xxxxxxxxxxxxxxxxxxxx
@@ -1515,20 +1483,12 @@ proxies:
   - name: your_node_name
     type: tcp
     local_ip: 127.0.0.1
-    local_port: 25566`}
-                            </pre>
-                        </div>
-
-                        {/* JSON格式 */}
-                        <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
-                            <div className="flex items-center mb-4">
-                                <div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl mr-4">
-                                    <span className="text-2xl text-blue-600 dark:text-blue-300">📄</span>
-                                </div>
-                                <h3 className="font-bold text-blue-900 dark:text-blue-100">JSON格式（frpc.json）</h3>
-                            </div>
-                            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">
-                                {`{
+    local_port: 25566`}</pre>
+      </div>
+      {/* JSON */}
+      <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800">
+        <div className="flex items-center mb-4"><div className="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl mr-4"><span className="text-2xl text-blue-600 dark:text-blue-300">📄</span></div><h3 className="font-bold text-blue-900 dark:text-blue-100">JSON格式（frpc.json）</h3></div>
+        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">{`{
   "common": {
     "server_addr": "xxx.xxx.xxx.xxx",
     "server_port": 7000,
@@ -1542,81 +1502,102 @@ proxies:
       "local_port": 25566
     }
   ]
-}`}
-                            </pre>
-                        </div>
-                    </div>
-                </div>
+}`}</pre>
+      </div>
+    </div>
+  </div>
 
-                {/* 推荐端口与提交流程 */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
-                    <div className="flex items-center mb-6">
-                        <div className="w-2 h-10 bg-yellow-500 rounded-full mr-4"></div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">节点配置与提交</h2>
-                    </div>
+  {/* FRP 服务端示例 */}
+<div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
+  <div className="flex items-center mb-6">
+    <div className="w-2 h-10 bg-rose-500 rounded-full mr-4"></div>
+    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">FRP服务端示例（frps.toml）</h2>
+  </div>
+  <div className="bg-linear-to-r from-rose-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-rose-200 dark:border-rose-800">
+    <div className="flex items-center mb-4">
+      <div className="bg-rose-100 dark:bg-rose-800 p-3 rounded-xl mr-4">
+        <span className="text-2xl text-rose-600 dark:text-rose-300">🛠️</span>
+      </div>
+      <p className="text-rose-800 dark:text-rose-200 text-sm">
+        把下面内容保存为 <code className="bg-rose-200 dark:bg-rose-800 px-2 py-0.5 rounded">frps.toml</code> 并放到你的 FRP 服务端目录，<strong>公网IP:7000</strong> 即对外提供节点服务。
+      </p>
+    </div>
+    <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">
+{`[common]
+bind_addr = 0.0.0.0
+bind_port = 7000
+# 可选：节点鉴权，客户端token需与此一致
+token = "xxxxxxxxxxxxxxxxxxxx"
+# 可选：日志
+log_file = "frps.log"
+log_level = "info"
+# 可选：最大连接池
+max_pool_count = 50
+# 可选：Dashboard（留空即禁用）
+# dashboard_addr = 0.0.0.0
+# dashboard_port = 7500
+# dashboard_user = "admin"
+# dashboard_pwd  = "admin"`}
+    </pre>
+    <p className="text-rose-700 dark:text-rose-300 text-xs mt-3">
+      ⚠️ 防火墙/安全组务必放行 <strong>TCP 7000</strong> 及你准备给玩家用的 <strong>25565-25568</strong> 端口段。
+    </p>
+  </div>
+</div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* 推荐端口 */}
-                        <div className="bg-linear-to-r from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
-                            <h3 className="font-bold text-orange-900 dark:text-orange-100 mb-4 flex items-center">
-                                <span className="bg-orange-100 dark:bg-orange-800 p-2 rounded-lg mr-3">🔌</span>
-                                推荐使用端口
-                            </h3>
-                            <div className="flex flex-wrap gap-3 mb-4">
-                                <span className="bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-full font-semibold border-2 border-orange-300 dark:border-orange-600">25565（最好）</span>
-                                <span className="bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-full font-semibold border-2 border-orange-300 dark:border-orange-600">25566</span>
-                                <span className="bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-full font-semibold border-2 border-orange-300 dark:border-orange-600">25568</span>
-                                <span className="bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-full font-semibold border-2 border-orange-300 dark:border-orange-600">22222</span>
-                            </div>
-                            <p className="text-orange-700 dark:text-orange-300 text-sm">
-                                注：端口需确保未被占用且已在防火墙开放，避免与其他服务冲突
-                            </p>
-                        </div>
+  {/* 节点配置与提交 · 格式与官方 Wiki 完全一致 */}
+  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
+    <div className="flex items-center mb-6">
+      <div className="w-2 h-10 bg-yellow-500 rounded-full mr-4"></div>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">节点配置与提交</h2>
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* 推荐端口 */}
+      <div className="bg-linear-to-r from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-orange-200 dark:border-orange-800">
+        <h3 className="font-bold text-orange-900 dark:text-orange-100 mb-4 flex items-center"><span className="bg-orange-100 dark:bg-orange-800 p-2 rounded-lg mr-3">🔌</span>推荐使用端口</h3>
+        <div className="flex flex-wrap gap-3 mb-4">
+          <span className="bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-full font-semibold border-2 border-orange-300 dark:border-orange-600">25565（最好）</span>
+          <span className="bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-full font-semibold border-2 border-orange-300 dark:border-orange-600">25566</span>
+          <span className="bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-full font-semibold border-2 border-orange-300 dark:border-orange-600">25568</span>
+          <span className="bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-full font-semibold border-2 border-orange-300 dark:border-orange-600">22222</span>
+        </div>
+        <p className="text-orange-700 dark:text-orange-300 text-sm">注：端口需确保未被占用且已在防火墙开放，避免与其他服务冲突</p>
+      </div>
 
-                        {/* 提交流程 */}
-                        <div className="bg-linear-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800">
-                            <h3 className="font-bold text-yellow-900 dark:text-yellow-100 mb-4 flex items-center">
-                                <span className="bg-yellow-100 dark:bg-yellow-800 p-2 rounded-lg mr-3">📤</span>
-                                节点提交流程
-                            </h3>
-
-                            <div className="space-y-4">
-                                <div className="bg-white/50 dark:bg-gray-600/30 p-4 rounded-lg">
-                                    <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">提交前准备</h4>
-                                    <ul className="text-yellow-700 dark:text-yellow-300 space-y-2 text-sm">
-                                        <li className="flex items-start">
-                                            <span className="text-yellow-500 mr-2 mt-1">1.</span>
-                                            <span>选择任一格式配置文件完成配置，本地测试连通性（启动命令：<code className="bg-yellow-200 dark:bg-yellow-800 px-2 py-0.5 rounded mx-1">frpc -c 配置文件名.格式</code>）</span>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <span className="text-yellow-500 mr-2 mt-1">2.</span>
-                                            <span>记录节点信息：节点名称、公网IP/域名、使用端口、网络运营商</span>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div className="bg-white/50 dark:bg-gray-600/30 p-4 rounded-lg">
-                                    <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">提交方式</h4>
-                                    <ul className="text-yellow-700 dark:text-yellow-300 space-y-2 text-sm">
-                                        <li className="flex items-start">
-                                            <span className="text-yellow-500 mr-2 mt-1">1.</span>
-                                            <span>将配置文件与节点信息，私聊发送给服主（ID：system_mini）</span>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <span className="text-yellow-500 mr-2 mt-1">2.</span>
-                                            <span>若通过邮件提交，主题格式为：<code className="bg-yellow-200 dark:bg-yellow-800 px-2 py-0.5 rounded mx-1">[节点贡献] 你的ID_推荐端口</code></span>
-                                        </li>
-                                        <li className="flex items-start">
-                                            <span className="text-yellow-500 mr-2 mt-1">3.</span>
-                                            <span>等待服主审核（1-2个工作日），审核通过后节点将加入服务器节点列表</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      {/* 提交流程 */}
+      <div className="bg-linear-to-r from-yellow-50 to-amber-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-yellow-200 dark:border-yellow-800">
+        <h3 className="font-bold text-yellow-900 dark:text-yellow-100 mb-4 flex items-center"><span className="bg-yellow-100 dark:bg-yellow-800 p-2 rounded-lg mr-3">📤</span>节点提交流程</h3>
+        <div className="space-y-4">
+          <div className="bg-white/50 dark:bg-gray-600/30 p-4 rounded-lg">
+            <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">提交前准备</h4>
+            <ul className="text-yellow-700 dark:text-yellow-300 space-y-2 text-sm">
+              <li className="flex items-start"><span className="text-yellow-500 mr-2 mt-1">1.</span><span>选择任一格式配置文件完成配置，本地测试连通性（启动命令：<code className="bg-yellow-200 dark:bg-yellow-800 px-2 py-0.5 rounded mx-1">frpc -c 配置文件名.格式</code>）</span></li>
+              <li className="flex items-start"><span className="text-yellow-500 mr-2 mt-1">2.</span><span>记录节点信息：节点名称、公网IP/域名、使用端口、网络运营商</span></li>
+            </ul>
+          </div>
+          <div className="bg-white/50 dark:bg-gray-600/30 p-4 rounded-lg">
+            <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">提交方式</h4>
+            <ul className="text-yellow-700 dark:text-yellow-300 space-y-2 text-sm">
+              <li className="flex items-start"><span className="text-yellow-500 mr-2 mt-1">1.</span><span>将配置文件与节点信息，私聊发送给服主（ID：system_mini）</span></li>
+              <li className="flex items-start"><span className="text-yellow-500 mr-2 mt-1">2.</span><span>若通过邮件提交，主题格式为：<code className="bg-yellow-200 dark:bg-yellow-800 px-2 py-0.5 rounded mx-1">[节点贡献] 你的ID_推荐端口</code></span></li>
+              <li className="flex items-start"><span className="text-yellow-500 mr-2 mt-1">3.</span><span>等待服主审核（1-2个工作日），审核通过后节点将加入服务器节点列表</span></li>
+            </ul>
+          </div>
+          {/* 人话注意事项 · 可合并进原段落 */}
+          <div className="mt-4 p-3 rounded-lg bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200 text-sm">
+            <strong>注意：</strong>服主要的是「客户端怎么连你」的示例配置（frpc.ini），
+            但<strong>你得先自己装好 FRP 服务端（frps）</strong>，并保证
+            <strong>公网IP:7000 能访问、25565-25568 端口已放行</strong>。
+            审核通过后，我们会把你的节点挂到主服务器，玩家就能选你的线路进游戏。
+          </div>
+          <p className="text-yellow-700 dark:text-yellow-300 text-sm mt-2">
+            完全自愿，非强制，我们公网IP出口有限，只有300Mbps，经常几乎满载，想要为人民服务，就速速来贡献吧！
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
         ),
     },
     "special-features": {
