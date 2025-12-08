@@ -1,8 +1,7 @@
 "use client"
 
 import React from "react"
-import { Heart, Share2, Terminal, Shield, Wrench, HelpCircle, Trophy, Download } from "lucide-react"
-import { WikiSkeleton } from "@/components/wiki-skeleton"
+import { Terminal, Shield, Wrench, HelpCircle, Trophy, Download } from "lucide-react"
 import type { ArticleData } from "./types"
 
 export const articles: Record<string, ArticleData> = {
