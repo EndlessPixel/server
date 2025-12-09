@@ -12,7 +12,7 @@ import "./globals.css";
 const DOMAIN = "https://ep.endlesspixel.fun";
 const LOGO = "https://ep.endlesspixel.fun/EndlessPixel.png";
 const FAVICON_ICO = "/icon.ico";
-const OG_IMAGE = "https://ep.endlesspixel.fun/banner.png";
+const OG_IMAGE = "https://ep.endlesspixel.fun/banner.jpg";
 const DISCORD_INVITE = "https://discord.gg/k63hRWt3fF";
 const BRAND_NAME = "EndlessPixel Studio";
 const CURRENT_YEAR = new Date().getFullYear().toString();
