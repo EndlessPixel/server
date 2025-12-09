@@ -1,13 +1,12 @@
+// next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true,   // 慎用，仅临时绕过类型错误
   },
   images: {
     unoptimized: true,
   },
-}
-export default nextConfig
+};
+
+export default nextConfig;
