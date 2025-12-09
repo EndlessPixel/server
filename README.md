@@ -42,31 +42,6 @@ npm run dev
 
 浏览器访问 [http://localhost:3000](http://localhost:3000) 即可实时预览。
 
-### 常用命令
-
-| 命令 | 说明 |
-| ---- | ---- |
-| `npm run dev` | 开发服务器（热更新） |
-| `npm run build` | 构建生产版本 |
-| `npm start` | 启动生产服务器 |
-| `npm run lint` | ESLint 检查 |
-| `npm run lint:fix` | 自动修复 ESLint 问题 |
-| `npm run type-check` | TypeScript 类型检查 |
-
-## 🧩 环境变量
-
-新建 `.env.local` 并填入：
-
-```bash
-# GitHub OAuth
-GITHUB_ID=your_github_oauth_app_id
-GITHUB_SECRET=your_github_oauth_app_secret
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=openssl_rand_base64_32
-```
-
-完整示例见 `.env.example`
-
 ## 🤝 贡献指南
 
 1. Fork 本仓库  
