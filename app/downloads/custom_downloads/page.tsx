@@ -31,9 +31,6 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { motion, AnimatePresence } from "framer-motion";
 
-// 修正：将 dynamic 从函数改为字符串值
-export const dynamic = 'force-dynamic'; // 注意这里是字符串，不是函数
-
 // 加载状态组件
 const Loading = () => (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-slate-50 via-blue-50/30 to-cyan-50/20 dark:from-slate-900 dark:via-blue-950/20">
