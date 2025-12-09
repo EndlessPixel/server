@@ -43,31 +43,6 @@ npm run dev
 
 Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Common Commands
-
-| Command | Description |
-| ------- | ----------- |
-| `npm run dev` | Start dev server (HMR) |
-| `npm run build` | Build for production |
-| `npm start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Auto-fix ESLint issues |
-| `npm run type-check` | TypeScript type check |
-
-## 🧩 Environment Variables
-
-Create `.env.local`:
-
-```bash
-# GitHub OAuth
-GITHUB_ID=your_github_oauth_app_id
-GITHUB_SECRET=your_github_oauth_app_secret
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=openssl_rand_base64_32
-```
-
-See `.env.example` for full list.
-
 ## 🤝 Contributing
 
 1. Fork the repository  
