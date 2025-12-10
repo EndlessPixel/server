@@ -395,36 +395,17 @@ export default function RootLayout({
       lang="zh-CN"
       className={clsx(GeistSans.variable, GeistMono.variable)}
       suppressHydrationWarning
-      prefix="og: https://ogp.me/ns# fb: https://www.facebook.com/2008/fbml" // 补充FB命名空间
+      prefix="og: https://ogp.me/ns# fb: https://www.facebook.com/2008/fbml"
     >
-      <head>{/* 核心编码（不可省略） */}
-        <meta charSet="UTF-8" />
-        {/* 版权信息（精简） */}
-        <meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}.`} />
-        {/* 图标（强化跨浏览器兼容） */}
-        <link rel="icon" href={FAVICON_ICO} type="image/x-icon" />
-        <link rel="shortcut icon" href={FAVICON_ICO} type="image/x-icon" />
-        {/* 新增：Edge/IE兼容 */}
-        <meta name="msapplication-config" content="/browserconfig.xml" /> {/* 若有则补充，无则注释 */}
-        {/* 移动端极致优化 */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="EndlessPixel" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" /> {/* 冗余但保险 */}
-        {/* 兼容性优化 */}
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <meta name="format-detection" content="telephone=no,email=no,address=no" />
-        {/* 性能优化（预加载核心资源） */}
-        <link rel="preconnect" href={DOMAIN} crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://github.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://discord.gg" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href={DOMAIN} />
-        <link rel="dns-prefetch" href="https://github.com" />
-        <link rel="dns-prefetch" href="https://discord.gg" />
-        {/* 新增：预加载OG图（提升社交预览速度） */}
+      <head><meta charSet="UTF-8" /><meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}.`} />
+        <link rel="icon" href={FAVICON_ICO} type="image/x-icon" /><link rel="shortcut icon" href={FAVICON_ICO} type="image/x-icon" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="EndlessPixel" /><meta name="mobile-web-app-capable" content="yes" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="format-detection" content="telephone=no,email=no,address=no" />
+        <link rel="preconnect" href={DOMAIN} crossOrigin="anonymous" /><link rel="preconnect" href="https://github.com" crossOrigin="anonymous" /><link rel="preconnect" href="https://discord.gg" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href={DOMAIN} /><link rel="dns-prefetch" href="https://github.com" /><link rel="dns-prefetch" href="https://discord.gg" />
         <link rel="preload" href={OG_IMAGE} as="image" type="image/png" crossOrigin="anonymous" />
-        {/* 结构化数据（压缩输出） */}
         {jsonLd.map((ld, index) => (
           <script
             key={index}
