@@ -13,8 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 
-export const dynamic = 'force-dynamic'
-
 /* ------------------------------------------------------------------ */
 /* Types
 /* ------------------------------------------------------------------ */

@@ -38,8 +38,6 @@ import remarkGfm from "remark-gfm";
 import { Input } from "@/components/ui/input";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export const dynamic = 'force-dynamic'
-
 // 添加 launcherMeta.ts 的类型定义
 interface LauncherMeta {
   id: string;
