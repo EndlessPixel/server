@@ -8,49 +8,45 @@ import { Toaster } from "@/components/ui/toaster";
 import clsx from "clsx";
 import "./globals.css";
 
-// 基础配置（保留你的核心信息，仅优化命名规范）
+// 基础配置（明确资源用途，路径精准匹配）
 const DOMAIN = "https://ep.endlesspixel.fun";
-const LOGO = "https://ep.endlesspixel.fun/EndlessPixel.png";
-const FAVICON_ICO = "/icon.ico";
-const OG_IMAGE = "https://ep.endlesspixel.fun/banner.jpg";
+const LOGO = "https://ep.endlesspixel.fun/EndlessPixel.png"; // Logo（PNG）
+const FAVICON_ICO = "/icon.ico"; // 图标（ICO）
+const BANNER_IMAGE = "https://ep.endlesspixel.fun/banner.jpg"; // 横幅（JPG）
 const DISCORD_INVITE = "https://discord.gg/k63hRWt3fF";
 const BRAND_NAME = "EndlessPixel Studio";
 const CURRENT_YEAR = new Date().getFullYear().toString();
 
-// 社交链接配置（结构化，便于JSON-LD复用）
+// 社交链接配置
 const SOCIAL_LINKS = {
   discord: DISCORD_INVITE,
   github: "https://github.com/EndlessPixel",
 };
 
-// 🔥 视口配置极限优化（核心指标+SEO友好）
+// 视口配置（符合搜索引擎移动端要求）
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1.0,
-  maximumScale: 1.0,
-  userScalable: false,
+  maximumScale: 5.0,
+  userScalable: true,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
   ],
   viewportFit: "cover",
-  // 新增：强制移动端渲染为移动端视图（避免适配错误）
   interactiveWidget: "resizes-content",
 };
 
-// 🔥 SEO元数据极限优化（覆盖全维度，无冗余）
+// SEO 元数据（资源用途精准匹配）
 export const metadata: Metadata = {
   metadataBase: new URL(DOMAIN),
   
-  // 核心标题（更紧凑，含核心关键词）
   title: { 
     default: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.10", 
     template: "%s | EndlessPixel - 免费MC服务器" 
   },
-  // 描述（字数控制在150内，核心关键词前置+转化导向）
   description:
     "EndlessPixel提供免费纯净Minecraft Java服务器，支持1.8-1.21.10版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验。",
-  // 关键词（去重+核心词优先，控制在10个内）
   keywords: [
     "Minecraft服务器", "免费MC服务器", "Java版服务器", "Purpur核心", 
     "我的世界公益服", "EndlessPixel", "1.21服务器", "无尽像素"
@@ -59,18 +55,12 @@ export const metadata: Metadata = {
   creator: BRAND_NAME,
   publisher: BRAND_NAME,
   
-  // 规范链接（强化唯一性，避免SEO降权）
   alternates: {
     canonical: DOMAIN,
-    languages: {
-      "zh-CN": `${DOMAIN}/zh-CN`,
-      // 若有其他语言版本补充，无则保留zh-CN
-    },
-    // 新增：AMP适配（无AMP则注释，避免报错）
-    // amp: `${DOMAIN}/amp`,
+    languages: { "zh-CN": `${DOMAIN}/zh-CN` },
   },
   
-  // 🔥 Open Graph 极限优化（Discord/微信/FB全兼容）
+  // Open Graph（横幅图用作预览图，Logo 关联品牌）
   openGraph: {
     type: "website",
     locale: "zh_CN",
@@ -80,67 +70,60 @@ export const metadata: Metadata = {
     description: "免费Minecraft Java服务器，支持1.8-1.21.10版本，Purpur核心+Discord社区，无付费无广告！",
     images: [
       { 
-        url: OG_IMAGE, 
+        url: BANNER_IMAGE, // 横幅图作为社交预览图（符合视觉需求）
         width: 1200, 
         height: 630, 
-        alt: "EndlessPixel - 免费纯净Minecraft Java服务器",
-        type: "image/png",
-        secureUrl: OG_IMAGE,
-        // 新增：图片权限（允许爬虫索引）
-        // license: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+        alt: "EndlessPixel 服务器横幅",
+        type: "image/jpeg", // 精准匹配 JPG 格式
+        secureUrl: BANNER_IMAGE,
       },
     ],
-    // 新增：Discord预览专属优化
-    // titleTag: "EndlessPixel - 免费MC服务器",
   },
   
-  // 🔥 Twitter/X 卡片极限优化（大卡片+高优先级）
-    twitter: {
-      card: "summary_large_image",
-      title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.10",
-      description: "免费MC Java服务器，支持1.8-1.21.10，Purpur核心，无付费无广告，Discord社区实时互动！",
-      images: [
-        {
-          url: OG_IMAGE,
-          alt: "EndlessPixel Minecraft Server",
-          width: 1200,
-          height: 630,
-        }
-      ],
-      site: "@EndlessPixel",
-      creator: "@EndlessPixelStudio",
-      // 新增：Twitter标签优化
-    },
+  // Twitter 卡片（同 Open Graph，用横幅图提升视觉冲击力）
+  twitter: {
+    card: "summary_large_image",
+    title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.10",
+    description: "免费MC Java服务器，支持1.8-1.21.10，Purpur核心，无付费无广告，Discord社区实时互动！",
+    images: [
+      {
+        url: BANNER_IMAGE,
+        alt: "EndlessPixel Minecraft Server Banner",
+        width: 1200,
+        height: 630,
+      }
+    ],
+    site: "@EndlessPixel",
+    creator: "@EndlessPixelStudio",
+  },
   
-  // 🔥 图标配置极限优化（全平台兼容）
+  // 图标配置（严格区分：ICO 用作图标，Logo 用作苹果图标/mask 图标）
   icons: {
     icon: [
-      { url: FAVICON_ICO, sizes: "16x16", type: "image/x-icon" },
+      { url: FAVICON_ICO, sizes: "16x16", type: "image/x-icon" }, // 小尺寸图标
       { url: FAVICON_ICO, sizes: "32x32", type: "image/x-icon" },
       { url: FAVICON_ICO, sizes: "48x48", type: "image/x-icon" },
       { url: FAVICON_ICO, sizes: "64x64", type: "image/x-icon" },
       { url: FAVICON_ICO, sizes: "128x128", type: "image/x-icon" },
-      { url: FAVICON_ICO, sizes: "256x256", type: "image/x-icon" },
-      // 新增：SVG图标（若有/public/icon.svg则启用，无则注释）
-      // { url: "/icon.svg", sizes: "any", type: "image/svg+xml" },
+      { url: FAVICON_ICO, sizes: "256x256", type: "image/x-icon" }, // 大尺寸图标
     ],
     apple: [
-      { url: "/banner.png", sizes: "180x180", type: "image/png", rel: "apple-touch-icon" },
-      // 新增：不同尺寸苹果图标（若有则补充，无则保留180x180）
-      // { url: "/apple-touch-icon-120x120.png", sizes: "120x120", type: "image/png" },
+      { 
+        url: LOGO, // Logo 用作苹果触摸图标（品牌一致性）
+        sizes: "180x180", 
+        type: "image/png", 
+        rel: "apple-touch-icon" 
+      },
     ],
-    shortcut: FAVICON_ICO,
+    shortcut: FAVICON_ICO, // 快捷方式图标用 ICO
     other: {
       rel: "mask-icon",
-      url: "/banner.png",
+      url: LOGO, // Logo 用作面具图标（保持品牌统一）
       color: "#0a0a0a",
-      // 新增：Windows磁贴图标（若有则补充）
-      // "msapplication-TileImage": "/banner.png",
-      // "msapplication-TileColor": "#0a0a0a",
     },
   },
   
-  // PWA配置（保留现有，强化SEO）
+  // PWA 配置（关联 Logo 和图标）
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -148,7 +131,7 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   
-  // 🔥 爬虫优化极限版（精准控制）
+  // Robots 配置（优先索引）
   robots: {
     index: true,
     follow: true,
@@ -157,66 +140,42 @@ export const metadata: Metadata = {
     nosnippet: false,
     notranslate: false,
     noarchive: false,
-    // maxSnippet: -1,
-    // maxImagePreview: "large",
-    // maxVideoPreview: -1,
     googleBot: {
       index: true,
       follow: true,
       noimageindex: false,
-      "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
-      // 新增：Google特定指令
-      noarchive: false,
-      nosnippet: false,
     },
-    // 新增：其他爬虫适配
-    // baiduBot: { // 百度爬虫
-    //   index: true,
-    //   follow: true,
-    //   noimageindex: false,
-    // },
-    // bingBot: { // 必应爬虫
-    //   index: true,
-    //   follow: true,
-    //   noimageindex: false,
-    // },
   },
   
-  // 🔥 新增核心SEO字段（无新增引用）
-  category: "Games/Video Games/Minecraft", // 更精准的分类
+  category: "Games/Video Games/Minecraft",
   referrer: "origin-when-cross-origin",
   formatDetection: {
     telephone: false,
     email: false,
     address: false,
   },
-  // 新增：内容类型（强化编码）
-  // contentType: "text/html; charset=utf-8",
-  // 新增：过期控制（避免缓存）
-  // expires: new Date(Date.now() + 86400000).toUTCString(), // 24小时过期
-  // 新增：缓存控制（平衡性能与SEO）
-  // cacheControl: "public, max-age=86400, s-maxage=86400",
 };
 
-// 🔥 结构化数据极限优化（Schema.org全维度覆盖）
+// 结构化数据（资源用途精准匹配，强化品牌识别）
 const jsonLd = [
-  // 1. 组织信息（强化品牌权威性）
+  // 1. 组织信息（Logo 作为品牌标识，横幅图不作为组织图标）
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": `${DOMAIN}#organization`, // 唯一标识
+    "@id": `${DOMAIN}#organization`,
     name: "EndlessPixel",
     legalName: BRAND_NAME,
     url: DOMAIN,
     logo: {
       "@type": "ImageObject",
-      url: LOGO,
+      url: LOGO, // 明确用 Logo 作为组织标识
       width: 512,
       height: 512,
-      caption: "EndlessPixel Logo",
+      caption: "EndlessPixel 官方 Logo",
       inLanguage: "zh-CN",
+      type: "image/png", // 匹配 Logo 格式
     },
     sameAs: Object.values(SOCIAL_LINKS),
     foundingDate: "2024-01-01",
@@ -241,11 +200,10 @@ const jsonLd = [
     },
     copyrightHolder: { "@id": `${DOMAIN}#organization` },
     copyrightYear: CURRENT_YEAR,
-    isicV4: "9329", // 娱乐服务行业代码
-    taxID: "", // 若无则注释，有则补充
+    isicV4: "9329",
   },
   
-  // 2. 网站信息（强化核心业务）
+  // 2. 网站信息（关联 Logo 和横幅图）
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -255,21 +213,19 @@ const jsonLd = [
     description: "免费纯净的Minecraft Java服务器，支持1.8-1.21.10版本，Purpur核心",
     publisher: { "@id": `${DOMAIN}#organization` },
     inLanguage: "zh-CN",
-    // 新增：搜索功能（若有站内搜索则启用）
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${DOMAIN}/search?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-      queryType: "text",
+    image: { // 网站关联横幅图（提升视觉权重）
+      "@type": "ImageObject",
+      url: BANNER_IMAGE,
+      width: 1200,
+      height: 630,
+      caption: "EndlessPixel 服务器横幅",
+      type: "image/jpeg",
     },
-    copyrightHolder: { "@id": `${DOMAIN}#organization` },
-    copyrightYear: CURRENT_YEAR,
-    // 新增：更新频率（提升爬虫优先级）
     dateModified: new Date().toISOString(),
     datePublished: "2024-01-01",
   },
   
-  // 3. 服务信息（强化转化）
+  // 3. 服务信息（核心转化）
   {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -278,7 +234,6 @@ const jsonLd = [
     provider: { "@id": `${DOMAIN}#organization` },
     description: "免费Minecraft Java版服务器，支持1.8-1.21.10版本，无付费无广告",
     serviceType: "游戏服务",
-    // 新增：服务特征（突出优势）
     serviceOutput: {
       "@type": "Thing",
       name: "Minecraft服务器访问权限",
@@ -295,10 +250,9 @@ const jsonLd = [
           priceCurrency: "CNY",
           availability: "https://schema.org/InStock",
           offerCategory: "free",
-          // 新增：优惠描述
           description: "永久免费，无VIP，无广告，无付费内容",
           validFrom: "2024-01-01",
-          validThrough: `${CURRENT_YEAR + 1}-12-31`, // 有效期
+          validThrough: `${CURRENT_YEAR + 1}-12-31`,
           seller: { "@id": `${DOMAIN}#organization` },
         },
       ],
@@ -306,62 +260,11 @@ const jsonLd = [
     availableChannel: {
       "@type": "ServiceChannel",
       serviceUrl: DOMAIN,
-      servicePhone: "", // 若无则注释
       email: "2267848501@qq.com",
     },
-    // 新增：用户评分（若有则补充）
-    // aggregateRating: {
-    //   "@type": "AggregateRating",
-    //   ratingValue: "4.9",
-    //   reviewCount: "100+",
-    // },
   },
   
-  // 4. Discord社区（强化社交信号）
-  {
-    "@context": "https://schema.org",
-    "@type": "SocialMediaPosting",
-    "@id": `${DOMAIN}#discord`,
-    name: `加入${BRAND_NAME} Discord社区`,
-    description: "获取服务器更新、活动通知、玩家交流和技术支持",
-    url: DISCORD_INVITE,
-    author: { "@id": `${DOMAIN}#organization` },
-    publisher: { "@id": `${DOMAIN}#organization` },
-    dateCreated: "2024-01-01",
-    dateModified: new Date().toISOString(),
-    inLanguage: "zh-CN",
-    // 新增：互动数据（若有则补充）
-    // commentCount: "500+",
-    // shareCount: "100+",
-  },
-  
-  // 🔥 新增：面包屑导航（提升内链权重）
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "首页",
-        item: DOMAIN,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Minecraft服务器",
-        item: `${DOMAIN}/server`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "免费MC服务器",
-        item: `${DOMAIN}/free-server`,
-      },
-    ],
-  },
-  
-  // 🔥 新增：FAQ结构化数据
+  // 4. FAQ 结构化数据（提升搜索展示）
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -381,12 +284,20 @@ const jsonLd = [
           "@type": "Answer",
           text: "完全免费，无VIP、无广告、无付费内容，永久免费游玩。"
         }
+      },
+      {
+        "@type": "Question",
+        name: "如何加入EndlessPixel服务器？",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "1. 打开Minecraft Java版（1.8-1.21.10）；2. 添加服务器地址：ep.endlesspixel.fun；3. 加入Discord社区获取最新公告：https://discord.gg/k63hRWt3fF。"
+        }
       }
     ]
   }
 ];
 
-// 主布局组件（极限优化性能+SEO）
+// 主布局组件（资源加载优化，保持品牌一致性）
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -397,40 +308,42 @@ export default function RootLayout({
       suppressHydrationWarning
       prefix="og: https://ogp.me/ns# fb: https://www.facebook.com/2008/fbml"
     >
-      <head><meta charSet="UTF-8" /><meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}.`} />
-        <link rel="icon" href={FAVICON_ICO} type="image/x-icon" /><link rel="shortcut icon" href={FAVICON_ICO} type="image/x-icon" />
-        <meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="EndlessPixel" /><meta name="mobile-web-app-capable" content="yes" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="format-detection" content="telephone=no,email=no,address=no" />
-        <link rel="preconnect" href={DOMAIN} crossOrigin="anonymous" /><link rel="preconnect" href="https://github.com" crossOrigin="anonymous" /><link rel="preconnect" href="https://discord.gg" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href={DOMAIN} /><link rel="dns-prefetch" href="https://github.com" /><link rel="dns-prefetch" href="https://discord.gg" />
-        <link rel="preload" href={OG_IMAGE} as="image" type="image/png" crossOrigin="anonymous" />
+      <head>
+        <meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}.`} />
+        {/* 预连接关键域名 */}
+        <link rel="preconnect" href={DOMAIN} crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://github.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://discord.gg" crossOrigin="anonymous" />
+        {/* DNS 预解析 */}
+        <link rel="dns-prefetch" href={DOMAIN} />
+        <link rel="dns-prefetch" href="https://github.com" />
+        <link rel="dns-prefetch" href="https://discord.gg" />
+        {/* 结构化数据 */}
         {jsonLd.map((ld, index) => (
           <script
             key={index}
             type="application/ld+json"
             dangerouslySetInnerHTML={{ 
-              __html: JSON.stringify(ld, (k, v) => v === "" ? undefined : v) // 过滤空值
+              __html: JSON.stringify(ld, (k, v) => v === "" || v === undefined ? undefined : v)
             }}
           />
         ))}
-        {/* Sitemap和Robots（强化爬虫发现） */}
+        {/* Sitemap 链接 */}
         <link rel="sitemap" type="application/xml" title="Sitemap" href={`${DOMAIN}/sitemap.xml`} />
-        <link rel="robots" href={`${DOMAIN}/robots.txt`} />
-        {/* 🔥 新增：禁止转码（避免搜索引擎篡改页面） */}
+        {/* 禁止转码 */}
         <meta httpEquiv="Cache-Control" content="no-transform" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground">
-        {/* 🔥 新增：noscript（适配无JS环境，提升SEO） */}
+        {/* noscript 适配（显示核心信息） */}
         <noscript>
           <style>{`
             body { background: #ffffff; color: #0a0a0a; }
-            .no-js-warning { padding: 1rem; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; margin: 1rem; }
+            .no-js-warning { padding: 1rem; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; margin: 1rem; text-align: center; border-radius: 8px; }
           `}</style>
           <div className="no-js-warning">
-            本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。
+            本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。<br />
+            服务器地址：ep.endlesspixel.fun | Discord：<a href={DISCORD_INVITE} target="_blank" rel="noopener noreferrer">https://discord.gg/k63hRWt3fF</a>
           </div>
         </noscript>
         
