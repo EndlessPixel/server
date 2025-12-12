@@ -308,7 +308,7 @@ export default function RootLayout({
       suppressHydrationWarning
       prefix="og: https://ogp.me/ns# fb: https://www.facebook.com/2008/fbml"
     >
-      <head>
+      <head><meta name="msvalidate.01" content="898B5BEB29FDA2453EA187F18BA9F16F" />
         <meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}.`} />
         {/* 预连接关键域名 */}
         <link rel="preconnect" href={DOMAIN} crossOrigin="anonymous" />
