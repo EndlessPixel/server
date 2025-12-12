@@ -1,7 +1,7 @@
 // app/sitemap.xml/route.js
 const config = {
   siteUrl: 'https://ep.endlesspixel.fun',
-  lastModified: new Date('2025-12-09'),
+  lastModified: new Date('2025-12-13'),
   revalidate: 86400, // 24小时重新生成
 };
 
@@ -18,7 +18,27 @@ export default function sitemap() {
       priority: 0.8,
     },
     {
+      url: `${config.siteUrl}/downloads/launcher/`,
+      lastModified: config.lastModified,
+      priority: 0.8,
+    },
+    {
+      url: `${config.siteUrl}/downloads/modpack/`,
+      lastModified: config.lastModified,
+      priority: 0.8,
+    },
+    {
+      url: `${config.siteUrl}/downloads/custom_downloads/`,
+      lastModified: config.lastModified,
+      priority: 0.7,
+    },
+    {
       url: `${config.siteUrl}/status/`,
+      lastModified: config.lastModified,
+      priority: 0.6,
+    },
+    {
+      url: `${config.siteUrl}/status/mcserverstatus/`,
       lastModified: config.lastModified,
       priority: 0.6,
     },
@@ -30,7 +50,7 @@ export default function sitemap() {
     {
       url: `${config.siteUrl}/about/`,
       lastModified: config.lastModified,
-      priority: 0.4,
+      priority: 0.5,
     },
   ];
 }
