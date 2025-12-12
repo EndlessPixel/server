@@ -475,9 +475,9 @@ export function DownloadSection() {
       <div className="text-center text-sm text-slate-500 dark:text-slate-400 mt-8 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-slate-200 dark:border-slate-700">
         <p>
           加速下载由 
-          <a href="https://gh-proxy.com/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com</a>
-          <a href="https://gh.imixc.top/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh.imixc.top</a>
-          <a href="https://gh.jasonzeng.dev/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh.jasonzeng.dev</a>
+          <a href="https://gh-proxy.com/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com </a>
+          <a href="https://gh.imixc.top/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"> gh.imixc.top </a>
+          <a href="https://gh.jasonzeng.dev/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"> gh.jasonzeng.dev</a>
           提供。
         </p>
       </div>
@@ -595,7 +595,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
               },
               {
                 name: "Jasonzeng 文件代理加速",
-                url: `https://gh.jasonzeng.dev/${file.downloadUrl}`,
+                url: `https://gh.xmly.dev/${file.downloadUrl}`,
                 tag: "Jasonzeng",
                 tip: "大文件下载不建议使用！",
               },
