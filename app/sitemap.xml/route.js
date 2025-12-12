@@ -35,5 +35,4 @@ export default function sitemap() {
   ];
 }
 
-// 顶层导出缓存配置（Next.js 16.x 兼容）
-export const revalidate = config.revalidate;
+export const revalidate = 86400; // 24hours
