@@ -1,6 +1,6 @@
 // app/sitemap.xml/route.js
 const config = {
-  siteUrl: 'https://www.endlesspixel.fun',
+  siteUrl: 'https://ep.endlesspixel.fun',
   lastModified: new Date('2025-12-09'),
   revalidate: 86400, // 24小时重新生成
 };
