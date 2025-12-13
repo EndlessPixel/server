@@ -89,17 +89,18 @@ function ExplorerBar() {
   };
 
   /* 面包屑生成 ------------------------------------------------------- */
-  const crumbs = pathname
-    .split('/')
-    .filter(Boolean)
-    .reduce<Array<{ href: string; label: string }>>(
-      (acc, seg) => {
-        const href = `${acc.at(-1)?.href || ''}/${seg}`;
-        acc.push({ href, label: formatLabel(seg) });
-        return acc;
-      },
-      [{ href: '/', label: '首页' }]
-    );
+const crumbs = pathname
+  .split('/')
+  .filter(Boolean)
+  .reduce<Array<{ href: string; label: string }>>(
+    (acc, seg) => {
+      const parent = acc.at(-1)?.href || '/';
+      const href = (parent.endsWith('/') ? parent : parent + '/') + seg;
+      acc.push({ href, label: formatLabel(seg) });
+      return acc;
+    },
+    [{ href: '/', label: '首页' }]
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -166,10 +167,10 @@ export function Navigation() {
   useLockBody(isMenuOpen);
 
   const navItems = [
-  { href: '/', label: '首页', icon: Home, description: '返回主页' },
-  { href: '/downloads', label: '资源下载', icon: Download, description: '模组包下载' },
+  { href: '/', label: '首页', icon: Home, description: '主页' },
+  { href: '/downloads', label: '资源下载', icon: Download, description: '模组包/启动器下载' },
   { href: '/status', label: '状态查询', icon: Activity, description: '服务器状态' },
-  { href: '/wiki', label: 'Wiki', icon: BookOpen, description: '游戏百科' },
+  { href: '/wiki', label: 'Wiki', icon: BookOpen, description: '服务器专属百科' },
   { href: '/about', label: '关于我们', icon: Users, description: '团队介绍' }
 ];
 
