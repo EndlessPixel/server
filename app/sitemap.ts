@@ -1,8 +1,8 @@
-// app/sitemap.xml/route.js
+// app/sitemap.ts
 const config = {
   siteUrl: 'https://ep.endlesspixel.fun',
   lastModified: new Date('2025-12-13'),
-  revalidate: 86400, // 24小时重新生成
+  revalidate: 86400,
 };
 
 export default function sitemap() {
@@ -55,4 +55,4 @@ export default function sitemap() {
   ];
 }
 
-export const revalidate = 86400; // 24hours
+export const revalidate = 86400;
