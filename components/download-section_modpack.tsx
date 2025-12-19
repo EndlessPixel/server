@@ -1,714 +1,448 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, Package, ChevronDown, ChevronUp, Loader2, ExternalLink, Star, Shield, Zap, ArrowUp, ArrowDown, Search, Filter, Rocket, Calendar, TrendingUp } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
-import remarkGfm from "remark-gfm";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import {
+  Download, Package, ChevronDown, ChevronUp, Loader2, ExternalLink,
+  Star, Shield, Zap, Search, Rocket, Calendar, TrendingUp,
+} from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import remarkGfm from 'remark-gfm';
+
+/* ----------  类型  ---------- */
+type Branch = 'main' | 'real';
 
 interface ParsedRelease {
-  name: string
-  version: string
-  mcVersion: string
-  releaseDate: string
-  isPrerelease: boolean
-  isLatest: boolean
-  downloadCount: number
-  files: Array<{
-    name: string
-    downloadUrl: string
-    downloadCount: number
-  }>
-  changelog: string
-  branch: "main" | "real"
-  tags?: string[]
+  name: string;
+  version: string;
+  mcVersion: string;
+  releaseDate: string;
+  isPrerelease: boolean;
+  isLatest: boolean;
+  downloadCount: number;
+  files: Array<{ name: string; downloadUrl: string; downloadCount: number }>;
+  changelog: string;
+  branch: Branch;
 }
 
 interface GitHubRelease {
-  id: number
-  tag_name: string
-  name: string
-  body: string
-  published_at: string
-  html_url: string
-  prerelease: boolean
-  assets: Array<{
-    name: string
-    download_count: number
-    browser_download_url: string
-  }>
+  id: number;
+  tag_name: string;
+  name: string;
+  body: string;
+  published_at: string;
+  html_url: string;
+  prerelease: boolean;
+  assets: Array<{ name: string; download_count: number; browser_download_url: string }>;
 }
 
-export function DownloadSection() {
-  const router = useRouter();
-  const [releases, setReleases] = useState<ParsedRelease[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeBranch, setActiveBranch] = useState<"main" | "real">("main");
-  const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<"semantic" | "releaseDate" | "downloadCount">("semantic");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [tags, setTags] = useState<string[]>([]);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const { toast } = useToast();
+/* ----------  工具  ---------- */
+const cn = (...e: any[]) => e.filter(Boolean).join(' ');
 
+// 修复：完整语义化版本比较（支持正式版 > 预发布版，且预发布版后缀排序）
+const compareSemanticVersions = (v1: string, v2: string): number => {
+  // 解析版本：分离 主版本号 + 预发布后缀（如 v9-2.0 → [9,2,0], 无后缀；v9-b2 → [9], 后缀 b2）
+  const parseVersion = (version: string) => {
+    // 匹配预发布后缀（-b/-beta/-rc 等开头）
+    const preReleaseMatch = version.match(/-([a-zA-Z]+.*)$/);
+    const preRelease = preReleaseMatch ? preReleaseMatch[1] : '';
+    // 提取主版本号的数字部分
+    const mainParts = (preRelease ? version.replace(/-[a-zA-Z]+.*$/, '') : version)
+      .match(/\d+/g)?.map(Number) || [];
+    return { mainParts, preRelease };
+  };
+
+  const { mainParts: p1, preRelease: pr1 } = parseVersion(v1);
+  const { mainParts: p2, preRelease: pr2 } = parseVersion(v2);
+
+  // 1. 先比较主版本号（核心逻辑）
+  const maxLen = Math.max(p1.length, p2.length);
+  for (let i = 0; i < maxLen; i++) {
+    const num1 = p1[i] || 0;
+    const num2 = p2[i] || 0;
+    if (num1 > num2) return 1;
+    if (num1 < num2) return -1;
+  }
+
+  // 2. 主版本号相同 → 正式版 > 预发布版
+  if (!pr1 && pr2) return 1; // v1是正式版，v2是预发布版 → v1大
+  if (pr1 && !pr2) return -1; // v1是预发布版，v2是正式版 → v2大
+
+  // 3. 都是预发布版 → 比较后缀（如 b2 > b1）
+  if (pr1 && pr2) {
+    // 提取后缀里的数字（b2 → 2, b10 →10）
+    const getPreNum = (pr: string) => Number(pr.match(/\d+/)?.[0] || 0);
+    return getPreNum(pr1) - getPreNum(pr2);
+  }
+
+  // 版本完全相同
+  return 0;
+};
+
+/* ----------  主组件  ---------- */
+export function DownloadSection() {
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [releases, setReleases] = useState<ParsedRelease[]>([]);
+  const [activeBranch, setActiveBranch] = useState<Branch>('main');
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState<'semantic' | 'releaseDate' | 'downloadCount'>('semantic');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
+
+  /* 初始拉取 */
   useEffect(() => {
     fetchReleases();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchReleases = async () => {
     try {
       setLoading(true);
-      const response = await fetch("https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases?per_page=200", {
-        headers: {
-          Accept: "application/vnd.github.v3+json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`GitHub API error: ${response.status}`);
-      }
-      const data: GitHubRelease[] = await response.json();
-      const mainReleases = data.filter(release =>
-        !release.name.toLowerCase().includes("real") &&
-        !release.tag_name.toLowerCase().includes("real")
-      );
-      const realReleases = data.filter(release =>
-        release.name.toLowerCase().includes("real") ||
-        release.tag_name.toLowerCase().includes("real")
-      );
-      const latestMain = mainReleases.length > 0 && !mainReleases[0].prerelease ? mainReleases[0].id : null;
-      const latestReal = realReleases.length > 0 && !realReleases[0].prerelease ? realReleases[0].id : null;
-      const parsedReleases: ParsedRelease[] = data.map((release) => {
-        const mcVersionMatch = release.tag_name.match(/^(\d+\.\d+\.\d+)/);
-        const mcVersion = mcVersionMatch ? mcVersionMatch[1] : "Unknown";
-        let branch: "main" | "real" = "main";
-        if (release.name.toLowerCase().includes("real") ||
-          release.tag_name.toLowerCase().includes("real")) {
-          branch = "real";
-        }
-        const files = release.assets.map((asset) => ({
-          name: asset.name,
-          downloadUrl: asset.browser_download_url,
-          downloadCount: asset.download_count,
+      const res = await fetch('https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases?per_page=200');
+      if (!res.ok) throw new Error(String(res.status));
+      const data: GitHubRelease[] = await res.json();
+
+      // 修复：最新版本判断（按发布时间，而非 ID）
+      const getLatestReleaseId = (branch: Branch) => {
+        const branchReleases = data.filter(r =>
+          (branch === 'main' && !/real/i.test(r.tag_name)) ||
+          (branch === 'real' && /real/i.test(r.tag_name))
+        ).filter(r => !r.prerelease); // 正式版优先
+        if (branchReleases.length === 0) return null;
+        // 按发布时间排序，取最新的
+        return branchReleases.sort((a, b) =>
+          new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
+        )[0].id;
+      };
+
+      const latestMain = getLatestReleaseId('main');
+      const latestReal = getLatestReleaseId('real');
+
+      const parsed: ParsedRelease[] = data.map(r => {
+        const branch: Branch = /real/i.test(r.name + r.tag_name) ? 'real' : 'main';
+        const files = r.assets.map(a => ({
+          name: a.name,
+          downloadUrl: a.browser_download_url, // 保留完整 GitHub 下载 URL
+          downloadCount: a.download_count,
         }));
-        const downloadCount = files.reduce((total, file) => total + file.downloadCount, 0);
-        const releaseDate = new Date(release.published_at).toLocaleDateString("zh-CN");
-        const isLatest = (branch === "main" && release.id === latestMain) ||
-          (branch === "real" && release.id === latestReal);
         return {
-          name: release.name || release.tag_name,
-          version: release.tag_name,
-          mcVersion,
-          releaseDate,
-          isPrerelease: release.prerelease,
-          isLatest,
-          downloadCount,
+          name: r.name || r.tag_name,
+          version: r.tag_name,
+          mcVersion: r.tag_name.match(/^(\d+\.\d+\.\d+)/)?.[1] ?? 'Unknown',
+          releaseDate: new Date(r.published_at).toLocaleDateString('zh-CN'),
+          isPrerelease: r.prerelease,
+          isLatest: (branch === 'main' && r.id === latestMain) || (branch === 'real' && r.id === latestReal),
+          downloadCount: files.reduce((s, f) => s + f.downloadCount, 0),
           files,
-          changelog: release.body || "暂无更新日志。",
+          changelog: r.body || '暂无更新日志。',
           branch,
-        }
+        };
       });
-      setReleases(parsedReleases);
-      const allTags = Array.from(new Set(parsedReleases.flatMap((release) => release.tags || [])));
-      setTags(allTags);
-    } catch (error) {
-      console.error("Failed to fetch releases:", error);
-      toast({
-        title: "获取版本信息失败",
-        description: "无法从GitHub获取最新版本信息，请稍后重试。",
-        variant: "destructive",
-      });
+      setReleases(parsed);
+    } catch {
+      toast({ title: '获取版本信息失败', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
-  }
-
-  const handleSortChange = (criteria: "semantic" | "releaseDate" | "downloadCount") => {
-    if (sortBy === criteria) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(criteria);
-      setSortOrder("desc");
-    }
-  }
-
-  const compareVersionStrings = (v1: string, v2: string) => {
-    const parseVersion = (version: string) => {
-      const match = version.match(/^EndlessPixel-(\d+\.\d+\.\d+)-v(\d+)-(.*)$/i);
-
-      if (!match) {
-        return {
-          mcVersion: "0.0.0",
-          modVersion: 0,
-          buildType: "",
-          buildNum: 0,
-          fullVersion: version
-        };
-      }
-
-      const [, mcVersion, modVersionStr, buildInfo] = match;
-      const modVersion = parseInt(modVersionStr, 10);
-
-      let buildType = "release";
-      let buildNum = 0;
-
-      const betaMatch = buildInfo.match(/^b(\d+)$/i);
-      if (betaMatch) {
-        buildType = "beta";
-        buildNum = parseInt(betaMatch[1], 10);
-      } else {
-        const releaseMatch = buildInfo.match(/^(\d+(?:\.\d+)*)$/);
-        if (releaseMatch) {
-          const versionParts = releaseMatch[1].split(".").map(Number);
-          buildNum = versionParts[0] * 1000 + (versionParts[1] || 0) * 10 + (versionParts[2] || 0);
-        }
-      }
-
-      return {
-        mcVersion,
-        modVersion,
-        buildType,
-        buildNum,
-        fullVersion: version
-      };
-    };
-
-    const v1Info = parseVersion(v1);
-    const v2Info = parseVersion(v2);
-
-    if (v1Info.mcVersion !== v2Info.mcVersion) {
-      const mcParts1 = v1Info.mcVersion.split(".").map(Number);
-      const mcParts2 = v2Info.mcVersion.split(".").map(Number);
-
-      for (let i = 0; i < 3; i++) {
-        if (mcParts1[i] !== mcParts2[i]) {
-          return mcParts2[i] - mcParts1[i];
-        }
-      }
-    }
-
-    if (v1Info.modVersion !== v2Info.modVersion) {
-      return v2Info.modVersion - v1Info.modVersion;
-    }
-
-    if (v1Info.buildType !== v2Info.buildType) {
-      if (v1Info.buildType === "release") return -1;
-      if (v2Info.buildType === "release") return 1;
-    }
-
-    if (v1Info.buildNum !== v2Info.buildNum) {
-      return v2Info.buildNum - v1Info.buildNum;
-    }
-
-    return v1Info.fullVersion.localeCompare(v2Info.fullVersion);
   };
 
-  const semanticCompare = (a: ParsedRelease, b: ParsedRelease) => {
-    if (a.isLatest && !b.isLatest) return -1;
-    if (!a.isLatest && b.isLatest) return 1;
-
-    return compareVersionStrings(a.name, b.name);
-  };
-
-  const filteredReleases = releases
-    .filter((release) => release.branch === activeBranch)
-    .filter((release) =>
-      release.name.toLowerCase().includes(search.toLowerCase()) ||
-      release.version.toLowerCase().includes(search.toLowerCase()) ||
-      release.mcVersion.toLowerCase().includes(search.toLowerCase())
-    )
-    .filter((release) => (selectedTag ? release.tags?.includes(selectedTag) : true))
-    .sort((a, b) => {
-      if (sortBy === "semantic") {
-        return sortOrder === "asc" ? -semanticCompare(a, b) : semanticCompare(a, b);
-      }
-
-      const compare = (key: "releaseDate" | "downloadCount") => {
-        if (key === "releaseDate") {
-          return new Date(b[key]).getTime() - new Date(a[key]).getTime();
+  /* 筛选 / 排序（核心修复：语义化排序） */
+  const filtered = useMemo(() => {
+    const list = releases
+      .filter(r => r.branch === activeBranch)
+      .filter(r =>
+        [r.name, r.version, r.mcVersion].some(v =>
+          v.toLowerCase().includes(search.toLowerCase()),
+        ),
+      )
+      .sort((a, b) => {
+        const m = sortOrder === 'asc' ? 1 : -1;
+        if (sortBy === 'semantic') {
+          // 最新版本始终排在最前面
+          if (a.isLatest && !b.isLatest) return -1;
+          if (!a.isLatest && b.isLatest) return 1;
+          // 使用修复后的语义化比较函数
+          return m * compareSemanticVersions(a.version, b.version);
         }
-        return b[key] - a[key];
-      };
+        if (sortBy === 'releaseDate') {
+          return m * (new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
+        }
+        return m * (a.downloadCount - b.downloadCount);
+      });
+    return list;
+  }, [releases, activeBranch, search, sortBy, sortOrder]);
 
-      return sortOrder === "asc" ? -compare(sortBy) : compare(sortBy);
-    });
+  /* 分页 */
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  const paged = useMemo(() => filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE), [filtered, page]);
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="flex flex-col items-center justify-center py-16 space-y-4">
-        <div className="relative">
-          <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
-          <Rocket className="w-6 h-6 text-blue-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-        </div>
-        <div className="text-center">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">正在获取版本信息</h3>
-          <p className="text-slate-600 dark:text-slate-400">正在从 GitHub 加载最新的模组包信息...</p>
-        </div>
+      <div className="flex flex-col items-center justify-center py-16 gap-4">
+        <Loader2 className="w-12 h-12 animate-spin text-(--accent-main)" />
+        <p className="text-muted-foreground">正在加载 GitHub 数据 …</p>
       </div>
     );
-  }
 
   return (
     <div className="space-y-6">
-      {/* Header Section */}
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+      {/* 标题 */}
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           下载模组包
         </h1>
-        <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-          选择适合您游戏风格的分支版本，体验不同的游戏乐趣
-        </p>
+        <p className="text-muted-foreground">选择适合你的分支版本，体验不同游戏乐趣</p>
       </div>
-
-      {/* Search and Controls */}
-      <div className="bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm rounded-xl p-6 border border-slate-200 dark:border-slate-700">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="flex-1 w-full">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-              <Input
-                className="pl-10 w-full"
-                placeholder="搜索版本号、名称、MC版本…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={fetchReleases} className="flex items-center gap-2">
-              <RefreshCw className="w-4 h-4" />
-              刷新
-            </Button>
-          </div>
-        </div>
-
-        {/* Filters and Sort */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-500" />
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">排序方式：</span>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {([
-              { key: "semantic" as const, label: "版本号", icon: Rocket },
-              { key: "releaseDate" as const, label: "发布日期", icon: Calendar },
-              { key: "downloadCount" as const, label: "下载量", icon: TrendingUp }
-            ]).map(({ key, label, icon: Icon }) => (
-              <Button
-                key={key}
-                variant={sortBy === key ? "default" : "outline"}
-                size="sm"
-                onClick={() => handleSortChange(key)}
-                className="flex items-center gap-2"
-              >
-                <Icon className="w-4 h-4" />
-                {sortBy === key && (sortOrder === "asc" ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />)}
-                {label}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {/* Tags Filter */}
-        {tags.length > 0 && (
-          <div className="flex flex-col sm:flex-row gap-4 mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-slate-500" />
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">标签筛选：</span>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant={selectedTag === null ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedTag(null)}
-              >
-                全部
-              </Button>
-              {tags.map((tag) => (
-                <Button
-                  key={tag}
-                  variant={selectedTag === tag ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedTag(tag)}
-                >
-                  {tag}
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Branch Tabs */}
-      <Tabs defaultValue="main" onValueChange={(value) => setActiveBranch(value as "main" | "real")}>
-        <TabsList className="grid w-full grid-cols-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
-          <TabsTrigger
-            value="main"
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 rounded-lg transition-all"
-          >
-            <Star className="w-4 h-4" />
-            主分支
-            {releases.filter(r => r.branch === "main" && r.isLatest).length > 0 && (
-              <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs">
-                最新
-              </Badge>
-            )}
+      <Tabs defaultValue={activeBranch} onValueChange={v => { setActiveBranch(v as Branch); setPage(1); }}>
+        <TabsList className="grid grid-cols-2">
+          <TabsTrigger value="main" className="gap-2">
+            <Star className="w-4 h-4" /> Main 分支
           </TabsTrigger>
-          <TabsTrigger
-            value="real"
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 rounded-lg transition-all"
-          >
-            <Shield className="w-4 h-4" />
-            Real分支
-            {releases.filter(r => r.branch === "real" && r.isLatest).length > 0 && (
-              <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 text-xs">
-                最新
-              </Badge>
-            )}
+          <TabsTrigger value="real" className="gap-2">
+            <Shield className="w-4 h-4" /> Real 分支
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="main" className="space-y-4 mt-6">
-          {/* Main Branch Info */}
-          <div className="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
-                <Star className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-blue-800 dark:text-blue-200 text-lg mb-2">主分支 (Main)</h3>
-                <p className="text-blue-700 dark:text-blue-300 text-sm leading-relaxed">
-                  标准游戏体验，包含丰富的优化和辅助功能，适合大多数玩家。稳定可靠，持续更新，提供最佳的游戏体验。
-                </p>
-                <div className="flex flex-wrap gap-2 mt-3">
-                  <Badge className="bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300">
-                    正式版
-                  </Badge>
-                  <Badge className="bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-300">
-                    稳定版
-                  </Badge>
-                  <Badge className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/30 dark:text-amber-300">
-                    推荐使用
-                  </Badge>
-                </div>
-              </div>
-            </div>
+      </Tabs>
+      {/* 搜索 / 排序 */}
+      <Card className="p-4 space-y-4">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="搜索版本号、名称、MC版本…"
+              className="pl-10"
+            />
           </div>
+          <Button variant="outline" onClick={fetchReleases}>刷新</Button>
+        </div>
 
-          {/* Releases List */}
-          {filteredReleases.length === 0 ? (
-            <Card className="border-dashed">
-              <CardContent className="py-16 text-center">
-                <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">暂无可用版本</h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">当前筛选条件下没有找到匹配的版本</p>
-                <Button onClick={fetchReleases} variant="outline">
-                  重新获取
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {filteredReleases.map((release) => (
-                <ReleaseCard key={release.version} release={release} />
-              ))}
-            </div>
-          )}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-muted-foreground">排序：</span>
+          {(['semantic', 'releaseDate', 'downloadCount'] as const).map(key => (
+            <Button
+              key={key}
+              size="sm"
+              variant={sortBy === key ? 'default' : 'outline'}
+              onClick={() => {
+                if (sortBy === key) setSortOrder(o => (o === 'desc' ? 'asc' : 'desc'));
+                else {
+                  setSortBy(key);
+                  setSortOrder('desc');
+                }
+              }}
+            >
+              {key === 'semantic' && <Rocket className="w-4 h-4 mr-1" />}
+              {key === 'releaseDate' && <Calendar className="w-4 h-4 mr-1" />}
+              {key === 'downloadCount' && <TrendingUp className="w-4 h-4 mr-1" />}
+              {key === 'semantic' ? '版本号' : key === 'releaseDate' ? '发布日期' : '下载量'}
+              {sortBy === key && (
+                <span className="ml-1">{sortOrder === 'desc' ? '↓' : '↑'}</span>
+              )}
+            </Button>
+          ))}
+        </div>
+      </Card>
+
+      {/* 分支 Tab */}
+      <Tabs defaultValue={activeBranch} onValueChange={v => { setActiveBranch(v as Branch); setPage(1); }}>
+        <TabsContent value="main" className="space-y-4 pt-4">
+          <ReleaseGrid list={paged} />
+          <Pagination total={total} current={page} onPage={setPage} />
         </TabsContent>
-
-        <TabsContent value="real" className="space-y-4 mt-6">
-          {/* Real Branch Info */}
-          <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
-                <Shield className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-purple-800 dark:text-purple-200 text-lg mb-2">Real分支</h3>
-                <p className="text-purple-700 dark:text-purple-300 text-sm leading-relaxed">
-                  更注重真实性的游戏体验，跟随正式版。适合喜爱现实主义的玩家，提供更具挑战性和沉浸感的游戏内容。
-                </p>
-                <div className="flex flex-wrap gap-2 mt-3">
-                  <Badge className="bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900/30 dark:text-purple-300">
-                    真实版
-                  </Badge>
-                  <Badge className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/30 dark:text-amber-300">
-                    硬核体验
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Releases List */}
-          {filteredReleases.length === 0 ? (
-            <Card className="border-dashed">
-              <CardContent className="py-16 text-center">
-                <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">暂无Real分支版本</h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">当前筛选条件下没有找到匹配的Real分支版本</p>
-                <Button onClick={fetchReleases} variant="outline">
-                  重新获取
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {filteredReleases.map((release) => (
-                <ReleaseCard key={release.version} release={release} />
-              ))}
-            </div>
-          )}
+        <TabsContent value="real" className="space-y-4 pt-4">
+          <ReleaseGrid list={paged} />
+          <Pagination total={total} current={page} onPage={setPage} />
         </TabsContent>
       </Tabs>
 
-      {/* Footer Note */}
-      <div className="text-center text-sm text-slate-500 dark:text-slate-400 mt-8 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-slate-200 dark:border-slate-700">
-        <p>
-          加速下载由 
-          <a href="https://gh-proxy.com/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com </a>
-          <a href="https://gh.imixc.top/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"> gh.imixc.top </a>
-          <a href="https://gh.jasonzeng.dev/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"> gh.jasonzeng.dev</a>
-          提供。
-        </p>
-      </div>
+      <MirrorFooter />
+    </div>
+  );
+}
+
+/* ----------  子组件  ---------- */
+
+function ReleaseGrid({ list }: { list: ParsedRelease[] }) {
+  if (list.length === 0)
+    return (
+      <Card className="border-dashed">
+        <CardContent className="py-16 text-center text-muted-foreground">暂无匹配版本</CardContent>
+      </Card>
+    );
+  return (
+    <div className="space-y-4">
+      {list.map(r => (
+        <ReleaseCard key={r.version} release={r} />
+      ))}
     </div>
   );
 }
 
 function ReleaseCard({ release }: { release: ParsedRelease }) {
-  const [showChangelog, setShowChangelog] = useState(false);
-
-  const getVersionType = () => {
-    if (release.isPrerelease) return "预发布版";
-    if (release.branch === "real") return "真实版";
-    return "正式版";
-  }
-
-  const getVersionBadgeColor = () => {
-    if (release.isPrerelease) return "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-300";
-    if (release.branch === "real") return "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900/30 dark:text-purple-300";
-    return "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300";
-  }
-
+  const [open, setOpen] = useState(false);
+  const isMain = release.branch === 'main';
+  const typeLabel = release.isPrerelease ? '预发布版' : isMain ? '正式版' : '真实版';
   return (
-    <Card className={`
-      relative overflow-hidden transition-all duration-300 hover:shadow-lg
-      ${release.isLatest
-        ? release.branch === "main"
-          ? "border-green-200 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 dark:border-green-800"
-          : "border-purple-200 bg-linear-to-r from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 dark:border-purple-800"
-        : "bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm border-slate-200 dark:border-slate-700"
-      }
-    `}>
-      {/* Latest Version Ribbon */}
+    <Card
+      className={cn(
+        'relative',
+        release.isLatest && (isMain ? 'border-green-200 bg-green-50 dark:border-green-400/30 dark:bg-green-900/20' : ''),
+      )}
+    >
       {release.isLatest && (
-        <div className="absolute top-4 right-4">
-          <Badge className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-3 py-1 shadow-lg flex items-center gap-1">
-            <Zap className="w-3 h-3" />
-            最新版本
-          </Badge>
-        </div>
+        <Badge className="absolute top-3 right-3 bg-green-500 hover:bg-green-600 gap-1">
+          <Zap className="w-3 h-3" />最新版本
+        </Badge>
       )}
 
-      <CardHeader className="pb-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3 flex-1">
-            <div className={`p-2 rounded-lg ${release.branch === "main"
-                ? "bg-blue-100 dark:bg-blue-900/30"
-                : "bg-purple-100 dark:bg-purple-900/30"
-              }`}>
-              <Package className={`w-5 h-5 ${release.branch === "main"
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-purple-600 dark:text-purple-400"
-                }`} />
+      <CardHeader className="pb-3">
+        <div className="flex items-start gap-3">
+          <div
+            className={cn(
+              'p-2 rounded-lg text-white',
+              isMain ? 'bg-blue-500' : 'bg-purple-500',
+            )}
+          >
+            <Package className="w-5 h-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <CardTitle className="text-base truncate">{release.name}</CardTitle>
+              <Badge className={release.isPrerelease ? 'bg-amber-500 hover:bg-amber-600' : isMain ? 'bg-blue-500 hover:bg-blue-600' : 'bg-purple-500 hover:bg-purple-600'}>
+                {typeLabel}
+              </Badge>
+              <Badge variant="outline">{isMain ? '主分支' : 'Real 分支'}</Badge>
             </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <CardTitle className="text-lg text-slate-900 dark:text-white truncate">
-                  {release.name}
-                </CardTitle>
-
-                <Badge className={getVersionBadgeColor()}>
-                  {getVersionType()}
-                </Badge>
-
-                <Badge variant="outline" className={
-                  release.branch === "main"
-                    ? "bg-blue-50 text-blue-700 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300"
-                    : "bg-purple-50 text-purple-700 border-purple-300 dark:bg-purple-900/30 dark:text-purple-300"
-                }>
-                  {release.branch === "main" ? "主分支" : "Real分支"}
-                </Badge>
-              </div>
-
-              <CardDescription className="flex items-center gap-3 flex-wrap">
-                <span className="flex items-center gap-1">
-                  <Rocket className="w-4 h-4" />
-                  Minecraft {release.mcVersion}
-                </span>
-                <span className="text-slate-300">•</span>
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  发布于 {release.releaseDate}
-                </span>
-                <span className="text-slate-300">•</span>
-                <span className="flex items-center gap-1">
-                  <Download className="w-4 h-4" />
-                  下载 {release.downloadCount} 次
-                </span>
-              </CardDescription>
-            </div>
+            <CardDescription className="flex flex-wrap items-center gap-2 text-sm mt-1 text-muted-foreground">
+              <span className="flex items-center gap-1"><Rocket className="w-3 h-3" />Minecraft版本: {release.mcVersion}</span>
+              <span>•</span>
+              <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />发布日期: {release.releaseDate}</span>
+              <span>•</span>
+              <span className="flex items-center gap-1"><Download className="w-3 h-3" />下载次数: {release.downloadCount}</span>
+            </CardDescription>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        {/* Download Files */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {release.files && release.files.map((file) => {
-            const mirrors = [
-              {
-                name: "Cloudflare 主站（全球加速）",
-                url: `https://gh-proxy.com/${file.downloadUrl}`,
-                tag: "Cloudflare",
-              },
-              {
-                name: "Fastly CDN",
-                url: `https://cdn.gh-proxy.com/${file.downloadUrl}`,
-                tag: "Fastly",
-              },
-              {
-                name: "Edgeone 全球加速",
-                url: `https://edgeone.gh-proxy.com/${file.downloadUrl}`,
-                tag: "Edgeone",
-              },
-              {
-                name: "Jasonzeng 文件代理加速",
-                url: `https://gh.xmly.dev/${file.downloadUrl}`,
-                tag: "Jasonzeng",
-                tip: "大文件下载不建议使用！",
-              },
-              {
-                name: "Imixc 国内高速下载",
-                url: `https://gh.imixc.top/${file.downloadUrl}`,
-                tag: "Imixc",
-                tip: "大文件下载不建议使用！",
-              },
-              {
-                name: "香港 国内线路优化,secbit.ai&Sharon CDN赞助",
-                url: `https://hk.gh-proxy.com/${file.downloadUrl}`,
-                tag: "香港",
-                tip: "大文件下载不建议使用！",
-              },
-            ]
-
-            return (
-              <div key={file.name} className="bg-white/50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600 backdrop-blur-sm">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium text-slate-900 dark:text-white truncate">
-                        {file.name}
-                      </span>
-                      <Badge variant="outline" className="text-xs bg-slate-100 dark:bg-slate-700">
-                        {file.downloadCount} 次下载
-                      </Badge>
-                    </div>
-                  </div>
-                  <Button size="sm" asChild className="flex items-center gap-2">
-                    <a href={file.downloadUrl} target="_blank" rel="noopener noreferrer">
-                      <Download className="w-4 h-4" />
-                      官方下载
-                    </a>
-                  </Button>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="text-xs text-slate-500 dark:text-slate-400">
-                    镜像下载（如遇GitHub下载缓慢可尝试）：
-                  </div>
-
-                  {mirrors.some(m => m.tip) && (
-                    <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded border border-amber-200 dark:border-amber-800">
-                      ⚠️ 香港线路大文件不建议使用
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap gap-2">
-                    {mirrors.map((mirror) => (
-                      <Button
-                        key={mirror.url}
-                        size="xs"
-                        variant="outline"
-                        asChild
-                        className="flex items-center gap-2 text-xs"
-                        title={mirror.tip || mirror.name}
-                      >
-                        <a href={mirror.url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-3 h-3" />
-                          {mirror.tag}
-                        </a>
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+      <CardContent className="space-y-3">
+        <div className="grid gap-3 md:grid-cols-2">
+          {release.files.map(f => (
+            <FileBlock key={f.name} file={f} />
+          ))}
         </div>
 
-        {/* Changelog */}
-        <div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowChangelog(!showChangelog)}
-            className="flex items-center gap-2 w-full justify-center py-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50"
-          >
-            {showChangelog ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            {showChangelog ? "隐藏更新日志" : "查看更新日志"}
-          </Button>
-
-          {showChangelog && (
-            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 prose prose-sm max-w-none dark:prose-invert wrap-break-word">
-              <ReactMarkdown
-                rehypePlugins={[rehypeRaw]}
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  a: ({ node, ...props }) => (
-                    <a target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400" {...props} />
-                  )
-                }}
-              >
-                {release.changelog}
-              </ReactMarkdown>
-            </div>
-          )}
-        </div>
+        <Button variant="ghost" size="sm" onClick={() => setOpen(v => !v)} className="w-full gap-2">
+          {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          {open ? '隐藏更新日志' : '查看更新日志'}
+        </Button>
+        {open && (
+          <div className="code-block rounded-lg border p-3 prose prose-sm dark:prose-invert max-w-none overflow-auto max-h-60">
+            <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+              {release.changelog}
+            </ReactMarkdown>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 }
 
-// Add missing RefreshCw icon component
-function RefreshCw({ className }: { className?: string }) {
+// 只替换 FileBlock 组件里的 getMirrorUrl 函数，其他代码不变！
+function FileBlock({ file }: { file: { name: string; downloadUrl: string; downloadCount: number } }) {
+  // 正确：直接拼接镜像站 + GitHub 原始 URL（和官网格式完全一致）
+  const getMirrorUrl = (host: string) => {
+    return `${host}/${file.downloadUrl}`;
+  };
+
+  const mirrors = [
+    { tag: 'Cloudflare', url: getMirrorUrl('https://gh-proxy.org'), tip: '推荐' }, // 注意：官网用的是 gh-proxy.org，之前是 gh-proxy.com，统一对齐
+    { tag: 'Fastly', url: getMirrorUrl('https://cdn.gh-proxy.org'), tip: '推荐' },
+    { tag: 'Edgeone', url: getMirrorUrl('https://edgeone.gh-proxy.org'), tip: '推荐' },
+    { tag: 'Jasonzeng', url: getMirrorUrl('https://gh.xmly.dev'), tip: '大文件慎用' },
+    { tag: 'Imixc', url: getMirrorUrl('https://gh.imixc.top'), tip: '大文件慎用' },
+    { tag: '香港', url: getMirrorUrl('https://hk.gh-proxy.org'), tip: '香港节点' },
+  ];
+
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M3 3v5h5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M16 16h5v5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div className="p-3 rounded-xl border bg-card/50">
+      <div className="flex items-center justify-between mb-2">
+        <span className="font-medium text-sm truncate">{file.name}</span>
+        <Badge variant="secondary" className="text-xs">下载 {file.downloadCount} 次</Badge>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {/* 官方链接：完整 GitHub 原始 URL */}
+        <Button size="xs" asChild>
+          <a href={file.downloadUrl} target="_blank" rel="noopener noreferrer">
+            <Download className="w-3 h-3 mr-1" />官方
+          </a>
+        </Button>
+        {/* 镜像链接：和官网格式一致（镜像站 + 未编码的 GitHub 完整 URL） */}
+        {mirrors.map(m => (
+          <Button key={m.tag} size="xs" variant="outline" asChild title={m.tip}>
+            <a href={m.url} target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="w-3 h-3 mr-1" />{m.tag}
+            </a>
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Pagination({ total, current, onPage }: { total: number; current: number; onPage: (p: number) => void }) {
+  if (total <= 1) return null;
+  const delta = 2;
+  const left = Math.max(1, current - delta);
+  const right = Math.min(total, current + delta);
+  const pages: (number | string)[] = [];
+  if (left > 1) pages.push(1, '...');
+  for (let i = left; i <= right; i++) pages.push(i);
+  if (right < total) pages.push('...', total);
+
+  return (
+    <div className="flex justify-center gap-2 pt-2">
+      {pages.map((p, i) =>
+        typeof p === 'number' ? (
+          <Button key={i} size="sm" variant={p === current ? 'default' : 'outline'} onClick={() => onPage(p)}>
+            {p}
+          </Button>
+        ) : (
+          <span key={i} className="px-2 text-muted-foreground">...</span>
+        ),
+      )}
+    </div>
+  );
+}
+
+function MirrorFooter() {
+  return (
+    <div className="text-center text-sm text-muted-foreground p-4 rounded-lg border bg-secondary/30">
+      <p className="mb-2">加速下载由以下服务提供：</p>
+      <div className="flex flex-wrap justify-center gap-2">
+        {['gh-proxy.com', 'gh.imixc.top', 'gh.xmly.dev'].map(d => (
+          <a
+            key={d}
+            href={`https://${d}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1 bg-primary text-primary-foreground rounded hover:opacity-90 transition-opacity"
+          >
+            {d}
+          </a>
+        ))}
+      </div>
+    </div>
   );
 }
