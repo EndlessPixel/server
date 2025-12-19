@@ -1,5 +1,6 @@
 {
   "css.validate": false,
   "less.validate": false,
-  "scss.validate": false
+  "scss.validate": false,
+  "search.useIgnoreFiles": false
 }
