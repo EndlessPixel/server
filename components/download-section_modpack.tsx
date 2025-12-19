@@ -257,10 +257,12 @@ export function DownloadSection() {
       {/* 分支 Tab */}
       <Tabs defaultValue={activeBranch} onValueChange={v => { setActiveBranch(v as Branch); setPage(1); }}>
         <TabsContent value="main" className="space-y-4 pt-4">
+          <Pagination total={total} current={page} onPage={setPage} />
           <ReleaseGrid list={paged} />
           <Pagination total={total} current={page} onPage={setPage} />
         </TabsContent>
         <TabsContent value="real" className="space-y-4 pt-4">
+          <Pagination total={total} current={page} onPage={setPage} />
           <ReleaseGrid list={paged} />
           <Pagination total={total} current={page} onPage={setPage} />
         </TabsContent>
