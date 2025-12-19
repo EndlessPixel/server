@@ -41,10 +41,6 @@ export default function DownloadsPage() {
             <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent mb-6">
               资源下载
             </h1>
-            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-              下载 EndlessPixel 客户端整合包，开始你的冒险之旅。
-              我们提供稳定可靠的模组包，包含丰富的优化和功能增强。
-            </p>
           </div>
 
           {/* Feature Highlights */}
