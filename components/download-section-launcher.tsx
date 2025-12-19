@@ -113,7 +113,7 @@ export function DownloadSection({
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"semantic" | "releaseDate" | "downloadCount">("semantic");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -260,8 +260,10 @@ export function DownloadSection({
       // Filter out prereleases if not needed
       const filteredData = showPrereleases ? data : data.filter(release => !release.prerelease);
 
-      // 修复：正确识别最新版本
-      const latestRelease = filteredData.find(release => !release.prerelease)?.id || null;
+      // 修复：正确识别最新版本（按发布时间排序取最新正式版）
+      const latestRelease = filteredData
+        .filter(release => !release.prerelease)
+        .sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime())[0]?.id || null;
 
       const parsedReleases: ParsedRelease[] = filteredData.map((release) => {
         const mcVersionMatch = release.tag_name.match(/^(\d+\.\d+\.\d+)/);
@@ -329,82 +331,53 @@ export function DownloadSection({
     }
   }
 
-  const compareVersionStrings = (v1: string, v2: string) => {
+  // 🌟 核心修复：完整语义化版本比较（支持正式版 > 预发布版，解决2.0排在1.x前面的问题）
+  const compareSemanticVersions = (v1: string, v2: string): number => {
+    // 解析版本：分离 主版本号 + 预发布后缀（如 v9-2.0 → [9,2,0], 无后缀；v9-b2 → [9], 后缀 b2）
     const parseVersion = (version: string) => {
-      const match = version.match(/^EndlessPixel-(\d+\.\d+\.\d+)-v(\d+)-(.*)$/i);
-
-      if (!match) {
-        return {
-          mcVersion: "0.0.0",
-          modVersion: 0,
-          buildType: "",
-          buildNum: 0,
-          fullVersion: version
-        };
-      }
-
-      const [, mcVersion, modVersionStr, buildInfo] = match;
-      const modVersion = parseInt(modVersionStr, 10);
-
-      let buildType = "release";
-      let buildNum = 0;
-
-      const betaMatch = buildInfo.match(/^b(\d+)$/i);
-      if (betaMatch) {
-        buildType = "beta";
-        buildNum = parseInt(betaMatch[1], 10);
-      } else {
-        const releaseMatch = buildInfo.match(/^(\d+(?:\.\d+)*)$/);
-        if (releaseMatch) {
-          const versionParts = releaseMatch[1].split(".").map(Number);
-          buildNum = versionParts[0] * 1000 + (versionParts[1] || 0) * 10 + (versionParts[2] || 0);
-        }
-      }
-
-      return {
-        mcVersion,
-        modVersion,
-        buildType,
-        buildNum,
-        fullVersion: version
-      };
+      // 匹配预发布后缀（-b/-beta/-rc 等开头）
+      const preReleaseMatch = version.match(/-([a-zA-Z]+.*)$/);
+      const preRelease = preReleaseMatch ? preReleaseMatch[1] : '';
+      // 提取主版本号的数字部分（忽略前缀，只取数字序列）
+      const mainParts = (preRelease ? version.replace(/-[a-zA-Z]+.*$/, '') : version)
+        .match(/\d+/g)?.map(Number) || [];
+      return { mainParts, preRelease };
     };
 
-    const v1Info = parseVersion(v1);
-    const v2Info = parseVersion(v2);
+    const { mainParts: p1, preRelease: pr1 } = parseVersion(v1);
+    const { mainParts: p2, preRelease: pr2 } = parseVersion(v2);
 
-    if (v1Info.mcVersion !== v2Info.mcVersion) {
-      const mcParts1 = v1Info.mcVersion.split(".").map(Number);
-      const mcParts2 = v2Info.mcVersion.split(".").map(Number);
-
-      for (let i = 0; i < 3; i++) {
-        if (mcParts1[i] !== mcParts2[i]) {
-          return mcParts2[i] - mcParts1[i];
-        }
-      }
+    // 1. 先比较主版本号（核心逻辑）
+    const maxLen = Math.max(p1.length, p2.length);
+    for (let i = 0; i < maxLen; i++) {
+      const num1 = p1[i] || 0;
+      const num2 = p2[i] || 0;
+      if (num1 > num2) return 1;
+      if (num1 < num2) return -1;
     }
 
-    if (v1Info.modVersion !== v2Info.modVersion) {
-      return v2Info.modVersion - v1Info.modVersion;
+    // 2. 主版本号相同 → 正式版 > 预发布版
+    if (!pr1 && pr2) return 1; // v1是正式版，v2是预发布版 → v1大
+    if (pr1 && !pr2) return -1; // v1是预发布版，v2是正式版 → v2大
+
+    // 3. 都是预发布版 → 比较后缀（如 b2 > b1）
+    if (pr1 && pr2) {
+      // 提取后缀里的数字（b2 → 2, b10 →10）
+      const getPreNum = (pr: string) => Number(pr.match(/\d+/)?.[0] || 0);
+      return getPreNum(pr1) - getPreNum(pr2);
     }
 
-    if (v1Info.buildType !== v2Info.buildType) {
-      if (v1Info.buildType === "release") return -1;
-      if (v2Info.buildType === "release") return 1;
-    }
-
-    if (v1Info.buildNum !== v2Info.buildNum) {
-      return v2Info.buildNum - v1Info.buildNum;
-    }
-
-    return v1Info.fullVersion.localeCompare(v2Info.fullVersion);
+    // 版本完全相同
+    return 0;
   };
 
+  // 修复语义化排序逻辑
   const semanticCompare = (a: ParsedRelease, b: ParsedRelease) => {
     if (a.isLatest && !b.isLatest) return -1;
     if (!a.isLatest && b.isLatest) return 1;
 
-    return compareVersionStrings(a.version, b.version); // 修复：使用version而不是name
+    // 使用修复后的语义化比较函数
+    return compareSemanticVersions(a.version, b.version);
   };
 
   const filteredReleases = releases
@@ -416,7 +389,8 @@ export function DownloadSection({
     .filter((release) => (selectedTag ? release.tags?.includes(selectedTag) : true))
     .sort((a, b) => {
       if (sortBy === "semantic") {
-        return sortOrder === "asc" ? -semanticCompare(a, b) : semanticCompare(a, b);
+        // 排序方向：desc → 新版本在前，asc → 旧版本在前
+        return sortOrder === "asc" ? semanticCompare(a, b) : -semanticCompare(a, b);
       }
 
       const compare = (key: "releaseDate" | "downloadCount") => {
@@ -776,14 +750,36 @@ export function DownloadSection({
 
       {/* Footer Note */}
       <div className="text-center text-sm text-slate-500 dark:text-slate-400 mt-8 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-slate-200 dark:border-slate-700">
-        <p>
-          加速下载由 
-          <a href="https://gh-proxy.com/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline">gh-proxy.com </a>
-          <a href="https://gh.imixc.top/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"> gh.imixc.top </a>
-          <a href="https://gh.jasonzeng.dev/ " target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"> gh.jasonzeng.dev</a>
-          提供。
-          如遇下载问题，请尝试不同的镜像链接。
+        <p className="mb-3">
+          加速下载服务由以下镜像站点提供：
         </p>
+
+        <div className="flex flex-wrap gap-2">
+          <a
+            href="https://gh-proxy.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 rounded-md transition-colors duration-200"
+          >
+            gh-proxy.com
+          </a>
+          <a
+            href="https://gh.imixc.top/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 rounded-md transition-colors duration-200"
+          >
+            gh.imixc.top
+          </a>
+          <a
+            href="https://gh.jasonzeng.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 rounded-md transition-colors duration-200"
+          >
+            gh.jasonzeng.dev
+          </a>
+        </div>
       </div>
     </div>
   );
@@ -809,6 +805,11 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
     if (release.isPrerelease) return "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-300";
     return "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300";
   }
+
+  // 🌟 修复：镜像链接拼接（去掉多余空格，和官网格式一致）
+  const getMirrorUrl = (host: string, originalUrl: string) => {
+    return `${host}/${originalUrl}`;
+  };
 
   return (
     <Card className={`
@@ -874,32 +875,32 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
             const mirrors = [
               {
                 name: "Cloudflare 主站（全球加速）",
-                url: `https://gh-proxy.com/ ${file.downloadUrl}`,
+                url: getMirrorUrl("https://gh-proxy.org", file.downloadUrl),
                 tag: "Cloudflare",
               },
               {
                 name: "Fastly CDN",
-                url: `https://cdn.gh-proxy.com/ ${file.downloadUrl}`,
+                url: getMirrorUrl("https://cdn.gh-proxy.org", file.downloadUrl),
                 tag: "Fastly",
               },
               {
                 name: "Edgeone 全球加速",
-                url: `https://edgeone.gh-proxy.com/ ${file.downloadUrl}`,
+                url: getMirrorUrl("https://edgeone.gh-proxy.org", file.downloadUrl),
                 tag: "Edgeone",
               },
               {
                 name: "Jasonzeng 文件代理加速",
-                url: `https://gh.xmly.dev/ ${file.downloadUrl}`,
+                url: getMirrorUrl("https://gh.xmly.dev", file.downloadUrl),
                 tag: "Jasonzeng",
               },
               {
                 name: "Imixc 国内高速下载",
-                url: `https://gh.imixc.top/ ${file.downloadUrl}`,
+                url: getMirrorUrl("https://gh.imixc.top", file.downloadUrl),
                 tag: "Imixc",
               },
               {
                 name: "香港 国内线路优化,secbit.ai&Sharon CDN赞助",
-                url: `https://hk.gh-proxy.com/ ${file.downloadUrl}`,
+                url: getMirrorUrl("https://hk.gh-proxy.org", file.downloadUrl),
                 tag: "香港",
                 tip: "大文件下载不建议使用！",
               },
@@ -995,7 +996,7 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
           </Button>
 
           {showChangelog && (
-            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 prose prose-sm max-w-none dark:prose-invert wrap-break-word">
+            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 prose prose-sm max-w-none dark:prose-invert wrap-break-word overflow-auto max-h-60">
               <ReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}
