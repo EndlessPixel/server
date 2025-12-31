@@ -1,7 +1,7 @@
 // app/sitemap.ts
 const config = {
-  siteUrl: 'https://ep.endlesspixel.fun',
-  lastModified: new Date('2025-12-13'),
+  siteUrl: 'https://www.endlesspixel.fun',
+  lastModified: new Date('2025-12-31'),
   revalidate: 86400,
 };
 
