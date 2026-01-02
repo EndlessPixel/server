@@ -125,7 +125,7 @@ export default function CustomDownloadsPage() {
                 if (Array.isArray(releases) && releases.length > 0) {
                     // 有 release，跳转
                     startTransition(() => {
-                        router.push(`/downloads/custom_downloads?url=${encodeURIComponent(trimmed)}`);
+                        router.push(`/downloads/custom_downloads?url=${encodeURIComponent(trimmed)}&platform=github&api_limit=60&verify=true&use_mirror=true`);
                     });
                     return;
                 }
