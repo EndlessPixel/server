@@ -148,46 +148,11 @@ export function LauncherListPage() {
 
                   {/* 顶部图标区域 */}
                   <div className="relative z-10">
-                    <motion.div 
-                      className="text-4xl mb-6 inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-blue-500 to-cyan-500 rounded-2xl shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-all duration-500"
-                      whileHover={{ 
-                        scale: 1.1,
-                        rotate: [0, -5, 5, 0],
-                      }}
-                      transition={{ 
-                        scale: { type: "spring", stiffness: 300 },
-                        rotate: { duration: 0.6 }
-                      }}
-                    >
-                      {getIcon(((r as any).introCards?.[0]?.icon) ?? "Settings")}
-                    </motion.div>
 
                     {/* 标题和描述 */}
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-slate-800 dark:group-hover:text-white transition-colors">
                       {r.displayName}
                     </h3>
-                    
-                    <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed line-clamp-2">
-                      {((r as any).introCards?.[0]?.desc) ?? "专业的游戏启动器，提供最佳的游戏体验"}
-                    </p>
-
-                    {/* 特性标签 */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {[
-                        { icon: Zap, label: "快速启动", color: "text-amber-500" },
-                        { icon: Star, label: "稳定可靠", color: "text-yellow-500" },
-                        { icon: Users, label: "社区支持", color: "text-green-500" }
-                      ].slice(0, 2).map((feature, i) => (
-                        <span 
-                          key={i}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700/50 rounded-full text-xs font-medium text-slate-700 dark:text-slate-300 backdrop-blur-sm"
-                        >
-                          <feature.icon className={`w-3 h-3 ${feature.color}`} />
-                          {feature.label}
-                        </span>
-                      ))}
-                    </div>
-
                     {/* 底部行动区域 */}
                     <div className="flex items-center justify-between pt-4 border-t border-slate-200/50 dark:border-slate-700/50">
                       <div className="flex items-center text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
@@ -233,6 +198,7 @@ export function LauncherListPage() {
             >
               尝试自定义下载
             </Link>
+             。或者，您也可以 
               <Link 
               href="https://github.com/EndlessPixel/server/blob/main/lib/launcherMeta.ts" 
               className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
