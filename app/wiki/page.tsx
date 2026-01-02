@@ -99,7 +99,7 @@ export default function WikiPage() {
 
   const handleRedirectModal = () => {
     confirmNow(false)
-    const url = "https://docs.qq.com/aio/DUUxtVXJYUmRaTnpi"
+    const url = "https://docs.qq.com/aio/p/sc0m6qoo8xschku?p=7OQN4lhJjGdrbLfHXNz7rs"
     window.open(url, "_blank", "noopener,noreferrer")
   }
 
@@ -121,7 +121,7 @@ export default function WikiPage() {
     } catch {
       // ignore
     }
-    const url = "https://docs.qq.com/aio/DUUxtVXJYUmRaTnpi"
+    const url = "https://docs.qq.com/aio/p/sc0m6qoo8xschku?p=7OQN4lhJjGdrbLfHXNz7rs"
     window.open(url, "_blank", "noopener,noreferrer")
   }
 
@@ -142,7 +142,7 @@ export default function WikiPage() {
           <div className="w-full max-w-7xl bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-b-xl shadow-sm py-3 px-4 flex items-center gap-4">
             <div className="flex-1 text-sm text-yellow-900 dark:text-yellow-100">
               此 Wiki 将不再维护，预计在2026/01/10左右会移除此页面。建议访问腾讯文档获取最新帮助：
-              <span className="ml-2 underline text-blue-600 dark:text-blue-300">https://docs.qq.com/aio/DUUxtVXJYUmRaTnpi</span>
+              <span className="ml-2 underline text-blue-600 dark:text-blue-300">https://docs.qq.com/aio/p/sc0m6qoo8xschku?p=7OQN4lhJjGdrbLfHXNz7rs</span>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -197,7 +197,7 @@ export default function WikiPage() {
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     本页面将不再维护，预计在2026/01/10左右会移除此页面。建议访问腾讯文档以获取最新帮助：
-                    <span className="break-all text-blue-600 dark:text-blue-400">https://docs.qq.com/aio/DUUxtVXJYUmRaTnpi</span>
+                    <span className="break-all text-blue-600 dark:text-blue-400">https://docs.qq.com/aio/p/sc0m6qoo8xschku?p=7OQN4lhJjGdrbLfHXNz7rs</span>
                   </p>
                 </div>
               </div>
