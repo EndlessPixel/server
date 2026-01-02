@@ -70,17 +70,17 @@ export const launcherRepos = [
   { key: "gbclv2", owner: "Nullkooland", repo: "GBCLV2", displayName: "GBCLV2", },
   { key: "eclient", owner: "v-pun215", repo: "eClient", displayName: "eClient", },
   { key: "vape", owner: "BacconKam", repo: "Minecraft-Vape", displayName: "Minecraft Vape", },
-  { key: "mcdeploy", owner: "sammwyy", repo: "MCDeploy", displayName: "MCDeploy", },
+//  { key: "mcdeploy", owner: "sammwyy", repo: "MCDeploy", displayName: "MCDeploy", },
   { key: "picodulce", owner: "nixietab", repo: "picodulce", displayName: "picodulce", },
   { key: "colormc", owner: "Coloryr", repo: "ColorMC", displayName: "ColorMC", },
   { key: "tagapi", owner: "ammarx", repo: "TagAPI_3", displayName: "TagAPI 3", },
-  { key: "rcraft", owner: "vdkvdev", repo: "RCraft", displayName: "RCraft", },
-  { key: "onemcluwp", owner: "GoodTimeStudio", repo: "OneMinecraftLauncher.UWP", displayName: "OneMinecraftLauncher UWP", },
-  { key: "rimca", owner: "liabri", repo: "rimca", displayName: "rimca", },
-  { key: "wizclient", owner: "WizClient", repo: "WizClient-1.8.9-Version", displayName: "WizClient", },
-  { key: "kaminec", owner: "kaniol-lck", repo: "Kaminec", displayName: "Kaminec", },
+//  { key: "rcraft", owner: "vdkvdev", repo: "RCraft", displayName: "RCraft", },
+ // { key: "onemcluwp", owner: "GoodTimeStudio", repo: "OneMinecraftLauncher.UWP", displayName: "OneMinecraftLauncher UWP", },
+ // { key: "rimca", owner: "liabri", repo: "rimca", displayName: "rimca", },
+ // { key: "wizclient", owner: "WizClient", repo: "WizClient-1.8.9-Version", displayName: "WizClient", },
+ // { key: "kaminec", owner: "kaniol-lck", repo: "Kaminec", displayName: "Kaminec", },
   { key: "mcboxlauncher", owner: "lukechu10", repo: "Minecraft-Box-Launcher", displayName: "Minecraft Box Launcher", },
-  { key: "polymcoffline", owner: "EvilToasterDBU", repo: "PolyMC-Offline", displayName: "PolyMC Offline", },
+ // { key: "polymcoffline", owner: "EvilToasterDBU", repo: "PolyMC-Offline", displayName: "PolyMC Offline", },
   { key: "xelo", owner: "Xelo-Client", repo: "Xelo-Client", displayName: "Xelo Client", },
   /*
   { key: "", owner:"", repo: "", displayName: "", },
@@ -90,6 +90,11 @@ export const launcherRepos = [
    */
 ];
 
+// launcherRepos 列表说明：
+// - 仅保留「有公开 GitHub Releases」的启动器
+// - 注释掉的项目可能：无 Release、私有
+// - 若你的项目被误注释，请提交 PR 并确保 repo 有公开 Release
+// - 自动检查脚本因 GitHub 限流（60次/小时）难以全量运行，欢迎协助维护
 
 /*
 ==========待添加的列表==========
