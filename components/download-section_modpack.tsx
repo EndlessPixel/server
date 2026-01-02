@@ -107,7 +107,7 @@ export function DownloadSection() {
   const fetchReleases = async () => {
     try {
       setLoading(true);
-      const res = await fetch('https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases?per_page=200');
+      const res = await fetch('/api/github-releases');
       if (!res.ok) throw new Error(String(res.status));
       const data: GitHubRelease[] = await res.json();
 
