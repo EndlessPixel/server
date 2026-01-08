@@ -1,8 +1,8 @@
 # EndlessPixel Web
 
-[![Next.js](https://img.shields.io/badge/Next.js-15+-000?logo=next.js)](https://nextjs.org)
+[![Next.js](https://img.shields.io/badge/Next.js-16+-000?logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178c6?logo=typescript)](https://www.typescriptlang.org)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3+-06b6d4?logo=tailwindcss)](https://tailwindcss.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4+-06b6d4?logo=tailwindcss)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-AGPL_v3-007098)](LICENSE)
 
 简体中文 | [English](./README.en.md)
@@ -11,7 +11,7 @@ EndlessPixel 官方网站与启动器分发平台，基于 Next.js App Router + 
 
 ## ✨ 特性
 
-- ⚡ 全栈 React 框架 Next.js 15，支持 SSR/SSG/ISR  
+- ⚡ 全栈 React 框架 Next.js 16，支持 SSR/SSG/ISR  
 - 🎨 Tailwind CSS 4 原子化样式，暗色模式开箱即用  
 - 📦 60+ 启动器与整合包高速下载，支持自定义镜像  
 - 🧪 严格 TypeScript 类型检查，ESLint + Prettier 自动化  

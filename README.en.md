@@ -1,9 +1,9 @@
 
 # EndlessPixel Web
 
-[![Next.js](https://img.shields.io/badge/Next.js-15+-000?logo=next.js)](https://nextjs.org)
+[![Next.js](https://img.shields.io/badge/Next.js-16+-000?logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178c6?logo=typescript)](https://www.typescriptlang.org)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3+-06b6d4?logo=tailwindcss)](https://tailwindcss.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4+-06b6d4?logo=tailwindcss)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-AGPL_v3-007098)](LICENSE)
 
 English | [简体中文](./README.md)
@@ -12,7 +12,7 @@ Official website & launcher distribution platform of EndlessPixel, built with Ne
 
 ## ✨ Features
 
-- ⚡ Next.js 15 full-stack React framework, SSR/SSG/ISR ready  
+- ⚡ Next.js 16 full-stack React framework, SSR/SSG/ISR ready  
 - 🎨 Tailwind CSS 4 utility-first, dark-mode out of the box  
 - 📦 60+ launchers & mod-packs high-speed download, custom mirror support  
 - 🧪 Strict TypeScript checking, ESLint + Prettier automated   
