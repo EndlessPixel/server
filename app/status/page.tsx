@@ -247,45 +247,8 @@ export default function StatusIndexPage() {
             </div>
           </section>
 
-          {/* Network Nodes */}
-          <section className="mb-12" aria-labelledby="nodes-heading">
-            <SectionHeader 
-              title="网络节点" 
-              description="全球分布式网络节点状态"
-              icon={<Wifi className="w-5 h-5 text-purple-600 dark:text-purple-400" aria-hidden="true" />}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {NODES.map((node) => (
-                <NodeCard key={node.name} node={node} />
-              ))}
-            </div>
-          </section>
-
           {/* Additional Information */}
           <section className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm">
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4 flex items-center gap-2">
-                  <Monitor className="w-5 h-5 text-blue-500" aria-hidden="true" />
-                  监控说明
-                </h3>
-                <ul className="space-y-3 text-slate-600 dark:text-slate-400">
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 shrink-0" aria-hidden="true"></div>
-                    <span>所有服务状态每 30 秒自动更新一次</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 shrink-0" aria-hidden="true"></div>
-                    <span>节点状态包含 CPU、内存、网络流量等详细信息</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 shrink-0" aria-hidden="true"></div>
-                    <span>遇到问题可查看详细监控或联系技术支持</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
 
             <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm">
               <CardContent className="p-6">
