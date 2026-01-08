@@ -175,7 +175,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 
         {/* 安全头 */}
-        {/* 安全头 */}
         <meta
           httpEquiv="Content-Security-Policy"
           content="
@@ -184,7 +183,7 @@ export default function RootLayout({
     script-src 'self' 'unsafe-inline' https://discord.com https://www.googletagmanager.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
-    connect-src 'self' https://discord.com https://*.vercel.app https://api.github.com https://avatars.githubusercontent.com;
+    connect-src 'self' https://discord.com https://*.vercel.app https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
