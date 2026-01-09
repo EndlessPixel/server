@@ -1,34 +1,36 @@
+﻿import { release } from "os";
+
 export const launcherRepos = [
-  { key: "hmcl", owner: "HMCL-dev", repo: "HMCL", displayName: "HMCL", },
-  { key: "hmcl-pe", owner: "HMCL-dev", repo: "HMCL-PE", displayName: "HMCL-PE", },
-  { key: "pcl-mac", owner: "PCL-Community", repo: "PCL.Mac", displayName: "PCL-Mac", },
-  { key: "pcl2-ce", owner: "PCL-Community", repo: "PCL2-CE", displayName: "PCL2-CE", },
-  { key: "pcl-2", owner: "Meloong-Git", repo: "PCL", displayName: "PCL2", },
-  { key: "pcl1", owner: "LTCatt", repo: "PCL1", displayName: "PCL1", },
-  { key: "pojav", owner: "PojavLauncherTeam", repo: "PojavLauncher", displayName: "PojavLauncher", },
-  { key: "pojav-ios", owner: "PojavLauncherTeam", repo: "PojavLauncher_iOS", displayName: "PojavLauncher_iOS", },
-  { key: "modrinth", owner: "modrinth", repo: "code", displayName: "Modrinth", },
-  { key: "atlauncher", owner: "ATLauncher", repo: "ATLauncher", displayName: "ATLauncher", },
-  { key: "polymc", owner: "PolyMC", repo: "PolyMC", displayName: "PolyMC", },
-  { key: "xmcl", owner: "Voxelum", repo: "x-minecraft-launcher", displayName: "X-Minecraft-Launcher", },
-  { key: "helios", owner: "dscalzi", repo: "HeliosLauncher", displayName: "HeliosLauncher", },
-  { key: "prismLauncher", owner: "PrismLauncher", repo: "PrismLauncher", displayName: "PrismLauncher", },
-  { key: "mcinabox", owner: "AOF-Dev", repo: "MCinaBox", displayName: "MCinaBox", },
-  { key: "gdlauncher", owner: "gorilla-devs", repo: "GDLauncher", displayName: "GDLauncher", },
-  { key: "portablemc", owner: "mindstorm38", repo: "portablemc", displayName: "portablemc", },
-  { key: "olauncher", owner: "olauncher", repo: "olauncher", displayName: "olauncher", },
-  { key: "zalith2", owner: "ZalithLauncher", repo: "ZalithLauncher2", displayName: "ZalithLauncher2", },
-  { key: "zalith", owner: "ZalithLauncher", repo: "ZalithLauncher", displayName: "ZalithLauncher", },
-  { key: "betacraft", owner: "betacraftuk", repo: "betacraft-launcher", displayName: "Betacraft Launcher", },
-  { key: "mcl-core", owner: "Pierce01", repo: "MinecraftLauncher-core", displayName: "MinecraftLauncher Core", },
-  { key: "fluentlauncher", owner: "Xcube-Studio", repo: "Natsurainko.FluentLauncher", displayName: "FluentLauncher", },
-  { key: "vortex", owner: "Kron4ek", repo: "minecraft-vortex-launcher", displayName: "Vortex Launcher", },
-  { key: "pojav-glow", owner: "Vera-Firefly", repo: "Pojav-Glow-Worm", displayName: "Pojav Glow Worm", },
-  { key: "headlessmc", owner: "headlesshq", repo: "headlessmc", displayName: "HeadlessMC", },
-  { key: "sjmcl", owner: "UNIkeEN", repo: "SJMCL", displayName: "SJMCL", },
-  { key: "bmcl", owner: "bangbang93", repo: "BMCL", displayName: "BMCL", },
-  { key: "cmllib", owner: "CmlLib", repo: "CmlLib.Core", displayName: "CmlLib.Core", },
-  { key: "projbobcat", owner: "Corona-Studio", repo: "ProjBobcat", displayName: "ProjBobcat", },
+  { key: "hmcl", owner: "HMCL-dev", repo: "HMCL", displayName: "HMCL", releases: true, },
+  { key: "hmcl-pe", owner: "HMCL-dev", repo: "HMCL-PE", displayName: "HMCL-PE", releases: true, },
+  { key: "pcl-mac", owner: "PCL-Community", repo: "PCL.Mac", displayName: "PCL-Mac", releases: false, },
+  { key: "pcl2-ce", owner: "PCL-Community", repo: "PCL2-CE", displayName: "PCL2-CE", releases: true, },
+  { key: "pcl-2", owner: "Meloong-Git", repo: "PCL", displayName: "PCL2", releases: "empty", },
+  { key: "pcl1", owner: "LTCatt", repo: "PCL1", displayName: "PCL1", releases: false, },
+  { key: "pojav", owner: "PojavLauncherTeam", repo: "PojavLauncher", displayName: "PojavLauncher", releases: true, },
+  { key: "pojav-ios", owner: "PojavLauncherTeam", repo: "PojavLauncher_iOS", displayName: "PojavLauncher_iOS", releases: true, },
+  { key: "modrinth", owner: "modrinth", repo: "code", displayName: "Modrinth", releases: "empty", },
+  { key: "atlauncher", owner: "ATLauncher", repo: "ATLauncher", displayName: "ATLauncher", releases: true, },
+  { key: "polymc", owner: "PolyMC", repo: "PolyMC", displayName: "PolyMC", releases: true, },
+  { key: "xmcl", owner: "Voxelum", repo: "x-minecraft-launcher", displayName: "X-Minecraft-Launcher", releases: true, },
+  { key: "helios", owner: "dscalzi", repo: "HeliosLauncher", displayName: "HeliosLauncher", releases: true, },
+  { key: "prismLauncher", owner: "PrismLauncher", repo: "PrismLauncher", displayName: "PrismLauncher", releases: true, },
+  { key: "mcinabox", owner: "AOF-Dev", repo: "MCinaBox", displayName: "MCinaBox", releases: true, },
+  { key: "gdlauncher", owner: "gorilla-devs", repo: "GDLauncher", displayName: "GDLauncher", releases: true, },
+  { key: "portablemc", owner: "mindstorm38", repo: "portablemc", displayName: "portablemc", releases: true, },
+  { key: "olauncher", owner: "olauncher", repo: "olauncher", displayName: "olauncher", releases: true, },
+  { key: "zalith2", owner: "ZalithLauncher", repo: "ZalithLauncher2", displayName: "ZalithLauncher2", releases: true, },
+  { key: "zalith", owner: "ZalithLauncher", repo: "ZalithLauncher", displayName: "ZalithLauncher", releases: true, },
+  { key: "betacraft", owner: "betacraftuk", repo: "betacraft-launcher", displayName: "Betacraft Launcher", releases: true, },
+  { key: "mcl-core", owner: "Pierce01", repo: "MinecraftLauncher-core", displayName: "MinecraftLauncher Core", releases: false, },
+  { key: "fluentlauncher", owner: "Xcube-Studio", repo: "Natsurainko.FluentLauncher", displayName: "FluentLauncher", releases: true, },
+  { key: "vortex", owner: "Kron4ek", repo: "minecraft-vortex-launcher", displayName: "Vortex Launcher", releases: true, },
+  { key: "pojav-glow", owner: "Vera-Firefly", repo: "Pojav-Glow-Worm", displayName: "Pojav Glow Worm", releases: true, },
+  { key: "headlessmc", owner: "headlesshq", repo: "headlessmc", displayName: "HeadlessMC", releases: true, },
+  { key: "sjmcl", owner: "UNIkeEN", repo: "SJMCL", displayName: "SJMCL", releases: true, },
+  { key: "bmcl", owner: "bangbang93", repo: "BMCL", displayName: "BMCL", releases: false, },
+  { key: "cmllib", owner: "CmlLib", repo: "CmlLib.Core", displayName: "CmlLib.Core", releases: true, },
+  { key: "projbobcat", owner: "Corona-Studio", repo: "ProjBobcat", displayName: "ProjBobcat", releases: true, },
   { key: "liquid", owner: "CCBlueX", repo: "LiquidLauncher", displayName: "LiquidLauncher", },
   { key: "selvania", owner: "luuxis", repo: "Selvania-Launcher", displayName: "Selvania Launcher", },
   { key: "mcl-core-node", owner: "Voxelum", repo: "minecraft-launcher-core-node", displayName: "Minecraft Launcher Core Node", },
@@ -68,20 +70,19 @@ export const launcherRepos = [
   { key: "mcjar", owner: "ezfe", repo: "minecraft-jar-command", displayName: "Minecraft Jar Command", },
   { key: "starlight", owner: "Conlux-Studio", repo: "StarLight.Core", displayName: "StarLight Core", },
   { key: "gbclv2", owner: "Nullkooland", repo: "GBCLV2", displayName: "GBCLV2", },
-  { key: "eclient", owner: "v-pun215", repo: "eClient", displayName: "eClient", },
-  { key: "vape", owner: "BacconKam", repo: "Minecraft-Vape", displayName: "Minecraft Vape", },
-//  { key: "mcdeploy", owner: "sammwyy", repo: "MCDeploy", displayName: "MCDeploy", },
-  { key: "picodulce", owner: "nixietab", repo: "picodulce", displayName: "picodulce", },
-  { key: "colormc", owner: "Coloryr", repo: "ColorMC", displayName: "ColorMC", },
-  { key: "tagapi", owner: "ammarx", repo: "TagAPI_3", displayName: "TagAPI 3", },
-//  { key: "rcraft", owner: "vdkvdev", repo: "RCraft", displayName: "RCraft", },
- // { key: "onemcluwp", owner: "GoodTimeStudio", repo: "OneMinecraftLauncher.UWP", displayName: "OneMinecraftLauncher UWP", },
- // { key: "rimca", owner: "liabri", repo: "rimca", displayName: "rimca", },
- // { key: "wizclient", owner: "WizClient", repo: "WizClient-1.8.9-Version", displayName: "WizClient", },
- // { key: "kaminec", owner: "kaniol-lck", repo: "Kaminec", displayName: "Kaminec", },
-  { key: "mcboxlauncher", owner: "lukechu10", repo: "Minecraft-Box-Launcher", displayName: "Minecraft Box Launcher", },
- // { key: "polymcoffline", owner: "EvilToasterDBU", repo: "PolyMC-Offline", displayName: "PolyMC Offline", },
-  { key: "xelo", owner: "Xelo-Client", repo: "Xelo-Client", displayName: "Xelo Client", },
+  { key: "eclient", owner: "v-pun215", repo: "eClient", displayName: "eClient", releases: true, },
+  { key: "mcdeploy", owner: "sammwyy", repo: "MCDeploy", displayName: "MCDeploy", releases: false, },
+  { key: "picodulce", owner: "nixietab", repo: "picodulce", displayName: "picodulce", releases: true, },
+  { key: "colormc", owner: "Coloryr", repo: "ColorMC", displayName: "ColorMC", releases: true, },
+  // { key: "tagapi", owner: "ammarx", repo: "TagAPI_3", displayName: "TagAPI 3", }, !!!这是API，不是启动器
+  { key: "rcraft", owner: "vdkvdev", repo: "RCraft", displayName: "RCraft", releases: false, },
+  { key: "onemcluwp", owner: "GoodTimeStudio", repo: "OneMinecraftLauncher.UWP", displayName: "OneMinecraftLauncher UWP", releases: false, },
+  { key: "rimca", owner: "liabri", repo: "rimca", displayName: "rimca", releases: false, },
+  { key: "wizclient", owner: "WizClient", repo: "WizClient-1.8.9-Version", displayName: "WizClient", releases: false, },
+  { key: "kaminec", owner: "kaniol-lck", repo: "Kaminec", displayName: "Kaminec", releases: false, },
+  { key: "mcboxlauncher", owner: "lukechu10", repo: "Minecraft-Box-Launcher", displayName: "Minecraft Box Launcher", releases: true, },
+  { key: "polymcoffline", owner: "EvilToasterDBU", repo: "PolyMC-Offline", displayName: "PolyMC Offline", releases: false, },
+  { key: "xelo", owner: "Xelo-Client", repo: "Xelo-Client", displayName: "Xelo Client", releases: true, },
   /*
   { key: "", owner:"", repo: "", displayName: "", },
   ...
@@ -91,13 +92,14 @@ export const launcherRepos = [
 ];
 
 // launcherRepos 列表说明：
-// - 仅保留「有公开 GitHub Releases」的启动器
-// - 注释掉的项目可能：无 Release、私有
-// - 若你的项目被误注释，请提交 PR 并确保 repo 有公开 Release
-// - 自动检查脚本因 GitHub 限流（60次/小时）难以全量运行，欢迎协助维护
+// - 若你的项目被误注释/标注，请提交 PR 并确保 repo 有公开 Release
+// - 检查因 GitHub 限流（60次/小时）难以全量运行，欢迎协助维护
 
 /*
 ==========待添加的列表==========
+
+2025/11更新，Star数量不一定对应，仅为当时的统计数据，不代表当前项目的Star数量。
+如有变化，建议帮忙更新，我可没这么多时间帮你检查。
 
 Star 19
 racerxdl / minecrowdcontrol
@@ -155,7 +157,7 @@ Triteras / MinecraftNewsRSS
 dedepete / dotMCLauncher
 MrLetsplay2003 / ShittyAuthLauncher
 
-...Star 10- down
+...Star 10- down 懒得找~~~
 
 ==========如有缺少，欢迎补充==========
 */
