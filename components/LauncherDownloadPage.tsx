@@ -60,9 +60,9 @@ export function LauncherDownloadPage({
 
           <div className="bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
             <button
-              onClick={() => router.push('/downloads')} // 绑定跳转逻辑
+              onClick={() => router.push('/downloads')}
               className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 dark:bg-black/20 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400"
-              aria-label="返回下载页面" // 补充可访问性标签
+              aria-label="返回下载页面"
             >
               <span className="text-sm font-medium">返回</span>
             </button>
@@ -76,7 +76,7 @@ export function LauncherDownloadPage({
             <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
               <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">需要帮助？</h3>
               <div className="space-y-4 text-slate-600 dark:text-slate-400">
-                <p>如果您在安装过程中遇到任何问题：</p>
+                <p>如果您在下载/安装过程中遇到任何问题：</p>
                 <div className="flex flex-wrap gap-3">
                   <a
                     href={repoUrl} // 仓库地址
@@ -103,6 +103,7 @@ export function LauncherDownloadPage({
                     <ArrowUpRight className="w-4 h-4" />
                     Issue 列表
                   </a>
+                  <p>启动器内部问题请不要联系我们，我们不对此部分负责，请联系对应启动器的作者</p>
                 </div>
               </div>
             </div>
