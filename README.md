@@ -7,7 +7,7 @@
 
 简体中文 | [English](./README.en.md)
 
-EndlessPixel 官方网站与启动器分发平台，基于 Next.js App Router + TypeScript + Tailwind CSS 构建。
+EndlessPixel 服务器的官方网站，基于 Next.js App Router + TypeScript + Tailwind CSS 构建。
 
 ## ✨ 特性
 
