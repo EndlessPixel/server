@@ -8,7 +8,7 @@
 
 English | [简体中文](./README.md)
 
-Official website & launcher distribution platform of EndlessPixel, built with Next.js App Router + TypeScript + Tailwind CSS.
+Official website of EndlessPixel Server, built with Next.js App Router + TypeScript + Tailwind CSS.
 
 ## ✨ Features
 
