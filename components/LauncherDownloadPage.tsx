@@ -3,6 +3,7 @@ import { Footer } from "@/components/footer";
 import { DownloadSection } from "@/components/download-section-launcher";
 import { Github, ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
+import router from "next/router";
 
 export interface LauncherDownloadPageProps {
   owner: string;
@@ -23,9 +24,6 @@ export function LauncherDownloadPage({
   repoName,
   issuesHref,
   introCards = [],
-  archived = false,
-  archivedDate = "",
-  backHref = "/downloads",
 }: LauncherDownloadPageProps) {
   return (
     <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-cyan-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-cyan-950/20">
@@ -57,9 +55,12 @@ export function LauncherDownloadPage({
           </div>
 
           <div className="bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
-            <button className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 dark:bg-black/20 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400">
-              <a href="/downloads">
-                <span className="text-sm font-medium">返回</span></a>
+            <button
+              onClick={() => router.push('/downloads')} // 绑定跳转逻辑
+              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 dark:bg-black/20 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400"
+              aria-label="返回下载页面" // 补充可访问性标签
+            >
+              <span className="text-sm font-medium">返回</span>
             </button>
             <DownloadSection
               githubApiUrl={`https://api.github.com/repos/${repoOwner}/${repoName}/releases`}
