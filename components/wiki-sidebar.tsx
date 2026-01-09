@@ -52,6 +52,7 @@ export function WikiSidebar() {
       title: "Minecraft指南",
       icon: ExternalLink,
       items: [
+        { title: "Minecraft 1.21.11", id: "minecraft-1.21.11", external: true, url: "https://zh.minecraft.wiki/w/Java版1.21.11" },
         { title: "Minecraft 1.21.10", id: "minecraft-1.21.10", external: true, url: "https://zh.minecraft.wiki/w/Java版1.21.10" },
         { title: "Minecraft 1.21.9", id: "minecraft-1.21.9", external: true, url: "https://zh.minecraft.wiki/w/Java版1.21.9" },
         { title: "Minecraft 1.21.8", id: "minecraft-1.21.8", external: true, url: "https://zh.minecraft.wiki/w/Java版1.21.8" },
