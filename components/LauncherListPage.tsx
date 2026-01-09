@@ -195,6 +195,7 @@ export function LauncherListPage() {
             <Link 
               href="/downloads/custom_downloads" 
               className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+              aria-label="前往自定义下载页面"
             >
               尝试自定义下载
             </Link>
@@ -202,6 +203,9 @@ export function LauncherListPage() {
               <Link 
               href="https://github.com/EndlessPixel/server/blob/main/lib/launcherMeta.ts" 
               className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+              aria-label="前往 GitHub 贡献新启动器代码"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               贡献新启动器
             </Link>

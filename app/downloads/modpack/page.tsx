@@ -46,31 +46,9 @@ export default function DownloadsPage() {
           {/* Feature Highlights */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div className="text-center p-6 bg-white/80 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-2">稳定可靠</h3>
-              <p className="text-slate-600 dark:text-slate-400 text-sm">经过严格测试，确保游戏稳定运行</p>
-            </div>
-
-            <div className="text-center p-6 bg-white/80 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-2">性能优化</h3>
-              <p className="text-slate-600 dark:text-slate-400 text-sm">包含性能优化模组，提升游戏体验</p>
-            </div>
-
-            <div className="text-center p-6 bg-white/80 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
-              <button>
                 <a href="/downloads/modpack/issues">
                   查看issue
                 </a>
-              </button>
             </div>
           </div>
 
