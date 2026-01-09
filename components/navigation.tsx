@@ -142,6 +142,9 @@ const crumbs = pathname
                 onBlur={exitEdit}
                 className="w-full pl-10 pr-4 py-2 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 shadow-sm"
                 autoFocus
+                placeholder="请输入内容"
+                title="编辑文本内容"
+                type="text"
               />
             </div>
           ) : (
