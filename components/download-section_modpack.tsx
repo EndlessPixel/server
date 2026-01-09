@@ -18,7 +18,6 @@ import remarkGfm from 'remark-gfm';
 
 /* ----------  类型  ---------- */
 type Branch = 'main' | 'real';
-
 interface ParsedRelease {
   name: string;
   version: string;
@@ -31,7 +30,6 @@ interface ParsedRelease {
   changelog: string;
   branch: Branch;
 }
-
 interface GitHubRelease {
   id: number;
   tag_name: string;
@@ -42,51 +40,85 @@ interface GitHubRelease {
   prerelease: boolean;
   assets: Array<{ name: string; download_count: number; browser_download_url: string }>;
 }
-
-/* ----------  工具  ---------- */
 const cn = (...e: any[]) => e.filter(Boolean).join(' ');
-
-// 修复：完整语义化版本比较（支持正式版 > 预发布版，且预发布版后缀排序）
+/**
+ * 比较 EndlessPixel 整合包的自定义语义化版本号
+ * 适配规则：
+ * - 版本格式示例：v10-1.6（正式版）、v10-b4（预发布版）、1.21.11-v10-1.6（完整格式）
+ * - 核心逻辑：先比较主版本号数字部分，再区分正式版/预发布版，最后比较预发布后缀数字
+ * - 返回值：1 表示v1 > v2；-1 表示v1 < v2；0 表示版本相等
+ * @param v1 第一个需要比较的版本号字符串
+ * @param v2 第二个需要比较的版本号字符串
+ * @returns 比较结果（1/-1/0）
+ */
 const compareSemanticVersions = (v1: string, v2: string): number => {
-  // 解析版本：分离 主版本号 + 预发布后缀（如 v9-2.0 → [9,2,0], 无后缀；v9-b2 → [9], 后缀 b2）
+  /**
+   * 解析 EndlessPixel 自定义版本号，分离主版本号和预发布后缀
+   * 解析规则：
+   * 1. 预发布后缀识别：以 "-" 后跟字母开头的部分（如 -b4、-beta2、-rc1）
+   * 2. 主版本号提取：移除预发布后缀后，提取所有数字部分转为数字数组
+   *    - 示例1：v10-1.6 → 无预发布后缀 → 主版本号 [10,1,6]
+   *    - 示例2：v10-b4 → 预发布后缀 "b4" → 主版本号 [10]
+   *    - 示例3：1.21.11-v10-1.5 → 无预发布后缀 → 主版本号 [1,21,11,10,1,5]
+   * @param version 待解析的版本号字符串
+   * @returns 解析结果：mainParts（主版本号数字数组）、preRelease（预发布后缀）
+   */
   const parseVersion = (version: string) => {
-    // 匹配预发布后缀（-b/-beta/-rc 等开头）
+    // 正则匹配预发布后缀：匹配 "-" 后紧跟字母开头的所有字符（如 -b4、-beta3、-rc2）
+    // 捕获组1 提取后缀内容（如 b4、beta3）
     const preReleaseMatch = version.match(/-([a-zA-Z]+.*)$/);
+    // 提取预发布后缀（无则为空字符串）
     const preRelease = preReleaseMatch ? preReleaseMatch[1] : '';
-    // 提取主版本号的数字部分
-    const mainParts = (preRelease ? version.replace(/-[a-zA-Z]+.*$/, '') : version)
-      .match(/\d+/g)?.map(Number) || [];
+
+    // 提取主版本号部分：如果有预发布后缀则先移除，再提取所有数字片段转为数字数组
+    // 例如："v10-b4" → 移除 "-b4" 得到 "v10" → 提取数字 [10]
+    // 例如："1.21.11-v10-1.6" → 无后缀 → 提取数字 [1,21,11,10,1,6]
+    const mainVersionStr = preRelease ? version.replace(/-[a-zA-Z]+.*$/, '') : version;
+    // 匹配所有数字片段并转为数字（无数字则返回空数组）
+    const mainParts = mainVersionStr.match(/\d+/g)?.map(Number) || [];
+
     return { mainParts, preRelease };
   };
 
+  // 解析两个待比较的版本号
   const { mainParts: p1, preRelease: pr1 } = parseVersion(v1);
   const { mainParts: p2, preRelease: pr2 } = parseVersion(v2);
 
-  // 1. 先比较主版本号（核心逻辑）
+  // ========== 第一步：比较主版本号（核心逻辑） ==========
+  // 取两个版本号主数字数组的最大长度，逐位比较
   const maxLen = Math.max(p1.length, p2.length);
   for (let i = 0; i < maxLen; i++) {
+    // 数组长度不足的位补 0（如 [10] vs [10,1] → 10 vs 10 → 0 vs 1）
     const num1 = p1[i] || 0;
     const num2 = p2[i] || 0;
-    if (num1 > num2) return 1;
-    if (num1 < num2) return -1;
+
+    // 某一位数字更大，则直接返回结果
+    if (num1 > num2) return 1; // v1 主版本号更大
+    if (num1 < num2) return -1; // v2 主版本号更大
   }
 
-  // 2. 主版本号相同 → 正式版 > 预发布版
-  if (!pr1 && pr2) return 1; // v1是正式版，v2是预发布版 → v1大
-  if (pr1 && !pr2) return -1; // v1是预发布版，v2是正式版 → v2大
+  // ========== 第二步：主版本号相同，区分正式版/预发布版 ==========
+  // 规则：正式版（无预发布后缀）> 预发布版（有后缀）
+  if (!pr1 && pr2) return 1; // v1是正式版，v2是预发布版 → v1更大（如 v10-1.0 > v10-b4）
+  if (pr1 && !pr2) return -1; // v1是预发布版，v2是正式版 → v2更大（如 v10-b4 < v10-1.0）
 
-  // 3. 都是预发布版 → 比较后缀（如 b2 > b1）
+  // ========== 第三步：都是预发布版，比较后缀中的数字 ==========
   if (pr1 && pr2) {
-    // 提取后缀里的数字（b2 → 2, b10 →10）
+    /**
+     * 提取预发布后缀中的数字（如 b4 → 4，beta10 → 10，rc3 → 3）
+     * 无数字则返回 0（如 beta → 0）
+     * @param pr 预发布后缀字符串
+     * @returns 后缀中的数字（无则为0）
+     */
     const getPreNum = (pr: string) => Number(pr.match(/\d+/)?.[0] || 0);
-    return getPreNum(pr1) - getPreNum(pr2);
+
+    // 后缀数字相减：正数表示v1更大，负数表示v2更大，0表示相等
+    return getPreNum(pr1) - getPreNum(pr2); // 如 b4 - b3 = 1 → v1更大
   }
 
-  // 版本完全相同
+  // ========== 最终：版本完全相同 ==========
   return 0;
 };
-
-/* ----------  主组件  ---------- */
 export function DownloadSection() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -97,36 +129,27 @@ export function DownloadSection() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
   const PER_PAGE = 10;
-
-  /* 初始拉取 */
   useEffect(() => {
     fetchReleases();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const fetchReleases = async () => {
     try {
       setLoading(true);
       const res = await fetch('/api/github-releases');
       if (!res.ok) throw new Error(String(res.status));
       const data: GitHubRelease[] = await res.json();
-
-      // 修复：最新版本判断（按发布时间，而非 ID）
       const getLatestReleaseId = (branch: Branch) => {
         const branchReleases = data.filter(r =>
           (branch === 'main' && !/real/i.test(r.tag_name)) ||
           (branch === 'real' && /real/i.test(r.tag_name))
-        ).filter(r => !r.prerelease); // 正式版优先
+        ).filter(r => !r.prerelease);
         if (branchReleases.length === 0) return null;
-        // 按发布时间排序，取最新的
         return branchReleases.sort((a, b) =>
           new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
         )[0].id;
       };
-
       const latestMain = getLatestReleaseId('main');
       const latestReal = getLatestReleaseId('real');
-
       const parsed: ParsedRelease[] = data.map(r => {
         const branch: Branch = /real/i.test(r.name + r.tag_name) ? 'real' : 'main';
         const files = r.assets.map(a => ({
@@ -154,8 +177,6 @@ export function DownloadSection() {
       setLoading(false);
     }
   };
-
-  /* 筛选 / 排序（核心修复：语义化排序） */
   const filtered = useMemo(() => {
     const list = releases
       .filter(r => r.branch === activeBranch)
@@ -167,10 +188,8 @@ export function DownloadSection() {
       .sort((a, b) => {
         const m = sortOrder === 'asc' ? 1 : -1;
         if (sortBy === 'semantic') {
-          // 最新版本始终排在最前面
           if (a.isLatest && !b.isLatest) return -1;
           if (!a.isLatest && b.isLatest) return 1;
-          // 使用修复后的语义化比较函数
           return m * compareSemanticVersions(a.version, b.version);
         }
         if (sortBy === 'releaseDate') {
@@ -180,11 +199,8 @@ export function DownloadSection() {
       });
     return list;
   }, [releases, activeBranch, search, sortBy, sortOrder]);
-
-  /* 分页 */
   const total = Math.ceil(filtered.length / PER_PAGE);
   const paged = useMemo(() => filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE), [filtered, page]);
-
   if (loading)
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-4">
@@ -192,7 +208,6 @@ export function DownloadSection() {
         <p className="text-muted-foreground">正在加载 GitHub 数据 …</p>
       </div>
     );
-
   return (
     <div className="space-y-6">
       {/* 标题 */}
@@ -226,7 +241,6 @@ export function DownloadSection() {
           </div>
           <Button variant="outline" onClick={fetchReleases}>刷新</Button>
         </div>
-
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">排序：</span>
           {(['semantic', 'releaseDate', 'downloadCount'] as const).map(key => (
@@ -253,8 +267,6 @@ export function DownloadSection() {
           ))}
         </div>
       </Card>
-
-      {/* 分支 Tab */}
       <Tabs defaultValue={activeBranch} onValueChange={v => { setActiveBranch(v as Branch); setPage(1); }}>
         <TabsContent value="main" className="space-y-4 pt-4">
           <Pagination total={total} current={page} onPage={setPage} />
@@ -267,14 +279,10 @@ export function DownloadSection() {
           <Pagination total={total} current={page} onPage={setPage} />
         </TabsContent>
       </Tabs>
-
       <MirrorFooter />
     </div>
   );
 }
-
-/* ----------  子组件  ---------- */
-
 function ReleaseGrid({ list }: { list: ParsedRelease[] }) {
   if (list.length === 0)
     return (
@@ -290,7 +298,6 @@ function ReleaseGrid({ list }: { list: ParsedRelease[] }) {
     </div>
   );
 }
-
 function ReleaseCard({ release }: { release: ParsedRelease }) {
   const [open, setOpen] = useState(false);
   const isMain = release.branch === 'main';
@@ -307,7 +314,6 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
           <Zap className="w-3 h-3" />最新版本
         </Badge>
       )}
-
       <CardHeader className="pb-3">
         <div className="flex items-start gap-3">
           <div
@@ -359,14 +365,10 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
     </Card>
   );
 }
-
-// 只替换 FileBlock 组件里的 getMirrorUrl 函数，其他代码不变！
 function FileBlock({ file }: { file: { name: string; downloadUrl: string; downloadCount: number } }) {
-  // 正确：直接拼接镜像站 + GitHub 原始 URL（和官网格式完全一致）
   const getMirrorUrl = (host: string) => {
     return `${host}/${file.downloadUrl}`;
   };
-
   const mirrors = [
     { tag: 'Cloudflare', url: getMirrorUrl('https://gh-proxy.org'), tip: '推荐' }, // 注意：官网用的是 gh-proxy.org，之前是 gh-proxy.com，统一对齐
     { tag: 'Fastly', url: getMirrorUrl('https://cdn.gh-proxy.org'), tip: '推荐' },
@@ -375,22 +377,18 @@ function FileBlock({ file }: { file: { name: string; downloadUrl: string; downlo
     { tag: 'Imixc', url: getMirrorUrl('https://gh.imixc.top'), tip: '大文件慎用' },
     { tag: '香港', url: getMirrorUrl('https://hk.gh-proxy.org'), tip: '香港节点' },
   ];
-
   return (
     <div className="p-3 rounded-xl border bg-card/50">
       <div className="flex items-center justify-between mb-2">
         <span className="font-medium text-sm truncate">{file.name}</span>
         <Badge variant="secondary" className="text-xs">下载 {file.downloadCount} 次</Badge>
       </div>
-
       <div className="flex flex-wrap gap-2">
-        {/* 官方链接：完整 GitHub 原始 URL */}
         <Button size="xs" asChild>
           <a href={file.downloadUrl} target="_blank" rel="noopener noreferrer">
             <Download className="w-3 h-3 mr-1" />官方
           </a>
         </Button>
-        {/* 镜像链接：和官网格式一致（镜像站 + 未编码的 GitHub 完整 URL） */}
         {mirrors.map(m => (
           <Button key={m.tag} size="xs" variant="outline" asChild title={m.tip}>
             <a href={m.url} target="_blank" rel="noopener noreferrer">
@@ -402,7 +400,6 @@ function FileBlock({ file }: { file: { name: string; downloadUrl: string; downlo
     </div>
   );
 }
-
 function Pagination({ total, current, onPage }: { total: number; current: number; onPage: (p: number) => void }) {
   if (total <= 1) return null;
   const delta = 2;
@@ -412,7 +409,6 @@ function Pagination({ total, current, onPage }: { total: number; current: number
   if (left > 1) pages.push(1, '...');
   for (let i = left; i <= right; i++) pages.push(i);
   if (right < total) pages.push('...', total);
-
   return (
     <div className="flex justify-center gap-2 pt-2">
       {pages.map((p, i) =>
@@ -427,7 +423,6 @@ function Pagination({ total, current, onPage }: { total: number; current: number
     </div>
   );
 }
-
 function MirrorFooter() {
   return (
     <div className="text-center text-sm text-muted-foreground p-4 rounded-lg border bg-secondary/30">
