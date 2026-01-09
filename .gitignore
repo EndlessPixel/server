@@ -1,4 +1,9 @@
 node_modules
 .next
+out
+dist
+build
+*.log
 package-lock.json
 tsconfig.tsbuildinfo
+cert
