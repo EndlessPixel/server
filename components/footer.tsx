@@ -130,7 +130,7 @@ export function Footer() {
 
   // 服务器信息数据
   const serverInfo = [
-    { label: "版本", value: "1.21.10", color: "text-green-400" },
+    { label: "版本", value: "1.21.11", color: "text-green-400" },
     { label: "QQ群", value: "870594910", color: "text-blue-400" },
     { label: "模式", value: "离线模式", color: "text-amber-400" },
     { label: "费用", value: "完全免费", color: "text-emerald-400" }

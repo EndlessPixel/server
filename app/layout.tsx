@@ -42,10 +42,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(DOMAIN),
   title: {
-    default: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.10",
+    default: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.11",
     template: "%s | EndlessPixel - 免费MC服务器",
   },
-  description: "EndlessPixel提供免费纯净Minecraft Java服务器，支持1.8-1.21.10版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验。",
+  description: "EndlessPixel提供免费纯净Minecraft Java服务器，支持1.8-1.21.11版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验。",
   keywords: [
     "Minecraft服务器",
     "免费MC服务器",
@@ -69,8 +69,8 @@ export const metadata: Metadata = {
     locale: "zh_CN",
     url: DOMAIN,
     siteName: "EndlessPixel",
-    title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.10",
-    description: "免费Minecraft Java服务器，支持1.8-1.21.10版本，Purpur核心+Discord社区，无付费无广告！",
+    title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.11",
+    description: "免费Minecraft Java服务器，支持1.8-1.21.11版本，Purpur核心+Discord社区，无付费无广告！",
     images: [
       {
         url: BANNER_IMAGE,
@@ -84,8 +84,8 @@ export const metadata: Metadata = {
   // ✅ 修复4: Twitter 卡片使用正确域名
   twitter: {
     card: "summary_large_image",
-    title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.10",
-    description: "免费MC Java服务器，支持1.8-1.21.10，Purpur核心，无付费无广告，Discord社区实时互动！",
+    title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.11",
+    description: "免费MC Java服务器，支持1.8-1.21.11，Purpur核心，无付费无广告，Discord社区实时互动！",
     images: [BANNER_IMAGE],
     creator: "@EndlessPixelStudio",
   },
