@@ -972,7 +972,7 @@ export const articles: Record<string, ArticleData> = {
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-green-900 dark:text-green-100">服务器支持版本</h3>
-                                        <p className="text-green-700 dark:text-green-300 text-sm">1.8+ 至 1.21.10及以上版本</p>
+                                        <p className="text-green-700 dark:text-green-300 text-sm">1.8+ 至 1.21.11及以上版本</p>
                                     </div>
                                 </div>
 
@@ -982,7 +982,7 @@ export const articles: Record<string, ArticleData> = {
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-green-900 dark:text-green-100">推荐版本</h3>
-                                        <p className="text-green-700 dark:text-green-300 text-sm">1.21.10</p>
+                                        <p className="text-green-700 dark:text-green-300 text-sm">1.21.11</p>
                                     </div>
                                 </div>
                             </div>
@@ -1029,7 +1029,7 @@ export const articles: Record<string, ArticleData> = {
                                 <h3 className="font-bold text-blue-900 dark:text-blue-100">最佳体验</h3>
                             </div>
                             <p className="text-blue-800 dark:text-blue-200 text-sm leading-relaxed">
-                                使用1.21.10版本可获得最佳游戏体验，支持所有最新特性
+                                使用1.21.11版本可获得最佳游戏体验，支持所有最新特性
                             </p>
                         </div>
 
@@ -1042,7 +1042,7 @@ export const articles: Record<string, ArticleData> = {
                                 <h3 className="font-bold text-yellow-900 dark:text-yellow-100">兼容版本</h3>
                             </div>
                             <p className="text-yellow-800 dark:text-yellow-200 text-sm leading-relaxed">
-                                1.8至1.21.10及以上版本均可正常进入并游戏
+                                1.8至1.21.11及以上版本均可正常进入并游戏
                             </p>
                         </div>
                     </div>
@@ -1058,7 +1058,7 @@ export const articles: Record<string, ArticleData> = {
                     <div className="bg-linear-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800 p-6 rounded-xl border-2 border-purple-200 dark:border-purple-800">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-purple-700 dark:text-purple-300 text-sm">1.7.2</span>
-                            <span className="text-purple-700 dark:text-purple-300 text-sm">1.21.10+</span>
+                            <span className="text-purple-700 dark:text-purple-300 text-sm">1.21.11+</span>
                         </div>
                         <div className="bg-purple-200 dark:bg-purple-700 h-4 rounded-full overflow-hidden">
                             <div className="bg-linear-to-r from-green-400 to-blue-500 h-full w-full rounded-full"></div>
@@ -1078,7 +1078,7 @@ export const articles: Record<string, ArticleData> = {
                                 <div className="text-purple-700 dark:text-purple-300 text-xs">稳定支持</div>
                             </div>
                             <div className="bg-white/50 dark:bg-gray-600/30 p-3 rounded-lg">
-                                <div className="text-purple-600 dark:text-purple-400 font-bold text-lg">1.21.10</div>
+                                <div className="text-purple-600 dark:text-purple-400 font-bold text-lg">1.21.11</div>
                                 <div className="text-purple-700 dark:text-purple-300 text-xs">最佳体验</div>
                             </div>
                         </div>
@@ -1170,11 +1170,11 @@ export const articles: Record<string, ArticleData> = {
                             <ul className="text-orange-700 dark:text-orange-300 space-y-2 text-sm">
                                 <li className="flex items-start">
                                     <span className="text-orange-500 mr-2 mt-1">•</span>
-                                    <span>确认客户端版本在1.8-1.21.10范围内（协议号773）</span>
+                                    <span>确认客户端版本在1.8-1.21.11范围内（协议号773）</span>
                                 </li>
                                 <li className="flex items-start">
                                     <span className="text-orange-500 mr-2 mt-1">•</span>
-                                    <span>推荐使用1.21.10版本获得最佳兼容性</span>
+                                    <span>推荐使用1.21.11版本获得最佳兼容性</span>
                                 </li>
                                 <li className="flex items-start">
                                     <span className="text-orange-500 mr-2 mt-1">•</span>

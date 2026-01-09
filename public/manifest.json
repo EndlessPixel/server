@@ -1,7 +1,7 @@
 {
   "name": "EndlessPixel - 免费纯净Minecraft Java服务器",
   "short_name": "EndlessPixel",
-  "description": "EndlessPixel是由EndlessPixel Studio打造的Minecraft社区，提供1.8-1.21.10全版本支持、Purpur高性能核心，免费开放的游戏世界与Discord互动社区。",
+  "description": "EndlessPixel是由EndlessPixel Studio打造的Minecraft社区，提供1.8-1.21.11全版本支持、Purpur高性能核心，免费开放的游戏世界与Discord互动社区。",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

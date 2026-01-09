@@ -113,7 +113,7 @@ export function HeroSection() {
             >
               <Sparkles className="w-5 h-5 text-yellow-500" />
             </motion.div>
-            <span>欢迎来到 Minecraft 1.21.10 新世界</span>
+            <span>欢迎来到 Minecraft 1.21.11 新世界</span>
             <motion.div 
               className="w-2 h-2 bg-green-500 rounded-full"
               animate={{ scale: [1, 1.5, 1] }}
@@ -220,7 +220,7 @@ export function HeroSection() {
               className="hidden sm:block"
             >
               <a
-                href="minecraft://cd1.epmc.top?version=1.21.10"
+                href="minecraft://cd1.epmc.top?version=1.21.11"
                 rel="noopener noreferrer"
                 title="需安装Minecraft官方客户端，或支持minecraft://协议的第三方客户端"
               >
