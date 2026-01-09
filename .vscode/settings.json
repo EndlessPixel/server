@@ -2,5 +2,15 @@
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
-  "search.useIgnoreFiles": false
+  "search.useIgnoreFiles": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/out": true,
+    "**/dist": true,
+    "**/*.log": true,
+    "**/cert/**": true,
+    "tsconfig.tsbuildinfo": true,
+    "package-lock.json": true
+  }
 }
