@@ -1,9 +1,11 @@
+"use client";
+
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { DownloadSection } from "@/components/download-section-launcher";
-import { Github, ArrowUpRight } from "lucide-react";
+import { Github, ArrowUpRight, ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 export interface LauncherDownloadPageProps {
   owner: string;
@@ -25,6 +27,8 @@ export function LauncherDownloadPage({
   issuesHref,
   introCards = [],
 }: LauncherDownloadPageProps) {
+  const router = useRouter();
+  const repoUrl = `https://github.com/${repoOwner}/${repoName}`;
   return (
     <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-cyan-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-cyan-950/20">
       <Navigation />
@@ -74,6 +78,15 @@ export function LauncherDownloadPage({
               <div className="space-y-4 text-slate-600 dark:text-slate-400">
                 <p>如果您在安装过程中遇到任何问题：</p>
                 <div className="flex flex-wrap gap-3">
+                  <a
+                    href={repoUrl} // 仓库地址
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 rounded-lg text-sm font-medium text-blue-700 dark:text-blue-300 transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    直达仓库
+                  </a>
                   <a
                     href={`https://github.com/${repoOwner}/${repoName}/issues`}
                     target="_blank"

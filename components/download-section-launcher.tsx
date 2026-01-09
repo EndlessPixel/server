@@ -1,35 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
-  Download,
-  Package,
-  ChevronDown,
-  ChevronUp,
-  Loader2,
-  ExternalLink,
-  Star,
-  Zap,
-  ArrowUp,
-  ArrowDown,
-  Search,
-  Filter,
-  Rocket,
-  Calendar,
-  TrendingUp,
-  ChevronLeft,
-  ChevronRight,
-  RefreshCw,
-  Github,
-  Archive,
-  Tag,
-  Eye,
-  GitBranch,
-  Clock
+  Download, Package, ChevronDown, ChevronUp, Loader2, ExternalLink,
+  Star, Zap, ArrowUp, ArrowDown, Search, Filter, Archive, Tag, Eye, GitBranch, Clock,
+  Rocket, Calendar, TrendingUp, ChevronLeft, ChevronRight, RefreshCw,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
@@ -109,7 +88,9 @@ export function DownloadSection({
   itemsPerPage = 20,
   launcherMeta
 }: DownloadSectionProps) {
-  const [releases, setReleases] = useState<ParsedRelease[]>([]);
+  // 状态管理优化：拆分全量数据和当前页数据
+  const [allReleases, setAllReleases] = useState<ParsedRelease[]>([]); // 全量版本数据
+  const [currentPageReleases, setCurrentPageReleases] = useState<ParsedRelease[]>([]); // 当前页数据
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"semantic" | "releaseDate" | "downloadCount">("semantic");
@@ -118,12 +99,7 @@ export function DownloadSection({
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [paginationLinks, setPaginationLinks] = useState<{
-    first?: string;
-    prev?: string;
-    next?: string;
-    last?: string;
-  }>({});
+  const [totalReleases, setTotalReleases] = useState(0); // 总版本数
   const [repoInfo, setRepoInfo] = useState<GitHubRepoInfo | null>(null);
   const [expandedFiles, setExpandedFiles] = useState<Set<string>>(new Set());
   const { toast } = useToast();
@@ -141,11 +117,37 @@ export function DownloadSection({
     }
   }, [searchParams]);
 
-  // 当githubApiUrl或currentPage变化时，重新获取数据
+  // 当关键参数变化时重新获取数据
   useEffect(() => {
     fetchReleases();
     fetchRepoInfo();
-  }, [githubApiUrl, currentPage]);
+  }, [githubApiUrl, showPrereleases]); // 修复：添加 showPrereleases 依赖
+
+  // 当分页/筛选/排序变化时，更新当前页显示数据
+  useEffect(() => {
+    if (allReleases.length === 0) return;
+
+    // 应用筛选和排序
+    const processedReleases = processReleases(allReleases);
+    setTotalReleases(processedReleases.length);
+
+    // 计算总页数
+    const calculatedTotalPages = Math.ceil(processedReleases.length / itemsPerPage);
+    setTotalPages(Math.max(1, calculatedTotalPages));
+
+    // 确保当前页有效
+    const validPage = Math.min(Math.max(1, currentPage), calculatedTotalPages);
+    if (validPage !== currentPage) {
+      setCurrentPage(validPage);
+      updateUrlParams({ page: validPage });
+    }
+
+    // 截取当前页数据
+    const startIndex = (validPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setCurrentPageReleases(processedReleases.slice(startIndex, endIndex));
+
+  }, [allReleases, currentPage, search, selectedTag, sortBy, sortOrder, itemsPerPage]);
 
   const fetchRepoInfo = async () => {
     try {
@@ -166,135 +168,109 @@ export function DownloadSection({
 
       const data = await response.json();
       setRepoInfo({
-        description: data.description,
-        stargazers_count: data.stargazers_count,
-        archived: data.archived,
+        description: data.description || "",
+        stargazers_count: data.stargazers_count || 0,
+        archived: data.archived || false,
         topics: data.topics || [],
-        updated_at: data.updated_at,
-        language: data.language,
-        forks_count: data.forks_count,
-        watchers_count: data.watchers_count,
+        updated_at: data.updated_at || "",
+        language: data.language || "",
+        forks_count: data.forks_count || 0,
+        watchers_count: data.watchers_count || 0,
       });
     } catch (error) {
       console.error("Failed to fetch repo info:", error);
     }
   };
 
-  // 解析GitHub API返回的分页链接
-  const parseLinkHeader = (header: string | null) => {
-    if (!header) return {};
-
-    const links: { [key: string]: string } = {};
-    const parts = header.split(',');
-
-    parts.forEach(part => {
-      const match = part.match(/<([^>]+)>;\s*rel="([^"]+)"/);
-      if (match) {
-        const url = match[1];
-        const rel = match[2];
-        links[rel] = url;
-      }
-    });
-
-    return links;
-  };
-
-  // 修复calculateTotalPages函数
-  const calculateTotalPages = (linkHeader: string | null, currentPage: number, itemsPerPage: number, dataLength: number) => {
-    if (!linkHeader) {
-      // 如果没有分页信息，说明只有一页或者数据量小于每页数量
-      return dataLength < itemsPerPage ? 1 : Math.ceil(dataLength / itemsPerPage);
-    }
-
-    const links = parseLinkHeader(linkHeader);
-    if (links.last) {
-      const url = new URL(links.last);
-      const lastPage = Number(url.searchParams.get("page") || 1);
-      return lastPage;
-    }
-
-    // 如果没有last链接，但当前页数据量小于每页数量，说明当前页是最后一页
-    if (dataLength < itemsPerPage) {
-      return currentPage;
-    }
-
-    // 保守估计，返回当前页+1作为总页数
-    return currentPage + 1;
-  };
-
+  // 修复：获取全量版本数据（处理分页）
   const fetchReleases = async () => {
     try {
       setLoading(true);
+      let allData: GitHubRelease[] = [];
+      let page = 1;
+      let hasMore = true;
 
-      // 构建带分页参数的URL
-      const url = new URL(githubApiUrl);
-      url.searchParams.set('per_page', itemsPerPage.toString());
-      url.searchParams.set('page', currentPage.toString());
+      // 循环获取所有分页数据
+      while (hasMore) {
+        const url = new URL(githubApiUrl);
+        url.searchParams.set('per_page', '100'); // 每次获取100条（GitHub最大值）
+        url.searchParams.set('page', page.toString());
 
-      const response = await fetch(url.toString(), {
-        headers: {
-          Accept: "application/vnd.github.v3+json",
-        },
-      });
+        const response = await fetch(url.toString(), {
+          headers: {
+            Accept: "application/vnd.github.v3+json",
+          },
+        });
 
-      if (!response.ok) {
-        throw new Error(`GitHub API error: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`GitHub API error: ${response.status}`);
+        }
+
+        const data: GitHubRelease[] = await response.json();
+        if (data.length === 0) {
+          hasMore = false;
+          break;
+        }
+
+        allData = [...allData, ...data];
+        page++;
+
+        // 防止请求过多（保护API调用）
+        if (page > 10) break;
       }
 
-      const data: GitHubRelease[] = await response.json();
+      // 过滤预发布版本
+      const filteredData = showPrereleases ? allData : allData.filter(release => !release.prerelease);
 
-      // 解析分页链接
-      const linkHeader = response.headers.get('Link');
-      const links = parseLinkHeader(linkHeader);
-      setPaginationLinks({
-        first: links.first,
-        prev: links.prev,
-        next: links.next,
-        last: links.last
-      });
-
-      // 计算总页数
-      const calculatedTotalPages = calculateTotalPages(linkHeader, currentPage, itemsPerPage, data.length);
-      setTotalPages(calculatedTotalPages);
-
-      // Filter out prereleases if not needed
-      const filteredData = showPrereleases ? data : data.filter(release => !release.prerelease);
-
-      // 修复：正确识别最新版本（按发布时间排序取最新正式版）
+      // 找到最新正式版
       const latestRelease = filteredData
         .filter(release => !release.prerelease)
-        .sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime())[0]?.id || null;
+        .sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime())[0];
 
+      // 解析版本数据（修复：添加 tags 解析）
       const parsedReleases: ParsedRelease[] = filteredData.map((release) => {
+        // 解析MC版本
         const mcVersionMatch = release.tag_name.match(/^(\d+\.\d+\.\d+)/);
         const mcVersion = mcVersionMatch ? mcVersionMatch[1] : "Unknown";
 
+        // 解析文件信息
         const files = release.assets.map((asset) => ({
-          name: asset.name,
-          downloadUrl: asset.browser_download_url,
-          downloadCount: asset.download_count,
+          name: asset.name || "",
+          downloadUrl: asset.browser_download_url || "",
+          downloadCount: asset.download_count || 0,
         }));
 
+        // 计算总下载量
         const downloadCount = files.reduce((total, file) => total + file.downloadCount, 0);
         const releaseDate = new Date(release.published_at).toLocaleDateString("zh-CN");
-        const isLatest = release.id === latestRelease;
+        const isLatest = latestRelease ? release.id === latestRelease.id : false;
+
+        // 解析标签（从tag_name或body中提取）
+        const tagMatches = release.tag_name.match(/(beta|rc|alpha|stable|latest)/gi) || [];
+        const bodyTags = release.body ? release.body.match(/\[(\w+)\]/g)?.map(tag => tag.replace(/\[|\]/g, '')) || [] : [];
+        const releaseTags = [...new Set([...tagMatches, ...bodyTags])];
 
         return {
-          name: release.name || release.tag_name,
-          version: release.tag_name,
+          name: release.name || release.tag_name || "",
+          version: release.tag_name || "",
           mcVersion,
           releaseDate,
-          isPrerelease: release.prerelease,
+          isPrerelease: release.prerelease || false,
           isLatest,
           downloadCount,
           files,
           changelog: release.body || "暂无更新日志。",
-        }
+          tags: releaseTags.length > 0 ? releaseTags : undefined // 修复：赋值 tags
+        };
       });
 
-      setReleases(parsedReleases);
+      // 更新全量数据
+      setAllReleases(parsedReleases);
+
+      // 提取所有标签
       const allTags = Array.from(new Set(parsedReleases.flatMap((release) => release.tags || [])));
       setTags(allTags);
+
     } catch (error) {
       console.error("Failed to fetch releases:", error);
       toast({
@@ -305,9 +281,78 @@ export function DownloadSection({
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  // 更新URL参数
+  // 修复：语义化版本比较函数（优化逻辑）
+  const compareSemanticVersions = (v1: string, v2: string): number => {
+    const parseVersion = (version: string) => {
+      // 匹配预发布后缀（-b/-beta/-rc 等开头）
+      const preReleaseMatch = version.match(/-([a-zA-Z]+.*)$/);
+      const preRelease = preReleaseMatch ? preReleaseMatch[1] : '';
+      // 提取主版本号的数字部分
+      const mainParts = (preRelease ? version.replace(/-[a-zA-Z]+.*$/, '') : version)
+        .match(/\d+/g)?.map(Number) || [];
+      return { mainParts, preRelease };
+    };
+
+    const { mainParts: p1, preRelease: pr1 } = parseVersion(v1);
+    const { mainParts: p2, preRelease: pr2 } = parseVersion(v2);
+
+    // 1. 先比较主版本号
+    const maxLen = Math.max(p1.length, p2.length);
+    for (let i = 0; i < maxLen; i++) {
+      const num1 = p1[i] || 0;
+      const num2 = p2[i] || 0;
+      if (num1 > num2) return 1;
+      if (num1 < num2) return -1;
+    }
+
+    // 2. 主版本号相同 → 正式版 > 预发布版
+    if (!pr1 && pr2) return 1;
+    if (pr1 && !pr2) return -1;
+
+    // 3. 都是预发布版 → 比较后缀
+    if (pr1 && pr2) {
+      const getPreNum = (pr: string) => Number(pr.match(/\d+/)?.[0] || 0);
+      return getPreNum(pr1) - getPreNum(pr2);
+    }
+
+    return 0;
+  };
+
+  // 修复：排序逻辑（优先版本号，再考虑是否最新）
+  const semanticCompare = (a: ParsedRelease, b: ParsedRelease) => {
+    const versionCompare = compareSemanticVersions(a.version, b.version);
+    // 版本号不同时，按版本号排序；版本号相同时，最新版本优先
+    return versionCompare !== 0 ? versionCompare : (a.isLatest ? -1 : b.isLatest ? 1 : 0);
+  };
+
+  // 统一处理筛选和排序
+  const processReleases = (releases: ParsedRelease[]) => {
+    return releases
+      // 搜索筛选
+      .filter((release) =>
+        release.name.toLowerCase().includes(search.toLowerCase()) ||
+        release.version.toLowerCase().includes(search.toLowerCase()) ||
+        release.mcVersion.toLowerCase().includes(search.toLowerCase())
+      )
+      // 标签筛选
+      .filter((release) => (selectedTag ? release.tags?.includes(selectedTag) : true))
+      // 排序
+      .sort((a, b) => {
+        if (sortBy === "semantic") {
+          return sortOrder === "asc" ? semanticCompare(a, b) : -semanticCompare(a, b);
+        } else if (sortBy === "releaseDate") {
+          const dateCompare = new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+          return sortOrder === "asc" ? -dateCompare : dateCompare;
+        } else { // downloadCount
+          const countCompare = b.downloadCount - a.downloadCount;
+          return sortOrder === "asc" ? -countCompare : countCompare;
+        }
+      });
+  };
+
+  // 修复：URL参数更新（同步状态）
   const updateUrlParams = (params: Record<string, string | number | null>) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
 
@@ -319,9 +364,11 @@ export function DownloadSection({
       }
     });
 
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
+    // 使用 replace 避免历史记录堆积
+    router.replace(`?${newSearchParams.toString()}`, { scroll: false });
   };
 
+  // 排序变更处理
   const handleSortChange = (criteria: "semantic" | "releaseDate" | "downloadCount") => {
     if (sortBy === criteria) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -329,89 +376,26 @@ export function DownloadSection({
       setSortBy(criteria);
       setSortOrder("desc");
     }
-  }
-
-  // 🌟 核心修复：完整语义化版本比较（支持正式版 > 预发布版，解决2.0排在1.x前面的问题）
-  const compareSemanticVersions = (v1: string, v2: string): number => {
-    // 解析版本：分离 主版本号 + 预发布后缀（如 v9-2.0 → [9,2,0], 无后缀；v9-b2 → [9], 后缀 b2）
-    const parseVersion = (version: string) => {
-      // 匹配预发布后缀（-b/-beta/-rc 等开头）
-      const preReleaseMatch = version.match(/-([a-zA-Z]+.*)$/);
-      const preRelease = preReleaseMatch ? preReleaseMatch[1] : '';
-      // 提取主版本号的数字部分（忽略前缀，只取数字序列）
-      const mainParts = (preRelease ? version.replace(/-[a-zA-Z]+.*$/, '') : version)
-        .match(/\d+/g)?.map(Number) || [];
-      return { mainParts, preRelease };
-    };
-
-    const { mainParts: p1, preRelease: pr1 } = parseVersion(v1);
-    const { mainParts: p2, preRelease: pr2 } = parseVersion(v2);
-
-    // 1. 先比较主版本号（核心逻辑）
-    const maxLen = Math.max(p1.length, p2.length);
-    for (let i = 0; i < maxLen; i++) {
-      const num1 = p1[i] || 0;
-      const num2 = p2[i] || 0;
-      if (num1 > num2) return 1;
-      if (num1 < num2) return -1;
-    }
-
-    // 2. 主版本号相同 → 正式版 > 预发布版
-    if (!pr1 && pr2) return 1; // v1是正式版，v2是预发布版 → v1大
-    if (pr1 && !pr2) return -1; // v1是预发布版，v2是正式版 → v2大
-
-    // 3. 都是预发布版 → 比较后缀（如 b2 > b1）
-    if (pr1 && pr2) {
-      // 提取后缀里的数字（b2 → 2, b10 →10）
-      const getPreNum = (pr: string) => Number(pr.match(/\d+/)?.[0] || 0);
-      return getPreNum(pr1) - getPreNum(pr2);
-    }
-
-    // 版本完全相同
-    return 0;
+    // 排序变更时回到第一页
+    setCurrentPage(1);
+    updateUrlParams({ page: 1 });
   };
 
-  // 修复语义化排序逻辑
-  const semanticCompare = (a: ParsedRelease, b: ParsedRelease) => {
-    if (a.isLatest && !b.isLatest) return -1;
-    if (!a.isLatest && b.isLatest) return 1;
-
-    // 使用修复后的语义化比较函数
-    return compareSemanticVersions(a.version, b.version);
+  // 修复：镜像链接拼接（正确处理URL）
+  const getMirrorUrl = (host: string, originalUrl: string) => {
+    // 移除 originalUrl 的协议头，避免重复
+    const cleanUrl = originalUrl.replace(/^https?:\/\//, '');
+    return `${host}/${cleanUrl}`;
   };
 
-  const filteredReleases = releases
-    .filter((release) =>
-      release.name.toLowerCase().includes(search.toLowerCase()) ||
-      release.version.toLowerCase().includes(search.toLowerCase()) ||
-      release.mcVersion.toLowerCase().includes(search.toLowerCase())
-    )
-    .filter((release) => (selectedTag ? release.tags?.includes(selectedTag) : true))
-    .sort((a, b) => {
-      if (sortBy === "semantic") {
-        // 排序方向：desc → 新版本在前，asc → 旧版本在前
-        return sortOrder === "asc" ? semanticCompare(a, b) : -semanticCompare(a, b);
-      }
-
-      const compare = (key: "releaseDate" | "downloadCount") => {
-        if (key === "releaseDate") {
-          return new Date(b[key]).getTime() - new Date(a[key]).getTime();
-        }
-        return b[key] - a[key];
-      };
-
-      return sortOrder === "asc" ? -compare(sortBy) : compare(sortBy);
-    });
-
-  // 生成分页按钮，限制显示数量
-  const generatePaginationButtons = () => {
+  // 性能优化：缓存分页按钮生成逻辑
+  const generatePaginationButtons = useMemo(() => {
     const buttons = [];
     const maxVisiblePages = 5;
 
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
-    // 调整起始页，确保显示maxVisiblePages个按钮
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
@@ -434,17 +418,19 @@ export function DownloadSection({
     }
 
     return buttons;
-  };
+  }, [currentPage, totalPages]);
 
   // 处理文件展开/折叠
   const toggleFileExpansion = (releaseVersion: string) => {
-    const newExpanded = new Set(expandedFiles);
-    if (newExpanded.has(releaseVersion)) {
-      newExpanded.delete(releaseVersion);
-    } else {
-      newExpanded.add(releaseVersion);
-    }
-    setExpandedFiles(newExpanded);
+    setExpandedFiles(prev => {
+      const newExpanded = new Set(prev);
+      if (newExpanded.has(releaseVersion)) {
+        newExpanded.delete(releaseVersion);
+      } else {
+        newExpanded.add(releaseVersion);
+      }
+      return newExpanded;
+    });
   };
 
   if (loading) {
@@ -625,57 +611,8 @@ export function DownloadSection({
 
       {/* Releases List */}
       <Tabs defaultValue="releases" className="w-full">
-        <div className="space-y-4">
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
-              <div className="text-sm text-slate-500 dark:text-slate-400">
-                第 {currentPage} 页，共 {totalPages} 页，总计 {filteredReleases.length} 个版本
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    if (currentPage > 1) {
-                      const newPage = currentPage - 1;
-                      setCurrentPage(newPage);
-                      updateUrlParams({ page: newPage });
-                    }
-                  }}
-                  disabled={currentPage === 1}
-                  className="rounded-full"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-
-                <div className="flex items-center gap-1">
-                  {generatePaginationButtons()}
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    if (currentPage < totalPages) {
-                      const newPage = currentPage + 1;
-                      setCurrentPage(newPage);
-                      updateUrlParams({ page: newPage });
-                    }
-                  }}
-                  disabled={currentPage === totalPages}
-                  className="rounded-full"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-
         <TabsContent value="releases" className="space-y-4">
-          {filteredReleases.length === 0 ? (
+          {totalReleases === 0 ? (
             <Card className="border-dashed">
               <CardContent className="py-16 text-center">
                 <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
@@ -686,9 +623,17 @@ export function DownloadSection({
                 </Button>
               </CardContent>
             </Card>
+          ) : currentPageReleases.length === 0 ? (
+            <Card className="border-dashed">
+              <CardContent className="py-16 text-center">
+                <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">当前页无数据</h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-4">请尝试切换到其他页码</p>
+              </CardContent>
+            </Card>
           ) : (
             <div className="space-y-4">
-              {filteredReleases.map((release) => (
+              {currentPageReleases.map((release) => (
                 <ReleaseCard
                   key={release.version}
                   release={release}
@@ -701,7 +646,7 @@ export function DownloadSection({
               {totalPages > 1 && (
                 <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
                   <div className="text-sm text-slate-500 dark:text-slate-400">
-                    第 {currentPage} 页，共 {totalPages} 页，总计 {filteredReleases.length} 个版本
+                    第 {currentPage} 页，共 {totalPages} 页，总计 {totalReleases} 个版本
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -722,7 +667,7 @@ export function DownloadSection({
                     </Button>
 
                     <div className="flex items-center gap-1">
-                      {generatePaginationButtons()}
+                      {generatePaginationButtons}
                     </div>
 
                     <Button
@@ -754,7 +699,7 @@ export function DownloadSection({
           加速下载服务由以下镜像站点提供：
         </p>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 justify-center">
           <a
             href="https://gh-proxy.com/"
             target="_blank"
@@ -799,16 +744,18 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
   const getVersionType = () => {
     if (release.isPrerelease) return "预发布版";
     return "正式版";
-  }
+  };
 
   const getVersionBadgeColor = () => {
     if (release.isPrerelease) return "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-300";
     return "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300";
-  }
+  };
 
-  // 🌟 修复：镜像链接拼接（去掉多余空格，和官网格式一致）
+  // 修复：正确的镜像链接拼接
   const getMirrorUrl = (host: string, originalUrl: string) => {
-    return `${host}/${originalUrl}`;
+    // 移除原始URL的协议头，避免重复
+    const urlPath = originalUrl.replace(/^https?:\/\//, '');
+    return `${host}/${urlPath}`;
   };
 
   return (
@@ -860,7 +807,7 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
                 <span className="text-slate-300">•</span>
                 <span className="flex items-center gap-1">
                   <Download className="w-4 h-4" />
-                  下载 {release.downloadCount} 次
+                  下载 {release.downloadCount.toLocaleString()} 次
                 </span>
               </CardDescription>
             </div>
@@ -904,7 +851,7 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
                 tag: "香港",
                 tip: "大文件下载不建议使用！",
               },
-            ]
+            ];
 
             return (
               <div key={file.name} className="bg-white/50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600 backdrop-blur-sm">
@@ -915,7 +862,7 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
                         {file.name}
                       </span>
                       <Badge variant="outline" className="text-xs bg-slate-100 dark:bg-slate-700">
-                        {file.downloadCount} 次下载
+                        {file.downloadCount.toLocaleString()} 次下载
                       </Badge>
                     </div>
                   </div>
@@ -957,7 +904,7 @@ function ReleaseCard({ release, isExpanded, onToggleExpand }: ReleaseCardProps) 
                   </div>
                 </div>
               </div>
-            )
+            );
           })}
 
           {/* Expand/Collapse Button */}
