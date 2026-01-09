@@ -1,6 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Crown, Users, Server, Coffee, Sparkles, Shield, Globe, Wrench } from "lucide-react"
 
 export function TeamSection() {
