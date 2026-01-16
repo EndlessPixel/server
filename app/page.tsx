@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "首页 | EndlessPixel Minecraft 服务器",
     description: "首页 - EndlessPixel Minecraft 服务器",
-    url: "https://ep.endlesspixel.fun/",
+    url: "https://www.endlesspixel.fun/",
     images: [
       {
         url: "/og-downloads.jpg",
