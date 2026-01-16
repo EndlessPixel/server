@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "关于我们 | EndlessPixel Minecraft 服务器",
     description: "了解 EndlessPixel 团队和我们的故事。我们是一个由热爱游戏的玩家组成的 Minecraft 社区，致力于创造最佳的游戏体验。",
-    url: "https://ep.endlesspixel.fun/about",
+    url: "https://www.endlesspixel.fun/about",
     images: [
       {
         url: "/og-about.jpg",
