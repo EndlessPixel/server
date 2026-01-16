@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,8 +14,6 @@ import {
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
-
-/* ----------  类型  ---------- */
 type Branch = 'main' | 'real';
 interface ParsedRelease {
   name: string;
@@ -154,7 +151,7 @@ export function DownloadSection() {
         const branch: Branch = /real/i.test(r.name + r.tag_name) ? 'real' : 'main';
         const files = r.assets.map(a => ({
           name: a.name,
-          downloadUrl: a.browser_download_url, // 保留完整 GitHub 下载 URL
+          downloadUrl: a.browser_download_url,
           downloadCount: a.download_count,
         }));
         return {
@@ -210,7 +207,6 @@ export function DownloadSection() {
     );
   return (
     <div className="space-y-6">
-      {/* 标题 */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           下载模组包
@@ -227,7 +223,6 @@ export function DownloadSection() {
           </TabsTrigger>
         </TabsList>
       </Tabs>
-      {/* 搜索 / 排序 */}
       <Card className="p-4 space-y-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="relative flex-1">
@@ -342,14 +337,12 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
           </div>
         </div>
       </CardHeader>
-
       <CardContent className="space-y-3">
         <div className="grid gap-3 md:grid-cols-2">
           {release.files.map(f => (
             <FileBlock key={f.name} file={f} />
           ))}
         </div>
-
         <Button variant="ghost" size="sm" onClick={() => setOpen(v => !v)} className="w-full gap-2">
           {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           {open ? '隐藏更新日志' : '查看更新日志'}
@@ -367,10 +360,10 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
 }
 function FileBlock({ file }: { file: { name: string; downloadUrl: string; downloadCount: number } }) {
   const getMirrorUrl = (host: string) => {
-    return `${host}/${file.downloadUrl}`;
+    return `${host}${file.downloadUrl}`;
   };
   const mirrors = [
-    { tag: 'Cloudflare', url: getMirrorUrl('https://gh-proxy.org'), tip: '推荐' }, // 注意：官网用的是 gh-proxy.org，之前是 gh-proxy.com，统一对齐
+    { tag: 'Cloudflare', url: getMirrorUrl('https://gh-proxy.org'), tip: '推荐' },
     { tag: 'Fastly', url: getMirrorUrl('https://cdn.gh-proxy.org'), tip: '推荐' },
     { tag: 'Edgeone', url: getMirrorUrl('https://edgeone.gh-proxy.org'), tip: '推荐' },
     { tag: 'Jasonzeng', url: getMirrorUrl('https://gh.xmly.dev'), tip: '大文件慎用' },
