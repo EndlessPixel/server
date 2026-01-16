@@ -1,8 +1,9 @@
 ﻿import { release } from "os";
 
 export const launcherRepos = [
-  { key: "hmcl", owner: "HMCL-dev", repo: "HMCL", displayName: "HMCL", releases: true, },
-  { key: "hmcl-pe", owner: "HMCL-dev", repo: "HMCL-PE", displayName: "HMCL-PE", releases: true, },
+  { key: "hmcl", owner: "HMCL-dev", repo: "HMCL", displayName: "Hello Minecraft Launcher", releases: true, },
+  { key: "hmcl-pe", owner: "HMCL-dev", repo: "HMCL-PE", displayName: "Hello Minecraft Launcher: Pocket Edition", releases: true, },
+  { key: "fcl", owner: "FCL-Team", repo: "FoldCraftLauncher", displayName: "Fold Craft Launcher", releases: true, },
   { key: "pcl-mac", owner: "PCL-Community", repo: "PCL.Mac", displayName: "PCL-Mac", releases: false, },
   { key: "pcl2-ce", owner: "PCL-Community", repo: "PCL2-CE", displayName: "PCL2-CE", releases: true, },
   { key: "pcl-2", owner: "Meloong-Git", repo: "PCL", displayName: "PCL2", releases: "empty", },
@@ -31,19 +32,19 @@ export const launcherRepos = [
   { key: "bmcl", owner: "bangbang93", repo: "BMCL", displayName: "BMCL", releases: false, },
   { key: "cmllib", owner: "CmlLib", repo: "CmlLib.Core", displayName: "CmlLib.Core", releases: true, },
   { key: "projbobcat", owner: "Corona-Studio", repo: "ProjBobcat", displayName: "ProjBobcat", releases: true, },
-  { key: "liquid", owner: "CCBlueX", repo: "LiquidLauncher", displayName: "LiquidLauncher", },
-  { key: "selvania", owner: "luuxis", repo: "Selvania-Launcher", displayName: "Selvania Launcher", },
-  { key: "mcl-core-node", owner: "Voxelum", repo: "minecraft-launcher-core-node", displayName: "Minecraft Launcher Core Node", },
-  { key: "console-mcl", owner: "MrShieh-X", repo: "console-minecraft-launcher", displayName: "Console Minecraft Launcher", },
-  { key: "scl", owner: "Steve-xmh", repo: "scl", displayName: "SCL", },
-  { key: "freesm", owner: "FreesmTeam", repo: "FreesmLauncher", displayName: "FreesmLauncher", },
-  { key: "epherome", owner: "ResetPower", repo: "Epherome", displayName: "Epherome", },
-  { key: "jmccc", owner: "xfl03", repo: "JMCCC", displayName: "JMCCC", },
-  { key: "gravit", owner: "GravitLauncher", repo: "Launcher", displayName: "Gravit Launcher", },
-  { key: "freelauncher", owner: "dedepete", repo: "FreeLauncher", displayName: "FreeLauncher", },
-  { key: "mclauncher-api", owner: "tomsik68", repo: "mclauncher-api", displayName: "Minecraft Launcher API", },
-  { key: "levilaunchroid", owner: "LiteLDev", repo: "LeviLaunchroid", displayName: "LeviLaunchroid", },
-  { key: "kmccc", owner: "MineStudio", repo: "KMCCC", displayName: "KMCCC", },
+  { key: "liquid", owner: "CCBlueX", repo: "LiquidLauncher", displayName: "LiquidLauncher", releases: true, },
+  { key: "selvania", owner: "luuxis", repo: "Selvania-Launcher", displayName: "Selvania Launcher", releases: true, },
+  { key: "mcl-core-node", owner: "Voxelum", repo: "minecraft-launcher-core-node", displayName: "Minecraft Launcher Core Node", releases: true, },
+  { key: "console-mcl", owner: "MrShieh-X", repo: "console-minecraft-launcher", displayName: "Console Minecraft Launcher", releases: true, },
+  { key: "scl", owner: "Steve-xmh", repo: "scl", displayName: "SCL", releases: true, },
+  { key: "freesm", owner: "FreesmTeam", repo: "FreesmLauncher", displayName: "FreesmLauncher", releases: true, },
+  { key: "epherome", owner: "ResetPower", repo: "Epherome", displayName: "Epherome", releases: true, },
+  { key: "jmccc", owner: "xfl03", repo: "JMCCC", displayName: "JMCCC", releases: true, },
+  { key: "gravit", owner: "GravitLauncher", repo: "Launcher", displayName: "Gravit Launcher", releases: true, },
+  { key: "freelauncher", owner: "dedepete", repo: "FreeLauncher", displayName: "FreeLauncher", releases: true, },
+  // { key: "mclauncher-api", owner: "tomsik68", repo: "mclauncher-api", displayName: "Minecraft Launcher API", releases: true, }, !!!这是API，不是启动器
+  { key: "levilaunchroid", owner: "LiteLDev", repo: "LeviLaunchroid", displayName: "LeviLaunchroid", releases: true, },
+  { key: "kmccc", owner: "MineStudio", repo: "KMCCC", displayName: "KMCCC", releases: "empty",},
   { key: "luminaclient", owner: "TheProjectLumina", repo: "LuminaClient", displayName: "LuminaClient", },
   { key: "swiftcraft", owner: "suhang12332", repo: "Swift-Craft-Launcher", displayName: "Swift Craft Launcher", },
   { key: "nitrolaunch", owner: "Nitrolaunch", repo: "nitrolaunch", displayName: "Nitrolaunch", },
@@ -86,7 +87,11 @@ export const launcherRepos = [
   /*
   { key: "", owner:"", repo: "", displayName: "", },
   ...
-  
+  releases字段说明：
+  - true：表示该项目有公开 Release
+  - false：表示该项目没有公开 Release
+  - empty：表示该项目有公开 Release，但是没有发布文件
+  - 不存在：未验证该项目是否有公开 Release
   > > > 如需PR扩展，请复制此字段 < < <
    */
 ];
