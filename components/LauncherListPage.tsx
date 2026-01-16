@@ -72,7 +72,7 @@ export function LauncherListPage() {
               className="inline-flex items-center gap-2 bg-linear-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-700/50 px-6 py-3 rounded-2xl text-base font-semibold backdrop-blur-sm mb-6"
             >
               <Sparkles className="w-5 h-5" />
-              最后更新：2025/01/10
+              最后更新：2025/01/17
             </motion.div>
 
             <motion.h1
