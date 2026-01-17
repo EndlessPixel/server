@@ -132,7 +132,7 @@ export function DownloadSection() {
   const fetchReleases = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/github-releases');
+      const res = await fetch('https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases?per_page=500');
       if (!res.ok) throw new Error(String(res.status));
       const data: GitHubRelease[] = await res.json();
       const getLatestReleaseId = (branch: Branch) => {
@@ -363,12 +363,12 @@ function FileBlock({ file }: { file: { name: string; downloadUrl: string; downlo
     return `${host}${file.downloadUrl}`;
   };
   const mirrors = [
-    { tag: 'Cloudflare', url: getMirrorUrl('https://gh-proxy.org'), tip: '推荐' },
-    { tag: 'Fastly', url: getMirrorUrl('https://cdn.gh-proxy.org'), tip: '推荐' },
-    { tag: 'Edgeone', url: getMirrorUrl('https://edgeone.gh-proxy.org'), tip: '推荐' },
-    { tag: 'Jasonzeng', url: getMirrorUrl('https://gh.xmly.dev'), tip: '大文件慎用' },
-    { tag: 'Imixc', url: getMirrorUrl('https://gh.imixc.top'), tip: '大文件慎用' },
-    { tag: '香港', url: getMirrorUrl('https://hk.gh-proxy.org'), tip: '香港节点' },
+    { tag: 'Cloudflare', url: getMirrorUrl('https://gh-proxy.org/'), tip: '推荐' },
+    { tag: 'Fastly', url: getMirrorUrl('https://cdn.gh-proxy.org/'), tip: '推荐' },
+    { tag: 'Edgeone', url: getMirrorUrl('https://edgeone.gh-proxy.org/'), tip: '推荐' },
+    { tag: 'Jasonzeng', url: getMirrorUrl('https://gh.xmly.dev/'), tip: '大文件慎用' },
+    { tag: 'Imixc', url: getMirrorUrl('https://gh.imixc.top/'), tip: '大文件慎用' },
+    { tag: '香港', url: getMirrorUrl('https://hk.gh-proxy.org/'), tip: '香港节点' },
   ];
   return (
     <div className="p-3 rounded-xl border bg-card/50">
