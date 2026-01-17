@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { 
-  Server, Globe, Wifi, Activity, Monitor, MapPin, ArrowRight, 
-  Users, Cpu, BarChart3, CheckCircle2, AlertCircle, Info
+  Server, Globe, Activity, Monitor, MapPin, ArrowRight, 
+  Users, CheckCircle2, AlertCircle, Info
 } from "lucide-react";
 
 /* ---------------- 类型定义 ---------------- */
@@ -145,49 +145,6 @@ const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service })
               className="flex items-center gap-2"
             >
               查看详情
-              <ArrowRight className="w-4 h-4" aria-hidden="true" />
-            </Link>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-});
-
-const NodeCard: React.FC<{ node: NodeItem }> = React.memo(({ node }) => {
-  return (
-    <Card className="group bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
-              <MapPin className="w-5 h-5" aria-hidden="true" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-slate-900 dark:text-white">{node.name}</h3>
-                <StatusBadge status={node.status} />
-              </div>
-              <Badge variant="outline" className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-xs">
-                {node.region}
-              </Badge>
-            </div>
-          </div>
-        </div>
-        
-        <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
-          {node.description}
-        </p>
-
-        <div className="flex items-center justify-between mt-6">
-          <Button 
-            asChild 
-            size="sm" 
-            variant="outline"
-            className="transition-all group-hover:scale-105"
-          >
-            <Link href={node.path} className="flex items-center gap-2">
-              节点详情
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
           </Button>
