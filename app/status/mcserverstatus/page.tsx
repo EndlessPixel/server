@@ -642,23 +642,6 @@ export default function McServerStatusPage() {
               <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                    <Globe2 size={14} />
-                    服务器地址
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-lg font-semibold">
-                    {serverData.ip ? `${serverData.ip}:${serverData.port ?? 25565}` : "—"}
-                  </p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                    IP地址和端口
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
                     <Zap size={14} />
                     游戏版本
                   </CardTitle>
@@ -705,40 +688,6 @@ export default function McServerStatusPage() {
                   </p>
                   <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                     当前在线 / 最大玩家数
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                    <UserPlus size={14} />
-                    主机名
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-lg font-semibold">
-                    {serverData.hostname || "—"}
-                  </p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                    服务器主机名
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                    <Info size={14} />
-                    EULA状态
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-lg font-semibold">
-                    {serverData.eula_blocked ? "已阻止" : "正常"}
-                  </p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                    EULA协议状态
                   </p>
                 </CardContent>
               </Card>
