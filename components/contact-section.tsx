@@ -21,7 +21,7 @@ export function ContactSection() {
     {
       name: "QQ 群",
       value: "870594910",
-      description: "加入我们的 QQ 群与其他玩家交流",
+      description: "官方 QQ 交流群",
       icon: MessageCircle,
       color: "text-blue-600 dark:text-blue-400",
       bgColor: "bg-blue-50 dark:bg-blue-950/30",
@@ -33,21 +33,8 @@ export function ContactSection() {
     },
     {
       name: "邮箱",
-      value: "3319182533@qq.com",
-      description: "主官方邮箱，处理重要事务",
-      icon: Mail,
-      color: "text-green-600 dark:text-green-400",
-      bgColor: "bg-green-50 dark:bg-green-950/30",
-      borderColor: "border-green-200 dark:border-green-800",
-      hoverColor: "hover:bg-green-100 dark:hover:bg-green-900/30",
-      action: "发送邮件",
-      gradient: "from-green-500 to-emerald-500",
-      onClick: () => window.open("mailto:3319182533@qq.com", "_blank"),
-    },
-    {
-      name: "邮箱",
       value: "2267848501@qq.com",
-      description: "备用官方邮箱，处理重要事务",
+      description: "官方邮箱，处理重要事务",
       icon: Mail,
       color: "text-green-600 dark:text-green-400",
       bgColor: "bg-green-50 dark:bg-green-950/30",
@@ -60,7 +47,7 @@ export function ContactSection() {
     {
       name: "Discord",
       value: "EndlessPixel Server",
-      description: "与其他玩家实时交流",
+      description: "官方 Discord 服务器",
       icon: Gamepad2,
       color: "text-purple-600 dark:text-purple-400",
       bgColor: "bg-purple-50 dark:bg-purple-950/30",
@@ -83,25 +70,12 @@ export function ContactSection() {
       gradient: "from-gray-500 to-slate-500",
       onClick: () => window.open("https://github.com/EndlessPixel", "_blank"),
     },
-    {
-      name: "Gitee",
-      value: "system_mini",
-      description: "与我们在 Gitee 上互动",
-      icon: GithubIcon,
-      color: "text-red-600 dark:text-red-400",
-      bgColor: "bg-red-50 dark:bg-red-950/30",
-      borderColor: "border-red-200 dark:border-red-800",
-      hoverColor: "hover:bg-red-100 dark:hover:bg-red-900/30",
-      action: "关注我们",
-      gradient: "from-red-500 to-pink-500",
-      onClick: () => window.open("https://gitee.com/system_mini", "_blank"),
-    },
   ];
 
   const supportInfo = [
     {
       title: "在线时间",
-      value: "周一至周五 18:30-22:30 周六至周日 08:00-23:30",
+      value: "工作日 18:30–22:30 周末 08:00–23:30",
       icon: Clock,
       color: "text-orange-500 dark:text-orange-400",
       bgColor: "bg-orange-50 dark:bg-orange-950/20",
@@ -119,13 +93,13 @@ export function ContactSection() {
   const getItemKey = (method: typeof contactMethods[0]) => `${method.name}-${method.value}`;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* 标题区域 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-center mb-4"
+        className="text-center mb-6"
       >
         <motion.div
           className="inline-flex items-center gap-2 mb-2"
@@ -172,7 +146,7 @@ export function ContactSection() {
         
         <CardContent className="space-y-4 relative z-10">
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4"
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-5"
             variants={{
               hidden: { opacity: 0 },
               visible: {
@@ -252,20 +226,14 @@ export function ContactSection() {
                       <div className="flex items-center justify-between mb-1.5">
                         <h4 className="font-medium text-foreground dark:text-foreground/90 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {method.name}
-                        </h4>
-                        <Badge 
-                          variant="outline" 
-                          className="text-xs bg-background/70 dark:bg-background/90 border-opacity-50 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-all"
-                        >
-                          {method.action}
-                        </Badge>
+                        </h4> 
                       </div>
                       
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground/80 mb-3 line-clamp-2">
                         {method.description}
                       </p>
                       
-                      <div className="flex items-center justify-between">
+                      <div className="items-center justify-between">
                         <motion.span
                           className="text-sm font-mono text-foreground dark:text-foreground/90 bg-muted/50 dark:bg-muted/30 px-2.5 py-1.5 rounded-lg"
                           whileHover={{ 
@@ -275,7 +243,7 @@ export function ContactSection() {
                         >
                           {method.value}
                         </motion.span>
-                        
+
                         <MotionButton 
                           size="sm" 
                           variant="ghost" 
