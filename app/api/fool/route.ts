@@ -16,7 +16,8 @@ const repoList = [
     { name: 'EndlessPixel-App', url: 'https://github.com/EndlessPixel/EndlessPixel-App' },
     { name: '2048-AI-Game', url: 'https://github.com/EndlessPixel/2048-AI-Game' },
     { name: 'chinese-chess-js', url: 'https://github.com/EndlessPixel/chinese-chess-js' },
-    { name: 'JSON-Tree-Viewer', url: 'https://github.com/EndlessPixel/JSON-Tree-Viewer' }
+    { name: 'JSON-Tree-Viewer', url: 'https://github.com/EndlessPixel/JSON-Tree-Viewer' },
+    { name: 'EndlessPixel-Novel', url: 'https://github.com/EndlessPixel/EndlessPixel-Novel' }
 ];
 
 function shuffle<T>(arr: T[]): T[] {
