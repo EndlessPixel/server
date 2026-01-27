@@ -30,8 +30,11 @@ const techStack = {
 
 // API服务数据
 const apiServices = [
-    { name: "MCSRVStat API", url: "https://api.mcsrvstat.us", desc: "Minecraft服务器状态查询" },
-    { name: "GitHub API", url: "https://api.github.com", desc: "GitHub数据接口" },
+    { name: "MCSRVStat API", url: "https://api.mcsrvstat.us/", desc: "Minecraft服务器状态查询", copy: "© 2026 Anders G. Jørgensen" },
+    { name: "GitHub API", url: "https://api.github.com/", desc: "GitHub数据接口", copy: "© 2026 GitHub, Inc" },
+    { name: "ChmlFrpAPI (现已弃用)", url: "https://cf-v2.uapis.cn/", desc: "节点状态获取", copy: "© 2025 南充市轻爪网络科技有限公司" },
+    { name: "UAPIs (现已弃用)", url: "https://uapis.cn/", desc: "免费、稳定、快速的公共 Api", copy: "© 2026 Axt Team" },
+    { name: "EndlessPixelAPI", url: "https://www.endlesspixel.fun/api/", desc: "EndlessPixel的开放API接口", copy: "© 2024-2026 EndlessPixel Studio" }
 ];
 
 // 第三方服务数据
@@ -39,6 +42,7 @@ const thirdPartyServices = [
     { name: "gh-proxy.com", url: "https://gh-proxy.com/", desc: "GitHub加速服务" },
     { name: "gh.imixc.top", url: "https://gh.imixc.top/", desc: "GitHub加速服务" },
     { name: "gh.jasonzeng.dev", url: "https://gh.jasonzeng.dev/", desc: "GitHub加速服务" },
+    { name: "ChmlFrp", url: "https://www.chmlfrp.net/", desc: "Frp内网穿透"},
 ];
 
 // 开发工具数据
@@ -51,7 +55,7 @@ const devTools = {
         "DeepSeek (UI美化)",
         "Vercel AI (架构/框架开发)",
     ],
-    deployment: ["Vercel (部署平台)"],
+    deployment: ["Vercel (部署平台)","Cloudflare (网站加速)","硅云 (域名提供)"],
 };
 
 export default function Dev() {
@@ -62,9 +66,12 @@ export default function Dev() {
                 {/* 页面标题 */}
                 <div className="text-center mb-16">
                     <h1 className="text-5xl font-bold bg-linear-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400 bg-clip-text text-transparent mb-4">
-                        开发者中心
+                        EndlessPixel 开发者中心
                     </h1>
                     <div className="w-24 h-1 bg-linear-to-r from-purple-600 to-blue-600 mx-auto rounded-full"></div>
+                    <p className="text-lg text-gray-600 dark:text-gray-400">
+                        了解EndlessPixel的开发技术和工具。
+                    </p>
                 </div>
 
                 {/* 技术信息部分 */}
@@ -118,7 +125,8 @@ export default function Dev() {
                                 >
                                     <span className="font-medium text-gray-800 dark:text-white mr-3">{api.name}</span>
                                     <span className="text-sm text-gray-500 dark:text-gray-400">{api.desc}</span>
-                                    <span className="ml-auto text-blue-500 dark:text-blue-400 text-sm">→</span>
+                                    <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">{api.copy}</span>
+                                    <span className="ml-auto text-blue-500 dark:text-blue-400 text-sm">→</span> 
                                 </a>
                             ))}
                         </div>
@@ -187,6 +195,35 @@ export default function Dev() {
                                         {tool}
                                     </li>
                                 ))}
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="mb-16">
+                    <h2 className="text-3xl font-bold mb-8 bg-linear-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
+                        Minecraft服务器
+                    </h2>
+                    <div className="md:grid-cols-3 gap-6">
+                        {/* 服务器技术 */}
+                        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 dark:shadow-gray-700/20">
+                            <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">服务器技术</h3>
+                            <ul className="space-y-2">
+                                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                    <span className="text-purple-500 dark:text-purple-400">●</span>
+                                    <span className="font-medium">服务端核心</span>
+                                    <span className="text-gray-600 dark:text-gray-400">PurpurMC</span>
+                                </li>
+                                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                    <span className="text-purple-500 dark:text-purple-400">●</span>
+                                    <span className="font-medium">服务器系统</span>
+                                    <span className="text-gray-600 dark:text-gray-400">Windows Server2019 Datacenter</span>
+                                </li>
+                                <li className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                    <span className="text-purple-500 dark:text-purple-400">●</span>
+                                    <span className="font-medium">Java运行环境</span>
+                                    <span className="text-gray-600 dark:text-gray-400">Java JDK 21</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
