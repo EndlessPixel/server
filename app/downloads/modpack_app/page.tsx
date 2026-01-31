@@ -4,6 +4,8 @@ import { DownloadSection } from "@/components/download-section-launcher"
 import type { Metadata } from "next"
 import { ArrowUpRight } from "lucide-react"
 import Link from 'next/link';
+// 👉 新增：导入Suspense
+import React, { Suspense } from 'react';
 
 export const metadata: Metadata = {
     title: "资源下载 - EndlessPixel Minecraft 服务器",
@@ -53,11 +55,14 @@ export default function DownloadsPage() {
                         >
                             返回下载页面
                         </Link>
-                        <DownloadSection
-                            title="EndlessPixel Modpack Downloader Tools"
-                            description="下载 EndlessPixel Minecraft Modpack Downloader Tools。支持下载最新版 EndlessPixel 客户端整合包。"
-                            githubApiUrl="https://api.github.com/repos/EndlessPixel/EndlessPixel-ModpackAPP/releases"
-                        />
+                        {/* 👉 核心修改：用Suspense包裹DownloadSection，props完全不变 */}
+                        <Suspense fallback={<div className="p-8 text-center">加载下载区域中...</div>}>
+                            <DownloadSection
+                                title="EndlessPixel Modpack Downloader Tools"
+                                description="下载 EndlessPixel Minecraft Modpack Downloader Tools。支持下载最新版 EndlessPixel 客户端整合包。"
+                                githubApiUrl="https://api.github.com/repos/EndlessPixel/EndlessPixel-ModpackAPP/releases"
+                            />
+                        </Suspense>
                     </div>
 
                     {/* Additional Info */}
