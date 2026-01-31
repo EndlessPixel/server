@@ -1,13 +1,12 @@
 "use client";
 
-// 第一步：确保所有 import 顺序正确，React 只引入一次
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
-  Download, Package, ChevronDown, ChevronUp, Loader2, ExternalLink,
+  Download, Package, ChevronDown, ChevronUp, ExternalLink,
   Star, Zap, ArrowUp, ArrowDown, Search, Filter, Archive, Tag, Eye, GitBranch, Clock,
   Rocket, Calendar, TrendingUp, ChevronLeft, ChevronRight, RefreshCw,
   AlertCircle, XCircle, Clock as ClockIcon, WifiOff
