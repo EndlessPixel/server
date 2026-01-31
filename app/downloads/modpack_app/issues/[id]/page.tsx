@@ -10,7 +10,6 @@ const MODPACK_APP_REPO = {
 
 // 异步解析动态路由params（id是Issue编号，和启动器页面的params解析逻辑一致）
 export default async function IssueDetailPage({}: { params: { id: string } }) {
-
   return (
     <GitHubIssueDetail
       owner={MODPACK_APP_REPO.owner}
