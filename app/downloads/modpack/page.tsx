@@ -41,7 +41,7 @@ export default function DownloadsPage() {
           {/* Page Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent mb-6">
-              资源下载
+              下载EndlessPixel 整合包
             </h1>
           </div>
 
