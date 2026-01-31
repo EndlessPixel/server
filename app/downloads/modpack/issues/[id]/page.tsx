@@ -9,11 +9,7 @@ const MODPACK_APP_REPO = {
 };
 
 // 异步解析动态路由params（id是Issue编号，和启动器页面的params解析逻辑一致）
-export default async function IssueDetailPage({ params }: { params: { id: string } }) {
-  // 异步解析params（和启动器页面写法保持统一，兼容Next.js异步路由）
-  const { id } = params as { id: string };
-  // 转数字（通用组件大概率需要数字类型的issueId，和启动器逻辑对齐）
-  const issueId = Number(id);
+export default async function IssueDetailPage({}: { params: { id: string } }) {
 
   return (
     <GitHubIssueDetail
