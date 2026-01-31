@@ -41,7 +41,7 @@ export default function DownloadsPage() {
                     {/* Page Header */}
                     <div className="text-center mb-12">
                         <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent mb-6">
-                            资源下载
+                            下载EndlessPixel Modpack Downloader Tools
                         </h1>
                     </div>
 
@@ -53,7 +53,7 @@ export default function DownloadsPage() {
                         >
                             返回下载页面
                         </Link>
-                        <DownloadSection 
+                        <DownloadSection
                             title="EndlessPixel Modpack Downloader Tools"
                             description="下载 EndlessPixel Minecraft Modpack Downloader Tools。支持下载最新版 EndlessPixel 客户端整合包。"
                             githubApiUrl="https://api.github.com/repos/EndlessPixel/EndlessPixel-ModpackAPP/releases"
