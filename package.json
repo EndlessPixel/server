@@ -3,7 +3,7 @@
   "version": "2.3.0",
   "private": true,
   "scripts": {
-    "build": "next build --verbose",
+    "build": "next build",
     "dev": "next dev",
     "dev-https": "next dev --experimental-https --experimental-https-key ./cert/localhost-key.pem --experimental-https-cert ./cert/localhost.pem",
     "lint": "next lint",
