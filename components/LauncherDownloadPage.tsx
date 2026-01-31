@@ -6,6 +6,8 @@ import { DownloadSection } from "@/components/download-section-launcher";
 import { Github, ArrowUpRight, ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
+// 👉 新增：导入Suspense（唯一新增的导入）
+import { Suspense } from "react";
 
 export interface LauncherDownloadPageProps {
   owner: string;
@@ -66,10 +68,13 @@ export function LauncherDownloadPage({
             >
               <span className="text-sm font-medium">返回</span>
             </button>
-            <DownloadSection
-              githubApiUrl={`https://api.github.com/repos/${repoOwner}/${repoName}/releases`}
-              itemsPerPage={20}
-            />
+            {/* 👉 核心修改：用Suspense包裹DownloadSection，props完全不变 */}
+            <Suspense fallback={<div className="p-8 text-center">加载下载区域中...</div>}>
+              <DownloadSection
+                githubApiUrl={`https://api.github.com/repos/${repoOwner}/${repoName}/releases`}
+                itemsPerPage={20}
+              />
+            </Suspense>
           </div>
 
           <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
