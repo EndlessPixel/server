@@ -185,6 +185,7 @@ export default function RootLayout({
     font-src 'self' https://fonts.gstatic.com;
     connect-src 'self' https://discord.com https://*.vercel.app https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us;
     object-src 'none';
+    frame-src 'self' https://docs.qq.com;
     base-uri 'self';
     form-action 'self';
   "

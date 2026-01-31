@@ -1,1 +1,0 @@
-export { WikiContent } from "./wiki-content/WikiContent"
