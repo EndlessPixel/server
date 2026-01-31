@@ -103,7 +103,7 @@ export function LauncherDownloadPage({
                     <ArrowUpRight className="w-4 h-4" />
                     Issue 列表
                   </a>
-                  <p>启动器内部问题请不要联系我们，我们不对此部分负责，请联系对应启动器的作者</p>
+                  <p>外部资源的问题请不要联系我们，我们不对此部分负责，我们只提供下载服务，请联系对应的作者</p>
                 </div>
               </div>
             </div>
