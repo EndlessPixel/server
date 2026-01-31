@@ -205,7 +205,7 @@ export default function RootLayout({
         ))}
 
         {/* 保留必要的验证 */}
-        <meta name="msvalidate.01" content="898B5BEB29FDA2453EA187F18BA9F16F" />
+        <meta name="msvalidate.01" content="B9D8B7001682D3FB5F699A38C4C6DAF4" />
         <meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}`} />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground">
