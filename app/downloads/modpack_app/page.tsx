@@ -3,6 +3,7 @@ import { Footer } from "@/components/footer"
 import { DownloadSection } from "@/components/download-section-launcher"
 import type { Metadata } from "next"
 import { ArrowUpRight } from "lucide-react"
+import Link from 'next/link';
 
 export const metadata: Metadata = {
     title: "资源下载 - EndlessPixel Minecraft 服务器",
@@ -46,6 +47,12 @@ export default function DownloadsPage() {
 
                     {/* Downloads Section */}
                     <div className="bg-white/50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
+                        <Link
+                            href="/downloads"
+                            className="inline-block bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md text-gray-800 no-underline"
+                        >
+                            返回下载页面
+                        </Link>
                         <DownloadSection 
                             title="EndlessPixel Modpack Downloader Tools"
                             description="下载 EndlessPixel Minecraft Modpack Downloader Tools。支持下载最新版 EndlessPixel 客户端整合包。"
