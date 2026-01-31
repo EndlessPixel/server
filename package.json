@@ -61,6 +61,7 @@
     "recharts": "2.15.4",
     "rehype-raw": "7.0.0",
     "remark-gfm": "4.0.1",
+    "simple-icons": "^16.6.1",
     "sonner": "2.0.7",
     "tailwind-merge": "3.4.0",
     "tailwindcss-animate": "1.0.7",
