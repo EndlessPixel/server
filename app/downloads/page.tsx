@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import type { Metadata } from "next"
+import { Grid, Link2, Package, Smartphone } from "lucide-react";
 
 export const metadata: Metadata = {
     title: "资源下载 - EndlessPixel Minecraft 服务器",
@@ -33,39 +34,33 @@ export default function DownloadsPage() {
     const downloadItems = [
         {
             title: "Minecraft Launcher",
-            description: "官方 Minecraft 启动器，支持最新版本",
+            description: "GitHub第三方启动器合集，适配多版本MC",
             href: "/downloads/launcher",
-            icon: (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-            ),
-            color: "from-green-500 to-emerald-600"
+            icon: <Grid className="w-6 h-6" />, // 网格/合集图标，贴合「多款启动器汇总」定位
+            color: "from-slate-500 to-slate-700" // 深灰调，中性科技感，适配第三方工具合集
         },
         {
             title: "EndlessPixel Modpack",
-            description: "服务器专用模组包，包含优化和功能模组",
+            description: "由服主开发的模组包，包含大量优化和功能模组",
             href: "/downloads/modpack",
-            icon: (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-            ),
-            color: "from-blue-500 to-cyan-600"
+            icon: <Package className="w-6 h-6" />, // 包/模组包专属，贴合核心模组包属性
+            color: "from-blue-500 to-sky-600" // 主站核心蓝，突出服主开发的专属模组包
+        },
+        {
+            title: "EndlessPixel Modpack APP",
+            description: "模组包下载工具",
+            href: "/downloads/modpack_app",
+            icon: <Smartphone className="w-6 h-6" />, // 应用/设备图标，贴合APP工具形态
+            color: "from-purple-500 to-violet-600" // 紫调，和模组包做视觉区分，突出工具属性
         },
         {
             title: '自定义下载',
             description: '输入任意 GitHub Releases 地址，一键生成下载页',
             href: '/downloads/custom_downloads',
-            icon: (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-            ),
-            color: 'from-purple-500 to-indigo-600'
+            icon: <Link2 className="w-6 h-6" />, // 链接图标，匹配「输入GitHub地址/自定义链接」功能
+            color: "from-amber-500 to-orange-600" // 暖橙跳脱，突出自定义特色功能
         },
-    ]
+    ];
 
     return (
         <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-cyan-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-cyan-950/20">
@@ -78,7 +73,7 @@ export default function DownloadsPage() {
                             资源下载
                         </h1>
                         <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                            下载超多种类的资源，从 Minecraft Launcher 到 EndlessPixel Modpack，应有尽有。
+                            下载超多种类的资源，从 Minecraft Launcher 到 EndlessPixel Modpack和APP，应有尽有。
                         </p>
                     </div>
 
