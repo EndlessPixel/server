@@ -18,6 +18,7 @@ const repoList = [
     { name: 'chinese-chess-js', url: 'https://github.com/EndlessPixel/chinese-chess-js' },
     { name: 'JSON-Tree-Viewer', url: 'https://github.com/EndlessPixel/JSON-Tree-Viewer' },
     { name: 'EndlessPixel-Novel', url: 'https://github.com/EndlessPixel/EndlessPixel-Novel' }
+    , { name: 'EndlessPixel-ModpackAPP', url: 'https://github.com/EndlessPixel/EndlessPixel-ModpackAPP' }
 ];
 
 function shuffle<T>(arr: T[]): T[] {
