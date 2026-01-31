@@ -221,14 +221,6 @@ def download_with_retry(url, save_path):
         - 下载超时时间由全局变量DOWNLOAD_TIMEOUT控制
         - 直接下载和代理下载都使用了相同的基础下载函数download_file
         - 用户输入验证确保选择的代理序号有效
-    
-    示例:
-        download_url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe"
-        save_path = Path("mkcert.exe")
-        if download_with_retry(download_url, save_path):
-            print("下载成功！")
-        else:
-            print("下载失败！")
     """
     # 1. 尝试直接下载
     print_info(f"尝试直接下载: {url}")
@@ -327,16 +319,6 @@ def run_command(cmd, description):
         3. 捕获标准输出和标准错误信息
         4. 使用UTF-8编码处理输出
         5. 错误信息限制在200个字符以内，避免输出过长
-    
-    示例:
-        # 执行安装命令
-        result = run_command(["sudo", "apt-get", "update"], "更新软件包列表")
-        
-        # 执行创建目录命令
-        run_command(["mkdir", "-p", "cert"], "创建证书目录")
-        
-        # 结果使用
-        print(f"命令输出: {result.stdout}")
     """
     print_info(f"{description}: {' '.join(cmd)}")
     try:
@@ -389,12 +371,6 @@ def run_command(cmd, description):
         - 网络连接不稳定时会自动提供 GitHub 代理选项
         - 生成的证书会包含 localhost、127.0.0.1 和 IPv6 地址 ::1
         - 证书文件会被整理到当前目录的 cert 子目录中
-    
-    使用示例:
-        直接运行脚本: python localhost_pem_cert.py
-        对于需要管理员权限的系统，可能需要:
-        - Windows: 以管理员身份运行命令提示符
-        - Linux: sudo python localhost_pem_cert.py
     """
 def main():
     BORDER_CHAR = "="
@@ -502,6 +478,7 @@ if __name__ == "__main__":
     # 检查 Python 版本
     if sys.version_info < (3, 6):
         print_error("需要 Python 3.6 及以上版本")
+        print_error("请升级 Python 后重试")
     
     # 运行主程序
     try:
