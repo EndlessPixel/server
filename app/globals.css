@@ -3,6 +3,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* 全局颜色变量 */
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -39,6 +41,8 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* 暗黑模式颜色变量 */
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -73,6 +77,8 @@
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
 }
+
+/* 主题变量 */
 
 @theme inline {
   --color-background: var(--background);
@@ -112,6 +118,8 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
+
+/* 基础样式 */
 
 @layer base {
   * {
