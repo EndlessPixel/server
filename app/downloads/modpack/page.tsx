@@ -2,6 +2,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { DownloadSection } from "@/components/download-section_modpack"
 import type { Metadata } from "next"
+import { ArrowUpRight } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "资源下载 - EndlessPixel Minecraft 服务器",
@@ -43,15 +44,6 @@ export default function DownloadsPage() {
             </h1>
           </div>
 
-          {/* Feature Highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="text-center p-6 bg-white/80 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
-                <a href="/downloads/modpack/issues">
-                  查看issue
-                </a>
-            </div>
-          </div>
-
           {/* Downloads Section */}
           <div className="bg-white/50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
             <DownloadSection />
@@ -85,6 +77,13 @@ export default function DownloadsPage() {
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6z" />
                     </svg>
                     加入 QQ 群
+                  </a>
+                  <a
+                    href="modpack/issues/"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 rounded-lg text-sm font-medium text-purple-700 dark:text-purple-300 transition-colors"
+                  >
+                    <ArrowUpRight className="w-4 h-4" />
+                    Issue 列表
                   </a>
                 </div>
               </div>
