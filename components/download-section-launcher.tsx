@@ -10,7 +10,7 @@ import {
   Download, Package, ChevronDown, ChevronUp, Loader2, ExternalLink,
   Star, Zap, ArrowUp, ArrowDown, Search, Filter, Archive, Tag, Eye, GitBranch, Clock,
   Rocket, Calendar, TrendingUp, ChevronLeft, ChevronRight, RefreshCw,
-  AlertCircle, CheckCircle, XCircle, Clock as ClockIcon, WifiOff
+  AlertCircle, XCircle, Clock as ClockIcon, WifiOff
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
