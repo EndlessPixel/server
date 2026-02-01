@@ -69,7 +69,7 @@ const parseGithubUrl = (url: string): { isValid: boolean; owner?: string; repo?:
 export default function CustomDownloadsPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const [inputUrl, setInputUrl] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [copied, setCopied] = useState(false);
