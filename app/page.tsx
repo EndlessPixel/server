@@ -37,7 +37,6 @@ export default function HomePage() {
       <Navigation />
       <main>
         <HeroSection />
-        <ServerFeatures />
       </main>
       <Footer />
     </div>

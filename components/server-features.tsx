@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Pickaxe, Home, Zap, MapPin, Users, Shield, Sparkles, Target, Clock, Crown, Gem, Award, Rocket, Star, TrendingUp, Heart } from "lucide-react"
+import { Map, Pickaxe, Sparkles, Target, Clock, Crown, Gem, Award, Rocket, TrendingUp, Heart, Armchair, Sprout, Trophy, Flag, Lock } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState } from "react"
 
@@ -47,83 +47,112 @@ export function ServerFeatures() {
 
   const features = [
     {
-      title: "坐下功能",
-      description: "空手右键点击下半砖或楼梯可以坐下休息，享受悠闲时光",
-      icon: Home,
-      color: "text-blue-600 dark:text-blue-400",
-      bgColor: "bg-blue-100 dark:bg-blue-900/30",
-      borderColor: "border-blue-200 dark:border-blue-800",
-      gradient: "from-blue-500 to-cyan-500",
-      lightGradient: "from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20"
+      title: "席地而坐",
+      description: "空手右击台阶或楼梯即可坐下，和好友一起赏日落。",
+      icon: Armchair,                // lucide-react
+      color: "text-sky-600 dark:text-sky-400",
+      bgColor: "bg-sky-100 dark:bg-sky-900/30",
+      borderColor: "border-sky-200 dark:border-sky-800",
+      gradient: "from-sky-500 to-cyan-500",
+      lightGradient: "from-sky-50 to-cyan-50 dark:from-sky-950/20 dark:to-cyan-950/20"
     },
     {
-      title: "连锁挖掘",
-      description: "蹲下并使用对应工具可以连锁挖掘最多128个方块，大幅提升采集效率",
+      title: "连锁采集",
+      description: "潜行+工具即可连锁挖掘，最多 128 个方块瞬间收入背包。",
       icon: Pickaxe,
-      color: "text-green-600 dark:text-green-400",
-      bgColor: "bg-green-100 dark:bg-green-900/30",
-      borderColor: "border-green-200 dark:border-green-800",
-      gradient: "from-green-500 to-emerald-500",
-      lightGradient: "from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20"
+      color: "text-emerald-600 dark:text-emerald-400",
+      bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
+      borderColor: "border-emerald-200 dark:border-emerald-800",
+      gradient: "from-emerald-500 to-green-500",
+      lightGradient: "from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20"
     },
     {
-      title: "农田保护",
-      description: "农田踩踏后不会被破坏，保护你的农作物免受意外损坏",
-      icon: Shield,
-      color: "text-yellow-600 dark:text-yellow-400",
-      bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
-      borderColor: "border-yellow-200 dark:border-yellow-800",
-      gradient: "from-yellow-500 to-amber-500",
-      lightGradient: "from-yellow-50 to-amber-50 dark:from-yellow-950/20 dark:to-amber-950/20"
+      title: "农田守护",
+      description: "踩踏不再破坏耕地，让你的作物安全成长。",
+      icon: Sprout,
+      color: "text-lime-600 dark:text-lime-400",
+      bgColor: "bg-lime-100 dark:bg-lime-900/30",
+      borderColor: "border-lime-200 dark:border-lime-800",
+      gradient: "from-lime-500 to-yellow-500",
+      lightGradient: "from-lime-50 to-yellow-50 dark:from-lime-950/20 dark:to-yellow-950/20"
     },
     {
-      title: "探险结构",
-      description: "新增300多个探险结构，包括各种主题村庄、地下城和神秘遗迹",
-      icon: MapPin,
-      color: "text-purple-600 dark:text-purple-400",
-      bgColor: "bg-purple-100 dark:bg-purple-900/30",
-      borderColor: "border-purple-200 dark:border-purple-800",
-      gradient: "from-purple-500 to-violet-500",
-      lightGradient: "from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20"
+      title: "千种结构",
+      description: "300+ 新结构：雪山村落、地下城、空中遗迹……每次启程都有惊喜。",
+      icon: Map,
+      color: "text-violet-600 dark:text-violet-400",
+      bgColor: "bg-violet-100 dark:bg-violet-900/30",
+      borderColor: "border-violet-200 dark:border-violet-800",
+      gradient: "from-violet-500 to-purple-500",
+      lightGradient: "from-violet-50 to-purple-50 dark:from-violet-950/20 dark:to-purple-950/20"
     },
     {
-      title: "大师切割机",
-      description: "切石机新增500多种配方，包括木刻、基石切割等高级工艺",
-      icon: Zap,
-      color: "text-red-600 dark:text-red-400",
-      bgColor: "bg-red-100 dark:bg-red-900/30",
-      borderColor: "border-red-200 dark:border-red-800",
-      gradient: "from-red-500 to-pink-500",
-      lightGradient: "from-red-50 to-pink-50 dark:from-red-950/20 dark:to-pink-950/20"
+      title: "成就狂潮",
+      description: "1000+ 全新成就，从骑马蹦极到击败巨型史莱姆，挑战永无止境。",
+      icon: Trophy,
+      color: "text-amber-600 dark:text-amber-400",
+      bgColor: "bg-amber-100 dark:bg-amber-900/30",
+      borderColor: "border-amber-200 dark:border-amber-800",
+      gradient: "from-amber-500 to-orange-500",
+      lightGradient: "from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20"
     },
     {
-      title: "领地系统",
-      description: "创建和管理你的专属领地，保护建筑安全，防止他人破坏",
-      icon: Users,
+      title: "大师切割",
+      description: "切石机新增 500+ 配方，木雕、基石、玻璃浮雕一键完成。",
+      icon: Gem,
+      color: "text-rose-600 dark:text-rose-400",
+      bgColor: "bg-rose-100 dark:bg-rose-900/30",
+      borderColor: "border-rose-200 dark:border-rose-800",
+      gradient: "from-rose-500 to-pink-500",
+      lightGradient: "from-rose-50 to-pink-50 dark:from-rose-950/20 dark:to-pink-950/20"
+    },
+    {
+      title: "领地旗帜",
+      description: "右键插旗即可创建领地，建筑与作物全程免疫他人破坏。",
+      icon: Flag,
       color: "text-indigo-600 dark:text-indigo-400",
       bgColor: "bg-indigo-100 dark:bg-indigo-900/30",
       borderColor: "border-indigo-200 dark:border-indigo-800",
       gradient: "from-indigo-500 to-blue-500",
       lightGradient: "from-indigo-50 to-blue-50 dark:from-indigo-950/20 dark:to-blue-950/20"
     },
-  ]
+    {
+      title: "私人保险箱",
+      description: "手持锁右击箱子即可上锁，只有你能查看，安心存放稀有装备。",
+      icon: Lock,
+      color: "text-orange-600 dark:text-orange-400",
+      bgColor: "bg-orange-100 dark:bg-orange-900/30",
+      borderColor: "border-orange-200 dark:border-orange-800",
+      gradient: "from-orange-500 to-amber-500",
+      lightGradient: "from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20"
+    },
+    {
+      title: "超限附魔",
+      description: "突破 30 级上限，20+ 全新魔咒：连锁、时停、吸血……打造神级装备。",
+      icon: Sparkles,
+      color: "text-fuchsia-600 dark:text-fuchsia-400",
+      bgColor: "bg-fuchsia-100 dark:bg-fuchsia-900/30",
+      borderColor: "border-fuchsia-200 dark:border-fuchsia-800",
+      gradient: "from-fuchsia-500 to-purple-500",
+      lightGradient: "from-fuchsia-50 to-purple-50 dark:from-fuchsia-950/20 dark:to-purple-950/20"
+    }
+  ];
 
   const stats = [
-    { icon: Target, label: "特色功能", value: "6+", color: "text-blue-500", description: "精心设计" },
-    { icon: Clock, label: "持续更新", value: "24/7", color: "text-green-500", description: "全天候服务" },
-    { icon: Crown, label: "优质体验", value: "99.9%", color: "text-yellow-500", description: "稳定运行" },
-    { icon: Gem, label: "独特内容", value: "800+", color: "text-purple-500", description: "丰富玩法" },
+    { icon: Target, label: "特色功能", value: "9+", color: "text-blue-500", description: "精心设计" },
+    { icon: Clock, label: "服务时间", value: "18/7", color: "text-green-500", description: "长时间服务" },
+    { icon: Crown, label: "优质体验", value: "96.9%", color: "text-yellow-500", description: "稳定运行" },
+    { icon: Gem, label: "独特内容", value: "1800+", color: "text-purple-500", description: "丰富玩法" },
   ]
 
   return (
-    <section className="relative py-20 bg-linear-to-br from-slate-50 via-blue-50/30 to-cyan-50/40 dark:from-slate-900 dark:via-blue-950/20 dark:to-cyan-950/20 overflow-hidden">
-      {/* 动态背景装饰 */}
+    <>
       <div className="absolute inset-0 overflow-hidden">
         {/* 网格背景 */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]" />
-        
+
         {/* 浮动装饰圆 */}
-        <motion.div 
+        <motion.div
           className="absolute -top-20 -right-20 w-80 h-80 bg-linear-to-r from-cyan-200 to-blue-200 dark:from-cyan-800/20 dark:to-blue-800/20 rounded-full blur-3xl opacity-40"
           animate={{
             scale: [1, 1.1, 1],
@@ -135,7 +164,7 @@ export function ServerFeatures() {
             ease: "easeInOut"
           }}
         />
-        <motion.div 
+        <motion.div
           className="absolute -bottom-20 -left-20 w-80 h-80 bg-linear-to-r from-emerald-200 to-green-200 dark:from-emerald-800/20 dark:to-green-800/20 rounded-full blur-3xl opacity-40"
           animate={{
             scale: [1.1, 1, 1.1],
@@ -152,7 +181,7 @@ export function ServerFeatures() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 头部区域 */}
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -173,8 +202,8 @@ export function ServerFeatures() {
             </motion.div>
             <span>丰富功能 • 优质体验</span>
           </motion.div>
-          
-          <motion.h2 
+
+          <motion.h2
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -184,8 +213,8 @@ export function ServerFeatures() {
               服务器特色功能
             </span>
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -196,7 +225,7 @@ export function ServerFeatures() {
         </motion.div>
 
         {/* 统计卡片 */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
           variants={containerVariants}
           initial="hidden"
@@ -221,13 +250,13 @@ export function ServerFeatures() {
                     <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />
                   </div>
 
-                  <motion.div 
+                  <motion.div
                     className="w-16 h-16 bg-linear-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 relative overflow-hidden"
-                    whileHover={{ 
+                    whileHover={{
                       scale: 1.1,
                       rotate: [0, -5, 5, 0],
                     }}
-                    transition={{ 
+                    transition={{
                       scale: { type: "spring", stiffness: 300 },
                       rotate: { duration: 0.6 }
                     }}
@@ -235,19 +264,19 @@ export function ServerFeatures() {
                     <div className="absolute inset-0 bg-linear-to-r from-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <Icon className={`w-8 h-8 ${stat.color} group-hover:text-white relative z-10 transition-colors duration-300`} />
                   </motion.div>
-                  
-                  <motion.div 
+
+                  <motion.div
                     className="text-3xl font-bold text-slate-900 dark:text-white mb-2 relative z-10"
                     animate={{ scale: hoveredStat === stat.label ? 1.1 : 1 }}
                     transition={{ type: "spring", stiffness: 400 }}
                   >
                     {stat.value}
                   </motion.div>
-                  
+
                   <div className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-1 relative z-10">
                     {stat.label}
                   </div>
-                  
+
                   <div className="text-sm text-slate-500 dark:text-slate-400 relative z-10">
                     {stat.description}
                   </div>
@@ -261,7 +290,7 @@ export function ServerFeatures() {
         </motion.div>
 
         {/* 功能卡片网格 */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
@@ -291,13 +320,13 @@ export function ServerFeatures() {
                   </div>
 
                   <CardHeader className="text-center pb-8 pt-10 relative z-10">
-                    <motion.div 
+                    <motion.div
                       className="flex justify-center mb-6"
-                      whileHover={{ 
+                      whileHover={{
                         scale: 1.1,
                         rotate: [0, -5, 5, 0],
                       }}
-                      transition={{ 
+                      transition={{
                         scale: { type: "spring", stiffness: 300 },
                         rotate: { duration: 0.6 }
                       }}
@@ -312,18 +341,18 @@ export function ServerFeatures() {
                         <Icon className={`w-10 h-10 ${feature.color} group-hover:text-white relative z-10 transition-colors duration-300`} />
                       </div>
                     </motion.div>
-                    
+
                     <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4 group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors">
                       {feature.title}
                     </CardTitle>
-                    
+
                     <CardDescription className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed group-hover:text-slate-500 dark:group-hover:text-slate-300 transition-colors">
                       {feature.description}
                     </CardDescription>
                   </CardHeader>
 
                   {/* 底部装饰线 */}
-                  <motion.div 
+                  <motion.div
                     className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 ${feature.bgColor} rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
                     animate={{ width: hoveredCard === feature.title ? "80px" : "64px" }}
                     transition={{ type: "spring", stiffness: 400 }}
@@ -338,7 +367,7 @@ export function ServerFeatures() {
         </motion.div>
 
         {/* 底部召唤行动 */}
-        <motion.div 
+        <motion.div
           className="text-center mt-20"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -352,11 +381,11 @@ export function ServerFeatures() {
             </div>
 
             <motion.div
-              animate={{ 
+              animate={{
                 scale: [1, 1.1, 1],
                 rotate: [0, 5, -5, 0]
               }}
-              transition={{ 
+              transition={{
                 duration: 4,
                 repeat: Infinity,
                 repeatDelay: 2
@@ -365,15 +394,15 @@ export function ServerFeatures() {
             >
               <Award className="w-16 h-16 text-yellow-500 mx-auto mb-6" />
             </motion.div>
-            
+
             <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-6 relative z-10">
               准备好开始冒险了吗？
             </h3>
-            
+
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed relative z-10">
               加入我们的服务器，体验这些丰富的特色功能，开启你的 Minecraft 新篇章
             </p>
-            
+
             <div className="flex flex-wrap gap-6 justify-center relative z-10">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <a
@@ -385,7 +414,7 @@ export function ServerFeatures() {
                   <span className="relative z-10">下载客户端</span>
                 </a>
               </motion.div>
-              
+
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <a
                   href="/status"
@@ -399,7 +428,7 @@ export function ServerFeatures() {
 
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <a
-                  href="/community"
+                  href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-white/80 dark:bg-slate-700/50 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-600 hover:border-green-300 dark:hover:border-green-600 text-slate-700 dark:text-slate-300 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
                 >
                   <div className="absolute inset-0 bg-linear-to-r from-transparent via-green-50/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
@@ -414,6 +443,6 @@ export function ServerFeatures() {
           </div>
         </motion.div>
       </div>
-    </section>
+    </>
   )
 }

@@ -6,6 +6,7 @@ import { Server, Users, Heart, Shield, Gamepad2, Coins, Play, Sparkles, Zap, Cro
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useState } from "react"
+import { ServerFeatures } from "./server-features";
 
 // 动画配置
 const containerVariants = {
@@ -343,37 +344,10 @@ export function HeroSection() {
               )
             })}
           </motion.div>
-
-          {/* 底部装饰 */}
-          <motion.div 
-            className="mt-16 flex items-center justify-center gap-8 text-sm text-slate-500 dark:text-slate-400"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
-          >
-            {[
-              { icon: Globe, text: "全球多个节点", color: "text-blue-500" },
-              { icon: Star, text: "99.9% 在线率", color: "text-yellow-500" },
-              { icon: Users, text: "活跃玩家社区", color: "text-purple-500" },
-              { icon: Cloud, text: "云端备份", color: "text-cyan-500" }
-            ].map((item, index) => {
-              const Icon = item.icon
-              return (
-                <motion.div
-                  key={item.text}
-                  className="flex items-center gap-2 bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 cursor-pointer group"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                >
-                  <Icon className={`w-4 h-4 ${item.color} group-hover:scale-110 transition-transform`} />
-                  <span className="group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
-                    {item.text}
-                  </span>
-                </motion.div>
-              )
-            })}
-          </motion.div>
         </div>
       </div>
+      <br /><br /><br /><br />
+      <ServerFeatures />
     </section>
   )
 }
