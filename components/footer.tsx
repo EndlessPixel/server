@@ -3,7 +3,7 @@
 import Link from "next/link"
 import {
   Server, Github, MessageCircle, Video, Smartphone, Gamepad2,
-  Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight
+  Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight, Twitch, Facebook, Code
 } from "lucide-react"
 import { useState } from "react"
 
@@ -155,11 +155,15 @@ const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
 export function Footer() {
   // 社交媒体链接数据
   const socialLinks: SocialLink[] = [
-    { icon: Github, href: "https://github.com/EndlessPixel", label: "GitHub" },
-    { icon: MessageCircle, href: "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910", label: "QQ群" },
-    { icon: Gamepad2, href: "https://discord.gg/k63hRWt3fF", label: "Discord" },
-    { icon: Video, href: "https://space.bilibili.com/3546799478409405", label: "Bilibili" },
-    { icon: Smartphone, href: "https://kuaishou.cn/profile/3xth2cp4jf5ha6c", label: "快手" }
+    { icon: Github, href: 'https://gitee.com/system_mini', label: 'Gitee' },
+    { icon: Github, href: 'https://github.com/EndlessPixel', label: 'GitHub' },
+    { icon: Code, href: 'https://codeberg.org/system_mini', label: 'Codeberg' },
+    { icon: MessageCircle, href: 'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910', label: 'QQ群' },
+    { icon: Gamepad2, href: 'https://discord.gg/k63hRWt3fF', label: 'Discord' },
+    { icon: Video, href: 'https://space.bilibili.com/3546799478409405', label: 'Bilibili' },
+    { icon: Smartphone, href: 'https://kuaishou.cn/profile/3xth2cp4jf5ha6c', label: '快手' },
+    { icon: Twitch, href: 'https://www.twitch.tv/system_mini', label: 'Twitch' },
+    { icon: Facebook, href: 'https://www.facebook.com/system_mini', label: 'Facebook' }
   ];
 
   // 导航链接数据
