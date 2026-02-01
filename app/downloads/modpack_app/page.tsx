@@ -58,7 +58,7 @@ export default function DownloadsPage() {
                         {/* 👉 核心修改：用Suspense包裹DownloadSection，props完全不变 */}
                         <Suspense fallback={<div className="p-8 text-center">加载下载区域中...</div>}>
                             <DownloadSection
-                                title="EndlessPixel Modpack Downloader Tools"
+                                title="EndlessPixel Modpack APP"
                                 description="下载 EndlessPixel Minecraft Modpack Downloader Tools。支持下载最新版 EndlessPixel 客户端整合包。"
                                 githubApiUrl="https://api.github.com/repos/EndlessPixel/EndlessPixel-ModpackAPP/releases"
                             />
