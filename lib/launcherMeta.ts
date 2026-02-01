@@ -92,6 +92,7 @@ export const launcherRepos = [
   - false：表示该项目没有公开 Release
   - empty：表示该项目有公开 Release，但是没有发布文件
   - 不存在：未验证该项目是否有公开 Release
+  !!! 请不要伪造releases字段，否则会导致下载页面显示错误
   > > > 如需PR扩展，请复制此字段 < < <
    */
 ];
