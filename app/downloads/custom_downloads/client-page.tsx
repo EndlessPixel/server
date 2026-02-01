@@ -350,19 +350,16 @@ export default function CustomDownloadsPage() {
                                     name: "EndlessPixel Modpack",
                                     url: "https://github.com/EndlessPixel/EndlessPixel-Modpack/releases",
                                     desc: "官方优化整合包",
-                                    stars: "⭐ 2.4k",
                                 },
                                 {
                                     name: "Fabric Example Mod",
                                     url: "https://github.com/FabricMC/fabric-example-mod/releases",
                                     desc: "模组开发模板",
-                                    stars: "⭐ 1.8k",
                                 },
                                 {
                                     name: "Minecraft Forge",
                                     url: "https://github.com/MinecraftForge/MinecraftForge/releases",
                                     desc: "Forge 官方仓库",
-                                    stars: "⭐ 5.7k",
                                 },
                             ].map((proj, i) => (
                                 <Card
@@ -386,9 +383,6 @@ export default function CustomDownloadsPage() {
                                                     <h4 className="font-semibold text-slate-900 dark:text-white truncate">
                                                         {proj.name}
                                                     </h4>
-                                                    <Badge variant="secondary" className="text-xs px-2 py-0">
-                                                        {proj.stars}
-                                                    </Badge>
                                                 </div>
                                                 <p className="text-sm text-slate-600 dark:text-slate-400 truncate">
                                                     {proj.desc}
