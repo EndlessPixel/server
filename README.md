@@ -13,7 +13,7 @@ EndlessPixel 服务器的官方网站，基于 Next.js App Router + TypeScript +
 
 - ⚡ 全栈 React 框架 Next.js 16，支持 SSR/SSG/ISR  
 - 🎨 Tailwind CSS 4 原子化样式，暗色模式开箱即用  
-- 📦 60+ 启动器与整合包高速下载，支持自定义镜像  
+- 📦 80+ 启动器与整合包高速下载，支持自定义镜像  
 - 🧪 严格 TypeScript 类型检查，ESLint + Prettier 自动化  
 - 📱 响应式布局，PWA 离线支持（Workbox 自动生成）
 

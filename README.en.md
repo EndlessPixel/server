@@ -14,7 +14,7 @@ Official website of EndlessPixel Server, built with Next.js App Router + TypeScr
 
 - ⚡ Next.js 16 full-stack React framework, SSR/SSG/ISR ready  
 - 🎨 Tailwind CSS 4 utility-first, dark-mode out of the box  
-- 📦 60+ launchers & mod-packs high-speed download, custom mirror support  
+- 📦 80+ launchers & mod-packs high-speed download, custom mirror support  
 - 🧪 Strict TypeScript checking, ESLint + Prettier automated   
 - 📱 Responsive layout, PWA offline support (Workbox auto-generated)
 
