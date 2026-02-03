@@ -1,7 +1,6 @@
 "use client";
 import { launcherRepos } from "@/lib/launcherMeta";
-import { getIcon } from "@/components/IconMap";
-import { ArrowLeft, Download, Sparkles, Zap, Star, Users, Rocket, CheckCircle, XCircle, AlertCircle, FileQuestion } from "lucide-react";
+import { ArrowLeft, Download, Sparkles, Rocket, CheckCircle, XCircle, AlertCircle, FileQuestion } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";
