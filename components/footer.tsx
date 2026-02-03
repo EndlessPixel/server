@@ -6,6 +6,7 @@ import {
   Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight, Twitch, Facebook, Code
 } from "lucide-react"
 import { useState } from "react"
+import { RunningDuration } from "./RunningDuration";
 
 // 类型定义抽离，提高可维护性
 type SocialLink = {
@@ -195,6 +196,8 @@ export function Footer() {
               我们相信游戏的魅力在于创造与分享。
             </p>
             <SocialLinks links={socialLinks} />
+            <p className="text-slate-400 text-sm">EndlessPixel服务器创立至今：</p>
+            <RunningDuration />
           </div>
 
           {/* Quick Links */}
