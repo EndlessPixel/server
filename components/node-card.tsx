@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Server, Globe, Cpu, Users, Package, Monitor, Wifi, WifiOff, ArrowRight, Clock, Shield } from "lucide-react";
+import { Server, Globe, Cpu, Users, Package, Monitor, Wifi, WifiOff, ArrowRight, Clock } from "lucide-react";
 
 interface NodeCardProps {
   name: string;
