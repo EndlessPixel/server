@@ -91,9 +91,8 @@ interface ServerNode {
 
 // 常量定义
 const ACTIVE_NODE = {
-  name: "江苏宿迁电信",
-  ip: "sq.epmc.top",
-  region: "华东"
+  name: "主服务器",
+  ip: "epmc.top",
 };
 
 const CACHE_DURATION = 30_000;
@@ -530,12 +529,6 @@ export default function McServerStatusPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="flex items-center gap-2 p-3 bg-white dark:bg-slate-800/30 rounded-lg">
-                <Globe size={16} className="text-blue-500" />
-                <span className="text-sm text-slate-700 dark:text-slate-300">
-                  {ACTIVE_NODE.region} 区域
-                </span>
-              </div>
               <div className="flex items-center gap-2 p-3 bg-white dark:bg-slate-800/30 rounded-lg">
                 <Cpu size={16} className="text-green-500" />
                 <span className="text-sm text-slate-700 dark:text-slate-300">
