@@ -1,4 +1,3 @@
-// components/running-duration.tsx
 "use client";
 
 import { useEffect, useState } from "react";
