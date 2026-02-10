@@ -5,7 +5,7 @@ import { TeamSection } from "@/components/team-section"
 // import { LicenseSection } from "@/components/license-section"   // 暂时迁移
 import { ContactSection } from "@/components/contact-section"
 import { Card, CardContent } from "@/components/ui/card"
-import { Server, Heart, Users, Globe, Star } from "lucide-react"
+import { Heart, Users, Globe } from "lucide-react"
 import type { Metadata } from "next"
 // 导入我们创建的运行时长组件
 import { RunningDuration } from "@/components/RunningDuration"
