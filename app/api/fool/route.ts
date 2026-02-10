@@ -19,6 +19,9 @@ const repoList = [
     { name: 'JSON-Tree-Viewer', url: 'https://github.com/EndlessPixel/JSON-Tree-Viewer' },
     { name: 'EndlessPixel-Novel', url: 'https://github.com/EndlessPixel/EndlessPixel-Novel' },
     { name: 'EndlessPixel-ModpackAPP', url: 'https://github.com/EndlessPixel/EndlessPixel-ModpackAPP', },
+    { name: 'captcha', url: 'https://github.com/EndlessPixel/captcha' },
+    { name: 'frpc-manager', url: 'https://github.com/EndlessPixel/frpc-manager' },
+    { name: 'EndlessPixel-Website', url: 'https://github.com/EndlessPixel/EndlessPixel-Website' },
 ];
 
 function shuffle<T>(arr: T[]): T[] {
