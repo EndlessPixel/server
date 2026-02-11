@@ -34,14 +34,13 @@ cd server
 
 # 2. Install dependencies
 npm install
-# or pnpm install
 
 # 3. Start dev server
 npm run dev
-# or pnpm dev
+# or npm run dev-https
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) in your browser.
+Visit [http://localhost:3000](http://localhost:3000) or [https://localhost:3000](https://localhost:3000)in your browser.
 
 ## 🤝 Contributing
 
