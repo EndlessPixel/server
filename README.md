@@ -33,7 +33,6 @@ cd server
 
 # 2. 安装依赖
 npm install
-# or pnpm install
 
 # 3. 启动开发服务器
 npm run dev
@@ -71,3 +70,4 @@ npm run dev
 
 
 Star ⭐ 与 Watch 👀 是对我们最大的支持！
+
