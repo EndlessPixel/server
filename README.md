@@ -37,10 +37,10 @@ npm install
 
 # 3. 启动开发服务器
 npm run dev
-# or pnpm dev
+# or npm dev-https
 ```
 
-浏览器访问 [http://localhost:3000](http://localhost:3000) 即可实时预览。
+浏览器访问 [http://localhost:3000](http://localhost:3000)或[https://localhost:3000](https://localhost:3000) 即可实时预览。
 
 ## 🤝 贡献指南
 
@@ -68,5 +68,6 @@ npm run dev
 - 讨论区：[GitHub Discussions](https://github.com/EndlessPixel/server/discussions)
 
 ---
+
 
 Star ⭐ 与 Watch 👀 是对我们最大的支持！
