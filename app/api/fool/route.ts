@@ -22,6 +22,7 @@ const repoList = [
     { name: 'captcha', url: 'https://github.com/EndlessPixel/captcha' },
     { name: 'frpc-manager', url: 'https://github.com/EndlessPixel/frpc-manager' },
     { name: 'EndlessPixel-Website', url: 'https://github.com/EndlessPixel/EndlessPixel-Website' },
+    { name: 'frp-config-generator', url: 'https://github.com/EndlessPixel/frp-config-generator' },
 ];
 
 function shuffle<T>(arr: T[]): T[] {
