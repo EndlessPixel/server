@@ -32,7 +32,7 @@ const repoList: Repo[] = [
     { name: 'Chat-Box', url: 'https://github.com/EndlessPixel/Chat-Box', prank_tag: 'Talks too much (April Fools)' },
     { name: 'EndlessPixel-Modpack', url: 'https://github.com/EndlessPixel/EndlessPixel-Modpack', prank_tag: 'May contain fake mods 🎭' },
     { name: 'CSSTextLib', url: 'https://github.com/EndlessPixel/CSSTextLib', prank_tag: 'Makes text upside down 🥴' },
-    { name: 'SystemStatus', url: 'https://github.com/EndlessPixel/SystemStatus', prank_tag: 'Lies about your CPU temp �温度计' },
+    { name: 'SystemStatus', url: 'https://github.com/EndlessPixel/SystemStatus', prank_tag: 'Lies about your CPU temp 🌡️' },
     { name: 'Native-Snake-AI', url: 'https://github.com/EndlessPixel/Native-Snake-AI', prank_tag: 'Snake eats itself (on purpose) 🐍' },
     { name: 'EndlessPixel-App', url: 'https://github.com/EndlessPixel/EndlessPixel-App', prank_tag: 'April Fools: App is just a teapot 🫖' },
     { name: '2048-AI-Game', url: 'https://github.com/EndlessPixel/2048-AI-Game', prank_tag: 'AI cheats (we won\'t tell) 🎮' },
