@@ -23,6 +23,8 @@ const repoList = [
     { name: 'frpc-manager', url: 'https://github.com/EndlessPixel/frpc-manager' },
     { name: 'EndlessPixel-Website', url: 'https://github.com/EndlessPixel/EndlessPixel-Website' },
     { name: 'frp-config-generator', url: 'https://github.com/EndlessPixel/frp-config-generator' },
+    { name: 'qrcode-generator-parser', url: 'https://github.com/EndlessPixel/qrcode-generator-parser' },
+    { name: 'python-notepad', url: 'https://github.com/EndlessPixel/python-notepad' },
 ];
 
 function shuffle<T>(arr: T[]): T[] {
