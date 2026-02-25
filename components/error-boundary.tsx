@@ -40,7 +40,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       }
 
       return (
-        <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
+        <div className="flex flex-col items-center justify-center min-h-100 p-8 text-center">
           <AlertTriangle className="w-16 h-16 text-destructive mb-4" />
           <h2 className="text-2xl font-bold mb-2">出现了一些问题</h2>
           <p className="text-muted-foreground mb-6 max-w-md">
