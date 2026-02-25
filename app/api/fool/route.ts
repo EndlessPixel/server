@@ -12,12 +12,23 @@ const TEAPOT_JOKES = {
         "Oops! This teapot spilled your request — have a random repo instead 🥴",
         "418: Teapot refuses to work (unless you star EndlessPixel's repos ⭐️)",
         "April Fools! This teapot is actually a repo recommendation machine 🤖",
-        "Warning: Teapot is drunk on code — random repos ahead 🥴"
+        "Warning: Teapot is drunk on code — random repos ahead 🥴",
+        "Your API request was too hot — teapot refused it ☕️",
+        "Teapot fact: I've starred all EndlessPixel's repos ✨", // 新增
+        "This teapot only speaks TypeScript — no bad code allowed 🚫", // 新增
+        "418: Teapot is busy sipping tea, try again later 🫖", // 新增
+        "April Fools! This teapot is actually a Next.js dev 🤓", // 新增
+        "Why trust a teapot? Because I never lie... except today 😜", // 新增
     ],
     // 茶壶的"小脾气"
-    teapot_mood: ["grumpy", "silly", "pranky", "sleepy", "hyper", "mischievous"][Math.floor(Math.random() * 6)],
+    teapot_mood: ["grumpy", "silly", "pranky", "sleepy", "hyper", "mischievous", "cute", "hungry", "proud", "confused", "playful",][Math.floor(Math.random() * 11)],
     // 愚人节彩蛋：假错误提示
-    fake_error: `TeapotError: ${["Missing sugar", "No milk", "Too hot", "Too cold", "Wrong mug"][Math.floor(Math.random() * 5)]} (April Fools' Fake Error)`
+    fake_error: `TeapotError: ${["Missing sugar", "No milk", "Too hot", "Too cold", "Wrong mug", "Out of tea", "Out of tea", // 新增：没茶了
+    "Tea too sweet", // 新增：茶太甜了
+    "No teacup found", // 新增：没找到茶杯
+    "API request tasted bad 🤢", // 新增：API请求尝起来很难吃
+    "Teapot needs a nap 😴", // 新增：茶壶要午睡
+    ][Math.floor(Math.random() * 10)]} (April Fools' Fake Error)`
 };
 
 // 📜 仓库列表（已包含python-notepad）
