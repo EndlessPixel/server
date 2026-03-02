@@ -33,7 +33,7 @@ export function ContactSection() {
     },
     {
       name: "邮箱",
-      value: "2267848501@qq.com",
+      value: "support@endlesspixel.cn",
       description: "官方邮箱，处理重要事务",
       icon: Mail,
       color: "text-green-600 dark:text-green-400",
@@ -42,7 +42,7 @@ export function ContactSection() {
       hoverColor: "hover:bg-green-100 dark:hover:bg-green-900/30",
       action: "发送邮件",
       gradient: "from-green-500 to-emerald-500",
-      onClick: () => window.open("mailto:2267848501@qq.com", "_blank"),
+      onClick: () => window.open("mailto:support@endlesspixel.cn", "_blank"),
     },
     {
       name: "Discord",
