@@ -99,10 +99,12 @@ const repoList: Repo[] = [
     { name: 'frp-config-generator', url: 'https://github.com/EndlessPixel/frp-config-generator', prank_tag: 'Generates prank configs 😝' },
     { name: 'qrcode-generator-parser', url: 'https://github.com/EndlessPixel/qrcode-generator-parser', prank_tag: 'QR codes lead to teapot memes 🤣' },
     { name: 'python-notepad', url: 'https://github.com/EndlessPixel/python-notepad', prank_tag: 'Types backwards on April Fools 📝' },
-    { name: 'EndlessPixel/EndlessPixel', url: 'https://github.com/EndlessPixel/EndlessPixel', prank_tag: 'April Fools: Repo is just a teapot 🫖' },
-    { name: 'EndlessPixel/TerminalQR', url: 'https://github.com/EndlessPixel/TerminalQR', prank_tag: 'April Fools: QR codes lead to teapot memes 🤣' },
-    { name: 'EndlessPixel.github.io', url: 'https://EndlessPixel.github.io', prank_tag: 'April Fools: Website is upside down (April Fools)' },
+    { name: 'EndlessPixel', url: 'https://github.com/EndlessPixel/EndlessPixel', prank_tag: 'April Fools: Repo is just a teapot 🫖' },
+    { name: 'TerminalQR', url: 'https://github.com/EndlessPixel/TerminalQR', prank_tag: 'April Fools: QR codes lead to teapot memes 🤣' },
+    { name: 'EndlessPixel.github.io', url: 'https://github.com/EndlessPixel/EndlessPixel.github.io', prank_tag: 'April Fools: Website is upside down (April Fools)' },
     { name: 'Files-Panel', url: 'https://github.com/EndlessPixel/Files-Panel', prank_tag: 'April Fools: Files are just a teapot 🫖' },
+    { name: 'Command-Sentinel', url: 'https://github.com/EndlessPixel/Command-Sentinel', prank_tag: 'April Fools: Commands are just a teapot 🫖' },
+    { name: 'git-city', url: 'https://github.com/EndlessPixel/git-city', prank_tag: 'Youre in a git city in fork! 🌆' },
 ];
 
 // 🎲 更公平的洗牌算法（愚人节也得讲武德）
