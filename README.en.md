@@ -23,7 +23,7 @@ Official website of EndlessPixel Server, built with Next.js App Router + TypeScr
 ### Prerequisites
 
 - Node.js ≥ 18  
-- npm ≥ 9 (pnpm 8 recommended)
+- npm ≥ 9
 
 ### Local Development
 
