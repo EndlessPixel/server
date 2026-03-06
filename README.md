@@ -22,7 +22,7 @@ EndlessPixel 服务器的官方网站，基于 Next.js App Router + TypeScript +
 ### 前置条件
 
 - Node.js ≥ 18  
-- npm ≥ 9（推荐 pnpm 8）
+- npm ≥ 9
 
 ### 本地开发
 
