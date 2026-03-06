@@ -36,12 +36,12 @@
 npm install
 
 # 启动开发服务器
-npm dev
+npm run dev
 
 # 可选：启动 HTTPS 开发服务器
-python ./localhost-pem-cert.py
+python ./localhost_pem_cert.py
 
-npm dev-https
+npm run dev-https
 
 # （可选）代码格式化
 npm format
