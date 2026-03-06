@@ -53,7 +53,6 @@ Visit [http://localhost:3000](http://localhost:3000) or [https://localhost:3000]
 ### Code Style
 
 - TypeScript strict mode on  
-- Component names PascalCase, filenames kebab-case  
 - Prefer Tailwind CSS, avoid inline styles  
 - Run `npm run lint && npm run type-check` before commit
 

@@ -52,7 +52,6 @@ npm run dev
 ### 代码规范
 
 - 使用 TypeScript 严格模式  
-- 组件名 PascalCase，文件名小写连字符  
 - 样式优先使用 Tailwind CSS，避免行内样式  
 - 提交前执行 `npm run lint && npm run type-check`
 
