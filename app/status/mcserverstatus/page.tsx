@@ -6,27 +6,7 @@ import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Server,
-  Globe,
-  Users,
-  Cpu,
-  MessageSquare,
-  AlertTriangle,
-  ArrowLeft,
-  Wifi,
-  WifiOff,
-  Clock,
-  RefreshCw,
-  ChevronDown,
-  ChevronUp,
-  Activity,
-  Zap,
-  Shield,
-  Play,
-  Pause,
-  RotateCcw
-} from "lucide-react";
+import { Server, Users, Cpu, MessageSquare, AlertTriangle, ArrowLeft, Wifi, WifiOff, Clock, RefreshCw, ChevronDown, ChevronUp, Activity, Zap, Shield, Play, Pause, RotateCcw } from "lucide-react";
 
 // 类型定义
 interface Player {
@@ -92,12 +72,12 @@ interface ServerNode {
 // 常量定义
 const ACTIVE_NODE = {
   name: "主服务器",
-  ip: "epmc.top",
+  ip: "mc.endlesspixel.cn",
 };
 
 const CACHE_DURATION = 30_000;
 const FETCH_TIMEOUT = 8000;
-const AUTO_REFRESH_INTERVAL = 10 * 60 * 1000; // 10分钟（改为更长的间隔）
+const AUTO_REFRESH_INTERVAL = 1 * 60 * 1000; // 1分钟（改为更长的间隔）
 
 // 独立的fetch函数
 const fetchServerData = async (ip: string): Promise<ServerData | null> => {
@@ -124,8 +104,6 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
     // 发起新请求（使用Next.js API路由代理）
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
-
-    console.log("发起服务器数据请求");
     const response = await fetch(`/api/mcserver?ip=${encodeURIComponent(ip)}`, {
       signal: controller.signal,
       headers: {
@@ -263,7 +241,6 @@ export default function McServerStatusPage() {
       if (!newState && intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
-        console.log("自动刷新已禁用");
       } else if (newState && !intervalRef.current) {
         // 重新启动自动刷新
         intervalRef.current = setInterval(() => {
@@ -271,7 +248,6 @@ export default function McServerStatusPage() {
             debouncedLoadServerData();
           }
         }, AUTO_REFRESH_INTERVAL);
-        console.log("自动刷新已启用");
       }
       return newState;
     });
