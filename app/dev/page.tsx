@@ -40,7 +40,6 @@ const apiServices = [
 // 第三方服务数据
 const thirdPartyServices = [
     { name: "gh-proxy.com", url: "https://gh-proxy.com/", desc: "GitHub加速服务" },
-    { name: "gh.imixc.top", url: "https://gh.imixc.top/", desc: "GitHub加速服务" },
     { name: "gh.jasonzeng.dev", url: "https://gh.jasonzeng.dev/", desc: "GitHub加速服务" },
     { name: "ChmlFrp", url: "https://www.chmlfrp.net/", desc: "Frp内网穿透"},
 ];

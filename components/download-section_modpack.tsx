@@ -420,7 +420,7 @@ function MirrorFooter() {
     <div className="text-center text-sm text-muted-foreground p-4 rounded-lg border bg-secondary/30">
       <p className="mb-2">加速下载由以下服务提供：</p>
       <div className="flex flex-wrap justify-center gap-2">
-        {['gh-proxy.com', 'gh.imixc.top', 'gh.xmly.dev'].map(d => (
+        {['gh-proxy.com', 'gh.xmly.dev'].map(d => (
           <a
             key={d}
             href={`https://${d}`}
