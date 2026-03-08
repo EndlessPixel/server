@@ -9,14 +9,10 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu, X, Download, Activity, BookOpen, Users,
-  Home, ChevronRight, Search, Sparkles
+  Home, ChevronRight, Search
 } from 'lucide-react';
-import { cn } from '@/lib/utils'; // tailwind 合并工具
+import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
-
-/* ------------------------------------------------------------------ */
-/* 锁滚动 hook                                                         */
-/* ------------------------------------------------------------------ */
 function useLockBody(lock: boolean) {
   useEffect(() => {
     if (!lock) return;
@@ -25,35 +21,17 @@ function useLockBody(lock: boolean) {
     return () => { document.body.style.overflow = origin; };
   }, [lock]);
 }
-
-/* ------------------------------------------------------------------ */
-/* 面包屑文字格式化                                                    */
-/* ------------------------------------------------------------------ */
 const formatLabel = (s: string) =>
   s.replace(/-/g, ' ')
    .replace(/\b\w/g, c => c.toUpperCase());
-
-/* ------------------------------------------------------------------ */
-/* MotionLink 组件                                                     */
-/* ------------------------------------------------------------------ */
-const MotionLink = motion(Link);
-
-/* ================================================================== */
-/* ExplorerBar —— 地址栏                                               */
-/* ================================================================== */
+const MotionLink = motion.create(Link);
 function ExplorerBar() {
   const router = useRouter();
   const pathname = usePathname();
   const inputRef = useRef<HTMLInputElement>(null);
-
-  /* 双模式状态 ------------------------------------------------------- */
   const [editMode, setEditMode] = useState(false);
   const [inputValue, setInputValue] = useState(pathname);
-
-  /* 同步路由变化 ----------------------------------------------------- */
   useEffect(() => setInputValue(pathname), [pathname]);
-
-  /* 快捷键聚焦 ------------------------------------------------------- */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
@@ -65,17 +43,11 @@ function ExplorerBar() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
-
-  /* 进入编辑模式 ----------------------------------------------------- */
   const enterEdit = () => {
     setEditMode(true);
     setTimeout(() => inputRef.current?.select(), 50);
   };
-
-  /* 退出编辑 --------------------------------------------------------- */
   const exitEdit = () => setEditMode(false);
-
-  /* 回车导航 --------------------------------------------------------- */
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -87,8 +59,6 @@ function ExplorerBar() {
       exitEdit();
     }
   };
-
-  /* 面包屑生成 ------------------------------------------------------- */
 const crumbs = pathname
   .split('/')
   .filter(Boolean)
@@ -159,10 +129,6 @@ const crumbs = pathname
     </div>
   );
 }
-
-/* ================================================================== */
-/* Navigation —— 主导航                                                */
-/* ================================================================== */
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
@@ -190,8 +156,6 @@ export function Navigation() {
             >
               <img src="/EndlessPixel.png" alt="Logo" className="h-8 w-auto" />
             </MotionLink>
-
-            {/* 桌面导航 */}
             <div className="hidden md:flex items-center space-x-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -223,8 +187,6 @@ export function Navigation() {
               <div className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2" />
               <ThemeToggle />
             </div>
-
-            {/* 移动端按钮 */}
             <div className="md:hidden flex items-center space-x-2">
               <ThemeToggle />
               <Button
@@ -242,18 +204,13 @@ export function Navigation() {
             </div>
           </div>
         </div>
-
-        {/* 地址栏（桌面端） */}
         <div className="hidden md:block border-t border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/50">
           <ExplorerBar />
         </div>
       </nav>
-
-      {/* 移动端菜单 + 遮罩 */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            {/* 遮罩 */}
             <motion.div
               className="fixed inset-0 bg-black/40 z-40 md:hidden"
               onClick={() => setIsMenuOpen(false)}
@@ -261,7 +218,6 @@ export function Navigation() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             />
-            {/* 菜单面板 */}
             <motion.div
               className="fixed top-0 left-0 right-0 bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 z-50 md:hidden"
               initial={{ y: '-100%' }}
