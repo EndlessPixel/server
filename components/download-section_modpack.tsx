@@ -367,7 +367,6 @@ function FileBlock({ file }: { file: { name: string; downloadUrl: string; downlo
     { tag: 'Fastly', url: getMirrorUrl('https://cdn.gh-proxy.org/'), tip: '推荐' },
     { tag: 'Edgeone', url: getMirrorUrl('https://edgeone.gh-proxy.org/'), tip: '推荐' },
     { tag: 'Jasonzeng', url: getMirrorUrl('https://gh.xmly.dev/'), tip: '大文件慎用' },
-    { tag: 'Imixc', url: getMirrorUrl('https://gh.imixc.top/'), tip: '大文件慎用' },
     { tag: '香港', url: getMirrorUrl('https://hk.gh-proxy.org/'), tip: '香港节点' },
   ];
   return (

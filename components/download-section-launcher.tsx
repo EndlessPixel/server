@@ -292,7 +292,6 @@ function ReleaseCard({
               { name: "Fastly CDN", url: getMirrorUrl("https://cdn.gh-proxy.org", file.downloadUrl), tag: "Fastly" },
               { name: "Edgeone 全球加速", url: getMirrorUrl("https://edgeone.gh-proxy.org", file.downloadUrl), tag: "Edgeone" },
               { name: "Jasonzeng 文件代理加速", url: getMirrorUrl("https://gh.xmly.dev", file.downloadUrl), tag: "Jasonzeng" },
-              { name: "Imixc 国内高速下载", url: getMirrorUrl("https://gh.imixc.top", file.downloadUrl), tag: "Imixc" },
               { name: "香港 国内线路优化", url: getMirrorUrl("https://hk.gh-proxy.org", file.downloadUrl), tag: "香港", tip: "大文件下载不建议使用！" },
             ];
 
@@ -1080,14 +1079,6 @@ export function DownloadSection({
             className="px-5 py-2 bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 rounded-lg transition-all hover:shadow-md hover:scale-105"
           >
             gh-proxy.com
-          </a>
-          <a
-            href="https://gh.imixc.top/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2 bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 rounded-lg transition-all hover:shadow-md hover:scale-105"
-          >
-            gh.imixc.top
           </a>
           <a
             href="https://gh.jasonzeng.dev/"
