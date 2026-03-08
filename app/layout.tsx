@@ -191,7 +191,6 @@ export default function RootLayout({
   "
         />
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-        <meta httpEquiv="X-Frame-Options" content="DENY" />
 
         {/* ✅ 修复10: 精简结构化数据 */}
         {jsonLd.map((ld, index) => (
