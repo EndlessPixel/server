@@ -15,7 +15,7 @@ const CURRENT_YEAR = new Date().getFullYear().toString();
 // ✅ 修复1: 使用正确的新域名
 const DOMAIN = "https://www.endlesspixel.fun";
 const LOGO = `${DOMAIN}/EndlessPixel.png`;
-const FAVICON_ICO = "/icon.ico";
+const FAVICON_ICO = "/favicon.ico";
 const BANNER_IMAGE = `${DOMAIN}/banner.jpg`;
 const DISCORD_INVITE = "https://discord.gg/k63hRWt3fF";
 
