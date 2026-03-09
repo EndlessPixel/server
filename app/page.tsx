@@ -1,6 +1,5 @@
 import { Navigation } from "@/components/navigation"
 import { HeroSection } from "@/components/hero-section"
-import { ServerFeatures } from "@/components/server-features"
 import { Footer } from "@/components/footer"
 import type { Metadata } from "next"
 
