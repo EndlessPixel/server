@@ -228,7 +228,7 @@ export default function StatusIndexPage() {
                     </Button>
                     <Button asChild variant="outline" size="sm">
                       <Link 
-                        href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=EmTbLSL3XG_bU20-aDi4o4k_8rgBMdhs&authKey=xnbJ26rO4MI2bAemGcUt3Wj8I0Dw0nY%2Bq5Bx1HHxK1j5MS%2Bh%2FKDCQy6kOVMBl4%2FD&noverify=0&group_code=870594910" 
+                        href="https://qm.qq.com/q/sFrax2Ilxe" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         aria-label="加入QQ群获取支持"
