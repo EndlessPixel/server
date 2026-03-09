@@ -5,6 +5,10 @@
       "dom.iterable",
       "esnext"
     ],
+    "removeComments": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
     "allowJs": true,
     "target": "ES6",
     "skipLibCheck": true,
