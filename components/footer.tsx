@@ -90,7 +90,7 @@ const ServerInfo = ({ info }: { info: ServerInfoItem[] }) => (
   </div>
 );
 const BrandLogo = () => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [, setIsHovered] = useState(false);
   return (
     <div
       className="flex items-center space-x-3 mb-6 group"
