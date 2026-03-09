@@ -1,3 +1,14 @@
 {
-    "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)README*' ':(exclude)SECURITY.md' ':(exclude)CONTRIBUTING.md' ':(exclude)CODE_OF_CONDUCT.md' ':(exclude)LICENSE' ':(exclude)localhost_pem_cert.py'"
+    "build": {
+        "files": {
+            "exclude": [
+                "README*",
+                "SECURITY.md",
+                "CONTRIBUTING.md",
+                "CODE_OF_CONDUCT.md",
+                "LICENSE",
+                "localhost_pem_cert.py"
+            ]
+        }
+    }
 }
