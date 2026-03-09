@@ -30,7 +30,7 @@ export const metadata: Metadata = {
         follow: true,
     },
     icons: {
-        icon: "/icon.ico"
+        icon: "/favicon.ico"
     }
 }
 
