@@ -4,18 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
-  Loader2, AlertCircle, CheckCircle, MessageSquare, Calendar, User, Tag,
+  Loader2, AlertCircle, CheckCircle, MessageSquare, Calendar, User, 
   ArrowLeft, ExternalLink, GitPullRequest, ChevronLeft, ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 
-/* ------------------------------------------------------------------ */
-/* Types
-/* ------------------------------------------------------------------ */
 interface GitHubIssue {
   id: number;
   number: number;
@@ -36,9 +33,6 @@ interface PaginationInfo {
   itemsPerPage: number;
 }
 
-/* ------------------------------------------------------------------ */
-/* 工具函数
-/* ------------------------------------------------------------------ */
 const getTimeAgo = (d: string) => {
   const days = Math.floor((Date.now() - new Date(d).getTime()) / 86_400_000);
   if (days === 0) return "今天";
@@ -64,7 +58,7 @@ const parseLinkHeader = (header: string | null) => {
   return links;
 };
 
-const calcTotalPages = (link: string | null, per: number) => {
+const calcTotalPages = (link: string | null, _itemsPerPage?: number) => {
   if (!link) return 1;
   const last = parseLinkHeader(link).last;
   if (!last) return 1;
@@ -72,9 +66,6 @@ const calcTotalPages = (link: string | null, per: number) => {
   return p ? parseInt(p, 10) : 1;
 };
 
-/* ------------------------------------------------------------------ */
-/* 子组件
-/* ------------------------------------------------------------------ */
 function StatsCard({ icon, label, value }: { icon: JSX.Element; label: string; value: number }) {
   return (
     <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
@@ -175,9 +166,6 @@ function Pagination({ pagination, onChange }: { pagination: PaginationInfo; onCh
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* 主组件：接收动态仓库参数
-/* ------------------------------------------------------------------ */
 export default function GitHubIssuesList({
   owner,
   repo,
@@ -197,14 +185,11 @@ export default function GitHubIssuesList({
     totalPages: 1,
     itemsPerPage: 20,
   });
-
-  /* 读取 URL 页码 */
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1", 10);
     if (!isNaN(page) && page > 0) setPagination(p => ({ ...p, currentPage: page }));
   }, [searchParams]);
 
-  /* 拉取数据 */
   useEffect(() => {
     const cacheKey = `gh:${owner}/${repo}/issues/page/${pagination.currentPage}/${pagination.itemsPerPage}`;
     const cached = sessionStorage.getItem(cacheKey);
@@ -255,13 +240,10 @@ export default function GitHubIssuesList({
     const num = url.split("/").pop();
     if (num) router.push(`${backHref}/issues/${num}`);
   };
-
-  /* 统计数据 */
   const openCnt = issues.filter(i => i.state === "open" && !i.pull_request).length;
   const closeCnt = issues.filter(i => i.state === "closed" && !i.pull_request).length;
   const openPRCnt = issues.filter(i => i.state === "open" && !!i.pull_request).length;
   const totalCmt = issues.reduce((a, i) => a + i.comments, 0);
-
   if (loading)
     return (
       <>
@@ -272,7 +254,6 @@ export default function GitHubIssuesList({
         <Footer />
       </>
     );
-
   if (error && !issues.length)
     return (
       <>
@@ -289,20 +270,18 @@ export default function GitHubIssuesList({
         <Footer />
       </>
     );
-
   return (
     <>
       <Navigation />
       <main className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
         <div className="max-w-7xl mx-auto space-y-8">
-          {/* 头部 */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <Button variant="ghost" size="sm" asChild className="flex items-center gap-2">
                   <Link href={backHref}>
                     <ArrowLeft className="w-4 h-4" />
-                    返回
+                    返回下载页
                   </Link>
                 </Button>
                 <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
@@ -340,19 +319,13 @@ export default function GitHubIssuesList({
               </Button>
             </div>
           </div>
-
-          {/* 统计卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatsCard icon={<AlertCircle className="w-6 h-6" />} label="开放问题" value={openCnt} />
             <StatsCard icon={<CheckCircle className="w-6 h-6" />} label="已关闭问题" value={closeCnt} />
             <StatsCard icon={<GitPullRequest className="w-6 h-6" />} label="开放 PR" value={openPRCnt} />
             <StatsCard icon={<MessageSquare className="w-6 h-6" />} label="总评论" value={totalCmt} />
           </div>
-
-          {/* 分页 */}
           <Pagination pagination={pagination} onChange={handlePage} />
-
-          {/*  issues 列表 */}
           <section>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
@@ -367,7 +340,6 @@ export default function GitHubIssuesList({
                 </div>
               </div>
             </div>
-
             {issues.length === 0 ? (
               <Card className="text-center py-16 border-dashed">
                 <CardContent>
@@ -384,27 +356,7 @@ export default function GitHubIssuesList({
               </div>
             )}
           </section>
-
-          {/* 分页 */}
           <Pagination pagination={pagination} onChange={handlePage} />
-
-          {/* 页脚说明 */}
-          <Card className="bg-white/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
-            <CardContent className="p-6 text-center text-sm text-slate-600 dark:text-slate-400">
-              <p>
-                数据来自{" "}
-                <a
-                  href={`https://github.com/${owner}/${repo}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"
-                >
-                  GitHub Repository
-                </a>
-                。自动更新，缓存时间 30 秒。
-              </p>
-            </CardContent>
-          </Card>
         </div>
       </main>
       <Footer />
