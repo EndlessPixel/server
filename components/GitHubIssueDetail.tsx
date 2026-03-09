@@ -2,7 +2,7 @@
 export interface GitHubIssueDetailProps {
   owner: string;
   repo: string;
-  backHref?: string; // ★ 新增
+  backHref?: string;
 }
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -11,26 +11,11 @@ import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  Calendar,
-  User,
-  MessageSquare,
-  ExternalLink,
-  Tag,
-  GitPullRequest,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  Eye,
-} from "lucide-react";
+import { ArrowLeft, Calendar, User, MessageSquare, ExternalLink, Tag, GitPullRequest, AlertCircle, CheckCircle, Clock, Eye} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 
-/* ------------------------------------------------------------------ */
-/* Types
-/* ------------------------------------------------------------------ */
 interface GitHubIssueDetail {
   id: number;
   number: number;
@@ -61,9 +46,6 @@ interface CodeProps {
   children?: React.ReactNode;
 }
 
-/* ------------------------------------------------------------------ */
-/* 工具函数
-/* ------------------------------------------------------------------ */
 const getTimeAgo = (d: string) => {
   const diff = Date.now() - new Date(d).getTime();
   const days = Math.floor(diff / 86_400_000);
@@ -80,9 +62,6 @@ const getContrastColor = (hex: string) => {
   return (r * 299 + g * 587 + b * 114) / 1000 > 128 ? "#000" : "#fff";
 };
 
-/* ------------------------------------------------------------------ */
-/* 骨架屏
-/* ------------------------------------------------------------------ */
 const SkeletonCard = () => (
   <div className="space-y-6">
     <div className="flex items-center justify-between">
@@ -116,13 +95,9 @@ const SkeletonCard = () => (
   </div>
 );
 
-/* ------------------------------------------------------------------ */
-/* 主组件：接收 owner / repo
-/* ------------------------------------------------------------------ */
 export default function GitHubIssueDetail({
   owner,
   repo,
-  backHref,
 }: {
   owner: string;
   repo: string;
@@ -147,8 +122,6 @@ export default function GitHubIssueDetail({
       setError(null);
       const issueKey = `gh:issue:${id}`;
       const commentsKey = `gh:issue:${id}:comments`;
-
-      // 缓存读取
       try {
         const raw = sessionStorage.getItem(issueKey);
         if (raw) {
@@ -158,10 +131,8 @@ export default function GitHubIssueDetail({
           }
         }
       } catch { }
-
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), 8_000);
-
       const issueRes = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/issues/${id}`,
         { headers: { Accept: "application/vnd.github.v3+json" }, signal: ctrl.signal }
@@ -173,8 +144,6 @@ export default function GitHubIssueDetail({
       try {
         sessionStorage.setItem(issueKey, JSON.stringify({ _ts: Date.now(), data: issueData }));
       } catch { }
-
-      // 评论
       const ctrl2 = new AbortController();
       const t2 = setTimeout(() => ctrl2.abort(), 8_000);
       const commentsRes = await fetch(
@@ -195,13 +164,11 @@ export default function GitHubIssueDetail({
       setLoading(false);
     }
   };
-
   const refreshData = () => {
     sessionStorage.removeItem(`gh:issue:${id}`);
     sessionStorage.removeItem(`gh:issue:${id}:comments`);
     fetchIssueDetail();
   };
-
   if (loading)
     return (
       <>
@@ -214,7 +181,6 @@ export default function GitHubIssueDetail({
         <Footer />
       </>
     );
-
   if (error || !issue)
     return (
       <>
