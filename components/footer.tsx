@@ -1,34 +1,25 @@
 "use client";
 
 import Link from "next/link"
-import {
-  Server, Github, MessageCircle, Video, Smartphone, Gamepad2,
-  Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight, Twitch, Facebook, Code
-} from "lucide-react"
+import { Server, Github, MessageCircle, Video, Smartphone, Gamepad2, Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight, Twitch, Facebook, Code} from "lucide-react"
 import { useState } from "react"
 import { RunningDuration } from "./RunningDuration";
-
-// 类型定义抽离，提高可维护性
 type SocialLink = {
   icon: React.ElementType;
   href: string;
   label: string;
 };
-
 type NavLink = {
   icon: React.ElementType;
   href: string;
   label: string;
   external?: boolean;
 };
-
 type ServerInfoItem = {
   label: string;
   value: string;
   color: string;
 };
-
-// 社交媒体链接组件 - 优化交互和视觉
 const SocialLinks = ({ links }: { links: SocialLink[] }) => (
   <div className="flex space-x-3">
     {links.map((social) => {
@@ -44,15 +35,12 @@ const SocialLinks = ({ links }: { links: SocialLink[] }) => (
           aria-label={`访问我们的${social.label}`}
         >
           <Icon className="w-5 h-5 text-slate-300 group-hover:text-emerald-400 transition-colors" />
-          {/* 微动画装饰 */}
           <span className="absolute inset-0 rounded-lg scale-0 group-hover:scale-100 border border-emerald-500/20 transition-transform duration-300 -z-10"></span>
         </a>
       );
     })}
   </div>
 );
-
-// 导航链接组件 - 优化交互和可访问性
 const NavLinks = ({ links }: { links: NavLink[] }) => (
   <ul className="space-y-1">
     {links.map((link) => {
@@ -91,8 +79,6 @@ const NavLinks = ({ links }: { links: NavLink[] }) => (
     })}
   </ul>
 );
-
-// 服务器信息组件 - 优化视觉层次
 const ServerInfo = ({ info }: { info: ServerInfoItem[] }) => (
   <div className="space-y-2 text-slate-300 bg-slate-800/20 rounded-xl p-4 border border-slate-700/50">
     {info.map((item, index) => (
@@ -103,40 +89,25 @@ const ServerInfo = ({ info }: { info: ServerInfoItem[] }) => (
     ))}
   </div>
 );
-
-// 品牌标识组件 - 优化视觉效果
 const BrandLogo = () => {
   const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div
       className="flex items-center space-x-3 mb-6 group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg transition-all duration-500 ${isHovered ? 'bg-linear-to-rrom-emerald-500 to-teal-600 scale-105' : 'bg-linear-to-r from-green-500 to-emerald-600'
-        }`}>
-        <Server className="w-7 h-7 text-white transition-transform duration-500" />
-      </div>
+      <img src="/favicon.ico" alt="EndlessPixel" className="w-12 h-12 rounded-xl" />
       <div>
-        <h2 className="font-bold text-2xl bg-linear-to-r from-white to-slate-200 bg-clip-text text-transparent tracking-tight">
+        <h2 className="font-bold text-3xl bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent tracking-tight">
           EndlessPixel
         </h2>
-        <div className="flex items-center space-x-1.5 mt-1">
-          <span className="text-xs text-emerald-400 font-medium flex items-center">
-            在线
-            <span className="inline-block w-2 h-2 bg-emerald-500 rounded-full animate-pulse ml-1"></span>
-          </span>
-        </div>
       </div>
     </div>
   );
 };
-
-// 版权信息组件 - 优化视觉和响应式
 const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
   const currentYear = new Date().getFullYear();
-
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-400 text-sm pt-6 border-t border-slate-800/50 mt-6">
       <div className="flex items-center space-x-2">
@@ -151,10 +122,7 @@ const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
     </div>
   );
 };
-
-// 主 Footer 组件 - 整体重构
 export function Footer() {
-  // 社交媒体链接数据
   const socialLinks: SocialLink[] = [
     { icon: Github, href: 'https://gitee.com/system_mini', label: 'Gitee' },
     { icon: Github, href: 'https://github.com/EndlessPixel', label: 'GitHub' },
@@ -166,8 +134,6 @@ export function Footer() {
     { icon: Twitch, href: 'https://www.twitch.tv/system_mini', label: 'Twitch' },
     { icon: Facebook, href: 'https://www.facebook.com/system_mini', label: 'Facebook' }
   ];
-
-  // 导航链接数据
   const navLinks: NavLink[] = [
     { icon: Download, href: "/downloads", label: "资源下载" },
     { icon: Eye, href: "/status", label: "服务器状态" },
@@ -175,8 +141,6 @@ export function Footer() {
     { icon: Users, href: "/about", label: "关于我们" },
     { icon: Server, href: "https://stats.uptimerobot.com/uHTdCauXWA", label: "状态监控", external: true }
   ];
-
-  // 服务器信息数据
   const serverInfo: ServerInfoItem[] = [
     { label: "版本", value: "1.21.11", color: "text-green-400" },
     { label: "QQ群", value: "870594910", color: "text-blue-400" },
@@ -188,12 +152,10 @@ export function Footer() {
     <footer className="bg-slate-900 text-white border-t border-slate-800/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
-          {/* Brand Section */}
           <div className="lg:col-span-2 space-y-4">
             <BrandLogo />
             <p className="text-slate-400 max-w-md text-sm leading-relaxed">
-              一个由热爱游戏的玩家组成的社区，致力于提供有趣、自由、开放的游戏世界。
-              我们相信游戏的魅力在于创造与分享。
+              EndlessPixel是一个由热爱Minecraft的玩家组成的社区，致力于提供有趣、自由、开放、和平的游戏世界。我们相信游戏的魅力在于创造与分享。
             </p>
             <SocialLinks links={socialLinks} />
             <p className="text-slate-400 text-sm">EndlessPixel服务器创立至今：</p>
