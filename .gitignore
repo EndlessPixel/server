@@ -4,7 +4,6 @@ out
 dist
 build
 *.log
-package-lock.json
 tsconfig.tsbuildinfo
 cert
 .env.production
