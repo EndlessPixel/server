@@ -68,7 +68,7 @@ export function LauncherListPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, type: "spring" }}
-              className="inline-flex items-center gap-2 bg-linear-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-700/50 px-6 py-3 rounded-2xl text-base font-semibold backdrop-blur-sm mb-6"
+              className="inline-flex items-center gap-2 bg-linear-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400  border-blue-200/50 dark:border-blue-700/50 px-6 py-3 rounded-2xl text-base font-semibold backdrop-blur-sm mb-6"
             >
               <Sparkles className="w-5 h-5" />
               最后更新：2025/01/17
@@ -100,7 +100,7 @@ export function LauncherListPage() {
           >
             <Link
               href="/"
-              className="inline-flex items-center gap-3 group bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm px-6 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 hover:shadow-lg"
+              className="inline-flex items-center gap-3 group bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm px-6 py-3 rounded-2xl  border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 hover:shadow-lg"
             >
               <motion.div
                 whileHover={{ x: -3 }}
@@ -135,7 +135,7 @@ export function LauncherListPage() {
                 >
                   <motion.div
                     variants={cardHoverVariants}
-                    className="relative p-8 bg-white/90 dark:bg-slate-800/80 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 backdrop-blur-xl hover:shadow-2xl transition-all duration-500 overflow-hidden"
+                    className="relative p-8 bg-white/90 dark:bg-slate-800/80 rounded-3xl  border-slate-200/60 dark:border-slate-700/60 backdrop-blur-xl hover:shadow-2xl transition-all duration-500 overflow-hidden"
                   >
                     {/* 背景装饰 */}
                     <div className="absolute inset-0 bg-linear-to-br from-blue-50/50 to-cyan-50/30 dark:from-blue-900/10 dark:to-cyan-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -152,7 +152,7 @@ export function LauncherListPage() {
                         // 第一种情况：有releases字段且值为true（已验证存在）
                         r.releases === true ? (
                           <motion.div
-                            className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-700/40 rounded-full text-xs font-medium"
+                            className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400  border-emerald-200/60 dark:border-emerald-700/40 rounded-full text-xs font-medium"
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.1, type: "spring" }}
@@ -164,7 +164,7 @@ export function LauncherListPage() {
                           // 2. 有 Releases 但无文件（empty，新增）
                           r.releases === "empty" ? (
                             <motion.div
-                              className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-700/40 rounded-full text-xs font-medium"
+                              className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400  border-blue-200/60 dark:border-blue-700/40 rounded-full text-xs font-medium"
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ delay: 0.1, type: "spring" }}
@@ -176,7 +176,7 @@ export function LauncherListPage() {
                             // 第二种情况：有releases字段且值为false（已验证不存在）
                             r.releases === false ? (
                               <motion.div
-                                className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200/60 dark:border-red-700/40 rounded-full text-xs font-medium"
+                                className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-red-500/10 text-red-600 dark:text-red-400  border-red-200/60 dark:border-red-700/40 rounded-full text-xs font-medium"
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.1, type: "spring" }}
@@ -188,7 +188,7 @@ export function LauncherListPage() {
                               // 第三种情况：无releases字段（未验证）
                               (
                                 <motion.div
-                                  className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-700/40 rounded-full text-xs font-medium"
+                                  className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400  border-amber-200/60 dark:border-amber-700/40 rounded-full text-xs font-medium"
                                   initial={{ opacity: 0, scale: 0.8 }}
                                   animate={{ opacity: 1, scale: 1 }}
                                   transition={{ delay: 0.1, type: "spring" }}

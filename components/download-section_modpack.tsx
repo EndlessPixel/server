@@ -348,7 +348,7 @@ function ReleaseCard({ release }: { release: ParsedRelease }) {
           {open ? '隐藏更新日志' : '查看更新日志'}
         </Button>
         {open && (
-          <div className="code-block rounded-lg border p-3 prose prose-sm dark:prose-invert max-w-none overflow-auto max-h-60">
+          <div className="code-block rounded-lg  p-3 prose prose-sm dark:prose-invert max-w-none overflow-auto max-h-60">
             <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
               {release.changelog}
             </ReactMarkdown>
@@ -370,7 +370,7 @@ function FileBlock({ file }: { file: { name: string; downloadUrl: string; downlo
     { tag: '香港', url: getMirrorUrl('https://hk.gh-proxy.org/'), tip: '香港节点' },
   ];
   return (
-    <div className="p-3 rounded-xl border bg-card/50">
+    <div className="p-3 rounded-xl  bg-card/50">
       <div className="flex items-center justify-between mb-2">
         <span className="font-medium text-sm truncate">{file.name}</span>
         <Badge variant="secondary" className="text-xs">下载 {file.downloadCount} 次</Badge>
@@ -417,7 +417,7 @@ function Pagination({ total, current, onPage }: { total: number; current: number
 }
 function MirrorFooter() {
   return (
-    <div className="text-center text-sm text-muted-foreground p-4 rounded-lg border bg-secondary/30">
+    <div className="text-center text-sm text-muted-foreground p-4 rounded-lg  bg-secondary/30">
       <p className="mb-2">加速下载由以下服务提供：</p>
       <div className="flex flex-wrap justify-center gap-2">
         {['gh-proxy.com', 'gh.xmly.dev'].map(d => (

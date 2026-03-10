@@ -13,7 +13,7 @@ function FullScreenPreview() {
                 title="EndlessPixel 最新Wiki-腾讯文档"
                 width="100%"
                 // 1. 用style写height，数值生效；2. 100%继承外层100vh
-                style={{ height: "100%", border: "none" }}
+                style={{ height: "100%", : "none" }}
                 onLoad={() => setIsLoading(false)}
                 className="transition-opacity duration-300"
                 allow="fullscreen; popups; clipboard-write"

@@ -68,7 +68,7 @@ const calcTotalPages = (link: string | null, _itemsPerPage?: number) => {
 
 function StatsCard({ icon, label, value }: { icon: JSX.Element; label: string; value: number }) {
   return (
-    <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
+    <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400">{icon}</div>
@@ -85,7 +85,7 @@ function IssueCard({ issue, onClick }: { issue: GitHubIssue; onClick: (url: stri
   return (
     <Card
       onClick={() => onClick(issue.html_url)}
-      className="group bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer"
+      className="group bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer"
     >
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-3">

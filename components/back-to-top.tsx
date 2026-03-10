@@ -74,7 +74,7 @@ export function BackToTop() {
             className={cn(
               "relative h-16 w-16 rounded-full shadow-xl transition-all duration-300 overflow-hidden",
               "bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white",
-              "border border-white/20 hover:border-white/40",
+              " border-white/20 hover:border-white/40",
               "active:scale-95 focus:ring-2 focus:ring-blue-500/30 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900"
             )}
             onClick={scrollToTop}

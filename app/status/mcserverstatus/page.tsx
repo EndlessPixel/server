@@ -589,7 +589,7 @@ export default function McServerStatusPage() {
                           <MessageSquare size={14} />
                           服务器Motd
                         </h3>
-                        <div className="bg-white dark:bg-slate-800/30 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <div className="bg-white dark:bg-slate-800/30 p-4 rounded-lg  border-slate-200 dark:border-slate-700">
                           {serverData.motd.clean.map((line, index) => (
                             <p key={index} className="text-sm text-slate-700 dark:text-slate-300 mb-1 last:mb-0">
                               {line}

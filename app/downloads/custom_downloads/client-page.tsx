@@ -198,7 +198,7 @@ export default function CustomDownloadsPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <Badge className="bg-linear-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-700/50 px-5 py-2 text-sm font-medium backdrop-blur-sm mb-6">
+                        <Badge className="bg-linear-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400  border-blue-200/50 dark:border-blue-700/50 px-5 py-2 text-sm font-medium backdrop-blur-sm mb-6">
                             <Sparkles className="w-4 h-4 mr-1.5" />
                             自定义 GitHub 下载页
                         </Badge>
@@ -217,7 +217,7 @@ export default function CustomDownloadsPage() {
                         transition={{ delay: 0.1, duration: 0.5 }}
                         className="max-w-4xl mx-auto"
                     >
-                        <Card className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/60 shadow-xl rounded-2xl overflow-hidden">
+                        <Card className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl  border-slate-200/60 dark:border-slate-700/60 shadow-xl rounded-2xl overflow-hidden">
                             <CardHeader className="text-center pb-6 pt-10 relative">
                                 <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-emerald-500"></div>
                                 <div className="w-16 h-16 bg-linear-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-5 shadow-lg">
@@ -247,7 +247,7 @@ export default function CustomDownloadsPage() {
                                                 onChange={(e) => setInputUrl(e.target.value)}
                                                 onFocus={() => setIsFocused(true)}
                                                 onBlur={() => setIsFocused(false)}
-                                                className={`w-full text-base py-3 px-4 border transition-colors rounded-xl ${isFocused
+                                                className={`w-full text-base py-3 px-4  transition-colors rounded-xl ${isFocused
                                                     ? "border-blue-500 ring-2 ring-blue-500/20 dark:ring-blue-500/10"
                                                     : "border-slate-300 dark:border-slate-600"
                                                     } bg-white/60 dark:bg-slate-800/60`}
@@ -276,7 +276,7 @@ export default function CustomDownloadsPage() {
                                 </form>
 
                                 {/* 支持格式说明 */}
-                                <div className="bg-linear-to-r from-slate-50/80 to-blue-50/50 dark:from-slate-800/40 dark:to-blue-900/20 rounded-xl p-5 border border-slate-200/50 dark:border-slate-700/50">
+                                <div className="bg-linear-to-r from-slate-50/80 to-blue-50/50 dark:from-slate-800/40 dark:to-blue-900/20 rounded-xl p-5  border-slate-200/50 dark:border-slate-700/50">
                                     <h3 className="font-medium text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                                         <AlertCircle className="w-5 h-5 text-blue-500" />
                                         支持的格式示例
@@ -298,7 +298,7 @@ export default function CustomDownloadsPage() {
                                     ].map((item, i) => (
                                         <div
                                             key={i}
-                                            className="text-center p-4 bg-white/50 dark:bg-slate-800/40 rounded-xl border border-slate-200/50 dark:border-slate-700/50"
+                                            className="text-center p-4 bg-white/50 dark:bg-slate-800/40 rounded-xl  border-slate-200/50 dark:border-slate-700/50"
                                         >
                                             <div className="w-10 h-10 bg-linear-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center mx-auto mb-3">
                                                 <item.icon className="w-5 h-5 text-white" />
@@ -364,7 +364,7 @@ export default function CustomDownloadsPage() {
                             ].map((proj, i) => (
                                 <Card
                                     key={i}
-                                    className="bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                                    className="bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm  border-slate-200/60 dark:border-slate-700/60 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                                     onClick={() => {
                                         setInputUrl(proj.url);
                                         // 注意：这里不校验，因为这些是已知有 releases 的项目

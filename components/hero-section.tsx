@@ -186,7 +186,7 @@ export function HeroSection() {
         <div className="text-center">
           {/* 徽章 */}
           <motion.div
-            className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700 px-6 py-3 rounded-full text-base font-medium text-slate-700 dark:text-slate-300 mb-8 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+            className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm  border-slate-200 dark:border-slate-700 px-6 py-3 rounded-full text-base font-medium text-slate-700 dark:text-slate-300 mb-8 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             initial={{ opacity: 0, y: -20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -243,7 +243,7 @@ export function HeroSection() {
                 <motion.span 
                   key={feature.label} 
                   variants={itemVariants} 
-                  className="flex items-center gap-2 bg-white/70 dark:bg-slate-800/40 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 group cursor-pointer"
+                  className="flex items-center gap-2 bg-white/70 dark:bg-slate-800/40 backdrop-blur-sm px-4 py-2 rounded-full  border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 group cursor-pointer"
                   whileHover={{ scale: 1.05, y: -2 }}
                 >
                   <Icon className={`w-4 h-4 ${feature.color} group-hover:scale-110 transition-transform`} />
@@ -291,7 +291,7 @@ export function HeroSection() {
                   onHoverStart={() => setHoveredCard(feature.title)} 
                   onHoverEnd={() => setHoveredCard(null)}
                 >
-                  <Card className="group bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/60 hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer relative">
+                  <Card className="group bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl  border-slate-200/60 dark:border-slate-700/60 hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer relative">
                     <div className="absolute inset-0 bg-linear-to-br from-blue-50/30 to-emerald-50/20 dark:from-blue-900/10 dark:to-emerald-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                       <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />
@@ -336,7 +336,7 @@ export function HeroSection() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: "spring" }}
-            className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700 px-6 py-3 rounded-full text-base font-medium text-slate-700 dark:text-slate-300 mb-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+            className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm  border-slate-200 dark:border-slate-700 px-6 py-3 rounded-full text-base font-medium text-slate-700 dark:text-slate-300 mb-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             whileHover={{ scale: 1.05 }}
           >
             <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}>
@@ -383,7 +383,7 @@ export function HeroSection() {
                 onHoverStart={() => setHoveredStat(stat.label)}
                 onHoverEnd={() => setHoveredStat(null)}
               >
-                <div className="relative bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-8 border border-slate-200/60 dark:border-slate-700/60 text-center hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer">
+                <div className="relative bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-8  border-slate-200/60 dark:border-slate-700/60 text-center hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer">
                   <div className="absolute inset-0 bg-linear-to-br from-blue-50/30 to-cyan-50/20 dark:from-blue-900/10 dark:to-cyan-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />
@@ -496,7 +496,7 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
         >
-          <div className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-12 border border-slate-200/60 dark:border-slate-700/60 max-w-4xl mx-auto relative overflow-hidden hover:shadow-2xl transition-all duration-500 group">
+          <div className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-12  border-slate-200/60 dark:border-slate-700/60 max-w-4xl mx-auto relative overflow-hidden hover:shadow-2xl transition-all duration-500 group">
             <div className="absolute inset-0 bg-linear-to-br from-blue-50/30 to-cyan-50/20 dark:from-blue-900/10 dark:to-cyan-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />

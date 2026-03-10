@@ -32,7 +32,7 @@ export function NodeCard({
   const isOnline = status.toLowerCase().includes("在线");
 
   return (
-    <Card className="group bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <Card className="group bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -61,7 +61,7 @@ export function NodeCard({
 
       <CardContent className="space-y-4">
         {/* 服务器连接信息 */}
-        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3  border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Globe className="w-4 h-4 text-blue-500" />
@@ -71,7 +71,7 @@ export function NodeCard({
               {port}
             </Badge>
           </div>
-          <code className="text-sm font-mono text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 px-2 py-1 rounded border border-slate-200 dark:border-slate-600">
+          <code className="text-sm font-mono text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 px-2 py-1 rounded  border-slate-200 dark:border-slate-600">
             {ip}
           </code>
         </div>
@@ -129,7 +129,7 @@ export function NodeCard({
 
         {/* 主机名信息 */}
         {hostname && (
-          <div className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-800/50 rounded border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-800/50 rounded  border-slate-200 dark:border-slate-700">
             <Monitor className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             <div className="flex-1 min-w-0">
               <div className="text-xs text-slate-500 dark:text-slate-400">主机名</div>
