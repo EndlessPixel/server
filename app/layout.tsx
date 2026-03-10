@@ -7,25 +7,13 @@ import { BackToTop } from "@/components/back-to-top";
 import { Toaster } from "@/components/ui/toaster";
 import clsx from "clsx";
 import "./globals.css";
-
-// ===== 基础配置 (精简且准确) =====
 const BRAND_NAME = "EndlessPixel Studio";
 const CURRENT_YEAR = new Date().getFullYear().toString();
-
-// ✅ 修复1: 使用正确的新域名
 const DOMAIN = "https://www.endlesspixel.fun";
 const LOGO = `${DOMAIN}/EndlessPixel.png`;
 const FAVICON_ICO = "/favicon.ico";
 const BANNER_IMAGE = `${DOMAIN}/banner.jpg`;
 const DISCORD_INVITE = "https://discord.gg/k63hRWt3fF";
-
-// ✅ 修复2: 简化社交链接
-const SOCIAL_LINKS = {
-  discord: DISCORD_INVITE,
-  github: "https://github.com/EndlessPixel",
-};
-
-// ===== 视口配置 (优化移动端) =====
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1.0,
@@ -37,8 +25,6 @@ export const viewport: Viewport = {
   ],
   viewportFit: "cover",
 };
-
-// ===== SEO 元数据 (精准且一致) =====
 export const metadata: Metadata = {
   metadataBase: new URL(DOMAIN),
   title: {
@@ -46,24 +32,13 @@ export const metadata: Metadata = {
     template: "%s | EndlessPixel - 免费MC服务器",
   },
   description: "EndlessPixel提供免费纯净Minecraft Java服务器，支持1.8-1.21.11版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验。",
-  keywords: [
-    "Minecraft服务器",
-    "免费MC服务器",
-    "Java版服务器",
-    "Purpur核心",
-    "我的世界公益服",
-    "EndlessPixel",
-    "1.21服务器",
-    "无尽像素",
-  ],
+  keywords: ["Minecraft服务器","免费MC服务器","Java版服务器","Purpur核心","我的世界公益服","EndlessPixel","1.21服务器","无尽像素",],
   authors: [{ name: BRAND_NAME }],
   creator: BRAND_NAME,
   publisher: BRAND_NAME,
   alternates: {
     canonical: DOMAIN,
   },
-
-  // ✅ 修复3: Open Graph 使用正确域名
   openGraph: {
     type: "website",
     locale: "zh_CN",
@@ -80,8 +55,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-
-  // ✅ 修复4: Twitter 卡片使用正确域名
   twitter: {
     card: "summary_large_image",
     title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.8-1.21.11",
@@ -89,8 +62,6 @@ export const metadata: Metadata = {
     images: [BANNER_IMAGE],
     creator: "@EndlessPixelStudio",
   },
-
-  // ✅ 修复5: 简化图标配置
   icons: {
     icon: FAVICON_ICO,
     apple: [
@@ -106,8 +77,6 @@ export const metadata: Metadata = {
       color: "#0a0a0a",
     },
   },
-
-  // ✅ 修复6: 合理的 robots 配置
   robots: {
     index: true,
     follow: true,
@@ -120,10 +89,7 @@ export const metadata: Metadata = {
     },
   },
 };
-
-// ✅ 修复7: 精简且准确的结构化数据
 const jsonLd = [
-  // 简化的组织信息
   {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -136,8 +102,6 @@ const jsonLd = [
       url: `${DOMAIN}/contact`,
     },
   },
-
-  // 简化的网站信息
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -150,31 +114,18 @@ const jsonLd = [
     },
   },
 ];
-
-// ===== 主布局组件 (优化性能) =====
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="zh-CN"
-      className={clsx(GeistSans.variable, GeistMono.variable)}
-      suppressHydrationWarning
-    >
+    <html lang="zh-CN" className={clsx(GeistSans.variable, GeistMono.variable)} suppressHydrationWarning>
       <head>
-        {/* ✅ 修复8: 添加规范URL */}
         <link rel="canonical" href={DOMAIN} />
-
-        {/* ✅ 修复9: 关键预连接 (只保留最重要的) */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href={DISCORD_INVITE} crossOrigin="anonymous" />
-
-        {/* DNS 预解析优化 */}
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-
-        {/* ✅ 修复10: 精简结构化数据 */}
         {jsonLd.map((ld, index) => (
           <script
             key={index}
@@ -184,8 +135,6 @@ export default function RootLayout({
             }}
           />
         ))}
-
-        {/* 保留必要的验证 */}
         <meta name="msvalidate.01" content="B9D8B7001682D3FB5F699A38C4C6DAF4" />
         <meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}`} />
       </head>
@@ -208,7 +157,6 @@ export default function RootLayout({
             Some features of this site require JavaScript. Please enable JS for the best experience.
           </div>
         </noscript>
-
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ErrorBoundary>
             {children}
