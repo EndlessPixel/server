@@ -131,7 +131,6 @@ const crumbs = pathname
 }
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
   useLockBody(isMenuOpen);
 
