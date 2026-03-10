@@ -172,7 +172,7 @@ export function ContactSection() {
                     visible: { opacity: 1, y: 0 }
                   }}
                   className={cn(
-                    "border rounded-xl p-5 transition-all duration-300 cursor-pointer group overflow-hidden relative",
+                    " rounded-xl p-5 transition-all duration-300 cursor-pointer group overflow-hidden relative",
                     method.borderColor,
                     method.bgColor,
                     method.hoverColor,
@@ -338,7 +338,7 @@ export function ContactSection() {
                       animate={{ width: '100%' }}
                       transition={{ duration: 0.8, delay: 0.3 }}
                     >
-                      <Separator className="my-2 bg-border/50 dark:bg-border/30" />
+                      <Separator className="my-2 bg-/50 dark:bg-/30" />
                     </motion.div>
                   )}
                 </motion.div>

@@ -197,7 +197,7 @@ export default function RootLayout({
               padding: 1rem; 
               background: #fff3cd; 
               color: #856404; 
-              border: 1px solid #ffeeba; 
+              : 1px solid #ffeeba; 
               margin: 1rem; 
               text-align: center; 
               border-radius: 8px; 

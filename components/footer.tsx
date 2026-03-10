@@ -30,12 +30,12 @@ const SocialLinks = ({ links }: { links: SocialLink[] }) => (
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative p-2 bg-slate-800/50 hover:bg-slate-700 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-slate-700/20 border border-slate-700/50 hover:border-emerald-500/50"
+          className="group relative p-2 bg-slate-800/50 hover:bg-slate-700 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-slate-700/20  border-slate-700/50 hover:border-emerald-500/50"
           title={social.label}
           aria-label={`访问我们的${social.label}`}
         >
           <Icon className="w-5 h-5 text-slate-300 group-hover:text-emerald-400 transition-colors" />
-          <span className="absolute inset-0 rounded-lg scale-0 group-hover:scale-100 border border-emerald-500/20 transition-transform duration-300 -z-10"></span>
+          <span className="absolute inset-0 rounded-lg scale-0 group-hover:scale-100  border-emerald-500/20 transition-transform duration-300 -z-10"></span>
         </a>
       );
     })}
@@ -80,7 +80,7 @@ const NavLinks = ({ links }: { links: NavLink[] }) => (
   </ul>
 );
 const ServerInfo = ({ info }: { info: ServerInfoItem[] }) => (
-  <div className="space-y-2 text-slate-300 bg-slate-800/20 rounded-xl p-4 border border-slate-700/50">
+  <div className="space-y-2 text-slate-300 bg-slate-800/20 rounded-xl p-4  border-slate-700/50">
     {info.map((item, index) => (
       <div key={index} className="flex justify-between items-center py-2 px-2 rounded-lg hover:bg-slate-800/30 transition-colors">
         <span className="text-sm text-slate-400">{item.label}</span>

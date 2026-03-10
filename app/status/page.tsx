@@ -107,7 +107,7 @@ const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service })
   const Icon = service.icon;
   
   return (
-    <Card className="group bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600">
+    <Card className="group bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600">
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -207,7 +207,7 @@ export default function StatusIndexPage() {
           {/* Additional Information */}
           <section className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-            <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm">
+            <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4 flex items-center gap-2">
                   <Users className="w-5 h-5 text-green-500" aria-hidden="true" />

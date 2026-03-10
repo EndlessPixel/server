@@ -19,7 +19,7 @@ export default function WikiPage() {
       <main className="py-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-10xl mx-auto">
           {/* 轻量引导栏：告知用户已迁移，提供新窗口打开选项 */}
-          <div className="mb-4 flex items-center justify-between gap-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-gray-700 p-3 shadow-sm">
+          <div className="mb-4 flex items-center justify-between gap-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl  border-gray-200 dark:border-gray-700 p-3 shadow-sm">
             <div className="flex items-center gap-2 text-sm">
               <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span className="text-gray-700 dark:text-gray-300">

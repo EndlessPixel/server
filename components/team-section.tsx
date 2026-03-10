@@ -78,7 +78,7 @@ export function TeamSection() {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {teamMembers.map((member) => (
-            <div key={member.name} className={`border rounded-lg p-6 transition-all duration-300 hover:shadow-md hover:scale-102 ${member.bgColor} ${member.borderColor} group`}>
+            <div key={member.name} className={` rounded-lg p-6 transition-all duration-300 hover:shadow-md hover:scale-102 ${member.bgColor} ${member.borderColor} group`}>
               <div>
                 <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground/80 transition-colors">
                   {member.name}

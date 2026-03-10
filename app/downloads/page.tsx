@@ -83,7 +83,7 @@ export default function DownloadsPage() {
                             <a
                                 key={index}
                                 href={item.href}
-                                className="group block p-6 bg-white/80 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-800/70 transition-all duration-300 hover:shadow-lg hover:scale-105"
+                                className="group block p-6 bg-white/80 dark:bg-slate-800/50 rounded-2xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-800/70 transition-all duration-300 hover:shadow-lg hover:scale-105"
                             >
                                 <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-r ${item.color} text-white mb-4 group-hover:scale-110 transition-transform`}>
                                     {item.icon}
@@ -106,7 +106,7 @@ export default function DownloadsPage() {
 
                     {/* Additional Info */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+                        <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6  border-slate-200 dark:border-slate-700 backdrop-blur-sm">
                             <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">需要帮助？</h3>
                             <div className="space-y-4 text-slate-600 dark:text-slate-400">
                                 <p>如果您在下载或安装过程中遇到任何问题：</p>

@@ -72,7 +72,7 @@ const SkeletonCard = () => (
       {Array.from({ length: 4 }).map((_, i) => (
         <Card
           key={i}
-          className="bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl"
+          className="bg-white/60 dark:bg-slate-800/60  border-slate-200 dark:border-slate-700 rounded-xl"
         >
           <CardContent className="p-4">
             <div className="h-4 w-16 bg-slate-300 dark:bg-slate-600 rounded animate-pulse mb-2" />
@@ -81,7 +81,7 @@ const SkeletonCard = () => (
         </Card>
       ))}
     </div>
-    <Card className="bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl">
+    <Card className="bg-white/60 dark:bg-slate-800/60  border-slate-200 dark:border-slate-700 rounded-xl">
       <CardContent className="p-6 space-y-4">
         <div className="h-6 w-3/4 bg-slate-300 dark:bg-slate-600 rounded animate-pulse" />
         <div className="h-4 w-1/2 bg-slate-300 dark:bg-slate-600 rounded animate-pulse" />
@@ -187,7 +187,7 @@ export default function GitHubIssueDetail({
         <Navigation />
         <main className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
           <div className="max-w-6xl mx-auto">
-            <Card className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+            <Card className="bg-red-50 dark:bg-red-900/20  border-red-200 dark:border-red-800">
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">加载失败</h3>
@@ -256,7 +256,7 @@ export default function GitHubIssueDetail({
 
           {/* 统计卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
+            <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
@@ -273,7 +273,7 @@ export default function GitHubIssueDetail({
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
+            <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
@@ -290,7 +290,7 @@ export default function GitHubIssueDetail({
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
+            <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
@@ -307,7 +307,7 @@ export default function GitHubIssueDetail({
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
+            <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
@@ -340,7 +340,7 @@ export default function GitHubIssueDetail({
 
           {/* 标签 */}
           {issue.labels.length > 0 && (
-            <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm">
+            <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Tag className="w-5 h-5 text-slate-600 dark:text-slate-400" />
@@ -367,7 +367,7 @@ export default function GitHubIssueDetail({
           )}
 
           {/* 问题内容 */}
-          <Card className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm">
+          <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl flex items-center gap-3">
                 {isPR ? <GitPullRequest className="w-6 h-6 text-purple-500" /> :
@@ -389,7 +389,7 @@ export default function GitHubIssueDetail({
             <CardContent>
               {issue.body ? (
                 <div className="prose prose-slate max-w-none dark:prose-invert prose-sm md:prose-base">
-                  <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+                  <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6  border-slate-200 dark:border-slate-700">
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
                       rehypePlugins={[rehypeRaw]}
@@ -425,7 +425,7 @@ export default function GitHubIssueDetail({
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-12 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div className="text-center py-12 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-xl  border-slate-200 dark:border-slate-700">
                   <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p className="text-lg">暂无问题描述</p>
                 </div>
@@ -449,7 +449,7 @@ export default function GitHubIssueDetail({
                 {comments.map(c => (
                   <Card
                     key={c.id}
-                    className="bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm"
+                    className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm"
                   >
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
@@ -473,7 +473,7 @@ export default function GitHubIssueDetail({
                       </div>
                       <div className="prose prose-sm max-w-none dark:prose-invert prose-slate">
                         <div
-                          className="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700"
+                          className="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4  border-slate-200 dark:border-slate-700"
                           dangerouslySetInnerHTML={{ __html: c.body_html || "" }}
                         />
                       </div>
@@ -493,7 +493,7 @@ export default function GitHubIssueDetail({
           )}
 
           {/* 页脚说明 */}
-          <Card className="bg-white/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+          <Card className="bg-white/50 dark:bg-slate-800/30  border-slate-200 dark:border-slate-700 backdrop-blur-sm">
             <CardContent className="p-6 text-center text-sm text-slate-600 dark:text-slate-400">
               <p>
                 数据来自{" "}

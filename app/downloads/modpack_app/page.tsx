@@ -48,7 +48,7 @@ export default function DownloadsPage() {
                     </div>
 
                     {/* Downloads Section */}
-                    <div className="bg-white/50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
+                    <div className="bg-white/50 dark:bg-slate-800/30 rounded-2xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
                         <Link
                             href="/downloads"
                             className="inline-block bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md text-gray-800 no-underline"
@@ -67,7 +67,7 @@ export default function DownloadsPage() {
 
                     {/* Additional Info */}
                     <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+                        <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6  border-slate-200 dark:border-slate-700 backdrop-blur-sm">
                             <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">需要帮助？</h3>
                             <div className="space-y-4 text-slate-600 dark:text-slate-400">
                                 <p>如果您在下载或安装过程中遇到任何问题：</p>

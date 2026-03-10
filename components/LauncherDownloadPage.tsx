@@ -49,7 +49,7 @@ export function LauncherDownloadPage({
             {introCards.map((card, i) => (
               <div
                 key={i}
-                className="text-center p-6 bg-white/80 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm"
+                className="text-center p-6 bg-white/80 dark:bg-slate-800/50 rounded-xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm"
               >
                 <div className="w-14 h-14 bg-linear-to-r from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 rounded-full flex items-center justify-center mx-auto mb-5 shadow-md shadow-purple-200/50 dark:shadow-purple-900/30 transition-shadow">
                   {card.icon}
@@ -60,10 +60,10 @@ export function LauncherDownloadPage({
             ))}
           </div>
 
-          <div className="bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
+          <div className="bg-white dark:bg-slate-800/30 rounded-2xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
             <button
               onClick={() => router.push('/downloads')}
-              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 dark:bg-black/20 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400"
+              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 dark:bg-black/20 text-slate-700 dark:text-slate-200  border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400"
               aria-label="返回下载页面"
             >
               <span className="text-sm font-medium">返回</span>
@@ -78,7 +78,7 @@ export function LauncherDownloadPage({
           </div>
 
           <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+            <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6  border-slate-200 dark:border-slate-700 backdrop-blur-sm">
               <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">需要帮助？</h3>
               <div className="space-y-4 text-slate-600 dark:text-slate-400">
                 <p>如果您在下载/安装过程中遇到任何问题：</p>

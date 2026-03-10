@@ -130,7 +130,7 @@ const usePaginationParams = () => {
 // 仓库信息组件（纯组件，无嵌套 Hooks）
 function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
   return (
-    <Card className="max-w-6xl mx-auto bg-white/80 dark:bg-slate-800/60 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+    <Card className="max-w-6xl mx-auto bg-white/80 dark:bg-slate-800/60 backdrop-blur-md  border-slate-200/80 dark:border-slate-700/80 shadow-sm">
       <CardContent className="p-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
@@ -180,7 +180,7 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
         </div>
 
         {repoInfo.archived && (
-          <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200/50 dark:border-amber-800/30">
+          <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg  border-amber-200/50 dark:border-amber-800/30">
             <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
               <Archive className="w-5 h-5" />
               <span className="font-medium">此仓库已归档，可能不再维护</span>
@@ -296,7 +296,7 @@ function ReleaseCard({
             ];
 
             return (
-              <div key={file.name} className="bg-white/50 dark:bg-slate-800/30 rounded-xl p-4 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm">
+              <div key={file.name} className="bg-white/50 dark:bg-slate-800/30 rounded-xl p-4  border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
@@ -316,7 +316,7 @@ function ReleaseCard({
                 <div className="space-y-2">
                   <div className="text-xs text-slate-500 dark:text-slate-400">镜像下载（如遇GitHub下载缓慢可尝试）：</div>
                   {mirrors.some(m => m.tip) && (
-                    <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-1.5 rounded border border-amber-200/50 dark:border-amber-800/30">
+                    <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-1.5 rounded  border-amber-200/50 dark:border-amber-800/30">
                       ⚠️ 香港线路下载大文件时不建议使用
                     </div>
                   )}
@@ -347,7 +347,7 @@ function ReleaseCard({
               variant="outline"
               size="sm"
               onClick={onToggleExpand}
-              className="flex items-center gap-2 w-full justify-center py-2.5 border border-slate-200/50 dark:border-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/30 transition-all"
+              className="flex items-center gap-2 w-full justify-center py-2.5  border-slate-200/50 dark:border-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/30 transition-all"
             >
               {isExpanded ? (
                 <>
@@ -369,14 +369,14 @@ function ReleaseCard({
             variant="outline"
             size="sm"
             onClick={() => setShowChangelog(!showChangelog)}
-            className="flex items-center gap-2 w-full justify-center py-2.5 border border-slate-200/50 dark:border-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/30 transition-all"
+            className="flex items-center gap-2 w-full justify-center py-2.5  border-slate-200/50 dark:border-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/30 transition-all"
           >
             {showChangelog ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             {showChangelog ? "隐藏更新日志" : "查看更新日志"}
           </Button>
 
           {showChangelog && (
-            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/50 dark:border-slate-700/50 prose prose-sm max-w-none dark:prose-invert wrap-break-word overflow-auto max-h-80">
+            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl  border-slate-200/50 dark:border-slate-700/50 prose prose-sm max-w-none dark:prose-invert wrap-break-word overflow-auto max-h-80">
               <ReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}
@@ -775,7 +775,7 @@ export function DownloadSection({
 
   // 骨架屏渲染
   const renderRepoInfoSkeleton = useCallback(() => (
-    <Card className="max-w-6xl mx-auto bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm border border-slate-200 dark:border-slate-700">
+    <Card className="max-w-6xl mx-auto bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm  border-slate-200 dark:border-slate-700">
       <CardContent className="p-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
@@ -829,7 +829,7 @@ export function DownloadSection({
         <div className="text-center space-y-4">
           {renderRepoInfoSkeleton()}
         </div>
-        <div className="bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+        <div className="bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm rounded-xl p-6  border-slate-200 dark:border-slate-700">
           <Skeleton className="h-10 w-full mb-4" />
           <div className="flex gap-2">
             {[1, 2, 3].map(i => (
@@ -862,7 +862,7 @@ export function DownloadSection({
         <div className="text-center space-y-4">
           {repoStatus === "loading" ? renderRepoInfoSkeleton() : repoInfo && <RepoInfoCard repoInfo={repoInfo} />}
         </div>
-        <div className="bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+        <div className="bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm rounded-xl p-6  border-slate-200 dark:border-slate-700">
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex-1 w-full">
               <div className="relative">
@@ -905,7 +905,7 @@ export function DownloadSection({
         {repoStatus === "loading" ? renderRepoInfoSkeleton() : repoInfo && <RepoInfoCard repoInfo={repoInfo} />}
       </div>
 
-      <div className="bg-white/80 dark:bg-slate-800/60 backdrop-blur-md rounded-xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+      <div className="bg-white/80 dark:bg-slate-800/60 backdrop-blur-md rounded-xl p-6  border-slate-200/80 dark:border-slate-700/80 shadow-sm">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           <div className="flex-1 w-full">
             <div className="relative">
@@ -1021,7 +1021,7 @@ export function DownloadSection({
               ))}
 
               {totalPages > 1 && (
-                <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-6 p-4 bg-white/50 dark:bg-slate-800/30 rounded-xl border border-slate-200/50 dark:border-slate-700/50">
+                <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-6 p-4 bg-white/50 dark:bg-slate-800/30 rounded-xl  border-slate-200/50 dark:border-slate-700/50">
                   <div className="text-sm text-slate-600 dark:text-slate-400">
                     第 <span className="font-medium text-slate-900 dark:text-white">{currentPage}</span> 页，
                     共 <span className="font-medium text-slate-900 dark:text-white">{totalPages}</span> 页，
@@ -1069,7 +1069,7 @@ export function DownloadSection({
         </TabsContent>
       </Tabs>
 
-      <div className="text-center text-sm text-slate-600 dark:text-slate-400 mt-4 p-6 bg-white/50 dark:bg-slate-800/30 rounded-xl border border-slate-200/50 dark:border-slate-700/50">
+      <div className="text-center text-sm text-slate-600 dark:text-slate-400 mt-4 p-6 bg-white/50 dark:bg-slate-800/30 rounded-xl  border-slate-200/50 dark:border-slate-700/50">
         <p className="mb-4 font-medium text-slate-700 dark:text-slate-300">加速下载服务由以下镜像站点提供：</p>
         <div className="flex flex-wrap gap-3 justify-center">
           <a
