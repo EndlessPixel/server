@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,12 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
-import { 
-  Server, Globe, Activity, Monitor, MapPin, ArrowRight, 
-  Users, CheckCircle2, AlertCircle, Info
-} from "lucide-react";
-
-/* ---------------- 类型定义 ---------------- */
+import { Server, Globe, Activity, ArrowRight, Users, CheckCircle2, AlertCircle, Info} from "lucide-react";
 interface ServiceItem {
   name: string;
   path: string;
@@ -22,33 +16,6 @@ interface ServiceItem {
   color: string;
   external?: boolean;
 }
-
-interface NodeItem {
-  name: string;
-  path: string;
-  region: string;
-  status: "online" | "offline" | "maintenance";
-  description: string;
-}
-
-/* ---------------- 常量数据 ---------------- */
-const NODES: NodeItem[] = [
-  { 
-    name: "四川成都电信", 
-    path: "/status/frpnode/cd1",
-    region: "西南", 
-    status: "online",
-    description: "成都电信节点，低延迟优化"
-  },
-  { 
-    name: "上海多线", 
-    path: "/status/frpnode/sh",
-    region: "华东",
-    status: "online",
-    description: "上海多线BGP，全国覆盖"
-  },
-];
-
 const SERVICES: ServiceItem[] = [
   {
     name: "Minecraft 服务器",
@@ -68,8 +35,6 @@ const SERVICES: ServiceItem[] = [
     external: true
   }
 ];
-
-/* ---------------- 组件 ---------------- */
 const StatusBadge: React.FC<{ status: string }> = React.memo(({ status }) => {
   let icon, color, text;
   
@@ -102,10 +67,8 @@ const StatusBadge: React.FC<{ status: string }> = React.memo(({ status }) => {
     </Badge>
   );
 });
-
 const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service }) => {
   const Icon = service.icon;
-  
   return (
     <Card className="group bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600">
       <CardContent className="p-6">
@@ -153,7 +116,6 @@ const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service })
     </Card>
   );
 });
-
 const SectionHeader: React.FC<{ 
   title: string; 
   description: string; 
@@ -171,8 +133,6 @@ const SectionHeader: React.FC<{
     </div>
   );
 });
-
-/* ---------------- 主页面组件 ---------------- */
 export default function StatusIndexPage() {
   return (
     <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-purple-950/20">
@@ -188,8 +148,6 @@ export default function StatusIndexPage() {
               实时监控 EndlessPixel 所有服务的运行状态、性能指标和在线状态
             </p>
           </div>
-
-          {/* Service Overview Cards */}
           <section className="mb-12" aria-labelledby="services-heading">
             <SectionHeader 
               title="核心服务" 
@@ -203,10 +161,7 @@ export default function StatusIndexPage() {
               ))}
             </div>
           </section>
-
-          {/* Additional Information */}
           <section className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-
             <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4 flex items-center gap-2">
