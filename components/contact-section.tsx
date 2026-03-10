@@ -1,22 +1,17 @@
 "use client";
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Mail, MessageCircle, GithubIcon, Users, Clock, MapPin, Gamepad2, Star, ExternalLink, Sparkles, Gift, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-// 创建 motion 版本的组件
 const MotionCard = motion(Card);
 const MotionButton = motion(Button);
 const MotionBadge = motion(Badge);
-
 export function ContactSection() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-
   const contactMethods = [
     {
       name: "QQ 群",
@@ -71,11 +66,10 @@ export function ContactSection() {
       onClick: () => window.open("https://github.com/EndlessPixel", "_blank"),
     },
   ];
-
   const supportInfo = [
     {
       title: "在线时间",
-      value: "工作日 18:30–22:30 周末 08:00–23:30",
+      value: "工作日 18:30–22:00 周末 07:30–22:30",
       icon: Clock,
       color: "text-orange-500 dark:text-orange-400",
       bgColor: "bg-orange-50 dark:bg-orange-950/20",
@@ -88,13 +82,9 @@ export function ContactSection() {
       bgColor: "bg-red-50 dark:bg-red-950/20",
     }
   ];
-
-  // 生成唯一key
   const getItemKey = (method: typeof contactMethods[0]) => `${method.name}-${method.value}`;
-
   return (
     <div className="space-y-10">
-      {/* 标题区域 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -117,17 +107,13 @@ export function ContactSection() {
           选择你喜欢的方式与我们取得联系，我们会尽快回复你的咨询
         </p>
       </motion.div>
-
-      {/* 联系方法卡片 */}
       <MotionCard
         className="border-l-4 border-l-blue-500 dark:border-l-blue-600 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden relative"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
       >
-        {/* 背景装饰 */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.05),transparent_70%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_70%)]" />
-        
         <CardHeader className="pb-3 relative z-10">
           <CardTitle className="flex items-center space-x-2">
             <motion.div
@@ -139,11 +125,7 @@ export function ContactSection() {
             </motion.div>
             <span>联系我们</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground dark:text-muted-foreground/80">
-            通过以下方式与我们取得联系，我们很乐意听到您的声音
-          </CardDescription>
         </CardHeader>
-        
         <CardContent className="space-y-4 relative z-10">
           <motion.div
             className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-5"
@@ -163,7 +145,6 @@ export function ContactSection() {
               const Icon = method.icon;
               const key = getItemKey(method);
               const isHovered = hoveredItem === key;
-
               return (
                 <motion.div
                   key={key}
@@ -187,13 +168,10 @@ export function ContactSection() {
                   }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  {/* 渐变光效 */}
                   <motion.div
                     className="absolute inset-0 bg-linear-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     style={{ backgroundImage: `linear-gradient(135deg, rgba(59,130,246,0.05), rgba(14,165,233,0.05))` }}
                   />
-                  
-                  {/* 边框高亮 */}
                   <motion.div
                     className="absolute inset-0 rounded-xl pointer-events-none"
                     style={{ 
@@ -201,9 +179,7 @@ export function ContactSection() {
                       transition: 'box-shadow 0.3s ease'
                     }}
                   />
-
                   <div className="flex items-start space-x-3">
-                    {/* 图标区域 */}
                     <motion.div
                       className={`p-2.5 rounded-lg ${method.bgColor} mt-0.5 shrink-0`}
                       whileHover={{ 
@@ -214,25 +190,21 @@ export function ContactSection() {
                     >
                       <div className="relative">
                         <Icon className={`w-5.5 h-5.5 ${method.color}`} />
-                        {/* 图标光晕 */}
                         <motion.div
                           className="absolute inset-0 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                           style={{ background: `linear-gradient(135deg, ${method.gradient})` }}
                         />
                       </div>
                     </motion.div>
-                    
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1.5">
                         <h4 className="font-medium text-foreground dark:text-foreground/90 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {method.name}
                         </h4> 
                       </div>
-                      
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground/80 mb-3 line-clamp-2">
                         {method.description}
                       </p>
-                      
                       <div className="items-center justify-between">
                         <motion.span
                           className="text-sm font-mono text-foreground dark:text-foreground/90 bg-muted/50 dark:bg-muted/30 px-2.5 py-1.5 rounded-lg"
@@ -243,7 +215,6 @@ export function ContactSection() {
                         >
                           {method.value}
                         </motion.span>
-
                         <MotionButton 
                           size="sm" 
                           variant="ghost" 
@@ -265,17 +236,13 @@ export function ContactSection() {
           </motion.div>
         </CardContent>
       </MotionCard>
-
-      {/* 支持信息卡片 */}
       <MotionCard
         className="border-l-4 border-l-green-500 dark:border-l-green-600 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden relative"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        {/* 背景装饰 */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.05),transparent_70%)] dark:bg-[radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.1),transparent_70%)]" />
-        
         <CardHeader className="pb-3 relative z-10">
           <CardTitle className="flex items-center space-x-2">
             <motion.div
@@ -347,15 +314,12 @@ export function ContactSection() {
           </motion.div>
         </CardContent>
       </MotionCard>
-
-      {/* 周年庆卡片 */}
       <MotionCard
         className="bg-linear-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 border-l-4 border-l-yellow-500 dark:border-l-yellow-600 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden relative"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
       >
-        {/* 动态背景装饰 */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
             className="absolute top-0 right-0 w-64 h-64 bg-yellow-200 dark:bg-yellow-900/20 rounded-full blur-3xl opacity-30"
@@ -374,7 +338,6 @@ export function ContactSection() {
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
           />
         </div>
-        
         <CardContent className="pt-8 pb-6 relative z-10">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
             <CardTitle className="flex items-center space-x-2">
@@ -389,7 +352,6 @@ export function ContactSection() {
                 我们一岁啦！🎉
               </motion.span>
             </CardTitle>
-            
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -401,7 +363,6 @@ export function ContactSection() {
               </MotionBadge>
             </motion.div>
           </div>
-          
           <motion.p
             className="text-muted-foreground dark:text-muted-foreground/80 leading-relaxed text-lg"
             initial={{ opacity: 0 }}
@@ -420,7 +381,6 @@ export function ContactSection() {
             </span>
             <span className="block mt-3">因为有您，我们才能走得更远！</span>
           </motion.p>
-          
           <motion.div
             className="mt-6"
             initial={{ opacity: 0, y: 10 }}
