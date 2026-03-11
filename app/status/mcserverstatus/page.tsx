@@ -63,12 +63,6 @@ interface ServerData {
   debug?: Record<string, any>;
 }
 
-interface ServerNode {
-  name: string;
-  ip: string;
-  region: string;
-}
-
 // 常量定义
 const ACTIVE_NODE = {
   name: "主服务器",
@@ -376,50 +370,6 @@ export default function McServerStatusPage() {
               {player.name.charAt(0).toUpperCase()}
             </div>
             <span className="text-sm truncate">{player.name}</span>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  const renderPluginsList = () => {
-    if (!serverData?.plugins || serverData.plugins.length === 0) {
-      return <p className="text-slate-500 dark:text-slate-400 text-sm">暂无插件</p>;
-    }
-
-    return (
-      <div className="space-y-2">
-        {serverData.plugins.map((plugin, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-800/50 rounded-md"
-          >
-            <span className="text-sm font-medium">{plugin.name}</span>
-            <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded">
-              {plugin.version}
-            </span>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  const renderModsList = () => {
-    if (!serverData?.mods || serverData.mods.length === 0) {
-      return <p className="text-slate-500 dark:text-slate-400 text-sm">暂无模组</p>;
-    }
-
-    return (
-      <div className="space-y-2">
-        {serverData.mods.map((mod, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-800/50 rounded-md"
-          >
-            <span className="text-sm font-medium">{mod.name}</span>
-            <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-2 py-1 rounded">
-              {mod.version}
-            </span>
           </div>
         ))}
       </div>

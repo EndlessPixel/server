@@ -1,6 +1,4 @@
-﻿import { release } from "os";
-
-export const launcherRepos = [
+﻿export const launcherRepos = [
   { key: "hmcl", owner: "HMCL-dev", repo: "HMCL", displayName: "Hello Minecraft Launcher", releases: true, },
   { key: "hmcl-pe", owner: "HMCL-dev", repo: "HMCL-PE", displayName: "Hello Minecraft Launcher: Pocket Edition", releases: true, },
   { key: "fcl", owner: "FCL-Team", repo: "FoldCraftLauncher", displayName: "Fold Craft Launcher", releases: true, },
@@ -168,6 +166,6 @@ MrLetsplay2003 / ShittyAuthLauncher
 ==========如有缺少，欢迎补充==========
 */
 
-/* 
+/*
   >  如果不知道去哪找，可以使用 https://github.com/topics/minecraft-launcher 寻找更多启动器  <
 */
