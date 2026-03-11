@@ -1,22 +1,5 @@
-# -------- JSON 系列 --------
-# 标准 JSON
 *.json linguist-detectable=true
-# JSON5（带注释的 JSON 变体）
-*.json5 linguist-detectable=true linguist-language=JSON
-# JSONC（含注释的 JSON，如 VS Code 配置）
-*.jsonc linguist-detectable=true linguist-language=JSON
-
-# -------- XAML 系列 --------
-# 通用 XAML（WPF/UWP/WinUI）
-*.xaml linguist-detectable=true linguist-language=XML
-# 特殊变体（如 MAUI 相关可按需补充）
-*.axaml linguist-detectable=true linguist-language=XML
-*.rbxl linguist-detectable=true linguist-language=XML
-
-# -------- 其他常用变体 --------
-# Markdown 变体
 *.md linguist-detectable=true
 *.markdown linguist-detectable=true
-# XML 变体
 *.xml linguist-detectable=true
 *.svg linguist-detectable=true linguist-language=XML
