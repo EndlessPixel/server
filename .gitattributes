@@ -1,5 +1,6 @@
-*.json linguist-detectable=true
-*.md linguist-detectable=true
-*.markdown linguist-detectable=true
-*.xml linguist-detectable=true
+*.json linguist-detectable=true linguist-language=JSON
+*.md linguist-detectable=true linguist-language=Markdown
+*.markdown linguist-detectable=true linguist-language=Markdown
+*.xml linguist-detectable=true linguist-language=XML
 *.svg linguist-detectable=true linguist-language=XML
+*.txt linguist-detectable=true linguist-language=Text
