@@ -2,8 +2,8 @@
 
 const config = {
   plugins: {
-    '@tailwindcss/postcss': {}, // 启用Tailwind CSS插件
+    '@tailwindcss/postcss': {},
   },
 }
 
-export default config // 导出
+export default config

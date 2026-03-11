@@ -20,7 +20,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-// ========== 类型定义（移到最前面，避免 Hooks 前有逻辑） ==========
+
 interface LauncherMeta {
   id: string;
   name: string;
@@ -92,14 +92,14 @@ interface DownloadSectionProps {
   requestTimeout?: number;
 }
 
-// ========== 自定义 Hooks（抽离逻辑，避免组件内嵌套 Hooks） ==========
-// 抽离分页参数处理逻辑为自定义 Hook
+
+
 const usePaginationParams = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
 
-  // 初始化页码
+
   useEffect(() => {
     const pageParam = searchParams.get('page');
     if (pageParam) {
@@ -110,7 +110,7 @@ const usePaginationParams = () => {
     }
   }, [searchParams]);
 
-  // 封装 URL 参数更新逻辑
+
   const updateUrlParams = useCallback((params: Record<string, string | number | null>) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
     Object.entries(params).forEach(([key, value]) => {
@@ -126,8 +126,8 @@ const usePaginationParams = () => {
   return { currentPage, setCurrentPage, updateUrlParams };
 };
 
-// ========== 独立组件（避免嵌套组件导致 Hooks 错误） ==========
-// 仓库信息组件（纯组件，无嵌套 Hooks）
+
+
 function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
   return (
     <Card className="max-w-6xl mx-auto bg-white/80 dark:bg-slate-800/60 backdrop-blur-md  border-slate-200/80 dark:border-slate-700/80 shadow-sm">
@@ -208,7 +208,7 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
   );
 }
 
-// 版本卡片组件（独立导出，避免嵌套）
+
 function ReleaseCard({
   release,
   isExpanded,
@@ -220,7 +220,7 @@ function ReleaseCard({
   onToggleExpand: () => void;
   getMirrorUrl: (host: string, originalUrl: string) => string;
 }) {
-  // 这里的 Hooks 是合法的：函数组件顶层
+
   const [showChangelog, setShowChangelog] = useState(false);
   const hasManyFiles = release.files.length > 4;
   const displayFiles = isExpanded ? release.files : release.files.slice(0, 4);
@@ -396,7 +396,7 @@ function ReleaseCard({
   );
 }
 
-// ========== 主组件（确保 Hooks 只在顶层调用） ==========
+
 export function DownloadSection({
   githubApiUrl,
   description = "选择适合您的版本进行下载",
@@ -405,11 +405,11 @@ export function DownloadSection({
   launcherMeta,
   requestTimeout = 15000,
 }: DownloadSectionProps) {
-  // 第二步：所有 Hooks 必须在函数组件顶层调用（核心修复！）
+
   const { toast } = useToast();
   const { currentPage, setCurrentPage, updateUrlParams } = usePaginationParams();
 
-  // 状态定义全部移到顶层
+
   const [allReleases, setAllReleases] = useState<ParsedRelease[]>([]);
   const [currentPageReleases, setCurrentPageReleases] = useState<ParsedRelease[]>([]);
   const [search, setSearch] = useState("");
@@ -425,8 +425,8 @@ export function DownloadSection({
   const [repoStatus, setRepoStatus] = useState<RequestStatus>("loading");
   const [requestError, setRequestError] = useState<RequestError | null>(null);
 
-  // 第三步：所有 useCallback/useMemo 也在顶层定义
-  // 统一错误处理函数
+
+
   const handleRequestError = useCallback((error: any, context: string): RequestError => {
     let errorInfo: RequestError = {
       message: "未知错误，请稍后重试",
@@ -453,7 +453,7 @@ export function DownloadSection({
       errorInfo = { message: `网络错误，无法连接到${context}，请检查网络连接`, type: "network" };
     }
 
-    // 修复：移除不兼容的 icon 属性
+
     toast({
       title: "操作失败",
       description: errorInfo.message,
@@ -463,7 +463,7 @@ export function DownloadSection({
     return errorInfo;
   }, [toast, requestTimeout]);
 
-  // 获取仓库信息
+
   const fetchRepoInfo = useCallback(async () => {
     setRepoStatus("loading");
     try {
@@ -510,7 +510,7 @@ export function DownloadSection({
     }
   }, [githubApiUrl, handleRequestError, requestTimeout]);
 
-  // 获取版本数据
+
   const fetchReleases = useCallback(async () => {
     setReleasesStatus("loading");
     setRequestError(null);
@@ -606,7 +606,7 @@ export function DownloadSection({
     }
   }, [githubApiUrl, showPrereleases, handleRequestError, requestTimeout]);
 
-  // 版本比较函数
+
   const compareSemanticVersions = useCallback((v1: string, v2: string): number => {
     const parseVersion = (version: string) => {
       const preReleaseMatch = version.match(/-([a-zA-Z]+.*)$/);
@@ -638,13 +638,13 @@ export function DownloadSection({
     return 0;
   }, []);
 
-  // 语义化排序
+
   const semanticCompare = useCallback((a: ParsedRelease, b: ParsedRelease) => {
     const versionCompare = compareSemanticVersions(a.version, b.version);
     return versionCompare !== 0 ? versionCompare : (a.isLatest ? -1 : b.isLatest ? 1 : 0);
   }, [compareSemanticVersions]);
 
-  // 处理版本筛选排序
+
   const processReleases = useCallback((releases: ParsedRelease[]) => {
     return releases
       .filter((release) =>
@@ -666,13 +666,13 @@ export function DownloadSection({
       });
   }, [search, selectedTag, sortBy, sortOrder, semanticCompare]);
 
-  // 镜像链接拼接
+
   const getMirrorUrl = useCallback((host: string, originalUrl: string) => {
     const cleanUrl = originalUrl.replace(/^https?:\/\//, '');
     return `${host}/${cleanUrl}`;
   }, []);
 
-  // 排序变更
+
   const handleSortChange = useCallback((criteria: "semantic" | "releaseDate" | "downloadCount") => {
     if (sortBy === criteria) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -684,7 +684,7 @@ export function DownloadSection({
     updateUrlParams({ page: 1 });
   }, [sortBy, sortOrder, setCurrentPage, updateUrlParams]);
 
-  // 文件展开/折叠
+
   const toggleFileExpansion = useCallback((releaseVersion: string) => {
     setExpandedFiles(prev => {
       const newExpanded = new Set(prev);
@@ -697,7 +697,7 @@ export function DownloadSection({
     });
   }, []);
 
-  // 分页按钮生成
+
   const generatePaginationButtons = useMemo(() => {
     const buttons = [];
     const maxVisiblePages = 5;
@@ -732,7 +732,7 @@ export function DownloadSection({
     return buttons;
   }, [currentPage, totalPages, updateUrlParams]);
 
-  // 错误状态渲染
+
   const renderErrorState = useCallback(() => {
     let errorIcon = <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />;
     let errorTitle = "获取数据失败";
@@ -773,7 +773,7 @@ export function DownloadSection({
     );
   }, [requestError, fetchReleases]);
 
-  // 骨架屏渲染
+
   const renderRepoInfoSkeleton = useCallback(() => (
     <Card className="max-w-6xl mx-auto bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm  border-slate-200 dark:border-slate-700">
       <CardContent className="p-6">
@@ -793,14 +793,14 @@ export function DownloadSection({
     </Card>
   ), []);
 
-  // 第四步：useEffect 也在顶层，依赖数组精准
-  // 初始化数据
+
+
   useEffect(() => {
     fetchReleases();
     fetchRepoInfo();
   }, [fetchReleases, fetchRepoInfo]);
 
-  // 处理版本列表分页
+
   useEffect(() => {
     if (allReleases.length === 0) return;
 
@@ -822,7 +822,7 @@ export function DownloadSection({
 
   }, [allReleases, currentPage, itemsPerPage, processReleases, updateUrlParams]);
 
-  // 加载状态渲染
+
   if (releasesStatus === "loading") {
     return (
       <div className="space-y-6">
@@ -855,7 +855,7 @@ export function DownloadSection({
     );
   }
 
-  // 错误状态渲染
+
   if (releasesStatus === "error") {
     return (
       <div className="space-y-6">
@@ -888,7 +888,7 @@ export function DownloadSection({
     );
   }
 
-  // 主内容渲染
+
   return (
     <div className="space-y-8">
       <div className="text-center space-y-6">

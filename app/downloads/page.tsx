@@ -2,6 +2,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import type { Metadata } from "next"
 import { Grid, Link2, Package, Smartphone } from "lucide-react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
     title: "资源下载 - EndlessPixel Minecraft 服务器",
@@ -36,38 +37,36 @@ export default function DownloadsPage() {
             title: "Minecraft Launcher",
             description: "GitHub第三方启动器合集，适配多版本MC",
             href: "/downloads/launcher",
-            icon: <Grid className="w-6 h-6" />, // 网格/合集图标，贴合「多款启动器汇总」定位
-            color: "from-slate-500 to-slate-700" // 深灰调，中性科技感，适配第三方工具合集
+            icon: <Grid className="w-6 h-6" />,
+            color: "from-slate-500 to-slate-700"
         },
         {
             title: "EndlessPixel Modpack",
             description: "由服主开发的模组包，包含大量优化和功能模组",
             href: "/downloads/modpack",
-            icon: <Package className="w-6 h-6" />, // 包/模组包专属，贴合核心模组包属性
-            color: "from-blue-500 to-sky-600" // 主站核心蓝，突出服主开发的专属模组包
+            icon: <Package className="w-6 h-6" />,
+            color: "from-blue-500 to-sky-600"
         },
         {
             title: "EndlessPixel Modpack APP",
             description: "模组包下载工具",
             href: "/downloads/modpack_app",
-            icon: <Smartphone className="w-6 h-6" />, // 应用/设备图标，贴合APP工具形态
-            color: "from-purple-500 to-violet-600" // 紫调，和模组包做视觉区分，突出工具属性
+            icon: <Smartphone className="w-6 h-6" />,
+            color: "from-purple-500 to-violet-600"
         },
         {
             title: '自定义下载',
             description: '输入任意 GitHub Releases 地址，一键生成下载页',
             href: '/downloads/custom_downloads',
-            icon: <Link2 className="w-6 h-6" />, // 链接图标，匹配「输入GitHub地址/自定义链接」功能
-            color: "from-amber-500 to-orange-600" // 暖橙跳脱，突出自定义特色功能
+            icon: <Link2 className="w-6 h-6" />,
+            color: "from-amber-500 to-orange-600"
         },
     ];
-
     return (
         <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-cyan-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-cyan-950/20">
             <Navigation />
             <main className="py-8">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Page Header */}
                     <div className="text-center mb-16">
                         <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent mb-6">
                             资源下载
@@ -76,11 +75,9 @@ export default function DownloadsPage() {
                             下载超多种类的资源，从 Minecraft Launcher 到 EndlessPixel Modpack和APP，应有尽有。
                         </p>
                     </div>
-
-                    {/* Download Cards */}
                     <div className="grid gap-6 md:grid-cols-2 mb-16">
                         {downloadItems.map((item, index) => (
-                            <a
+                            <Link
                                 key={index}
                                 href={item.href}
                                 className="group block p-6 bg-white/80 dark:bg-slate-800/50 rounded-2xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-800/70 transition-all duration-300 hover:shadow-lg hover:scale-105"
@@ -100,7 +97,7 @@ export default function DownloadsPage() {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
                                 </div>
-                            </a>
+                            </Link>
                         ))}
                     </div>
 

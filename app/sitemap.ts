@@ -1,4 +1,4 @@
-// app/sitemap.ts
+
 const config = {
   siteUrl: 'https://www.endlesspixel.fun',
   lastModified: new Date('2025-12-31'),

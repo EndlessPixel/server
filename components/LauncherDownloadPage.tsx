@@ -79,7 +79,7 @@ export function LauncherDownloadPage({
                 <p>如果您在下载/安装过程中遇到任何问题：</p>
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href={repoUrl} // 仓库地址
+                    href={repoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 rounded-lg text-sm font-medium text-blue-700 dark:text-blue-300 transition-colors"

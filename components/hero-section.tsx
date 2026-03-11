@@ -1,16 +1,16 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { 
-  Server, Users, Heart, Shield, Gamepad2, Coins, Sparkles, Zap, Crown, Cpu, 
-  Package, Armchair, Clock, Flag, Gem, Pickaxe, Sprout, Target, Trophy, Award, 
-  Rocket, TrendingUp, Lock 
+import {
+  Server, Users, Heart, Shield, Gamepad2, Coins, Sparkles, Zap, Crown, Cpu,
+  Package, Armchair, Clock, Flag, Gem, Pickaxe, Sprout, Target, Trophy, Award,
+  Rocket, TrendingUp, Lock
 } from "lucide-react"
 import Link from "next/link"
 import { motion, useInView } from "framer-motion"
 import { useState, useRef } from "react"
 
-// 动画配置（精简：只保留用到的变体）
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -29,16 +29,16 @@ const itemVariants = {
 }
 
 export function HeroSection() {
-  // 精简状态：移除重复/未使用的声明
+
   const heroRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(heroRef, { amount: 0.1, once: true })
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const [hoveredStat, setHoveredStat] = useState<string | null>(null)
 
-  // 统一按钮样式类
+
   const baseBtnClasses = "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium h-12 px-6 rounded-md transition-all duration-300 relative overflow-hidden"
 
-  // 功能数据（合并到一起，便于维护）
+
   const features = [
     {
       title: "席地而坐",
@@ -73,7 +73,7 @@ export function HeroSection() {
     {
       title: "千种结构",
       description: "300+ 新结构：雪山村落、地下城、空中遗迹……每次启程都有惊喜。",
-      icon: Target, // 替换原Map（解决类型错误）
+      icon: Target,
       color: "text-violet-600 dark:text-violet-400",
       bgColor: "bg-violet-100 dark:bg-violet-900/30",
       borderColor: "border-violet-200 dark:border-violet-800",
@@ -139,7 +139,7 @@ export function HeroSection() {
     { icon: Gem, label: "独特内容", value: "1800+", color: "text-purple-500", description: "丰富玩法" },
   ]
 
-  // 核心特性卡片数据（合并到主组件）
+
   const coreFeatures = [
     { icon: Cpu, title: "离线模式", description: "支持所有客户端", color: "text-green-600", bgColor: "bg-green-100 dark:bg-green-900/30", gradient: "from-green-500 to-emerald-500" },
     { icon: Coins, title: "完全免费", description: "无任何付费内容", color: "text-yellow-600", bgColor: "bg-yellow-100 dark:bg-yellow-900/30", gradient: "from-yellow-500 to-amber-500" },
@@ -149,7 +149,7 @@ export function HeroSection() {
     { icon: Shield, title: "安全保障", description: "反作弊系统", color: "text-orange-600", bgColor: "bg-orange-100 dark:bg-orange-900/30", gradient: "from-orange-500 to-red-500" }
   ]
 
-  // 特性标签数据（内联简化）
+
   const tagFeatures = [
     { icon: Zap, label: "原汁原味体验", color: "text-yellow-500" },
     { icon: Coins, label: "完全免费游玩", color: "text-yellow-500" },
@@ -161,7 +161,7 @@ export function HeroSection() {
       {/* 动态背景装饰（精简重复样式） */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-br from-blue-50/20 via-transparent to-emerald-50/20 dark:from-blue-950/10 dark:via-transparent dark:to-emerald-950/10" />
-        
+
         {/* 背景圆装饰（精简重复动画逻辑） */}
         <motion.div
           className="absolute -top-24 -right-24 w-96 h-96 bg-linear-to-r from-blue-200 to-cyan-200 dark:from-blue-800/20 dark:to-cyan-800/20 rounded-full blur-3xl opacity-40"
@@ -178,7 +178,7 @@ export function HeroSection() {
           animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
         />
-        
+
         <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]" />
       </div>
 
@@ -231,18 +231,18 @@ export function HeroSection() {
           </motion.p>
 
           {/* 特性标签 */}
-          <motion.div 
-            className="text-lg text-slate-500 dark:text-slate-500 mb-12 max-w-2xl mx-auto flex flex-wrap justify-center gap-3" 
-            variants={containerVariants} 
-            initial="hidden" 
+          <motion.div
+            className="text-lg text-slate-500 dark:text-slate-500 mb-12 max-w-2xl mx-auto flex flex-wrap justify-center gap-3"
+            variants={containerVariants}
+            initial="hidden"
             animate={isInView ? "visible" : "hidden"}
           >
             {tagFeatures.map((feature) => {
               const Icon = feature.icon;
               return (
-                <motion.span 
-                  key={feature.label} 
-                  variants={itemVariants} 
+                <motion.span
+                  key={feature.label}
+                  variants={itemVariants}
                   className="flex items-center gap-2 bg-white/70 dark:bg-slate-800/40 backdrop-blur-sm px-4 py-2 rounded-full  border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 group cursor-pointer"
                   whileHover={{ scale: 1.05, y: -2 }}
                 >
@@ -275,20 +275,20 @@ export function HeroSection() {
           </motion.div>
 
           {/* 核心特性卡片 */}
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto" 
-            variants={containerVariants} 
-            initial="hidden" 
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto"
+            variants={containerVariants}
+            initial="hidden"
             animate={isInView ? "visible" : "hidden"}
           >
             {coreFeatures.map((feature) => {
               const Icon = feature.icon;
               return (
-                <motion.div 
-                  key={feature.title} 
-                  variants={itemVariants} 
-                  whileHover="hover" 
-                  onHoverStart={() => setHoveredCard(feature.title)} 
+                <motion.div
+                  key={feature.title}
+                  variants={itemVariants}
+                  whileHover="hover"
+                  onHoverStart={() => setHoveredCard(feature.title)}
                   onHoverEnd={() => setHoveredCard(null)}
                 >
                   <Card className="group bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl  border-slate-200/60 dark:border-slate-700/60 hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer relative">
@@ -297,7 +297,7 @@ export function HeroSection() {
                       <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />
                     </div>
                     <CardContent className="p-6 text-center relative z-10">
-                      <motion.div 
+                      <motion.div
                         className={`w-14 h-14 ${feature.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-all duration-300 relative overflow-hidden`}
                         whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
                         transition={{ scale: { type: "spring", stiffness: 300 }, rotate: { duration: 0.6 } }}
