@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Server, Users, Cpu, MessageSquare, AlertTriangle, ArrowLeft, Wifi, WifiOff, Clock, RefreshCw, ChevronDown, ChevronUp, Activity, Zap, Shield, Play, Pause, RotateCcw } from "lucide-react";
 
-// 类型定义
+
 interface Player {
   name: string;
   uuid: string;
@@ -63,7 +63,7 @@ interface ServerData {
   debug?: Record<string, any>;
 }
 
-// 常量定义
+
 const ACTIVE_NODE = {
   name: "主服务器",
   ip: "mc.endlesspixel.cn",
@@ -71,15 +71,15 @@ const ACTIVE_NODE = {
 
 const CACHE_DURATION = 30_000;
 const FETCH_TIMEOUT = 8000;
-const AUTO_REFRESH_INTERVAL = 1 * 60 * 1000; // 1分钟（改为更长的间隔）
+const AUTO_REFRESH_INTERVAL = 1 * 60 * 1000;
 
-// 独立的fetch函数
+
 const fetchServerData = async (ip: string): Promise<ServerData | null> => {
   if (!ip) return null;
 
   const cacheKey = `mcsrv:${ip}`;
 
-  // 尝试从缓存读取
+
   try {
     const raw = sessionStorage.getItem(cacheKey);
     if (raw) {
@@ -95,7 +95,7 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
   }
 
   try {
-    // 发起新请求（使用Next.js API路由代理）
+
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
     const response = await fetch(`/api/mcserver?ip=${encodeURIComponent(ip)}`, {
@@ -114,14 +114,14 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
 
     const data = (await response.json()) as ServerData;
 
-    // 缓存结果
+
     try {
       sessionStorage.setItem(cacheKey, JSON.stringify({
         _ts: Date.now(),
         data
       }));
 
-      // 缓存图标到localStorage
+
       if (data.icon) {
         localStorage.setItem(`mcserver:icon:${ip}`, data.icon);
       }
@@ -134,7 +134,7 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
   } catch (e) {
     console.error("获取服务器数据失败:", e);
 
-    // 降级使用缓存
+
     try {
       const raw = sessionStorage.getItem(cacheKey);
       if (raw) {
@@ -164,12 +164,12 @@ export default function McServerStatusPage() {
     debug: false
   });
 
-  // 使用ref避免依赖问题
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isMountedRef = useRef(true);
   const lastRefreshRef = useRef<number>(0);
 
-  // 防抖函数
+
   const debounce = (func: Function, delay: number) => {
     let timeoutId: NodeJS.Timeout;
     return (...args: any[]) => {
@@ -178,11 +178,11 @@ export default function McServerStatusPage() {
     };
   };
 
-  // 加载数据函数
+
   const loadServerData = useCallback(async () => {
     if (!isMountedRef.current) return;
 
-    // 防抖：确保至少间隔3秒才可再次请求
+
     const now = Date.now();
     if (now - lastRefreshRef.current < 3000) {
       console.log("请求过于频繁，跳过本次请求");
@@ -216,19 +216,19 @@ export default function McServerStatusPage() {
     }
   }, []);
 
-  // 防抖处理的刷新函数
+
   const debouncedLoadServerData = useCallback(
-    debounce(loadServerData, 1000), // 1秒防抖
+    debounce(loadServerData, 1000),
     [loadServerData]
   );
 
-  // 手动刷新
+
   const handleRefresh = useCallback(() => {
-    if (isLoading) return; // 防止重复点击
+    if (isLoading) return;
     debouncedLoadServerData();
   }, [isLoading, debouncedLoadServerData]);
 
-  // 切换自动刷新
+
   const toggleAutoRefresh = useCallback(() => {
     setAutoRefreshEnabled(prev => {
       const newState = !prev;
@@ -236,7 +236,7 @@ export default function McServerStatusPage() {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       } else if (newState && !intervalRef.current) {
-        // 重新启动自动刷新
+
         intervalRef.current = setInterval(() => {
           if (!isLoading) {
             debouncedLoadServerData();
@@ -247,7 +247,7 @@ export default function McServerStatusPage() {
     });
   }, [isLoading, debouncedLoadServerData]);
 
-  // 切换展开状态
+
   const toggleSection = useCallback((section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -255,16 +255,16 @@ export default function McServerStatusPage() {
     }));
   }, []);
 
-  // 初始加载和清理
+
   useEffect(() => {
     isMountedRef.current = true;
 
-    // 初始加载数据
+
     const timer = setTimeout(() => {
       loadServerData();
     }, 100);
 
-    // 设置自动刷新
+
     if (autoRefreshEnabled) {
       intervalRef.current = setInterval(() => {
         if (!isLoading) {
@@ -274,7 +274,7 @@ export default function McServerStatusPage() {
       console.log("自动刷新已启动，间隔:", AUTO_REFRESH_INTERVAL, "ms");
     }
 
-    // 清理函数
+
     return () => {
       isMountedRef.current = false;
       clearTimeout(timer);
@@ -285,7 +285,7 @@ export default function McServerStatusPage() {
     };
   }, [loadServerData, isLoading, autoRefreshEnabled, debouncedLoadServerData]);
 
-  // 渲染辅助函数
+
   const renderSkeletonLoader = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {Array.from({ length: 6 }).map((_, i) => (

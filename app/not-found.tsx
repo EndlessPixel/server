@@ -7,7 +7,7 @@ import { Navigation } from '@/components/navigation';
 
 export default function NotFound() {
   useEffect(() => {
-    // 创建样式标签
+
     const style = document.createElement('style');
     style.id = '404-hide-scrollbar';
     style.textContent = `
@@ -18,7 +18,7 @@ export default function NotFound() {
     document.head.appendChild(style);
 
     return () => {
-      // 移除样式标签
+
       const ele = document.getElementById('404-hide-scrollbar');
       if (ele) ele.remove();
     };

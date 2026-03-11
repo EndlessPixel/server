@@ -1,13 +1,13 @@
-// about/page.tsx
+
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { TeamSection } from "@/components/team-section"
-// import { LicenseSection } from "@/components/license-section"   // 暂时迁移
+
 import { ContactSection } from "@/components/contact-section"
 import { Card, CardContent } from "@/components/ui/card"
 import { Heart, Users, Globe } from "lucide-react"
 import type { Metadata } from "next"
-// 导入我们创建的运行时长组件
+
 import { RunningDuration } from "@/components/RunningDuration"
 import Link from "next/link"
 
@@ -99,7 +99,7 @@ export default function AboutPage() {
                   </CardContent>
                 </Card>
               </section>
-              
+
               <br /><br />
 
               {/* -------------- CTA -------------- */}

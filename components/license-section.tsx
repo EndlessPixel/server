@@ -18,7 +18,7 @@ import {
   FileText,
 } from "lucide-react"
 
-// 许可证信息类型定义
+
 interface LicenseInfo {
   title: string;
   description: string;
@@ -34,7 +34,7 @@ interface LicenseCategory {
   colorScheme: "green" | "orange" | "blue";
 }
 
-// 许可证详情卡片组件
+
 const LicenseHeaderCard = ({ info }: { info: LicenseInfo }) => (
   <Card className="border-0 bg-linear-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
     <CardHeader>
@@ -72,7 +72,7 @@ const LicenseHeaderCard = ({ info }: { info: LicenseInfo }) => (
   </Card>
 )
 
-// 许可证分类卡片组件
+
 const LicenseCategoryCard = ({ category }: { category: LicenseCategory }) => {
   const getColorClasses = (scheme: string) => {
     const colorMap = {
@@ -121,7 +121,7 @@ const LicenseCategoryCard = ({ category }: { category: LicenseCategory }) => {
   );
 };
 
-// 使用提示卡片组件
+
 const LicenseUsageTip = ({ tip, title = "使用提示" }: { tip: string; title?: string }) => (
   <Card className="border-0 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-950/10 dark:to-emerald-950/10">
     <CardHeader>
@@ -134,7 +134,7 @@ const LicenseUsageTip = ({ tip, title = "使用提示" }: { tip: string; title?:
 );
 
 export function LicenseSection() {
-  // 许可证基本信息
+
   const licenseInfo: LicenseInfo = {
     title: "开源许可证",
     description: "本项目采用 GNU Affero General Public License v3.0 开放源代码",
@@ -143,7 +143,7 @@ export function LicenseSection() {
     repoUrl: "https://github.com/EndlessPixel/server/blob/main/LICENSE"
   };
 
-  // 许可证分类数据
+
   const licenseCategories: LicenseCategory[] = [
     {
       title: "权限",
@@ -170,7 +170,7 @@ export function LicenseSection() {
     }
   ];
 
-  // 使用提示文本
+
   const usageTip = "引用或修改本项目时，请保留版权头、许可证文件及相同许可证开源。";
 
   return (

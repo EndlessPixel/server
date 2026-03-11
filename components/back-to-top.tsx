@@ -11,15 +11,15 @@ export function BackToTop() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // 监听滚动事件：控制显示/隐藏 + 计算滚动进度
+
   useEffect(() => {
     const handleScroll = () => {
-      // 计算滚动进度（0-100）
+
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = (window.pageYOffset / totalHeight) * 100;
       setScrollProgress(Math.min(progress, 100));
 
-      // 控制按钮显示/隐藏
+
       setIsVisible(window.pageYOffset > 300);
     };
 
@@ -27,14 +27,14 @@ export function BackToTop() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 平滑滚动到顶部
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
 
-    // 点击时添加脉冲动画
+
     if (buttonRef.current) {
       buttonRef.current.classList.add("animate-pulse");
       setTimeout(() => {

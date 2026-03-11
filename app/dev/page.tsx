@@ -2,7 +2,7 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { LicenseSection } from "@/components/license-section";
 
-// 定义技术栈数据
+
 const techStack = {
     dependencies: [
         "Next.js ^16.1.1 (React框架)",
@@ -28,7 +28,7 @@ const techStack = {
     ],
 };
 
-// API服务数据
+
 const apiServices = [
     { name: "MCSRVStat API", url: "https://api.mcsrvstat.us/", desc: "Minecraft服务器状态查询", copy: "© 2026 Anders G. Jørgensen" },
     { name: "GitHub API", url: "https://api.github.com/", desc: "GitHub数据接口", copy: "© 2026 GitHub, Inc" },
@@ -37,14 +37,14 @@ const apiServices = [
     { name: "EndlessPixelAPI", url: "https://www.endlesspixel.fun/api/", desc: "EndlessPixel的开放API接口", copy: "© 2024-2026 EndlessPixel Studio" }
 ];
 
-// 第三方服务数据
+
 const thirdPartyServices = [
     { name: "gh-proxy.com", url: "https://gh-proxy.com/", desc: "GitHub加速服务" },
     { name: "gh.jasonzeng.dev", url: "https://gh.jasonzeng.dev/", desc: "GitHub加速服务" },
     { name: "ChmlFrp", url: "https://www.chmlfrp.net/", desc: "Frp内网穿透"},
 ];
 
-// 开发工具数据
+
 const devTools = {
     development: ["Git", "Node.js", "VSCode", "PowerShell", "Edge DevTool", "Npm"],
     assistant: [
@@ -125,7 +125,7 @@ export default function Dev() {
                                     <span className="font-medium text-gray-800 dark:text-white mr-3">{api.name}</span>
                                     <span className="text-sm text-gray-500 dark:text-gray-400">{api.desc}</span>
                                     <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">{api.copy}</span>
-                                    <span className="ml-auto text-blue-500 dark:text-blue-400 text-sm">→</span> 
+                                    <span className="ml-auto text-blue-500 dark:text-blue-400 text-sm">→</span>
                                 </a>
                             ))}
                         </div>

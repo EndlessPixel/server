@@ -4,6 +4,8 @@ import { ArrowLeft, Download, Sparkles, Rocket, CheckCircle, XCircle, AlertCircl
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";
+
+// 动画配置
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -26,31 +28,35 @@ const itemVariants = {
     }
   }
 };
+
+// 修复：添加 as const 断言，明确类型为字符串字面量
 const cardHoverVariants = {
   hover: {
     y: -8,
     scale: 1.02,
     transition: {
-      type: "spring" as const,
+      type: "spring" as const, // 关键修复：添加类型断言
       stiffness: 400,
       damping: 25
     }
   }
 };
-export function RepoStatus({ }: { r: { releases?: boolean } }) {
-
+export function RepoStatus() {
+  // 先做安全校验：确保 r.releases 是布尔值或 undefined
 }
 export function LauncherListPage() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   return (
     <>
       <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-cyan-50/50 dark:from-slate-900 dark:via-blue-950/20 dark:to-cyan-950/10 relative overflow-hidden">
+        {/* 背景装饰元素 */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-linear-to-r from-blue-200 to-cyan-200 dark:from-blue-800/20 dark:to-cyan-800/20 rounded-full blur-3xl opacity-50 animate-pulse"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-linear-to-r from-purple-200 to-pink-200 dark:from-purple-800/20 dark:to-pink-800/20 rounded-full blur-3xl opacity-50 animate-pulse delay-1000"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-linear-to-r from-green-200 to-emerald-200 dark:from-green-800/10 dark:to-emerald-800/10 rounded-full blur-3xl opacity-30 animate-pulse delay-500"></div>
         </div>
         <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
+          {/* 头部区域 */}
           <motion.div
             className="text-center mb-16"
             initial={{ opacity: 0, y: -30 }}
@@ -64,8 +70,9 @@ export function LauncherListPage() {
               className="inline-flex items-center gap-2 bg-linear-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400  border-blue-200/50 dark:border-blue-700/50 px-6 py-3 rounded-2xl text-base font-semibold backdrop-blur-sm mb-6"
             >
               <Sparkles className="w-5 h-5" />
-              最后更新：2026/01/17
+              最后更新：2025/01/17
             </motion.div>
+
             <motion.h1
               className="text-5xl md:text-6xl font-bold bg-linear-to-r from-slate-900 via-blue-800 to-cyan-700 dark:from-slate-100 dark:via-blue-300 dark:to-cyan-400 bg-clip-text text-transparent mb-6 leading-tight"
               initial={{ opacity: 0, y: 20 }}

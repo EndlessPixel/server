@@ -29,9 +29,9 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { motion } from "framer-motion";
 
-// ----------------------------
-// 工具函数：智能解析 GitHub URL
-// ----------------------------
+
+
+
 const parseGithubUrl = (url: string): { isValid: boolean; owner?: string; repo?: string } => {
     try {
         let cleanUrl = url.trim();
@@ -63,9 +63,9 @@ const parseGithubUrl = (url: string): { isValid: boolean; owner?: string; repo?:
     }
 };
 
-// ----------------------------
-// 主组件
-// ----------------------------
+
+
+
 export default function CustomDownloadsPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -78,7 +78,7 @@ export default function CustomDownloadsPage() {
     const githubUrl = searchParams.get("url");
     const repoInfo = githubUrl ? parseGithubUrl(githubUrl) : { isValid: false };
 
-    // 如果 URL 有效且已传入，直接渲染下载页（由下游处理空 releases）
+
     if (githubUrl && repoInfo.isValid && repoInfo.owner && repoInfo.repo) {
         return (
             <LauncherDownloadPage
@@ -92,9 +92,9 @@ export default function CustomDownloadsPage() {
         );
     }
 
-    // ----------------------------
-    // 提交处理：含 Release 校验
-    // ----------------------------
+
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const trimmed = inputUrl.trim();
@@ -109,7 +109,7 @@ export default function CustomDownloadsPage() {
             return;
         }
 
-        // ✅ 检查是否有公开 releases
+
         try {
             const apiUrl = `https://api.github.com/repos/${info.owner}/${info.repo}/releases?per_page=1`;
             const res = await fetch(apiUrl, {
@@ -123,7 +123,7 @@ export default function CustomDownloadsPage() {
             if (res.ok) {
                 const releases = await res.json();
                 if (Array.isArray(releases) && releases.length > 0) {
-                    // 有 release，跳转
+
                     startTransition(() => {
                         router.push(`/downloads/custom_downloads?url=${encodeURIComponent(trimmed)}&platform=github&api_limit=60&verify=true&use_mirror=true`);
                     });
@@ -131,13 +131,13 @@ export default function CustomDownloadsPage() {
                 }
             }
 
-            // 无 releases 或返回 404（私有/不存在）
+
             alert(
                 "❌ 该仓库暂无公开的 Release 版本，无法生成下载页。\n\n请确认：\n1. 仓库是公开的\n2. 已在 GitHub 上创建至少一个 Release（非 tag）"
             );
         } catch (error) {
             console.warn("GitHub API 调用失败（可能因速率限制），尝试直接跳转...", error);
-            // 降级：API 失败时仍跳转，由 LauncherDownloadPage 处理空状态
+
             startTransition(() => {
                 router.push(`/downloads/custom_downloads?url=${encodeURIComponent(trimmed)}`);
             });
@@ -146,9 +146,9 @@ export default function CustomDownloadsPage() {
         }
     };
 
-    // ----------------------------
-    // 分享功能
-    // ----------------------------
+
+
+
     const handleShare = async () => {
         if (typeof window === "undefined") return;
         const url = window.location.href;
@@ -177,9 +177,9 @@ export default function CustomDownloadsPage() {
         }
     };
 
-    // ----------------------------
-    // 渲染
-    // ----------------------------
+
+
+
     return (
         <>
             <Navigation />
@@ -367,7 +367,7 @@ export default function CustomDownloadsPage() {
                                     className="bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm  border-slate-200/60 dark:border-slate-700/60 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                                     onClick={() => {
                                         setInputUrl(proj.url);
-                                        // 注意：这里不校验，因为这些是已知有 releases 的项目
+
                                         startTransition(() =>
                                             router.push(`/downloads/custom_downloads?url=${encodeURIComponent(proj.url)}`)
                                         );

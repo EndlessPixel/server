@@ -188,5 +188,5 @@ export function Footer() {
   );
 }
 
-// 默认导出，方便使用
+
 export default Footer;

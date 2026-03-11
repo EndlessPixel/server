@@ -61,45 +61,45 @@ const compareSemanticVersions = (v1: string, v2: string): number => {
    * @returns 解析结果：mainParts（主版本号数字数组）、preRelease（预发布后缀）
    */
   const parseVersion = (version: string) => {
-    // 正则匹配预发布后缀：匹配 "-" 后紧跟字母开头的所有字符（如 -b4、-beta3、-rc2）
-    // 捕获组1 提取后缀内容（如 b4、beta3）
+
+
     const preReleaseMatch = version.match(/-([a-zA-Z]+.*)$/);
-    // 提取预发布后缀（无则为空字符串）
+
     const preRelease = preReleaseMatch ? preReleaseMatch[1] : '';
 
-    // 提取主版本号部分：如果有预发布后缀则先移除，再提取所有数字片段转为数字数组
-    // 例如："v10-b4" → 移除 "-b4" 得到 "v10" → 提取数字 [10]
-    // 例如："1.21.11-v10-1.6" → 无后缀 → 提取数字 [1,21,11,10,1,6]
+
+
+
     const mainVersionStr = preRelease ? version.replace(/-[a-zA-Z]+.*$/, '') : version;
-    // 匹配所有数字片段并转为数字（无数字则返回空数组）
+
     const mainParts = mainVersionStr.match(/\d+/g)?.map(Number) || [];
 
     return { mainParts, preRelease };
   };
 
-  // 解析两个待比较的版本号
+
   const { mainParts: p1, preRelease: pr1 } = parseVersion(v1);
   const { mainParts: p2, preRelease: pr2 } = parseVersion(v2);
 
-  // ========== 第一步：比较主版本号（核心逻辑） ==========
-  // 取两个版本号主数字数组的最大长度，逐位比较
+
+
   const maxLen = Math.max(p1.length, p2.length);
   for (let i = 0; i < maxLen; i++) {
-    // 数组长度不足的位补 0（如 [10] vs [10,1] → 10 vs 10 → 0 vs 1）
+
     const num1 = p1[i] || 0;
     const num2 = p2[i] || 0;
 
-    // 某一位数字更大，则直接返回结果
-    if (num1 > num2) return 1; // v1 主版本号更大
-    if (num1 < num2) return -1; // v2 主版本号更大
+
+    if (num1 > num2) return 1;
+    if (num1 < num2) return -1;
   }
 
-  // ========== 第二步：主版本号相同，区分正式版/预发布版 ==========
-  // 规则：正式版（无预发布后缀）> 预发布版（有后缀）
-  if (!pr1 && pr2) return 1; // v1是正式版，v2是预发布版 → v1更大（如 v10-1.0 > v10-b4）
-  if (pr1 && !pr2) return -1; // v1是预发布版，v2是正式版 → v2更大（如 v10-b4 < v10-1.0）
 
-  // ========== 第三步：都是预发布版，比较后缀中的数字 ==========
+
+  if (!pr1 && pr2) return 1;
+  if (pr1 && !pr2) return -1;
+
+
   if (pr1 && pr2) {
     /**
      * 提取预发布后缀中的数字（如 b4 → 4，beta10 → 10，rc3 → 3）
@@ -109,11 +109,11 @@ const compareSemanticVersions = (v1: string, v2: string): number => {
      */
     const getPreNum = (pr: string) => Number(pr.match(/\d+/)?.[0] || 0);
 
-    // 后缀数字相减：正数表示v1更大，负数表示v2更大，0表示相等
-    return getPreNum(pr1) - getPreNum(pr2); // 如 b4 - b3 = 1 → v1更大
+
+    return getPreNum(pr1) - getPreNum(pr2);
   }
 
-  // ========== 最终：版本完全相同 ==========
+
   return 0;
 };
 export function DownloadSection() {
