@@ -3,8 +3,9 @@ CONTRIBUTING.md
 README.en.md
 README.md
 SECURITY.md
+LICENSE
 localhost_pem_cert.py
 .gitattributes
 .gitignore
-.vscode
-.github
+.vscode/
+.github/
