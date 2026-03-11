@@ -4,8 +4,7 @@ import { DownloadSection } from "@/components/download-section-launcher"
 import type { Metadata } from "next"
 import { ArrowUpRight } from "lucide-react"
 import Link from 'next/link';
-// 👉 新增：导入Suspense
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
     title: "资源下载 - EndlessPixel Minecraft 服务器",
