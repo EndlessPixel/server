@@ -28,6 +28,11 @@ export default function sitemap() {
       priority: 0.8,
     },
     {
+      url: `${config.siteUrl}/downloads/modpack_app/`,
+      lastModified: config.lastModified,
+      priority: 0.8,
+    },
+    {
       url: `${config.siteUrl}/downloads/custom_downloads/`,
       lastModified: config.lastModified,
       priority: 0.7,
@@ -48,9 +53,19 @@ export default function sitemap() {
       priority: 0.6,
     },
     {
+      url: `${config.siteUrl}/wiki/full_screen_preview/`,
+      lastModified: config.lastModified,
+      priority: 0.6,
+    },
+    {
       url: `${config.siteUrl}/about/`,
       lastModified: config.lastModified,
       priority: 0.5,
+    },
+    {
+      url: `${config.siteUrl}/dev/`,
+      lastModified: config.lastModified,
+      priority: 0.2,
     },
   ];
 }
