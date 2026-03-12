@@ -158,11 +158,8 @@ export function HeroSection() {
 
   return (
     <section ref={heroRef} className="relative bg-linear-to-br from-slate-50 via-blue-50/40 to-emerald-50/60 dark:from-slate-900 dark:via-blue-950/30 dark:to-emerald-950/30 py-24 lg:py-32 overflow-hidden">
-      {/* 动态背景装饰（精简重复样式） */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-br from-blue-50/20 via-transparent to-emerald-50/20 dark:from-blue-950/10 dark:via-transparent dark:to-emerald-950/10" />
-
-        {/* 背景圆装饰（精简重复动画逻辑） */}
         <motion.div
           className="absolute -top-24 -right-24 w-96 h-96 bg-linear-to-r from-blue-200 to-cyan-200 dark:from-blue-800/20 dark:to-cyan-800/20 rounded-full blur-3xl opacity-40"
           animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
@@ -198,8 +195,6 @@ export function HeroSection() {
             <span>欢迎来到 Minecraft 1.21.11 新世界</span>
             <motion.div className="w-2 h-2 bg-green-500 rounded-full" animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 2, repeat: Infinity }} />
           </motion.div>
-
-          {/* 主标题 */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -219,8 +214,6 @@ export function HeroSection() {
               一个创造<span className="bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent font-semibold">无限可能</span>的 Minecraft 服务器
             </motion.p>
           </motion.div>
-
-          {/* 副标题 */}
           <motion.p
             className="text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-3xl mx-auto leading-relaxed"
             initial={{ opacity: 0 }}
@@ -229,8 +222,6 @@ export function HeroSection() {
           >
             一个充满活力与创意的 Minecraft 社区！支持无需正版，让所有玩家都能轻松加入冒险之旅，体验愉快、多样、有趣的游戏玩法。
           </motion.p>
-
-          {/* 特性标签 */}
           <motion.div
             className="text-lg text-slate-500 dark:text-slate-500 mb-12 max-w-2xl mx-auto flex flex-wrap justify-center gap-3"
             variants={containerVariants}
@@ -252,8 +243,6 @@ export function HeroSection() {
               );
             })}
           </motion.div>
-
-          {/* 按钮组 */}
           <motion.div
             className="flex flex-col sm:flex-row gap-4 justify-center mb-20"
             initial={{ opacity: 0, y: 20 }}
@@ -273,8 +262,7 @@ export function HeroSection() {
               <Sparkles className="w-4 h-4 ml-2 text-blue-500 relative z-10" />
             </Link>
           </motion.div>
-
-          {/* 核心特性卡片 */}
+          <br /><br /><br /><br /><br />
           <motion.div
             className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto"
             variants={containerVariants}
