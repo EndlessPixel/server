@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
-  Loader2, AlertCircle, CheckCircle, MessageSquare, Calendar, User, 
+  Loader2, AlertCircle, CheckCircle, MessageSquare, Calendar, User,
   ArrowLeft, ExternalLink, GitPullRequest, ChevronLeft, ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -65,7 +65,6 @@ const calcTotalPages = (link: string | null, _itemsPerPage?: number) => {
   const p = new URL(last).searchParams.get("page");
   return p ? parseInt(p, 10) : 1;
 };
-
 function StatsCard({ icon, label, value }: { icon: JSX.Element; label: string; value: number }) {
   return (
     <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
@@ -79,7 +78,6 @@ function StatsCard({ icon, label, value }: { icon: JSX.Element; label: string; v
     </Card>
   );
 }
-
 function IssueCard({ issue, onClick }: { issue: GitHubIssue; onClick: (url: string) => void }) {
   const isPR = !!issue.pull_request;
   return (
@@ -127,7 +125,6 @@ function IssueCard({ issue, onClick }: { issue: GitHubIssue; onClick: (url: stri
     </Card>
   );
 }
-
 function Pagination({ pagination, onChange }: { pagination: PaginationInfo; onChange: (p: number) => void }) {
   const { currentPage, totalPages } = pagination;
   if (totalPages <= 1) return null;
@@ -165,7 +162,6 @@ function Pagination({ pagination, onChange }: { pagination: PaginationInfo; onCh
     </div>
   );
 }
-
 export default function GitHubIssuesList({
   owner,
   repo,
@@ -189,7 +185,6 @@ export default function GitHubIssuesList({
     const page = parseInt(searchParams.get("page") || "1", 10);
     if (!isNaN(page) && page > 0) setPagination(p => ({ ...p, currentPage: page }));
   }, [searchParams]);
-
   useEffect(() => {
     const cacheKey = `gh:${owner}/${repo}/issues/page/${pagination.currentPage}/${pagination.itemsPerPage}`;
     const cached = sessionStorage.getItem(cacheKey);
@@ -201,7 +196,6 @@ export default function GitHubIssuesList({
         return;
       }
     }
-
     const controller = new AbortController();
     const url = new URL(`https://api.github.com/repos/${owner}/${repo}/issues`);
     url.searchParams.set("state", "all");
@@ -228,14 +222,12 @@ export default function GitHubIssuesList({
         setLoading(false);
       });
   }, [owner, repo, pagination.currentPage, pagination.itemsPerPage]);
-
   const handlePage = (page: number) => {
     if (page < 1 || page > pagination.totalPages) return;
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", String(page));
     router.push(`?${params.toString()}`);
   };
-
   const handleIssueClick = (url: string) => {
     const num = url.split("/").pop();
     if (num) router.push(`${backHref}/issues/${num}`);
@@ -295,7 +287,6 @@ export default function GitHubIssuesList({
                 跟踪 Issues 与 Pull Requests
               </p>
             </div>
-
             <div className="flex items-center gap-3">
               <Button
                 onClick={() => location.reload()}
