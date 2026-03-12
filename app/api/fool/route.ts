@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
-
-
 const TEAPOT_JOKES = {
     code: 418,
-
     messages: [
         "I'm a teapot 🫖 — can't brew coffee, only EndlessPixel's projects!",
         "418 Error: This teapot is on strike (April Fools' Edition) 🚨",
@@ -34,7 +31,6 @@ const TEAPOT_JOKES = {
         "418: Tea is brewing, repos are coming... eventually ⏳",
         "Teapot hack: I can see your uncommitted code (jk... or am I?) 👀",
     ],
-
     teapot_mood: [
         "grumpy", "silly", "pranky", "sleepy", "hyper", "mischievous",
         "cute", "hungry", "proud", "confused", "playful",
@@ -43,7 +39,6 @@ const TEAPOT_JOKES = {
         "dramatic", "flirty", "annoyed", "curious", "giggly",
         "snarky", "zen", "chaotic", "whiny"
     ][Math.floor(Math.random() * 24)],
-
     fake_error: `TeapotError: ${[
         "Missing sugar",
         "No milk",
@@ -55,7 +50,6 @@ const TEAPOT_JOKES = {
         "No teacup found",
         "API request tasted bad 🤢",
         "Teapot needs a nap 😴",
-
         "Teapot lid is missing 🫗",
         "Request is too salty 🧂",
         "Tea leaves expired 🥀",
@@ -72,15 +66,12 @@ const TEAPOT_JOKES = {
         "API request is out of date 📅"
     ][Math.floor(Math.random() * 24)]} (April Fools' Fake Error)`
 };
-
-
 interface Repo {
     name: string;
     url: string;
 
     prank_tag: string;
 }
-
 const repoList: Repo[] = [
     { name: 'Chat-Box', url: 'https://github.com/EndlessPixel/Chat-Box', prank_tag: 'Talks too much (April Fools)' },
     { name: 'EndlessPixel-Modpack', url: 'https://github.com/EndlessPixel/EndlessPixel-Modpack', prank_tag: 'May contain fake mods 🎭' },
@@ -104,10 +95,7 @@ const repoList: Repo[] = [
     { name: 'EndlessPixel.github.io', url: 'https://github.com/EndlessPixel/EndlessPixel.github.io', prank_tag: 'April Fools: Website is upside down (April Fools)' },
     { name: 'Files-Panel', url: 'https://github.com/EndlessPixel/Files-Panel', prank_tag: 'April Fools: Files are just a teapot 🫖' },
     { name: 'Command-Sentinel', url: 'https://github.com/EndlessPixel/Command-Sentinel', prank_tag: 'April Fools: Commands are just a teapot 🫖' },
-    { name: 'git-city', url: 'https://github.com/EndlessPixel/git-city', prank_tag: 'Youre in a git city in fork! 🌆' },
 ];
-
-
 function shuffle<T>(arr: T[]): T[] {
     const newArr = [...arr];
     for (let i = newArr.length - 1; i > 0; i--) {
@@ -116,18 +104,14 @@ function shuffle<T>(arr: T[]): T[] {
     }
     return newArr;
 }
-
-
 function generatePrankAd() {
     const randomRepos = shuffle(repoList).slice(0, 7);
-
     const prankSlogans = [
         "Teapot's April Fools' Picks 🫖 — these repos might prank YOU!",
         "April Fools! This teapot hacked your API — enjoy random repos 😜",
         "Warning: Repos below may contain pranks (blame the teapot) 🚨",
         "Teapot's Joke List 🎭 — star at your own risk!",
         "April Fools' Special: Repos that lie (just like this teapot) 🥴",
-
         "7 Random Repos: May the teapot be with you 🫖✨",
         "April Fools' Giveaway: Repos that prank back 😝",
         "Teapot's Top Picks: None of these are serious 🎪",
@@ -139,11 +123,7 @@ function generatePrankAd() {
         "Repo Lottery: You won... maybe 🎟️",
         "Don't trust these repos (or the teapot) 🤥",
     ];
-
-
     const teapotRating = `${Math.floor(Math.random() * 5) + 1}/5 cups of tea ☕️`;
-
-
     const prankChallenges = [
         "Star 3 repos before the teapot gets angry ⏰",
         "Drink tea while browsing these repos 🫖",
@@ -154,24 +134,16 @@ function generatePrankAd() {
         "Sing a tea-themed song while coding 🎤",
         "Add a teapot emoji to your README 📝"
     ];
-
     return {
         slogan: prankSlogans[Math.floor(Math.random() * prankSlogans.length)],
-
         picks: randomRepos.map(repo => `${repo.name} [${repo.prank_tag}]: ${repo.url}`),
-
         prank_disclaimer: "Disclaimer: This teapot is not responsible for any repo pranks (April Fools' Day 2026 🎉)",
-
         teapot_rating: teapotRating,
         april_fools_challenge: prankChallenges[Math.floor(Math.random() * prankChallenges.length)],
-
         fake_downloads: `${Math.floor(Math.random() * 9999) + 1} (fake) downloads 📥`
     };
 }
-
-
 function getPrankResponse() {
-
     const teapotAdvice = [
         "Always keep a teapot nearby when coding 🫖",
         "Star repos before the teapot gets grumpy ⭐️",
@@ -182,8 +154,6 @@ function getPrankResponse() {
         "April Fools' tip: Blame the teapot for bugs 🐛",
         "Tea + code = perfect combo (trust me, I'm a teapot) ✨"
     ];
-
-
     const fakeApiStatus = [
         "99% tea, 1% functionality 🫖",
         "Running on teapot OS v4.18 ☕️",
@@ -193,7 +163,6 @@ function getPrankResponse() {
         "API version: AprilFools-2026.0 🎭",
         "Connection: Tea-powered WiFi 📶"
     ];
-
     return {
         code: TEAPOT_JOKES.code,
         message: TEAPOT_JOKES.messages[Math.floor(Math.random() * TEAPOT_JOKES.messages.length)],
@@ -201,7 +170,6 @@ function getPrankResponse() {
         fake_error: TEAPOT_JOKES.fake_error,
         april_fools: true,
         time: new Date().toISOString(),
-
         teapot_demand: [
             "Star 1 repo", "Drink tea", "Tell a joke", "Ignore this error",
 
@@ -209,34 +177,24 @@ function getPrankResponse() {
             "Add a teapot to your README", "Laugh at the teapot's joke",
             "Refresh the page", "Star 5 repos", "Tweet about teapots"
         ][Math.floor(Math.random() * 12)],
-
         teapot_advice: teapotAdvice[Math.floor(Math.random() * teapotAdvice.length)],
         fake_api_status: fakeApiStatus[Math.floor(Math.random() * fakeApiStatus.length)],
-
         fake_support: "Teapot Tech Support: Call ☎️ 1-800-TEAPOT (fake number) — we'll ignore you (April Fools)",
-
         prank_emojis: [
             "🫖🎭🤪", "🥴😜🎉", "☕️🎁🚨", "🤣👀✨", "🎪🥳🌀",
             "💻☕️🎭", "🤥🫗🍵", "🎡🤣🫖"
         ][Math.floor(Math.random() * 8)]
     };
 }
-
-
 export async function GET() {
     return NextResponse.json({
         ...getPrankResponse(),
         ad: generatePrankAd(),
-
         fake_request_id: `TEAPOT-${Math.floor(Math.random() * 999999)}-APRILFOOLS`,
-
         fake_load_time: `${(Math.random() * 5).toFixed(2)}s (fake) ⏱️`
     });
 }
-
-
 export async function POST() {
-
     const postProcessingResults = [
         "POST body converted to tea leaves 🍵",
         "JSON parsed as teapot commands 🫖",
@@ -246,11 +204,9 @@ export async function POST() {
         "POST request translated to pirate language 🏴‍☠️",
         "Body formatted as a tea recipe 📜"
     ];
-
     return NextResponse.json({
         ...getPrankResponse(),
         ad: generatePrankAd(),
-
         post_prank: [
             "Oops! This teapot drank your POST body (April Fools' Joke) — have repos instead 🫖",
             "POST body stolen by the teapot — enjoy these repos as compensation 😜",
@@ -258,7 +214,6 @@ export async function POST() {
             "Teapot alert: POST request hijacked (April Fools) — repos incoming 🚨",
             "The teapot spilled your POST body — sorry (not sorry) 🥴"
         ][Math.floor(Math.random() * 5)],
-
         fake_fix: [
             "To fix: Pour tea on your server (jk... it's April Fools 😉)",
             "Fix: Add teapot emoji to your POST body 🫖",
@@ -267,10 +222,8 @@ export async function POST() {
             "Debug tip: Blame the teapot (it's April Fools after all) 🎭",
             "Fix instructions: Follow the teapot on GitHub 🐙"
         ][Math.floor(Math.random() * 6)],
-
         fake_post_processing: postProcessingResults[Math.floor(Math.random() * postProcessingResults.length)],
         fake_data_saved: `Data saved to teapot storage (${Math.floor(Math.random() * 100)}KB fake) 💾`,
-
         fake_response_delay: `${Math.floor(Math.random() * 10)}ms (we were making tea) ⏳`
     });
 }
