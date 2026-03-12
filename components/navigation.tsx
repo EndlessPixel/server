@@ -1,16 +1,11 @@
-
 'use client';
-
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Menu, X, Download, Activity, BookOpen, Users,
-  Home, ChevronRight, Search
-} from 'lucide-react';
+import { Menu, X, Download, Activity, BookOpen, Users, Home, ChevronRight, Search, Code } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 function useLockBody(lock: boolean) {
@@ -71,11 +66,9 @@ const crumbs = pathname
     },
     [{ href: '/', label: '首页' }]
   );
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="h-14 flex items-center gap-4">
-        {/* 面包屑（跳转模式） */}
         {!editMode && (
           <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
             {crumbs.map((c, i) => (
@@ -98,8 +91,6 @@ const crumbs = pathname
             ))}
           </div>
         )}
-
-        {/* 地址栏（编辑模式） */}
         <div className={cn('flex-1 max-w-2xl', editMode && 'max-w-4xl')}>
           {editMode ? (
             <div className="relative">
@@ -133,21 +124,19 @@ export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   useLockBody(isMenuOpen);
-
   const navItems = [
   { href: '/', label: '首页', icon: Home, description: '主页' },
   { href: '/downloads', label: '资源下载', icon: Download, description: '模组包/启动器下载' },
   { href: '/status', label: '状态查询', icon: Activity, description: '服务器状态' },
   { href: '/wiki', label: 'Wiki', icon: BookOpen, description: '服务器专属百科' },
-  { href: '/about', label: '关于我们', icon: Users, description: '团队介绍' }
+  { href: '/about', label: '关于我们', icon: Users, description: '团队介绍' },
+  { href: '/dev', label: '技术', icon: Code, description: '开发相关' },
 ];
-
   return (
     <>
       <nav className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 sticky top-0 z-40 shadow-md transition-shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo */}
             <MotionLink
               href="/"
               className="flex items-center space-x-2 py-2 px-3 rounded-xl hover:bg-slate-100/70 dark:hover:bg-slate-800/70"
@@ -244,10 +233,8 @@ export function Navigation() {
                       transition={{ delay: 0.05 * i }}
                     >
                       <Icon className="w-5 h-5" />
-                      <div>
                         <div className="font-medium">{item.label}</div>
                         <div className="text-xs text-slate-500 dark:text-slate-400">{item.description}</div>
-                      </div>
                     </MotionLink>
                   );
                 })}
