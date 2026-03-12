@@ -13,7 +13,6 @@ const DOMAIN = "https://www.endlesspixel.cn";
 const LOGO = `${DOMAIN}/EndlessPixel.png`;
 const FAVICON_ICO = "/favicon.ico";
 const BANNER_IMAGE = `${DOMAIN}/banner.jpg`;
-const DISCORD_INVITE = "https://discord.gg/k63hRWt3fF";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1.0,
@@ -121,11 +120,6 @@ export default function RootLayout({
     <html lang="zh-CN" className={clsx(GeistSans.variable, GeistMono.variable)} suppressHydrationWarning>
       <head>
         <link rel="canonical" href={DOMAIN} />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href={DISCORD_INVITE} crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         {jsonLd.map((ld, index) => (
           <script
             key={index}
@@ -140,22 +134,8 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground">
         <noscript>
-          <style>{`
-            body { background: #ffffff; color: #0a0a0a; }
-            .no-js-warning {
-              padding: 1rem;
-              background: #fff3cd;
-              color: #856404;
-              : 1px solid #ffeeba;
-              margin: 1rem;
-              text-align: center;
-              border-radius: 8px;
-            }
-          `}</style>
-          <div className="no-js-warning">
             本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。<br />
             Some features of this site require JavaScript. Please enable JS for the best experience.
-          </div>
         </noscript>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ErrorBoundary>
