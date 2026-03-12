@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "资源下载 | EndlessPixel Minecraft 服务器",
         description: "下载 EndlessPixel Minecraft Modpack Downloader Tools。支持下载最新版 EndlessPixel 客户端整合包。",
-        url: "https://www.endlesspixel.fun/downloads/modpack_app/",
+        url: "https://www.endlesspixel.cn/downloads/modpack_app/",
         images: [
             {
                 url: "/og-downloads.jpg",
