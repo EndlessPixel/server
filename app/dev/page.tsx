@@ -34,7 +34,7 @@ const apiServices = [
     { name: "GitHub API", url: "https://api.github.com/", desc: "GitHub数据接口", copy: "© 2026 GitHub, Inc" },
     { name: "ChmlFrpAPI (现已弃用)", url: "https://cf-v2.uapis.cn/", desc: "节点状态获取", copy: "© 2025 南充市轻爪网络科技有限公司" },
     { name: "UAPIs (现已弃用)", url: "https://uapis.cn/", desc: "免费、稳定、快速的公共 Api", copy: "© 2026 Axt Team" },
-    { name: "EndlessPixelAPI", url: "https://www.endlesspixel.fun/api/", desc: "EndlessPixel的开放API接口", copy: "© 2024-2026 EndlessPixel Studio" }
+    { name: "EndlessPixelAPI", url: "https://www.endlesspixel.cn/api/", desc: "EndlessPixel的开放API接口", copy: "© 2024-2026 EndlessPixel Studio" }
 ];
 
 

@@ -9,7 +9,7 @@ import clsx from "clsx";
 import "./globals.css";
 const BRAND_NAME = "EndlessPixel Studio";
 const CURRENT_YEAR = new Date().getFullYear().toString();
-const DOMAIN = "https://www.endlesspixel.fun";
+const DOMAIN = "https://www.endlesspixel.cn";
 const LOGO = `${DOMAIN}/EndlessPixel.png`;
 const FAVICON_ICO = "/favicon.ico";
 const BANNER_IMAGE = `${DOMAIN}/banner.jpg`;
@@ -142,14 +142,14 @@ export default function RootLayout({
         <noscript>
           <style>{`
             body { background: #ffffff; color: #0a0a0a; }
-            .no-js-warning { 
-              padding: 1rem; 
-              background: #fff3cd; 
-              color: #856404; 
-              : 1px solid #ffeeba; 
-              margin: 1rem; 
-              text-align: center; 
-              border-radius: 8px; 
+            .no-js-warning {
+              padding: 1rem;
+              background: #fff3cd;
+              color: #856404;
+              : 1px solid #ffeeba;
+              margin: 1rem;
+              text-align: center;
+              border-radius: 8px;
             }
           `}</style>
           <div className="no-js-warning">
