@@ -1,4 +1,4 @@
-import GitHubIssuesList from "@/components/GitHubIssuesList";
+import GitHubIssuesList from "@/components/github-issues-list";
 import { launcherRepos } from "@/lib/launcherMeta";
 
 export default async function IssuesPage({ params }: { params: { launcher: string } }) {

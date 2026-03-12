@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { LauncherDownloadPage } from "@/components/LauncherDownloadPage";
+import { LauncherDownloadPage } from "@/components/launcher-download-page";
 import {
     Card,
     CardContent,

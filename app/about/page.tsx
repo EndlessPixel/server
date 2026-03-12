@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Heart, Users, Globe } from "lucide-react"
 import type { Metadata } from "next"
 
-import { RunningDuration } from "@/components/RunningDuration"
+import { RunningDuration } from "@/components/running-duration"
 import Link from "next/link"
 
 export const metadata: Metadata = {
