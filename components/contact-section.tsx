@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Mail, MessageCircle, GithubIcon, Users, Clock, MapPin, Gamepad2, Star, ExternalLink, Sparkles, Gift, Heart } from "lucide-react";
+import { Mail, MessageCircle, Github, Users, Clock, Gamepad2, Star, ExternalLink, Sparkles, Gift, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 const MotionCard = motion(Card);
 const MotionButton = motion(Button);
@@ -56,7 +56,7 @@ export function ContactSection() {
       name: "GitHub",
       value: "EndlessPixel",
       description: "开源项目和技术交流",
-      icon: GithubIcon,
+      icon: Github,
       color: "text-gray-600 dark:text-gray-300",
       bgColor: "bg-gray-50 dark:bg-gray-900/30",
       borderColor: "border-gray-200 dark:border-gray-700",
@@ -73,40 +73,11 @@ export function ContactSection() {
       icon: Clock,
       color: "text-orange-500 dark:text-orange-400",
       bgColor: "bg-orange-50 dark:bg-orange-950/20",
-    },
-    {
-      title: "服务器位置",
-      value: "中国江苏宿迁",
-      icon: MapPin,
-      color: "text-red-500 dark:text-red-400",
-      bgColor: "bg-red-50 dark:bg-red-950/20",
     }
   ];
   const getItemKey = (method: typeof contactMethods[0]) => `${method.name}-${method.value}`;
   return (
     <div className="space-y-10">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-6"
-      >
-        <motion.div
-          className="inline-flex items-center gap-2 mb-2"
-          whileHover={{ scale: 1.05 }}
-        >
-          <Sparkles className="w-5 h-5 text-blue-500" />
-          <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-0">
-            联系我们
-          </Badge>
-        </motion.div>
-        <h2 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">
-          多种方式，随时沟通
-        </h2>
-        <p className="text-lg text-slate-600 dark:text-slate-400 mt-2 max-w-2xl mx-auto">
-          选择你喜欢的方式与我们取得联系，我们会尽快回复你的咨询
-        </p>
-      </motion.div>
       <MotionCard
         className="border-l-4 border-l-blue-500 dark:border-l-blue-600 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden relative"
         initial={{ opacity: 0, y: 30 }}
@@ -162,7 +133,7 @@ export function ContactSection() {
                   onClick={method.onClick}
                   onMouseEnter={() => setHoveredItem(key)}
                   onMouseLeave={() => setHoveredItem(null)}
-                  whileHover={{ 
+                  whileHover={{
                     y: -5,
                     boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02)"
                   }}
@@ -174,7 +145,7 @@ export function ContactSection() {
                   />
                   <motion.div
                     className="absolute inset-0 rounded-xl pointer-events-none"
-                    style={{ 
+                    style={{
                       boxShadow: `inset 0 0 0 1px ${isHovered ? 'rgba(59,130,246,0.3)' : 'transparent'}`,
                       transition: 'box-shadow 0.3s ease'
                     }}
@@ -182,7 +153,7 @@ export function ContactSection() {
                   <div className="flex items-start space-x-3">
                     <motion.div
                       className={`p-2.5 rounded-lg ${method.bgColor} mt-0.5 shrink-0`}
-                      whileHover={{ 
+                      whileHover={{
                         scale: 1.15,
                         boxShadow: `0 0 15px -3px rgba(59,130,246,0.15)`
                       }}
@@ -200,7 +171,7 @@ export function ContactSection() {
                       <div className="flex items-center justify-between mb-1.5">
                         <h4 className="font-medium text-foreground dark:text-foreground/90 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {method.name}
-                        </h4> 
+                        </h4>
                       </div>
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground/80 mb-3 line-clamp-2">
                         {method.description}
@@ -208,18 +179,18 @@ export function ContactSection() {
                       <div className="items-center justify-between">
                         <motion.span
                           className="text-sm font-mono text-foreground dark:text-foreground/90 bg-muted/50 dark:bg-muted/30 px-2.5 py-1.5 rounded-lg"
-                          whileHover={{ 
+                          whileHover={{
                             backgroundColor: 'rgba(59,130,246,0.08)',
                             transition: { duration: 0.2 }
                           }}
                         >
                           {method.value}
                         </motion.span>
-                        <MotionButton 
-                          size="sm" 
-                          variant="ghost" 
+                        <MotionButton
+                          size="sm"
+                          variant="ghost"
                           className="ml-2 text-muted-foreground dark:text-muted-foreground/70 group-hover:text-blue-600 dark:group-hover:text-blue-400 flex items-center gap-1"
-                          whileHover={{ 
+                          whileHover={{
                             backgroundColor: 'rgba(59,130,246,0.08)',
                             transition: { duration: 0.2 }
                           }}
@@ -258,7 +229,6 @@ export function ContactSection() {
             了解我们的服务时间和服务器信息
           </CardDescription>
         </CardHeader>
-        
         <CardContent className="space-y-4 relative z-10">
           <motion.div
             variants={{
@@ -343,7 +313,7 @@ export function ContactSection() {
             <CardTitle className="flex items-center space-x-2">
               <motion.span
                 className="bg-linear-to-r from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400 bg-clip-text text-transparent"
-                animate={{ 
+                animate={{
                   scale: [1, 1.05, 1],
                   rotate: [0, 2, -2, 0]
                 }}

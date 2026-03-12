@@ -1,15 +1,13 @@
-
+import { LicenseSection } from "@/components/license-section"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { TeamSection } from "@/components/team-section"
-
 import { ContactSection } from "@/components/contact-section"
 import { Card, CardContent } from "@/components/ui/card"
 import { Heart, Users, Globe } from "lucide-react"
 import type { Metadata } from "next"
-
 import { RunningDuration } from "@/components/running-duration"
-import Link from "next/link"
+
 
 export const metadata: Metadata = {
   title: "关于我们 - EndlessPixel Minecraft 服务器",
@@ -82,27 +80,19 @@ export default function AboutPage() {
               </CardContent>
             </Card>
           </section>
-
-          {/* -------------- 团队 + 联系 -------------- */}
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <TeamSection />
               <br /><br />
-              {/* <LicenseSection /> */}
-              {/* -------------- 创立至今 -------------- */}
               <section className="flex justify-center">
                 <Card className="w-full border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/40 backdrop-blur">
                   <CardContent className="p-6 text-center">
                     <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">EndlessPixel服务器创立至今</h2>
-                    {/* 替换为我们的客户端组件 */}
                     <RunningDuration />
                   </CardContent>
                 </Card>
               </section>
-
               <br /><br />
-
-              {/* -------------- CTA -------------- */}
               <section className="text-center">
                 <Card className="border-blue-200 dark:border-blue-800 bg-linear-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
                   <CardContent className="p-8">
@@ -113,22 +103,8 @@ export default function AboutPage() {
                   </CardContent>
                 </Card>
               </section>
-
-              <br /><br />
-
-              <section className="text-center">
-                <Card className="border-green-200 dark:border-green-800 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
-                  <CardContent className="p-8">
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">深入了解我们的技术</h2>
-                    <Link
-                      href="/dev"
-                      className="mt-4 inline-block px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-600"
-                    >
-                      前往开发者中心页面
-                    </Link>
-                  </CardContent>
-                </Card>
-              </section>
+              <br />
+              <LicenseSection />
             </div>
             <div className="lg:col-span-1">
               <ContactSection />
