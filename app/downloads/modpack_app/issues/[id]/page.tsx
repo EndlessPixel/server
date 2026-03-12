@@ -1,5 +1,5 @@
 
-import GitHubIssueDetail from "@/components/GitHubIssueDetail";
+import GitHubIssueDetail from "@/components/github-issue-detail";
 
 
 const MODPACK_APP_REPO = {

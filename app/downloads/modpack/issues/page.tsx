@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import GitHubIssuesList from "@/components/GitHubIssuesList";
+import GitHubIssuesList from "@/components/github-issues-list";
 const MODPACK_APP_REPO = {
   owner: 'EndlessPixel',
   repo: 'EndlessPixel-Modpack',

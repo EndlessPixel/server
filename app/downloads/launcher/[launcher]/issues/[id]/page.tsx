@@ -1,4 +1,4 @@
-import GitHubIssueDetail from "@/components/GitHubIssueDetail";
+import GitHubIssueDetail from "@/components/github-issue-detail";
 import { launcherRepos } from "@/lib/launcherMeta";
 
 export default async function IssueDetailPage({ params }: { params: { launcher: string; id: string } }) {

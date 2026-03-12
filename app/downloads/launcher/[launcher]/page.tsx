@@ -1,4 +1,4 @@
-import { LauncherDownloadPage } from "@/components/LauncherDownloadPage";
+import { LauncherDownloadPage } from "@/components/launcher-download-page";
 import { launcherRepos } from "@/lib/launcherMeta";
 import { redirect } from "next/navigation";
 

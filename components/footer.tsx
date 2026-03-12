@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Server, Github, MessageCircle, Video, Smartphone, Gamepad2, Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight, Twitch, Facebook, Code} from "lucide-react"
 import { useState } from "react"
-import { RunningDuration } from "./RunningDuration";
+import { RunningDuration } from "./running-duration";
 type SocialLink = {
   icon: React.ElementType;
   href: string;
