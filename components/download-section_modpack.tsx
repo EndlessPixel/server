@@ -208,7 +208,7 @@ export function DownloadSection() {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-linear-to-r from-slate-800 to-slate-900 bg-clip-text text-transparent">
           下载模组包
         </h1>
         <p className="text-muted-foreground">选择适合你的分支版本，体验不同游戏乐趣</p>
