@@ -1,3 +1,5 @@
+*.ts linguist-detectable=true linguist-language=TypeScript
+*.tsx linguist-detectable=true linguist-language=TypeScript JSX
 *.json linguist-detectable=true linguist-language=JSON
 *.md linguist-detectable=true linguist-language=Markdown
 *.markdown linguist-detectable=true linguist-language=Markdown
