@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Download, Activity, BookOpen, Users, Home, ChevronRight, Search, Code } from 'lucide-react';
+import { Menu, X, Download, Activity, BookOpen, Users, Home, ChevronRight, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 function useLockBody(lock: boolean) {
@@ -130,7 +130,6 @@ export function Navigation() {
   { href: '/status', label: '状态查询', icon: Activity, description: '服务器状态' },
   { href: '/wiki', label: 'Wiki', icon: BookOpen, description: '服务器专属百科' },
   { href: '/about', label: '关于我们', icon: Users, description: '团队介绍' },
-  { href: '/dev', label: '技术', icon: Code, description: '开发相关' },
 ];
   return (
     <>

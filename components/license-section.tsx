@@ -19,7 +19,7 @@ interface LicenseCategory {
 const LicenseHeaderCard = ({ info }: { info: LicenseInfo }) => (
   <Card className="border-0 bg-linear-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
     <CardHeader>
-      <div className="flex items-center gap-4 p-3 rounded-2xl bg-linear-to-r from-slate-800 to-slate-900 text-white shadow-lg"><Scale className="w-6 h-6" /></div>
+      <div className="flex items-center gap-4 p-3 rounded-2xl bg-linear-to-r from-slate-800 to-slate-900 text-white shadow-lg"><Scale className="w-6 h-6" /><h2 className="text-xl font-bold">EndlessPixel / Server</h2></div>
         <CardTitle className="text-2xl">{info.title}</CardTitle>
         <CardDescription>{info.description}</CardDescription>
     </CardHeader>
