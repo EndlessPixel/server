@@ -11,7 +11,7 @@ const nextConfig = {
                     "script-src 'self' 'unsafe-inline' https://discord.com https://www.googletagmanager.com https://static.cloudflareinsights.com",
                     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                     "font-src 'self' https://fonts.gstatic.com",
-                    "connect-src 'self' https://discord.com https://*.vercel.app https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us https://cloudflareinsights.com",
+                    "connect-src 'self' https://discord.com https://*.vercel.app https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us https://cloudflareinsights.com https://uapis.cn",
                     "object-src 'none'",
                     "frame-src 'self' https://docs.qq.com",
                     "base-uri 'self'",

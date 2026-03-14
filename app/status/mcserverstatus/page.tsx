@@ -62,24 +62,16 @@ interface ServerData {
   info?: ServerMotd;
   debug?: Record<string, any>;
 }
-
-
 const ACTIVE_NODE = {
   name: "主服务器",
   ip: "mc.endlesspixel.cn",
 };
-
 const CACHE_DURATION = 30_000;
 const FETCH_TIMEOUT = 8000;
 const AUTO_REFRESH_INTERVAL = 1 * 60 * 1000;
-
-
 const fetchServerData = async (ip: string): Promise<ServerData | null> => {
   if (!ip) return null;
-
   const cacheKey = `mcsrv:${ip}`;
-
-
   try {
     const raw = sessionStorage.getItem(cacheKey);
     if (raw) {
@@ -93,9 +85,7 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
   } catch (e) {
     console.warn("缓存读取失败:", e);
   }
-
   try {
-
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
     const response = await fetch(`/api/mcserver?ip=${encodeURIComponent(ip)}`, {
@@ -105,36 +95,27 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
         'Cache-Control': 'no-cache'
       }
     });
-
     clearTimeout(timeout);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
     const data = (await response.json()) as ServerData;
-
-
     try {
       sessionStorage.setItem(cacheKey, JSON.stringify({
         _ts: Date.now(),
         data
       }));
-
-
       if (data.icon) {
         localStorage.setItem(`mcserver:icon:${ip}`, data.icon);
       }
     } catch (e) {
       console.warn("缓存存储失败:", e);
     }
-
     console.log("成功获取服务器数据", data);
     return data;
   } catch (e) {
     console.error("获取服务器数据失败:", e);
-
-
     try {
       const raw = sessionStorage.getItem(cacheKey);
       if (raw) {
@@ -145,11 +126,9 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
     } catch (e) {
       console.warn("降级缓存读取失败:", e);
     }
-
     return null;
   }
 };
-
 export default function McServerStatusPage() {
   const [serverData, setServerData] = useState<ServerData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -163,13 +142,9 @@ export default function McServerStatusPage() {
     mods: false,
     debug: false
   });
-
-
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isMountedRef = useRef(true);
   const lastRefreshRef = useRef<number>(0);
-
-
   const debounce = (func: Function, delay: number) => {
     let timeoutId: NodeJS.Timeout;
     return (...args: any[]) => {
@@ -177,26 +152,18 @@ export default function McServerStatusPage() {
       timeoutId = setTimeout(() => func.apply(null, args), delay);
     };
   };
-
-
   const loadServerData = useCallback(async () => {
     if (!isMountedRef.current) return;
-
-
     const now = Date.now();
     if (now - lastRefreshRef.current < 3000) {
       console.log("请求过于频繁，跳过本次请求");
       return;
     }
-
     lastRefreshRef.current = now;
-
     setIsLoading(true);
     setError(null);
-
     try {
       const data = await fetchServerData(ACTIVE_NODE.ip);
-
       if (isMountedRef.current) {
         setServerData(data);
         setLastUpdated(new Date());
@@ -215,20 +182,14 @@ export default function McServerStatusPage() {
       }
     }
   }, []);
-
-
   const debouncedLoadServerData = useCallback(
     debounce(loadServerData, 1000),
     [loadServerData]
   );
-
-
   const handleRefresh = useCallback(() => {
     if (isLoading) return;
     debouncedLoadServerData();
   }, [isLoading, debouncedLoadServerData]);
-
-
   const toggleAutoRefresh = useCallback(() => {
     setAutoRefreshEnabled(prev => {
       const newState = !prev;
@@ -246,25 +207,17 @@ export default function McServerStatusPage() {
       return newState;
     });
   }, [isLoading, debouncedLoadServerData]);
-
-
   const toggleSection = useCallback((section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
   }, []);
-
-
   useEffect(() => {
     isMountedRef.current = true;
-
-
     const timer = setTimeout(() => {
       loadServerData();
     }, 100);
-
-
     if (autoRefreshEnabled) {
       intervalRef.current = setInterval(() => {
         if (!isLoading) {
@@ -273,8 +226,6 @@ export default function McServerStatusPage() {
       }, AUTO_REFRESH_INTERVAL);
       console.log("自动刷新已启动，间隔:", AUTO_REFRESH_INTERVAL, "ms");
     }
-
-
     return () => {
       isMountedRef.current = false;
       clearTimeout(timer);
@@ -284,8 +235,6 @@ export default function McServerStatusPage() {
       }
     };
   }, [loadServerData, isLoading, autoRefreshEnabled, debouncedLoadServerData]);
-
-
   const renderSkeletonLoader = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {Array.from({ length: 6 }).map((_, i) => (
@@ -301,7 +250,6 @@ export default function McServerStatusPage() {
       ))}
     </div>
   );
-
   const renderErrorState = () => (
     <Card className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 shadow-lg">
       <CardHeader>
@@ -353,12 +301,10 @@ export default function McServerStatusPage() {
       </CardContent>
     </Card>
   );
-
   const renderPlayerList = () => {
     if (!serverData?.players?.list || serverData.players.list.length === 0) {
       return <p className="text-slate-500 dark:text-slate-400 text-sm">暂无在线玩家</p>;
     }
-
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
         {serverData.players.list.map((player, index) => (
@@ -375,13 +321,10 @@ export default function McServerStatusPage() {
       </div>
     );
   };
-
   return (
     <>
       <Navigation />
-
       <main className="container mx-auto px-4 py-8">
-        {/* 页面头部 */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
           <div className="flex items-center gap-2">
             <Button
@@ -390,7 +333,7 @@ export default function McServerStatusPage() {
               onClick={() => window.history.back()}
             >
               <ArrowLeft size={18} className="mr-2" />
-              返回状态页 v3
+              返回状态页
             </Button>
           </div>
 
@@ -402,7 +345,6 @@ export default function McServerStatusPage() {
               实时监控服务器状态，获取最新服务器信息
             </p>
           </div>
-
           <div className="flex items-center gap-2">
             {lastUpdated && (
               <Badge variant="outline" className="text-xs">
@@ -444,8 +386,6 @@ export default function McServerStatusPage() {
             </Button>
           </div>
         </div>
-
-        {/* 节点信息 */}
         <Card className="mb-8 shadow-lg border-0 bg-linear-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -464,23 +404,16 @@ export default function McServerStatusPage() {
               <div className="flex items-center gap-2 p-3 bg-white dark:bg-slate-800/30 rounded-lg">
                 <Activity size={16} className="text-yellow-500" />
                 <span className="text-sm text-slate-700 dark:text-slate-300">
-                  {autoRefreshEnabled ? "自动刷新开启 (10分钟)" : "自动刷新关闭"}
+                  {autoRefreshEnabled ? "自动刷新开启 (1分钟)" : "自动刷新关闭"}
                 </span>
               </div>
             </div>
           </CardContent>
         </Card>
-
-        {/* 加载状态 */}
         {isLoading && renderSkeletonLoader()}
-
-        {/* 错误状态 */}
         {!isLoading && error && renderErrorState()}
-
-        {/* 服务器数据展示 */}
         {!isLoading && serverData && (
           <>
-            {/* 服务器状态卡片 */}
             <Card className="mb-8 shadow-lg border-0 bg-linear-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-xl font-bold">
@@ -530,20 +463,21 @@ export default function McServerStatusPage() {
                       </div>
                     )}
                   </div>
-
                   <div className="grow">
-                    {/* 服务器标语 */}
-                    {serverData.motd?.clean && (
+                    {serverData.motd?.html && (
                       <div className="mb-4">
                         <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
                           <MessageSquare size={14} />
                           服务器Motd
                         </h3>
                         <div className="bg-white dark:bg-slate-800/30 p-4 rounded-lg  border-slate-200 dark:border-slate-700">
-                          {serverData.motd.clean.map((line, index) => (
-                            <p key={index} className="text-sm text-slate-700 dark:text-slate-300 mb-1 last:mb-0">
-                              {line}
-                            </p>
+                          {serverData.motd.html.map((line, index) => (
+                            // 关键修改：使用 dangerouslySetInnerHTML 渲染 HTML
+                            <p
+                              key={index}
+                              className="text-sm text-slate-700 dark:text-slate-300 mb-1 last:mb-0"
+                              dangerouslySetInnerHTML={{ __html: line }} // 核心修复点
+                            />
                           ))}
                         </div>
                       </div>
@@ -552,8 +486,6 @@ export default function McServerStatusPage() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* 信息卡片网格 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
               <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-2">
@@ -564,7 +496,7 @@ export default function McServerStatusPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-lg font-semibold">
-                    {serverData.version ?? (serverData.protocol?.name ?? "—")}
+                    {serverData.protocol?.name ?? (serverData.protocol?.name ?? "—")}
                   </p>
                   {serverData.protocol?.version && (
                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
@@ -583,7 +515,7 @@ export default function McServerStatusPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-lg font-semibold">
-                    {serverData.software || "—"}
+                    {serverData.version || "—"}
                   </p>
                   <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                     服务端软件
