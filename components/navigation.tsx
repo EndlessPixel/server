@@ -35,51 +35,52 @@ function ExplorerBar() {
   const [isFlickering, setIsFlickering] = useState(false); // 闪烁状态
   const clickTimer = useRef<NodeJS.Timeout | null>(null); // 防抖计时器
   const typingTimer = useRef<NodeJS.Timeout | null>(null); // 打字机计时器
-
-  // 获取一言的核心函数
+  // 修复后的 fetchSaying 核心函数
   const fetchSaying = () => {
     setIsSayingLoading(true);
-    setIsFlickering(true); // 开始闪烁
+    setIsFlickering(true);
+    // 第一步：请求开始时立即清空显示文本，而不是等异步回调
+    setDisplaySaying("");
+
     fetch("https://uapis.cn/api/v1/saying")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.text) {
-          setSaying(data.text);
-        } else {
-          setSaying("无法加载");
-        }
+        const newSaying = data?.text || "无法加载";
+        setSaying(newSaying);
       })
       .catch(() => {
-        setSaying("无法加载");
+        const errorSaying = "无法加载";
+        setSaying(errorSaying);
       })
       .finally(() => {
         setIsSayingLoading(false);
-        // 闪烁0.3秒后停止，开始打字机效果
+        // 第二步：闪烁0.3秒后，先停止闪烁，再启动打字机（用最新的saying值）
         setTimeout(() => {
           setIsFlickering(false);
+          // 这里用最新的saying，而不是回调里的临时变量，避免状态不一致
           startTypingEffect(saying);
         }, 300);
       });
   };
 
-  // 打字机效果实现
+  // 优化打字机函数：确保每次启动前完全清空
   const startTypingEffect = (text: string) => {
-    // 清除之前的打字机计时器
+    // 清除旧计时器
     if (typingTimer.current) clearTimeout(typingTimer.current);
-
-    setDisplaySaying(""); // 清空显示文本
+    // 强制清空，确保无残留
+    setDisplaySaying("");
     let index = 0;
 
     const typeChar = () => {
       if (index < text.length) {
         setDisplaySaying(prev => prev + text.charAt(index));
         index++;
-        // 随机打字速度，更自然
         typingTimer.current = setTimeout(typeChar, 50 + Math.random() * 50);
       }
     };
 
-    typeChar();
+    // 加一个极短的延迟，确保清空操作先完成，再开始打字
+    setTimeout(typeChar, 10);
   };
 
   // 初始加载一言
