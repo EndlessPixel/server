@@ -72,30 +72,36 @@ interface Repo {
 
     prank_tag: string;
 }
+
+// 抽离固定前缀，便于统一维护
+const GITHUB_REPO_PREFIX = 'https://github.com/EndlessPixel/';
+
 const repoList: Repo[] = [
-    { name: 'Chat-Box', url: 'https://github.com/EndlessPixel/Chat-Box', prank_tag: 'Talks too much (April Fools)' },
-    { name: 'EndlessPixel-Modpack', url: 'https://github.com/EndlessPixel/EndlessPixel-Modpack', prank_tag: 'May contain fake mods 🎭' },
-    { name: 'CSSTextLib', url: 'https://github.com/EndlessPixel/CSSTextLib', prank_tag: 'Makes text upside down 🥴' },
-    { name: 'SystemStatus', url: 'https://github.com/EndlessPixel/SystemStatus', prank_tag: 'Lies about your CPU temp 🌡️' },
-    { name: 'Native-Snake-AI', url: 'https://github.com/EndlessPixel/Native-Snake-AI', prank_tag: 'Snake eats itself (on purpose) 🐍' },
-    { name: 'EndlessPixel-App', url: 'https://github.com/EndlessPixel/EndlessPixel-App', prank_tag: 'April Fools: App is just a teapot 🫖' },
-    { name: '2048-AI-Game', url: 'https://github.com/EndlessPixel/2048-AI-Game', prank_tag: 'AI cheats (we won\'t tell) 🎮' },
-    { name: 'chinese-chess-js', url: 'https://github.com/EndlessPixel/chinese-chess-js', prank_tag: 'Pieces switch sides 🤪' },
-    { name: 'JSON-Tree-Viewer', url: 'https://github.com/EndlessPixel/JSON-Tree-Viewer', prank_tag: 'Makes JSON look like tea leaves 🍵' },
-    { name: 'EndlessPixel-Novel', url: 'https://github.com/EndlessPixel/EndlessPixel-Novel', prank_tag: 'Plot twist: It\'s a teapot story 📖' },
-    { name: 'EndlessPixel-ModpackAPP', url: 'https://github.com/EndlessPixel/EndlessPixel-ModpackAPP', prank_tag: 'App crashes (jk... maybe) 💥' },
-    { name: 'captcha', url: 'https://github.com/EndlessPixel/captcha', prank_tag: 'Captcha is just a teapot emoji 🫖' },
-    { name: 'frpc-manager', url: 'https://github.com/EndlessPixel/frpc-manager', prank_tag: 'Manages fake tunnels 🚇' },
-    { name: 'EndlessPixel-Website', url: 'https://github.com/EndlessPixel/EndlessPixel-Website', prank_tag: 'Website is upside down (April Fools)' },
-    { name: 'frp-config-generator', url: 'https://github.com/EndlessPixel/frp-config-generator', prank_tag: 'Generates prank configs 😝' },
-    { name: 'qrcode-generator-parser', url: 'https://github.com/EndlessPixel/qrcode-generator-parser', prank_tag: 'QR codes lead to teapot memes 🤣' },
-    { name: 'python-notepad', url: 'https://github.com/EndlessPixel/python-notepad', prank_tag: 'Types backwards on April Fools 📝' },
-    { name: 'EndlessPixel', url: 'https://github.com/EndlessPixel/EndlessPixel', prank_tag: 'April Fools: Repo is just a teapot 🫖' },
-    { name: 'TerminalQR', url: 'https://github.com/EndlessPixel/TerminalQR', prank_tag: 'April Fools: QR codes lead to teapot memes 🤣' },
-    { name: 'EndlessPixel.github.io', url: 'https://github.com/EndlessPixel/EndlessPixel.github.io', prank_tag: 'April Fools: Website is upside down (April Fools)' },
-    { name: 'Files-Panel', url: 'https://github.com/EndlessPixel/Files-Panel', prank_tag: 'April Fools: Files are just a teapot 🫖' },
-    { name: 'Command-Sentinel', url: 'https://github.com/EndlessPixel/Command-Sentinel', prank_tag: 'April Fools: Commands are just a teapot 🫖' },
+    { name: 'Chat-Box', url: `${GITHUB_REPO_PREFIX}Chat-Box`, prank_tag: 'April Fools: Talks way too much 🗣️' },
+    { name: 'EndlessPixel-Modpack', url: `${GITHUB_REPO_PREFIX}EndlessPixel-Modpack`, prank_tag: 'April Fools: May contain fake mods 🎭' },
+    { name: 'CSSTextLib', url: `${GITHUB_REPO_PREFIX}CSSTextLib`, prank_tag: 'April Fools: Makes text upside down 🥴' },
+    { name: 'SystemStatus', url: `${GITHUB_REPO_PREFIX}SystemStatus`, prank_tag: 'April Fools: Lies about CPU temp 🌡️' },
+    { name: 'Native-Snake-AI', url: `${GITHUB_REPO_PREFIX}Native-Snake-AI`, prank_tag: 'April Fools: Snake eats itself 🐍' },
+    { name: 'EndlessPixel-App', url: `${GITHUB_REPO_PREFIX}EndlessPixel-App`, prank_tag: 'April Fools: It’s just a teapot 🫖' },
+    { name: '2048-AI-Game', url: `${GITHUB_REPO_PREFIX}2048-AI-Game`, prank_tag: 'April Fools: AI definitely cheats 🎮' },
+    { name: 'chinese-chess-js', url: `${GITHUB_REPO_PREFIX}chinese-chess-js`, prank_tag: 'April Fools: Pieces switch sides 🤪' },
+    { name: 'JSON-Tree-Viewer', url: `${GITHUB_REPO_PREFIX}JSON-Tree-Viewer`, prank_tag: 'April Fools: Reads like tea leaves 🍵' },
+    { name: 'EndlessPixel-Novel', url: `${GITHUB_REPO_PREFIX}EndlessPixel-Novel`, prank_tag: 'April Fools: Plot twist: teapot story 📖' },
+    { name: 'EndlessPixel-ModpackAPP', url: `${GITHUB_REPO_PREFIX}EndlessPixel-ModpackAPP`, prank_tag: 'April Fools: Crashes for fun 💥' },
+    { name: 'captcha', url: `${GITHUB_REPO_PREFIX}captcha`, prank_tag: 'April Fools: Captcha = teapot 🫖' },
+    { name: 'frpc-manager', url: `${GITHUB_REPO_PREFIX}frpc-manager`, prank_tag: 'April Fools: Tunnels are fake 🚇' },
+    { name: 'EndlessPixel-Website', url: `${GITHUB_REPO_PREFIX}EndlessPixel-Website`, prank_tag: 'April Fools: Website is upside down 🥴' },
+    { name: 'frp-config-generator', url: `${GITHUB_REPO_PREFIX}frp-config-generator`, prank_tag: 'April Fools: Generates prank configs 😝' },
+    { name: 'qrcode-generator-parser', url: `${GITHUB_REPO_PREFIX}qrcode-generator-parser`, prank_tag: 'April Fools: QR = teapot memes 🤣' },
+    { name: 'python-notepad', url: `${GITHUB_REPO_PREFIX}python-notepad`, prank_tag: 'April Fools: Types backwards 📝' },
+    { name: 'EndlessPixel', url: `${GITHUB_REPO_PREFIX}EndlessPixel`, prank_tag: 'April Fools: Repo is just a teapot 🫖' },
+    { name: 'TerminalQR', url: `${GITHUB_REPO_PREFIX}TerminalQR`, prank_tag: 'April Fools: QR leads to teapots 🤣' },
+    { name: 'EndlessPixel.github.io', url: `${GITHUB_REPO_PREFIX}EndlessPixel.github.io`, prank_tag: 'April Fools: Site is upside down 🥴' },
+    { name: 'Files-Panel', url: `${GITHUB_REPO_PREFIX}Files-Panel`, prank_tag: 'April Fools: Files are fake teapots 🫖' },
+    { name: 'Command-Sentinel', url: `${GITHUB_REPO_PREFIX}Command-Sentinel`, prank_tag: 'April Fools: Commands are pranks 🚨' },
+    { name: 'simple-local-music-player', url: `${GITHUB_REPO_PREFIX}simple-local-music-player`, prank_tag: 'April Fools: Music plays backwards 🎵' },
 ];
+
 function shuffle<T>(arr: T[]): T[] {
     const newArr = [...arr];
     for (let i = newArr.length - 1; i > 0; i--) {
