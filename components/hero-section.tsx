@@ -255,6 +255,19 @@ export function HeroSection() {
               <span className="relative z-10">查看服务器状态</span>
               <motion.div className="ml-2 w-2 h-2 bg-green-400 rounded-full relative z-10" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
             </Link>
+
+            {/* 🔥 我给你加的【服务器实况】按钮（风格100%统一） */}
+            <Link href="/live" className={`${baseBtnClasses} bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl`}>
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
+              <svg className="w-5 h-5 mr-2 relative z-10" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              <span className="relative z-10">服务器实况</span>
+              <svg className="w-4 h-4 ml-2 text-pink-300 relative z-10" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+              </svg>
+            </Link>
+
             <Link href="/downloads/modpack" className={`${baseBtnClasses} bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 text-slate-800 dark:text-slate-200 shadow-xl hover:shadow-2xl`}>
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-blue-50/30 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
               <Package className="w-5 h-5 mr-2 relative z-10" />

@@ -1,6 +1,6 @@
 // components/login.tsx
 'use client';
-import { LogOutIcon, UserIcon, LogInIcon } from 'lucide-react'; // 新增 LogInIcon
+import { LogOutIcon, UserIcon, LogInIcon } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
@@ -17,8 +17,9 @@ const LoginButton: React.FC<LoginButtonProps> = ({
 }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
+    const [redirectUrl, setRedirectUrl] = useState('/'); // 👈 关键修复
 
-    // Cookie 操作函数
+    // Cookie 操作
     const getCookie = (name: string) => {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -30,9 +31,13 @@ const LoginButton: React.FC<LoginButtonProps> = ({
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     };
 
-    // 检测登录状态（加防抖，减少重复执行）
+    // 👇 关键修复：只在客户端获取真实跳转地址
     useEffect(() => {
-        // 确保在客户端执行，避免 SSR 导致的不一致
+        setRedirectUrl(encodeURIComponent(window.location.pathname + window.location.search));
+    }, []);
+
+    // 检测登录状态
+    useEffect(() => {
         if (typeof window === 'undefined') return;
 
         const checkLoginStatus = () => {
@@ -46,9 +51,8 @@ const LoginButton: React.FC<LoginButtonProps> = ({
             }
         };
 
-        // 初始检测 + 监听 cookie 变化（可选）
         checkLoginStatus();
-        const interval = setInterval(checkLoginStatus, 1000); // 防止手动改 cookie 不更新
+        const interval = setInterval(checkLoginStatus, 1000);
         return () => clearInterval(interval);
     }, []);
 
@@ -57,76 +61,52 @@ const LoginButton: React.FC<LoginButtonProps> = ({
         deleteCookie('mc_user');
         setIsLoggedIn(false);
         setUsername('');
-        // 用 Next.js 路由刷新，替代 window.reload 更丝滑
-        if (typeof window !== 'undefined') {
-            window.history.replaceState({}, document.title, window.location.href);
-            window.location.href = window.location.href; // 软刷新，减少闪烁
-        }
+        window.location.reload();
     };
 
-    // 尺寸样式（抽成常量，避免重复计算）
+    // 样式
     const sizeClasses = React.useMemo(() => ({
         sm: 'px-3 py-1.5 text-sm',
         md: 'px-4 py-2 text-base',
         lg: 'px-6 py-2.5 text-lg',
     }), []);
 
-    // 登录按钮样式
     const loginBtnClasses = `
     inline-flex items-center justify-center gap-2
     font-medium rounded-lg
     bg-gradient-to-r from-indigo-600 to-purple-600
     text-white shadow-lg shadow-indigo-500/20
     hover:from-indigo-700 hover:to-purple-700
-    hover:shadow-indigo-500/30
-    active:scale-98 active:shadow-indigo-500/10
     transition-all duration-300 ease-in-out
-    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-    dark:focus:ring-offset-slate-900
   `;
 
-    // 退出按钮样式
     const logoutBtnClasses = `
     inline-flex items-center justify-center gap-2
     font-medium rounded-lg
     bg-slate-200 dark:bg-slate-700
     text-slate-800 dark:text-slate-200
     hover:bg-slate-300 dark:hover:bg-slate-600
-    active:scale-98
-    transition-all duration-300 ease-in-out
-    focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 dark:focus:ring-slate-500
-    dark:focus:ring-offset-slate-900
+    transition-all duration-300
   `;
 
-    // 已登录状态的用户信息样式
     const userInfoClasses = `
     inline-flex items-center gap-2
     ${sizeClasses[size]}
     text-slate-700 dark:text-slate-300
   `;
 
-    // 获取当前页面 URL 作为跳转回地址
-    const getRedirectUrl = () => {
-        if (typeof window !== 'undefined') {
-            return encodeURIComponent(window.location.pathname + window.location.search);
-        }
-        return encodeURIComponent('/');
-    };
-
     if (isLoggedIn) {
         return (
             <div className={`flex items-center gap-2 ${className}`}>
-                {/* 显示用户名 */}
                 <span className={userInfoClasses}>
                     <UserIcon className="w-4 h-4" />
                     {username}
                 </span>
-                {/* 退出按钮 */}
                 <button
                     onClick={handleLogout}
                     className={`${logoutBtnClasses} ${sizeClasses[size]}`}
                     aria-label="退出登录"
-                    type="button" // 明确按钮类型，避免表单提交
+                    type="button"
                 >
                     <LogOutIcon className="w-4 h-4" />
                     退出
@@ -137,12 +117,11 @@ const LoginButton: React.FC<LoginButtonProps> = ({
 
     return (
         <Link
-            href={`/login?redirect=${getRedirectUrl()}`} // 优化：提前 encode
+            href={`/login?redirect=${redirectUrl}`} // 👈 关键修复
             className={`${loginBtnClasses} ${sizeClasses[size]} ${className}`}
             aria-label="前往登录页面"
-            prefetch={false} // 关键：关闭预取，避免提前加载登录页
         >
-            <LogInIcon className="w-4 h-4" /> {/* 替换为 lucide 图标，风格统一 */}
+            <LogInIcon className="w-4 h-4" />
             {text}
         </Link>
     );
