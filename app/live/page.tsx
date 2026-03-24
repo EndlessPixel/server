@@ -129,7 +129,7 @@ function LiveContent() {
                                 rel="noopener noreferrer"
                                 className="mt-2 block w-full text-center bg-pink-600/90 hover:bg-pink-600 text-white py-2 rounded-xl text-sm transition-all"
                             >
-                                🔔 欢迎关注 UP 主：EndlessPixel
+                                🔔 欢迎关注 UP 主：system_mini
                             </a>
                         </div>
                     </div>
