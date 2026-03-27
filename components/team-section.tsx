@@ -139,7 +139,7 @@ export function TeamSection() {
 
               {/* QQ 联系方式 */}
               <div>
-                <span className="block text-sm font-medium mb-2 flex items-center gap-1">
+                <span className="block text-sm font-medium mb-2 items-center gap-1">
                   <MessageSquare className="w-3.5 h-3.5" />QQ 联系
                 </span>
                 <div className="text-sm text-muted-foreground bg-muted/30 dark:bg-muted/20 rounded-md px-3 py-2 font-mono">
