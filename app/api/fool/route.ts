@@ -16,7 +16,6 @@ const TEAPOT_JOKES = {
         "418: Teapot is busy sipping tea, try again later 🫖",
         "April Fools! This teapot is actually a Next.js dev 🤓",
         "Why trust a teapot? Because I never lie... except today 😜",
-
         "Teapot update: Now runs on tea-powered JS (fake news) 🍵",
         "418: Your request was too boring — teapot replaced it with memes 🤣",
         "This teapot voted for GitHub Copilot... and lost (April Fools) 🗳️",
