@@ -6,8 +6,7 @@ import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Server, Users, Cpu, MessageSquare, AlertTriangle, ArrowLeft, Wifi, WifiOff, Clock, RefreshCw, ChevronDown, ChevronUp, Activity, Zap, Shield, Play, Pause, RotateCcw } from "lucide-react";
-
+import { Server, Users, Cpu, MessageSquare, AlertTriangle, ArrowLeft, Wifi, WifiOff, Clock, RefreshCw, ChevronDown, ChevronUp, Activity, Zap, Shield, RotateCcw } from "lucide-react";
 
 interface Player {
   name: string;
@@ -62,16 +61,18 @@ interface ServerData {
   info?: ServerMotd;
   debug?: Record<string, any>;
 }
+
 const ACTIVE_NODE = {
   name: "主服务器",
-  ip: "mc.endlesspixel.cn",
+  ip: "ep.wdsjfwq.com",
 };
-const CACHE_DURATION = 30_000;
+const CACHE_DURATION = 30000;
 const FETCH_TIMEOUT = 8000;
-const AUTO_REFRESH_INTERVAL = 1 * 60 * 1000;
+
 const fetchServerData = async (ip: string): Promise<ServerData | null> => {
   if (!ip) return null;
   const cacheKey = `mcsrv:${ip}`;
+  
   try {
     const raw = sessionStorage.getItem(cacheKey);
     if (raw) {
@@ -85,6 +86,7 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
   } catch (e) {
     console.warn("缓存读取失败:", e);
   }
+
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
@@ -101,6 +103,7 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = (await response.json()) as ServerData;
+    
     try {
       sessionStorage.setItem(cacheKey, JSON.stringify({
         _ts: Date.now(),
@@ -112,10 +115,12 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
     } catch (e) {
       console.warn("缓存存储失败:", e);
     }
+    
     console.log("成功获取服务器数据", data);
     return data;
   } catch (e) {
     console.error("获取服务器数据失败:", e);
+    
     try {
       const raw = sessionStorage.getItem(cacheKey);
       if (raw) {
@@ -129,12 +134,12 @@ const fetchServerData = async (ip: string): Promise<ServerData | null> => {
     return null;
   }
 };
+
 export default function McServerStatusPage() {
   const [serverData, setServerData] = useState<ServerData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
   const [refreshCount, setRefreshCount] = useState(0);
   const [expandedSections, setExpandedSections] = useState({
     players: false,
@@ -142,9 +147,10 @@ export default function McServerStatusPage() {
     mods: false,
     debug: false
   });
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
   const isMountedRef = useRef(true);
   const lastRefreshRef = useRef<number>(0);
+
   const debounce = (func: Function, delay: number) => {
     let timeoutId: NodeJS.Timeout;
     return (...args: any[]) => {
@@ -152,24 +158,26 @@ export default function McServerStatusPage() {
       timeoutId = setTimeout(() => func.apply(null, args), delay);
     };
   };
+
   const loadServerData = useCallback(async () => {
     if (!isMountedRef.current) return;
     const now = Date.now();
+    
     if (now - lastRefreshRef.current < 3000) {
       console.log("请求过于频繁，跳过本次请求");
       return;
     }
+    
     lastRefreshRef.current = now;
     setIsLoading(true);
     setError(null);
+
     try {
       const data = await fetchServerData(ACTIVE_NODE.ip);
       if (isMountedRef.current) {
         setServerData(data);
         setLastUpdated(new Date());
-        if (data) {
-          setRefreshCount(prev => prev + 1);
-        }
+        if (data) setRefreshCount(prev => prev + 1);
       }
     } catch (err) {
       if (isMountedRef.current) {
@@ -177,64 +185,40 @@ export default function McServerStatusPage() {
         console.error("加载服务器数据错误:", err);
       }
     } finally {
-      if (isMountedRef.current) {
-        setIsLoading(false);
-      }
+      if (isMountedRef.current) setIsLoading(false);
     }
   }, []);
+
   const debouncedLoadServerData = useCallback(
     debounce(loadServerData, 1000),
     [loadServerData]
   );
+
   const handleRefresh = useCallback(() => {
     if (isLoading) return;
     debouncedLoadServerData();
   }, [isLoading, debouncedLoadServerData]);
-  const toggleAutoRefresh = useCallback(() => {
-    setAutoRefreshEnabled(prev => {
-      const newState = !prev;
-      if (!newState && intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      } else if (newState && !intervalRef.current) {
 
-        intervalRef.current = setInterval(() => {
-          if (!isLoading) {
-            debouncedLoadServerData();
-          }
-        }, AUTO_REFRESH_INTERVAL);
-      }
-      return newState;
-    });
-  }, [isLoading, debouncedLoadServerData]);
   const toggleSection = useCallback((section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
   }, []);
+
   useEffect(() => {
     isMountedRef.current = true;
-    const timer = setTimeout(() => {
+
+    const initTimer = setTimeout(() => {
       loadServerData();
     }, 100);
-    if (autoRefreshEnabled) {
-      intervalRef.current = setInterval(() => {
-        if (!isLoading) {
-          debouncedLoadServerData();
-        }
-      }, AUTO_REFRESH_INTERVAL);
-      console.log("自动刷新已启动，间隔:", AUTO_REFRESH_INTERVAL, "ms");
-    }
+
     return () => {
       isMountedRef.current = false;
-      clearTimeout(timer);
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        console.log("自动刷新已清理");
-      }
+      clearTimeout(initTimer);
     };
-  }, [loadServerData, isLoading, autoRefreshEnabled, debouncedLoadServerData]);
+  }, [loadServerData]);
+
   const renderSkeletonLoader = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {Array.from({ length: 6 }).map((_, i) => (
@@ -250,6 +234,7 @@ export default function McServerStatusPage() {
       ))}
     </div>
   );
+
   const renderErrorState = () => (
     <Card className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 shadow-lg">
       <CardHeader>
@@ -280,31 +265,16 @@ export default function McServerStatusPage() {
               </>
             )}
           </Button>
-          <Button
-            onClick={toggleAutoRefresh}
-            variant={autoRefreshEnabled ? "secondary" : "outline"}
-            className={!autoRefreshEnabled ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : ""}
-          >
-            {autoRefreshEnabled ? (
-              <>
-                <Pause size={16} className="mr-2" />
-                暂停自动刷新
-              </>
-            ) : (
-              <>
-                <Play size={16} className="mr-2" />
-                启用自动刷新
-              </>
-            )}
-          </Button>
         </div>
       </CardContent>
     </Card>
   );
+
   const renderPlayerList = () => {
     if (!serverData?.players?.list || serverData.players.list.length === 0) {
       return <p className="text-slate-500 dark:text-slate-400 text-sm">暂无在线玩家</p>;
     }
+
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
         {serverData.players.list.map((player, index) => (
@@ -321,6 +291,7 @@ export default function McServerStatusPage() {
       </div>
     );
   };
+
   return (
     <>
       <Navigation />
@@ -345,6 +316,7 @@ export default function McServerStatusPage() {
               实时监控服务器状态，获取最新服务器信息
             </p>
           </div>
+          
           <div className="flex items-center gap-2">
             {lastUpdated && (
               <Badge variant="outline" className="text-xs">
@@ -356,19 +328,6 @@ export default function McServerStatusPage() {
               <RotateCcw size={12} className="mr-1" />
               刷新次数: {refreshCount}
             </Badge>
-            <Button
-              onClick={toggleAutoRefresh}
-              variant={autoRefreshEnabled ? "secondary" : "outline"}
-              size="sm"
-              className={!autoRefreshEnabled ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : ""}
-            >
-              {autoRefreshEnabled ? (
-                <Pause size={16} className="mr-2" />
-              ) : (
-                <Play size={16} className="mr-2" />
-              )}
-              {autoRefreshEnabled ? "暂停" : "启动"}
-            </Button>
             <Button
               onClick={handleRefresh}
               disabled={isLoading}
@@ -386,6 +345,7 @@ export default function McServerStatusPage() {
             </Button>
           </div>
         </div>
+
         <Card className="mb-8 shadow-lg border-0 bg-linear-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -404,26 +364,26 @@ export default function McServerStatusPage() {
               <div className="flex items-center gap-2 p-3 bg-white dark:bg-slate-800/30 rounded-lg">
                 <Activity size={16} className="text-yellow-500" />
                 <span className="text-sm text-slate-700 dark:text-slate-300">
-                  {autoRefreshEnabled ? "自动刷新开启 (1分钟)" : "自动刷新关闭"}
+                  手动刷新模式
                 </span>
               </div>
             </div>
           </CardContent>
         </Card>
+
         {isLoading && renderSkeletonLoader()}
         {!isLoading && error && renderErrorState()}
         {!isLoading && serverData && (
           <>
             <Card className="mb-8 shadow-lg border-0 bg-linear-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-xl font-bold">
-                  {ACTIVE_NODE.name}
-                </CardTitle>
+                <CardTitle className="text-xl font-bold">{ACTIVE_NODE.name}</CardTitle>
                 <Badge
-                  className={`${serverData.online
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                    : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                    }`}
+                  className={`${
+                    serverData.online
+                      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                  }`}
                 >
                   {serverData.online ? (
                     <>
@@ -442,27 +402,21 @@ export default function McServerStatusPage() {
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="shrink-0">
                     {serverData.icon ? (
-                      <div className="mb-4">
-                        <img
-                          src={serverData.icon}
-                          alt="Server Icon"
-                          className="w-24 h-24 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 border-4 border-white dark:border-slate-700"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/default-server-icon.png';
-                          }}
-                          loading="lazy"
-                        />
-                      </div>
+                      <img
+                        src={serverData.icon}
+                        alt="Server Icon"
+                        className="w-24 h-24 rounded-xl shadow-lg border-4 border-white dark:border-slate-700"
+                        onError={(e) => {(e.target as HTMLImageElement).src = '/default-server-icon.png';}}
+                      />
                     ) : (
-                      <div className="mb-4">
-                        <img
-                          src="/default-server-icon.png"
-                          alt="Default Server Icon"
-                          className="w-24 h-24 rounded-xl shadow-lg border-4 border-white dark:border-slate-700"
-                        />
-                      </div>
+                      <img
+                        src="/default-server-icon.png"
+                        alt="Default Icon"
+                        className="w-24 h-24 rounded-xl shadow-lg border-4 border-white dark:border-slate-700"
+                      />
                     )}
                   </div>
+
                   <div className="grow">
                     {serverData.motd?.html && (
                       <div className="mb-4">
@@ -470,13 +424,12 @@ export default function McServerStatusPage() {
                           <MessageSquare size={14} />
                           服务器Motd
                         </h3>
-                        <div className="bg-white dark:bg-slate-800/30 p-4 rounded-lg  border-slate-200 dark:border-slate-700">
+                        <div className="bg-white dark:bg-slate-800/30 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
                           {serverData.motd.html.map((line, index) => (
-                            // 关键修改：使用 dangerouslySetInnerHTML 渲染 HTML
                             <p
                               key={index}
                               className="text-sm text-slate-700 dark:text-slate-300 mb-1 last:mb-0"
-                              dangerouslySetInnerHTML={{ __html: line }} // 核心修复点
+                              dangerouslySetInnerHTML={{ __html: line }}
                             />
                           ))}
                         </div>
@@ -486,6 +439,7 @@ export default function McServerStatusPage() {
                 </div>
               </CardContent>
             </Card>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
               <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-2">
@@ -496,7 +450,7 @@ export default function McServerStatusPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-lg font-semibold">
-                    {serverData.protocol?.name ?? (serverData.protocol?.name ?? "—")}
+                    {serverData.protocol?.name || "—"}
                   </p>
                   {serverData.protocol?.version && (
                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
@@ -541,9 +495,7 @@ export default function McServerStatusPage() {
               </Card>
             </div>
 
-            {/* 详细信息展开卡片 */}
             <div className="space-y-4">
-              {/* 玩家列表 */}
               <Card className="shadow-lg border-0 bg-linear-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50">
                 <CardHeader
                   className="cursor-pointer pb-2"
@@ -563,19 +515,15 @@ export default function McServerStatusPage() {
                   </CardTitle>
                 </CardHeader>
                 {expandedSections.players && (
-                  <CardContent>
-                    {renderPlayerList()}
-                  </CardContent>
+                  <CardContent>{renderPlayerList()}</CardContent>
                 )}
               </Card>
             </div>
           </>
         )}
 
-        {/* 无数据状态 */}
         {!isLoading && !serverData && !error && renderErrorState()}
       </main>
-
       <Footer />
     </>
   );
