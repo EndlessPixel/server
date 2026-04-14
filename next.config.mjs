@@ -13,7 +13,7 @@ const nextConfig = {
                     "font-src 'self' https://fonts.gstatic.com",
                     "connect-src 'self' https://discord.com https://*.vercel.app https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us https://cloudflareinsights.com https://uapis.cn",
                     "object-src 'none'",
-                    "frame-src 'self' https://docs.qq.com https://player.bilibili.com https://www.bilibili.com",
+                    "frame-src 'self' http://wiki.epmc.top https://player.bilibili.com",
                     "base-uri 'self'",
                     "form-action 'self'"
                 ].join('; ')
