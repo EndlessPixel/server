@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-const NEW_WIKI_URL = "https://docs.qq.com/aio/p/sc0m6qoo8xschku?p=7OQN4lhJjGdrbLfHXNz7rs";
+const NEW_WIKI_URL = "http://wiki.epmc.top";
 function FullScreenPreview() {
     const [, setIsLoading] = useState(true);
     return (
         <div style={{ width: "100vw", height: "100vh", margin: 0, padding: 0, overflow: "hidden" }}>
             <iframe
                 src={NEW_WIKI_URL}
-                title="EndlessPixel 最新Wiki-腾讯文档"
+                title="EndlessPixel Wiki"
                 width="100%"
                 style={{ height: "100%", border: "none" }}
                 onLoad={() => setIsLoading(false)}

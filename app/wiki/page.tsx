@@ -3,7 +3,7 @@ import { useState } from "react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { BookOpen, ExternalLink, Loader2 } from "lucide-react"
-const NEW_WIKI_URL = "https://docs.qq.com/aio/p/sc0m6qoo8xschku?p=7OQN4lhJjGdrbLfHXNz7rs"
+const NEW_WIKI_URL = "http://wiki.epmc.top"
 export default function WikiPage() {
   const [isLoading, setIsLoading] = useState(true)
   return (
@@ -15,7 +15,7 @@ export default function WikiPage() {
             <div className="flex items-center gap-2 text-sm">
               <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span className="text-gray-700 dark:text-gray-300">
-                Wiki已迁移至腾讯文档，点击左侧按钮进行跳转，或在下方进行预览。
+                Wiki完全使用VitePress重构，点击左侧按钮进行跳转，或在下方进行预览。
               </span>
             </div>
             <a
@@ -41,14 +41,14 @@ export default function WikiPage() {
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <div className="flex flex-col items-center gap-3">
                 <Loader2 className="w-8 h-8 text-blue-600 dark:text-blue-400 animate-spin" />
-                <p className="text-gray-600 dark:text-gray-400 text-sm">加载最新Wiki内容...</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">加载Wiki内容...</p>
               </div>
             </div>
           )}
           <div style={{ width: "100%", height: "100vh", margin: 0, padding: 0, overflow: "hidden" }}>
             <iframe
               src={NEW_WIKI_URL}
-              title="EndlessPixel 最新Wiki-腾讯文档"
+              title="EndlessPixel Wiki"
               width="100%"
               height="100%"
               onLoad={() => setIsLoading(false)}
