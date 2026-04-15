@@ -6,4 +6,4 @@ build
 *.log
 tsconfig.tsbuildinfo
 cert
-.env.production
+.env.local
