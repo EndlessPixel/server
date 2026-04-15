@@ -11,15 +11,11 @@ export function BackToTop() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-
   useEffect(() => {
     const handleScroll = () => {
-
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = (window.pageYOffset / totalHeight) * 100;
       setScrollProgress(Math.min(progress, 100));
-
-
       setIsVisible(window.pageYOffset > 300);
     };
 
@@ -27,13 +23,11 @@ export function BackToTop() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-
 
     if (buttonRef.current) {
       buttonRef.current.classList.add("animate-pulse");
@@ -51,9 +45,8 @@ export function BackToTop() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.9 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="fixed bottom-8 right-8 z-50"
+          className="relative" // 移除 fixed 定位，由父容器 FloatActions 控制位置
         >
-          {/* 背景光晕（随滚动进度变化） */}
           <motion.div
             className="absolute inset-0 rounded-full blur-xl opacity-30"
             style={{
@@ -68,7 +61,6 @@ export function BackToTop() {
             transition={{ duration: 0.5 }}
           />
 
-          {/* 主按钮 */}
           <Button
             ref={buttonRef}
             className={cn(
@@ -81,7 +73,6 @@ export function BackToTop() {
             size="icon"
             aria-label="回到顶部"
           >
-            {/* 滚动进度圆环 */}
             <svg className="absolute inset-0 w-full h-full p-1.5" viewBox="0 0 100 100">
               <circle
                 cx="50"
@@ -106,7 +97,6 @@ export function BackToTop() {
               />
             </svg>
 
-            {/* 箭头图标（带动画） */}
             <motion.div
               className="relative z-10 flex items-center justify-center"
               animate={{
@@ -135,7 +125,6 @@ export function BackToTop() {
               </motion.div>
             </motion.div>
 
-            {/* 内部光晕效果 */}
             <motion.div
               className="absolute inset-0 bg-white/10 rounded-full"
               animate={{

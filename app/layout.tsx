@@ -3,10 +3,10 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { BackToTop } from "@/components/back-to-top";
 import { Toaster } from "@/components/ui/toaster";
 import clsx from "clsx";
 import "./globals.css";
+import FloatActions from "@/components/float-actions";
 const BRAND_NAME = "EndlessPixel Studio";
 const CURRENT_YEAR = new Date().getFullYear().toString();
 const DOMAIN = "https://www.endlesspixel.cn";
@@ -140,7 +140,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ErrorBoundary>
             {children}
-            <BackToTop />
+            <FloatActions />
           </ErrorBoundary>
           <Toaster />
         </ThemeProvider>
