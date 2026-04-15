@@ -9,3 +9,4 @@ localhost_pem_cert.py
 .gitignore
 .vscode/
 .github/
+.env.example
