@@ -19,21 +19,19 @@ interface Session {
 
 const STORAGE_KEY = 'epbot_sessions';
 const CURRENT_SESSION_KEY = 'epbot_current_session_id';
-const MAX_STORAGE_PERCENT = 0.9; // 90% 容量阈值
+const MAX_STORAGE_PERCENT = 0.9;
 
-// 估算 localStorage 已用空间百分比
 const getStorageUsagePercent = (): number => {
   try {
     const data = JSON.stringify(localStorage);
     const size = new Blob([data]).size;
-    const quota = 5 * 1024 * 1024; // 典型限额 5MB
+    const quota = 5 * 1024 * 1024;
     return size / quota;
   } catch {
     return 0;
   }
 };
 
-// 检查容量是否充足，不足时弹出警告
 const checkStorageQuota = (): boolean => {
   const usage = getStorageUsagePercent();
   if (usage >= MAX_STORAGE_PERCENT) {
@@ -43,7 +41,6 @@ const checkStorageQuota = (): boolean => {
   return true;
 };
 
-// 生成简短标题（取第一条用户消息前20字）
 const generateTitle = (messages: Message[]): string => {
   const firstUserMsg = messages.find(m => m.role === 'user')?.content || '';
   return firstUserMsg.slice(0, 20) + (firstUserMsg.length > 20 ? '…' : '') || '新对话';
@@ -55,7 +52,7 @@ export const EPBot = ({ className }: EPBotProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false); // 移动端侧栏开关
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -70,7 +67,6 @@ export const EPBot = ({ className }: EPBotProps) => {
     return false;
   });
 
-  // 初始化：从 localStorage 加载会话数据
   useEffect(() => {
     const savedSessions = localStorage.getItem(STORAGE_KEY);
     const savedCurrentId = localStorage.getItem(CURRENT_SESSION_KEY);
@@ -82,7 +78,6 @@ export const EPBot = ({ className }: EPBotProps) => {
       } catch { }
     }
 
-    // 如果没有会话，创建默认会话
     if (parsedSessions.length === 0) {
       const defaultSession: Session = {
         id: crypto.randomUUID(),
@@ -95,7 +90,6 @@ export const EPBot = ({ className }: EPBotProps) => {
 
     setSessions(parsedSessions);
 
-    // 确定当前会话
     let targetId = savedCurrentId;
     if (!targetId || !parsedSessions.find(s => s.id === targetId)) {
       targetId = parsedSessions[0].id;
@@ -103,7 +97,6 @@ export const EPBot = ({ className }: EPBotProps) => {
     setCurrentSessionId(targetId);
   }, []);
 
-  // 保存会话列表到 localStorage
   useEffect(() => {
     if (sessions.length > 0) {
       if (checkStorageQuota()) {
@@ -112,20 +105,17 @@ export const EPBot = ({ className }: EPBotProps) => {
     }
   }, [sessions]);
 
-  // 保存当前会话 ID
   useEffect(() => {
     if (currentSessionId) {
       localStorage.setItem(CURRENT_SESSION_KEY, currentSessionId);
     }
   }, [currentSessionId]);
 
-  // 当 currentSessionId 或 sessions 变化时，更新当前 messages 显示
   useEffect(() => {
     const current = sessions.find(s => s.id === currentSessionId);
     setMessages(current?.messages || []);
   }, [currentSessionId, sessions]);
 
-  // 模型开关持久化
   useEffect(() => {
     localStorage.setItem('epbot_search', String(search));
   }, [search]);
@@ -133,12 +123,10 @@ export const EPBot = ({ className }: EPBotProps) => {
     localStorage.setItem('epbot_reasoner', String(reasoner));
   }, [reasoner]);
 
-  // 自动滚动
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // 输入框自动高度
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -147,7 +135,6 @@ export const EPBot = ({ className }: EPBotProps) => {
     }
   }, [input]);
 
-  // 更新当前会话的消息（并自动保存标题）
   const updateCurrentMessages = (newMessages: Message[]) => {
     setSessions(prev => prev.map(s => {
       if (s.id !== currentSessionId) return s;
@@ -156,7 +143,6 @@ export const EPBot = ({ className }: EPBotProps) => {
     }));
   };
 
-  // 发送消息
   const send = async () => {
     const text = input.trim();
     if (!text || loading) return;
@@ -172,7 +158,6 @@ export const EPBot = ({ className }: EPBotProps) => {
     abortControllerRef.current = controller;
 
     let reply = '';
-    // 添加空的 assistant 消息占位
     const withPlaceholder = [...newHistory, { role: 'assistant' as MessageRole, content: '' }];
     updateCurrentMessages(withPlaceholder);
 
@@ -182,7 +167,7 @@ export const EPBot = ({ className }: EPBotProps) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: { search, reasoner },
-          history: newHistory, // 注意：发送给 API 的历史不应包含占位消息
+          history: newHistory,
         }),
         signal: controller.signal,
         onmessage(ev) {
@@ -191,7 +176,6 @@ export const EPBot = ({ className }: EPBotProps) => {
             const j = JSON.parse(ev.data);
             const c = j?.choices?.[0]?.delta?.content || '';
             reply += c;
-            // 更新最后一条消息内容
             setSessions(prev => prev.map(s => {
               if (s.id !== currentSessionId) return s;
               const msgs = [...s.messages];
@@ -236,7 +220,6 @@ export const EPBot = ({ className }: EPBotProps) => {
     }
   };
 
-  // 创建新会话
   const createNewSession = () => {
     const newSession: Session = {
       id: crypto.randomUUID(),
@@ -249,12 +232,10 @@ export const EPBot = ({ className }: EPBotProps) => {
     setSidebarOpen(false);
   };
 
-  // 删除会话
   const deleteSession = (id: string) => {
     setSessions(prev => {
       const filtered = prev.filter(s => s.id !== id);
       if (filtered.length === 0) {
-        // 如果删光了，新建一个默认会话
         const newSession: Session = {
           id: crypto.randomUUID(),
           title: '新对话',
@@ -271,7 +252,6 @@ export const EPBot = ({ className }: EPBotProps) => {
     });
   };
 
-  // 切换会话
   const switchSession = (id: string) => {
     setCurrentSessionId(id);
     setSidebarOpen(false);
@@ -288,24 +268,43 @@ export const EPBot = ({ className }: EPBotProps) => {
 
   return (
     <div className={cn(
-      "flex h-170 w-200 max-w-[95vw] rounded-2xl border border-white/10 bg-slate-900/98 backdrop-blur-md shadow-2xl overflow-hidden",
+      "flex h-160 w-200 max-w-[95vw] rounded-2xl border border-white/10 bg-slate-900/98 backdrop-blur-md shadow-2xl overflow-hidden relative",
       className
     )}>
-      {/* 侧边栏 - 会话列表 */}
-      <div className={cn(
-        "w-64 border-r border-white/10 bg-slate-950/50 flex flex-col transition-all",
-        sidebarOpen ? "absolute inset-y-0 left-0 z-10 md:relative" : "hidden md:flex"
-      )}>
+
+      {/* 遮罩层 */}
+      {sidebarOpen && (
+        <div
+          className="absolute inset-0 bg-black/50 z-20 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* 侧边栏 - 滑动模式 */}
+      <div
+        className={cn(
+          "fixed top-0 left-0 bottom-0 w-64 z-30 bg-slate-950 border-r border-white/10 flex flex-col transition-transform duration-300 ease-in-out",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
         <div className="p-3 border-b border-white/10 flex justify-between items-center">
           <h4 className="text-white font-medium text-sm">对话历史</h4>
-          <button
-            onClick={createNewSession}
-            className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
-            title="新建对话"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
+          <div className="flex gap-1">
+            <button
+              onClick={createNewSession}
+              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
+
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
           {sessions.sort((a, b) => b.createdAt - a.createdAt).map(session => (
             <div
@@ -318,19 +317,17 @@ export const EPBot = ({ className }: EPBotProps) => {
               )}
               onClick={() => switchSession(session.id)}
             >
-              <div className="flex-1 truncate text-sm text-slate-300">
-                {session.title}
-              </div>
+              <div className="flex-1 truncate text-sm text-slate-300">{session.title}</div>
               <button
                 onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}
-                className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-600/20 text-slate-400 hover:text-red-400 transition-all"
-                title="删除对话"
+                className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-600/20 text-slate-400 hover:text-red-400"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
           ))}
         </div>
+
         <div className="p-3 border-t border-white/10 text-xs text-slate-500">
           存储用量：{Math.round(getStorageUsagePercent() * 100)}%
         </div>
@@ -342,10 +339,10 @@ export const EPBot = ({ className }: EPBotProps) => {
         <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
-              className="md:hidden p-1.5 rounded-lg hover:bg-slate-800 text-slate-300"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300"
+              onClick={() => setSidebarOpen(true)}
             >
-              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              <Menu className="w-5 h-5" />
             </button>
             <h3 className="text-white font-semibold truncate">
               {currentSession?.title || 'EPBot 客服助手'}
@@ -356,9 +353,8 @@ export const EPBot = ({ className }: EPBotProps) => {
               onClick={() => setSearch(!search)}
               className={cn(
                 "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                search ? "bg-blue-600 text-white shadow-sm" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                search ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
               )}
-              aria-pressed={search}
             >
               🔍 搜索
             </button>
@@ -366,9 +362,8 @@ export const EPBot = ({ className }: EPBotProps) => {
               onClick={() => setReasoner(!reasoner)}
               className={cn(
                 "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                reasoner ? "bg-purple-600 text-white shadow-sm" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                reasoner ? "bg-purple-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
               )}
-              aria-pressed={reasoner}
             >
               🧠 推理
             </button>
@@ -380,13 +375,13 @@ export const EPBot = ({ className }: EPBotProps) => {
           {messages.map((m, i) =>
             m.role === 'user' ? (
               <div key={i} className="flex justify-end">
-                <div className="max-w-[80%] bg-blue-600/30 border border-blue-400/40 rounded-2xl px-4 py-3 text-blue-100 shadow-sm text-sm leading-relaxed">
+                <div className="max-w-[80%] bg-blue-600/30 border border-blue-400/40 rounded-2xl px-4 py-3 text-blue-100 text-sm leading-relaxed">
                   {m.content}
                 </div>
               </div>
             ) : (
               <div key={i} className="flex justify-start">
-                <div className="max-w-[85%] bg-slate-800/90 border border-white/15 rounded-2xl px-4 py-3 text-slate-100 prose prose-invert prose-sm shadow-sm">
+                <div className="max-w-[85%] bg-slate-800/90 border border-white/15 rounded-2xl px-4 py-3 text-slate-100 prose prose-invert prose-sm">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                 </div>
               </div>
@@ -406,13 +401,11 @@ export const EPBot = ({ className }: EPBotProps) => {
             placeholder="输入消息... (Shift+Enter 换行)"
             disabled={loading}
             rows={1}
-            aria-label="消息输入框"
           />
           <button
             onClick={send}
             disabled={loading}
             className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white p-3 rounded-xl flex items-center justify-center disabled:opacity-50 shadow-md transition-all"
-            aria-label="发送消息"
           >
             <Send className="w-5 h-5" />
           </button>
