@@ -382,7 +382,25 @@ export const EPBot = ({ className }: EPBotProps) => {
             ) : (
               <div key={i} className="flex justify-start">
                 <div className="max-w-[85%] bg-slate-800/90 border border-white/15 rounded-2xl px-4 py-3 text-slate-100 prose prose-invert prose-sm">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                  <div className="prose 
+prose-table:border-collapse
+prose-th:border
+prose-th:border-gray-300
+prose-th:bg-gray-100
+prose-td:border
+prose-td:border-gray-300
+prose-p:my-2 
+prose-ul:my-2 
+prose-li:my-0 
+prose-h:mt-3 mb-2 
+prose-pre:bg-gray-100 
+dark:prose-pre:bg-gray-800 
+max-w-none wrap-break-word
+">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {m.content}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               </div>
             )
