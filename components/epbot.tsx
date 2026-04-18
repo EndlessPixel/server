@@ -325,19 +325,21 @@ export const EPBot = ({ className }: EPBotProps) => {
       {/* 主聊天区域 */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* 头部 */}
-        <div className="px-4 py-3 border-b border-white/10 flex items-center gap-2">
-          <button
-            className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300"
-            onClick={() => setSidebarOpen(true)}
-            aria-label="打开对话历史"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          <h3 className="text-white font-semibold truncate">
-            {currentSession?.title || 'EPBot 客服助手'}
-          </h3>
-          <p>Tasla T10处理推理AI模型可能较慢，请耐心等待AI响应... | 注意：AI模型回复可能包含错误信息，请不要过度依赖AI模型的回复内容。</p>
-        </div>
+<div className="px-4 py-4 border-b border-white/10 bg-slate-900/50">
+  <div className="flex items-center gap-2">
+    <button
+      className="p-1.5 rounded-lg hover:bg-slate-800/80 text-slate-300 transition-all"
+      onClick={() => setSidebarOpen(true)}
+      aria-label="打开对话历史"
+    >
+      <Menu className="w-5 h-5" />
+    </button>
+    <h3 className="text-white font-semibold truncate">
+      {currentSession?.title || 'EPBot 客服助手'}
+    </h3>
+    <p className="text-xs text-slate-400/90">Tasla T10处理推理AI模型的速度可能较慢，请耐心等待AI响应。</p>
+  </div>
+</div>
 
         {/* 消息列表 */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
@@ -396,6 +398,9 @@ export const EPBot = ({ className }: EPBotProps) => {
           >
             <Send className="w-5 h-5" />
           </button>
+        </div>
+        <div className="p-4 border-t border-white/10 text-xs text-slate-500">
+          注意：AI模型回复可能包含错误信息，请不要过度依赖AI模型的回复内容。
         </div>
       </div>
     </div>
