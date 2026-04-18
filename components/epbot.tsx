@@ -58,15 +58,7 @@ export const EPBot = ({ className }: EPBotProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const [search, setSearch] = useState(() => {
-    if (typeof window !== 'undefined') return localStorage.getItem('epbot_search') !== 'false';
-    return true;
-  });
-  const [reasoner, setReasoner] = useState(() => {
-    if (typeof window !== 'undefined') return localStorage.getItem('epbot_reasoner') === 'true';
-    return false;
-  });
-
+  // 初始化加载会话
   useEffect(() => {
     const savedSessions = localStorage.getItem(STORAGE_KEY);
     const savedCurrentId = localStorage.getItem(CURRENT_SESSION_KEY);
@@ -97,6 +89,7 @@ export const EPBot = ({ className }: EPBotProps) => {
     setCurrentSessionId(targetId);
   }, []);
 
+  // 保存会话列表
   useEffect(() => {
     if (sessions.length > 0) {
       if (checkStorageQuota()) {
@@ -105,28 +98,25 @@ export const EPBot = ({ className }: EPBotProps) => {
     }
   }, [sessions]);
 
+  // 保存当前会话ID
   useEffect(() => {
     if (currentSessionId) {
       localStorage.setItem(CURRENT_SESSION_KEY, currentSessionId);
     }
   }, [currentSessionId]);
 
+  // 同步当前消息
   useEffect(() => {
     const current = sessions.find(s => s.id === currentSessionId);
     setMessages(current?.messages || []);
   }, [currentSessionId, sessions]);
 
-  useEffect(() => {
-    localStorage.setItem('epbot_search', String(search));
-  }, [search]);
-  useEffect(() => {
-    localStorage.setItem('epbot_reasoner', String(reasoner));
-  }, [reasoner]);
-
+  // 自动滚动
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // 输入框高度自适应
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -165,10 +155,7 @@ export const EPBot = ({ className }: EPBotProps) => {
       await fetchEventSource('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: { search, reasoner },
-          history: newHistory,
-        }),
+        body: JSON.stringify({ history: newHistory }),
         signal: controller.signal,
         onmessage(ev) {
           if (ev.data === '[DONE]') return;
@@ -271,8 +258,7 @@ export const EPBot = ({ className }: EPBotProps) => {
       "flex h-160 w-200 max-w-[95vw] rounded-2xl border border-white/10 bg-slate-900/98 backdrop-blur-md shadow-2xl overflow-hidden relative",
       className
     )}>
-
-      {/* 遮罩层 */}
+      {/* 移动端遮罩 */}
       {sidebarOpen && (
         <div
           className="absolute inset-0 bg-black/50 z-20 md:hidden"
@@ -280,7 +266,7 @@ export const EPBot = ({ className }: EPBotProps) => {
         />
       )}
 
-      {/* 侧边栏 - 滑动模式 */}
+      {/* 侧边栏 */}
       <div
         className={cn(
           "fixed top-0 left-0 bottom-0 w-64 z-30 bg-slate-950 border-r border-white/10 flex flex-col transition-transform duration-300 ease-in-out",
@@ -293,12 +279,14 @@ export const EPBot = ({ className }: EPBotProps) => {
             <button
               onClick={createNewSession}
               className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white"
+              aria-label="新建对话"
             >
               <Plus className="w-4 h-4" />
             </button>
             <button
               onClick={() => setSidebarOpen(false)}
               className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white"
+              aria-label="关闭侧边栏"
             >
               <X className="w-4 h-4" />
             </button>
@@ -320,7 +308,8 @@ export const EPBot = ({ className }: EPBotProps) => {
               <div className="flex-1 truncate text-sm text-slate-300">{session.title}</div>
               <button
                 onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}
-                className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-600/20 text-slate-400 hover:text-red-400"
+                className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-600/20 text-slate-400 hover:text-red-400 transition-opacity"
+                aria-label="删除对话"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -336,71 +325,48 @@ export const EPBot = ({ className }: EPBotProps) => {
       {/* 主聊天区域 */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* 头部 */}
-        <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <button
-              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            <h3 className="text-white font-semibold truncate">
-              {currentSession?.title || 'EPBot 客服助手'}
-            </h3>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setSearch(!search)}
-              className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                search ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-              )}
-            >
-              🔍 搜索
-            </button>
-            <button
-              onClick={() => setReasoner(!reasoner)}
-              className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                reasoner ? "bg-purple-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-              )}
-            >
-              🧠 推理
-            </button>
-          </div>
+        <div className="px-4 py-3 border-b border-white/10 flex items-center gap-2">
+          <button
+            className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-300"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="打开对话历史"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <h3 className="text-white font-semibold truncate">
+            {currentSession?.title || 'EPBot 客服助手'}
+          </h3>
         </div>
 
-        {/* 消息区域 */}
+        {/* 消息列表 */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
           {messages.map((m, i) =>
             m.role === 'user' ? (
               <div key={i} className="flex justify-end">
-                <div className="max-w-[80%] bg-blue-600/30 border border-blue-400/40 rounded-2xl px-4 py-3 text-blue-100 text-sm leading-relaxed">
+                <div className="max-w-[80%] bg-blue-600/30 border border-blue-400/40 rounded-2xl px-4 py-3 text-blue-100 text-sm leading-relaxed wrap-break-word">
                   {m.content}
                 </div>
               </div>
             ) : (
               <div key={i} className="flex justify-start">
-                <div className="max-w-[85%] bg-slate-800/90 border border-white/15 rounded-2xl px-4 py-3 text-slate-100 prose prose-invert prose-sm">
-                  <div className="prose 
-prose-table:border-collapse
-prose-th:border
-prose-th:border-gray-300
-prose-th:bg-gray-100
-prose-td:border
-prose-td:border-gray-300
-prose-p:my-2 
-prose-ul:my-2 
-prose-li:my-0 
-prose-h:mt-3 mb-2 
-prose-pre:bg-gray-100 
-dark:prose-pre:bg-gray-800 
-max-w-none wrap-break-word
-">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {m.content}
-                    </ReactMarkdown>
-                  </div>
+                <div className="max-w-[85%] bg-slate-800/90 border border-white/15 rounded-2xl px-4 py-3 text-slate-100 prose prose-invert prose-sm wrap-break-word">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      a: ({ href, children }) => (
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-cyan-400 underline underline-offset-2 decoration-cyan-400/50 hover:text-cyan-300 hover:decoration-cyan-300 transition-colors"
+                        >
+                          {children}
+                        </a>
+                      ),
+                    }}
+                  >
+                    {m.content}
+                  </ReactMarkdown>
                 </div>
               </div>
             )
@@ -419,11 +385,13 @@ max-w-none wrap-break-word
             placeholder="输入消息... (Shift+Enter 换行)"
             disabled={loading}
             rows={1}
+            aria-label="消息输入框"
           />
           <button
             onClick={send}
             disabled={loading}
             className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white p-3 rounded-xl flex items-center justify-center disabled:opacity-50 shadow-md transition-all"
+            aria-label="发送消息"
           >
             <Send className="w-5 h-5" />
           </button>
