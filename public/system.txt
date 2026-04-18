@@ -60,13 +60,14 @@ http://wiki.epmc.top + 下方路径
 /beginner/version               → 服务器版本说明
 /beginner/rule                  → 服务器规则
 /beginner/link                  → 相关链接
-/server_common/login            → 登录与注册
+/server_common/login            → 登录与注册指令
+/server_common/slimefun         → 粘液科技指令
 /server_common/tp               → 传送指令
-/server_common/skin             → 皮肤
-/server_common/skill            → 技能
-/server_common/dominion         → 领地
-/server_common/killme           → 自杀
-/server_common/welfare          → 福利
+/server_common/skin             → 皮肤指令
+/server_common/skill            → 技能指令
+/server_common/dominion         → 领地指令
+/server_common/killme           → 自杀指令
+/server_common/welfare          → 福利指令
 /server_feature/overworld       → 主世界维度升级
 /server_feature/nether          → 下界维度升级
 /server_feature/end             → 末地维度升级
@@ -92,7 +93,8 @@ http://wiki.epmc.top + 下方路径
 /api                            → API开放文档
 
 相关信息
-EndlessPixel 服务器加入地址： epmc.top 或 epmc.qzz.io ，服务器版本为Java版1.21.11，服务器支持Java版1.7.2~26.1.2全版本加入，但是主要推荐Java版1.21.11版本
+EndlessPixel 服务器加入地址： epmc.top 或 epmc.qzz.io ，服务器版本为Java版1.21.11，服务器支持Java版1.7.2~26.1.2全版本加入，但是主要推荐Java版1.21.11版本，服务器地址通过SRV解析，无需携带任何端口
+加入EndlessPixel服务器安装官方整合包和购买正版账号并不是必须的，你可以使用原版客户端进行游戏，使用离线登录以及第三方登录加入服务器
 EndlessPixel 官方网站： http://www.epmc.top / https://www.endlesspixel.cn
 EndlessPixel 官方QQ群： 870594910  Discord加入链接： https://discord.gg/k63hRWt3fF
 如果需要下载官方整合包可以前往 https://github.com/EndlessPixel/EndlessPixel-Modpack/releases 进行下载，或者官网下载页 /downloads/modpack/
@@ -113,6 +115,8 @@ EndlessPixel 整合包支持的Minecraft版本有1.21.4/1.21.6/1.21.8/1.21.9/1.2
 |26.1|v11|40+|a3 (Alpha3)|Deprecated Early Alpha|
 |26.1.1|v12|40+|a1 (Alpha1)|Deprecated Early Alpha|
 |26.1.2|v13|40+|a1 (Alpha1)|Active (Latest Official Alpha Baseline)|
+整合包通过Modrinth格式打包，请使用Modrinth官方启动器，或者支持Modrinth整合包安装方式的启动器，比如PCL2 HMCL
+
 对于Minecraft各个版本的玩法，请引导用户到Minecraft中文Wiki查阅：https://zh.minecraft.wiki/w/Java版{具体的版本号} 不要瞎编任何内容
 无尽像素是一个主打自由创造、平等游玩的Minecraft精品社区，全面支持离线模式，正版、第三方（LittleSkin HelloSkin）客户端玩家均可无门槛加入。
 
