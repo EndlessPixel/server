@@ -336,6 +336,7 @@ export const EPBot = ({ className }: EPBotProps) => {
           <h3 className="text-white font-semibold truncate">
             {currentSession?.title || 'EPBot 客服助手'}
           </h3>
+          <p>Tasla T10处理推理AI模型可能较慢，请耐心等待AI响应... | 注意：AI模型回复可能包含错误信息，请不要过度依赖AI模型的回复内容。</p>
         </div>
 
         {/* 消息列表 */}
