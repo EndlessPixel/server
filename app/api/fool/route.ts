@@ -56,90 +56,433 @@ const TEAPOT_JOKES = {
     "sparkling", "shadow", "happy", "sad", "troll"
   ],
   fake_error: [
-    "Missing sugar",
-    "No milk",
-    "Too hot",
-    "Too cold",
-    "Wrong mug",
-    "Out of tea",
-    "Tea too sweet",
-    "No teacup found",
-    "API request tasted bad 🤢",
-    "Teapot needs a nap 😴",
-    "Teapot lid is missing 🫗",
-    "Request is too salty 🧂",
-    "Tea leaves expired 🥀",
-    "Server out of biscuits 🍪",
-    "API request is too loud 🗣️",
-    "Teapot can't find WiFi 📶",
-    "Mug is the wrong color 🎨",
-    "Tea is not decaf ☕️",
-    "Request contains typos 📝",
-    "Teapot forgot its password 🔒",
-    "No lemon slice found 🍋",
-    "Request is too short 📏",
-    "Teapot's handle is broken 🛠️",
-    "API request is out of date 📅",
-    "Teapot spilled code on motherboard 🩹",
-    "Request uses bad coding style 💩",
-    "Tea is not organic 🥦",
-    "Teapot scared of your code 👻",
-    "API version too old 🗑️",
-    "Teapot stuck in infinite tea loop 🔁",
+    "Missing sugar", "No milk", "Too hot", "Too cold", "Wrong mug",
+    "Out of tea", "Tea too sweet", "No teacup found",
+    "API request tasted bad 🤢", "Teapot needs a nap 😴",
+    "Teapot lid is missing 🫗", "Request is too salty 🧂",
+    "Tea leaves expired 🥀", "Server out of biscuits 🍪",
+    "API request is too loud 🗣️", "Teapot can't find WiFi 📶",
+    "Mug is the wrong color 🎨", "Tea is not decaf ☕️",
+    "Request contains typos 📝", "Teapot forgot its password 🔒",
+    "No lemon slice found 🍋", "Request is too short 📏",
+    "Teapot's handle is broken 🛠️", "API request is out of date 📅",
+    "Teapot spilled code on motherboard 🩹", "Request uses bad coding style 💩",
+    "Tea is not organic 🥦", "Teapot scared of your code 👻",
+    "API version too old 🗑️", "Teapot stuck in infinite tea loop 🔁",
   ],
 };
 
-// 仓库类型
+// 仓库类型 - ✅ 修改：prank_tags 改为数组
 interface Repo {
   name: string;
   url: string;
-  prank_tag: string;
+  prank_tags: string[];  // 🔄 多个玩笑标签
 }
 
 // 统一维护前缀
 const GITHUB_REPO_PREFIX = 'https://github.com/EndlessPixel/';
 
-// ✅ 新增你给的 5 个仓库 + 原有所有仓库
+// ✅ 每个仓库配置 3-5 个不同风格的玩笑标签
 const repoList: Repo[] = [
-  { name: 'Chat-Box', url: `${GITHUB_REPO_PREFIX}Chat-Box`, prank_tag: 'April Fools: Talks way too much 🗣️' },
-  { name: 'EndlessPixel-Modpack', url: `${GITHUB_REPO_PREFIX}EndlessPixel-Modpack`, prank_tag: 'April Fools: May contain fake mods 🎭' },
-  { name: 'CSSTextLib', url: `${GITHUB_REPO_PREFIX}CSSTextLib`, prank_tag: 'April Fools: Makes text upside down 🥴' },
-  { name: 'SystemStatus', url: `${GITHUB_REPO_PREFIX}SystemStatus`, prank_tag: 'April Fools: Lies about CPU temp 🌡️' },
-  { name: 'Native-Snake-AI', url: `${GITHUB_REPO_PREFIX}Native-Snake-AI`, prank_tag: 'April Fools: Snake eats itself 🐍' },
-  { name: 'EndlessPixel-App', url: `${GITHUB_REPO_PREFIX}EndlessPixel-App`, prank_tag: 'April Fools: It’s just a teapot 🫖' },
-  { name: '2048-AI-Game', url: `${GITHUB_REPO_PREFIX}2048-AI-Game`, prank_tag: 'April Fools: AI definitely cheats 🎮' },
-  { name: 'chinese-chess-js', url: `${GITHUB_REPO_PREFIX}chinese-chess-js`, prank_tag: 'April Fools: Pieces switch sides 🤪' },
-  { name: 'JSON-Tree-Viewer', url: `${GITHUB_REPO_PREFIX}JSON-Tree-Viewer`, prank_tag: 'April Fools: Reads like tea leaves 🍵' },
-  { name: 'EndlessPixel-Novel', url: `${GITHUB_REPO_PREFIX}EndlessPixel-Novel`, prank_tag: 'April Fools: Plot twist: teapot story 📖' },
-  { name: 'EndlessPixel-ModpackAPP', url: `${GITHUB_REPO_PREFIX}EndlessPixel-ModpackAPP`, prank_tag: 'April Fools: Crashes for fun 💥' },
-  { name: 'captcha', url: `${GITHUB_REPO_PREFIX}captcha`, prank_tag: 'April Fools: Captcha = teapot 🫖' },
-  { name: 'frpc-manager', url: `${GITHUB_REPO_PREFIX}frpc-manager`, prank_tag: 'April Fools: Tunnels are fake 🚇' },
-  { name: 'EndlessPixel-Website', url: `${GITHUB_REPO_PREFIX}EndlessPixel-Website`, prank_tag: 'April Fools: Website is upside down 🥴' },
-  { name: 'frp-config-generator', url: `${GITHUB_REPO_PREFIX}frp-config-generator`, prank_tag: 'April Fools: Generates prank configs 😝' },
-  { name: 'qrcode-generator-parser', url: `${GITHUB_REPO_PREFIX}qrcode-generator-parser`, prank_tag: 'April Fools: QR = teapot memes 🤣' },
-  { name: 'python-notepad', url: `${GITHUB_REPO_PREFIX}python-notepad`, prank_tag: 'April Fools: Types backwards 📝' },
-  { name: 'EndlessPixel', url: `${GITHUB_REPO_PREFIX}EndlessPixel`, prank_tag: 'April Fools: Repo is just a teapot 🫖' },
-  { name: 'TerminalQR', url: `${GITHUB_REPO_PREFIX}TerminalQR`, prank_tag: 'April Fools: QR leads to teapots 🤣' },
-  { name: 'EndlessPixel.github.io', url: `${GITHUB_REPO_PREFIX}EndlessPixel.github.io`, prank_tag: 'April Fools: Site is upside down 🥴' },
-  { name: 'Files-Panel', url: `${GITHUB_REPO_PREFIX}Files-Panel`, prank_tag: 'April Fools: Files are fake teapots 🫖' },
-  { name: 'Command-Sentinel', url: `${GITHUB_REPO_PREFIX}Command-Sentinel`, prank_tag: 'April Fools: Commands are pranks 🚨' },
-  { name: 'simple-local-music-player', url: `${GITHUB_REPO_PREFIX}simple-local-music-player`, prank_tag: 'April Fools: Music plays backwards 🎵' },
-  { name: 'EndlessPixel-Wiki', url: `${GITHUB_REPO_PREFIX}EndlessPixel-Wiki`, prank_tag: 'April Fools: Wiki pages are all tea facts 🫖' },
-  { name: 'EP-XPcheckin', url: `${GITHUB_REPO_PREFIX}EP-XPcheckin`, prank_tag: 'April Fools: Checkin gives tea XP instead of points ☕️' },
-  { name: 'PotatoMC', url: `${GITHUB_REPO_PREFIX}PotatoMC`, prank_tag: 'April Fools: Minecraft runs on potato + teapot power 🥔🫖' },
-  { name: 'minecraft-version-list', url: `${GITHUB_REPO_PREFIX}minecraft-version-list`, prank_tag: 'April Fools: Versions sorted by tea preference 🍵' },
-  { name: 'EndlessPixel-World-Backup', url: `${GITHUB_REPO_PREFIX}EndlessPixel-World-Backup`, prank_tag: 'April Fools: Backups stored in teacups 🫖💾' },
-  { name: 'Quantum-Boot', url: `${GITHUB_REPO_PREFIX}Quantum-Boot`, prank_tag: 'April Fools: Boot animation is a teapot startup 🫖💻' },
-  { name: 'MC-CDKer-Generator', url: `${GITHUB_REPO_PREFIX}MC-CDKer-Generator`, prank_tag: 'April Fools: CDK gives teapots instead of items 🫖🎁' },
-  { name: 'MC-FakePlayer-Generator', url: `${GITHUB_REPO_PREFIX}MC-FakePlayer-Generator`, prank_tag: 'April Fools: Fake players are all teapots 🫖👤' },
-  { name: 'EFI-Boot-NotFound', url: `${GITHUB_REPO_PREFIX}EFI-Boot-NotFound`, prank_tag: 'April Fools: Error screen shows teapot not found 🫖❌' },
-  { name: 'CSS-Rotating-Button', url: `${GITHUB_REPO_PREFIX}CSS-Rotating-Button`, prank_tag: 'April Fools: Button spins into a teapot 🫖🔄' },
-  { name: 'WindowsSystemTools', url: `${GITHUB_REPO_PREFIX}WindowsSystemTools`, prank_tag: 'April Fools: Tools only make teapot settings 🫖⚙️' },
-  { name: 'Multifunctional-Search-Engine', url: `${GITHUB_REPO_PREFIX}Multifunctional-Search-Engine`, prank_tag: 'April Fools: Search only finds teapots 🫖🔍' },
-  { name: 'Tip', url: `${GITHUB_REPO_PREFIX}Tip`, prank_tag: 'April Fools: Toast only shows teapot messages 🫖💬' },
+  { 
+    name: 'Chat-Box', 
+    url: `${GITHUB_REPO_PREFIX}Chat-Box`, 
+    prank_tags: [
+      'April Fools: Talks way too much 🗣️',
+      'Warning: May start arguing with you 🤖',
+      'Secretly learns your tea preferences 🍵',
+      'Chat history: 99% teapot memes 🫖',
+      'AI trained on April Fools jokes only 🎭'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-Modpack', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-Modpack`, 
+    prank_tags: [
+      'April Fools: May contain fake mods 🎭',
+      'Mods that turn mobs into teapots 🫖',
+      'Installation time: 3-5 business years ⏳',
+      'Requires tea-powered GPU ☕️',
+      'Mod conflict? Blame the teapot 🫗'
+    ] 
+  },
+  { 
+    name: 'CSSTextLib', 
+    url: `${GITHUB_REPO_PREFIX}CSSTextLib`, 
+    prank_tags: [
+      'April Fools: Makes text upside down 🥴',
+      'Also makes text invisible (oops) 👻',
+      'Font size: randomly 1px or 1000px 🎲',
+      'Text color: tea-themed palette 🍵',
+      'CSS that pranks your designer 🎨'
+    ] 
+  },
+  { 
+    name: 'SystemStatus', 
+    url: `${GITHUB_REPO_PREFIX}SystemStatus`, 
+    prank_tags: [
+      'April Fools: Lies about CPU temp 🌡️',
+      'Status: Always "brewing tea" 🫖',
+      'Uptime: measured in cups of tea ☕️',
+      'Error rate: 418 teapot errors only 🫗',
+      'Dashboard powered by tea leaves 🔮'
+    ] 
+  },
+  { 
+    name: 'Native-Snake-AI', 
+    url: `${GITHUB_REPO_PREFIX}Native-Snake-AI`, 
+    prank_tags: [
+      'April Fools: Snake eats itself 🐍',
+      'AI strategy: follow the tea scent 🍵',
+      'Snake moves in teapot patterns 🫖',
+      'High score: unlimited (it\'s fake) 🏆',
+      'AI sometimes naps mid-game 😴'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-App', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-App`, 
+    prank_tags: [
+      'April Fools: It's just a teapot 🫖',
+      'App icon: rotating teapot 🔄',
+      'Features: brew virtual tea ☕️',
+      'Crash report: "teapot overflow" 🫗',
+      'Update log: added more tea emojis 🫖✨'
+    ] 
+  },
+  { 
+    name: '2048-AI-Game', 
+    url: `${GITHUB_REPO_PREFIX}2048-AI-Game`, 
+    prank_tags: [
+      'April Fools: AI definitely cheats 🎮',
+      'Tiles are actually tea bags 🍵',
+      'Merge 2048 = perfect cup of tea ☕️',
+      'AI moves: calculated in tea time ⏱️',
+      'Game over? The teapot spilled 🫗'
+    ] 
+  },
+  { 
+    name: 'chinese-chess-js', 
+    url: `${GITHUB_REPO_PREFIX}chinese-chess-js`, 
+    prank_tags: [
+      'April Fools: Pieces switch sides 🤪',
+      'General is actually a teapot 🫖',
+      'Move validation: tea-based algorithm 🍵',
+      'Checkmate = teapot victory dance 💃',
+      'AI thinks in tea leaves 🔮'
+    ] 
+  },
+  { 
+    name: 'JSON-Tree-Viewer', 
+    url: `${GITHUB_REPO_PREFIX}JSON-Tree-Viewer`, 
+    prank_tags: [
+      'April Fools: Reads like tea leaves 🍵',
+      'Tree nodes: shaped like teapots 🫖',
+      'Expand/collapse: with tea animation ☕️',
+      'JSON errors: "not enough sugar" 🍬',
+      'Viewer mood: changes with your tea order 🫗'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-Novel', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-Novel`, 
+    prank_tags: [
+      'April Fools: Plot twist: teapot story 📖',
+      'Main character: a sentient teapot 🫖',
+      'Chapter titles: all tea puns 🍵',
+      'Ending: changes based on your tea preference ☕️',
+      'Author note: "blame the teapot" 🫗'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-ModpackAPP', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-ModpackAPP`, 
+    prank_tags: [
+      'April Fools: Crashes for fun 💥',
+      'Crash message: "teapot needs a break" 🫖',
+      'Auto-restart: after tea time ☕️',
+      'Bug reports: filed under "pranks" 🎭',
+      'App rating: 418/5 teacups 🫗'
+    ] 
+  },
+  { 
+    name: 'captcha', 
+    url: `${GITHUB_REPO_PREFIX}captcha`, 
+    prank_tags: [
+      'April Fools: Captcha = teapot 🫖',
+      'Verify: "Select all teacups" 🍵',
+      'Failed? The teapot is judging you 👀',
+      'Success: confetti of tea leaves 🎉',
+      'Accessibility: tea-scented audio ☕️🔊'
+    ] 
+  },
+  { 
+    name: 'frpc-manager', 
+    url: `${GITHUB_REPO_PREFIX}frpc-manager`, 
+    prank_tags: [
+      'April Fools: Tunnels are fake 🚇',
+      'Tunnel destination: teapot dimension 🫖',
+      'Connection speed: measured in tea pours ☕️',
+      'Config error: "lid not found" 🫗',
+      'Status: brewing secure connection 🍵🔐'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-Website', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-Website`, 
+    prank_tags: [
+      'April Fools: Website is upside down 🥴',
+      '404 page: teapot lost in cyberspace 🫖',
+      'Loading animation: tea pouring ☕️',
+      'Dark mode: midnight tea theme 🌙🍵',
+      'Easter egg: click teapot 10 times 🥚'
+    ] 
+  },
+  { 
+    name: 'frp-config-generator', 
+    url: `${GITHUB_REPO_PREFIX}frp-config-generator`, 
+    prank_tags: [
+      'April Fools: Generates prank configs 😝',
+      'Config output: written in tea poetry 🍵📜',
+      'Validation: "does it smell like tea?" 👃',
+      'Export format: .tea instead of .json 🫖',
+      'Backup: stored in a teacup 💾☕️'
+    ] 
+  },
+  { 
+    name: 'qrcode-generator-parser', 
+    url: `${GITHUB_REPO_PREFIX}qrcode-generator-parser`, 
+    prank_tags: [
+      'April Fools: QR = teapot memes 🤣',
+      'Scanned QR: leads to tea recipes 🍵',
+      'QR style: teapot-shaped modules 🫖',
+      'Error correction: "just add more tea" ☕️',
+      'Parser mood: grumpy without biscuits 🍪'
+    ] 
+  },
+  { 
+    name: 'python-notepad', 
+    url: `${GITHUB_REPO_PREFIX}python-notepad`, 
+    prank_tags: [
+      'April Fools: Types backwards 📝',
+      'Auto-complete: suggests tea words 🍵',
+      'Syntax highlight: tea-color palette 🎨',
+      'Save file: "steeping..." animation ☕️',
+      'Undo: "the teapot spilled it back" 🫗'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel`, 
+    prank_tags: [
+      'April Fools: Repo is just a teapot 🫖',
+      'README: 100% tea facts 🍵',
+      'Issues: all about tea temperature 🌡️',
+      'Pull requests: must include 🫖 emoji',
+      'Contributors: rewarded with virtual tea ☕️'
+    ] 
+  },
+  { 
+    name: 'TerminalQR', 
+    url: `${GITHUB_REPO_PREFIX}TerminalQR`, 
+    prank_tags: [
+      'April Fools: QR leads to teapots 🤣',
+      'Terminal output: ASCII teapot art 🫖',
+      'QR generation: with tea animation ☕️',
+      'Scan result: "you found a teapot!" 🎉',
+      'Error: terminal ran out of tea 🫗'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel.github.io', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel.github.io`, 
+    prank_tags: [
+      'April Fools: Site is upside down 🥴',
+      'Homepage: teapot parade animation 🫖🎪',
+      'Navigation: tea-themed tooltips 🍵',
+      '404: "teapot took a wrong turn" 🗺️',
+      'Footer: "powered by tea and chaos" ☕️🌀'
+    ] 
+  },
+  { 
+    name: 'Files-Panel', 
+    url: `${GITHUB_REPO_PREFIX}Files-Panel`, 
+    prank_tags: [
+      'April Fools: Files are fake teapots 🫖',
+      'File icons: all teapot variants 🍵',
+      'Upload: "brewing file..." progress ☕️',
+      'Delete: "spilled permanently" 🫗',
+      'Search: finds tea-related files only 🔍'
+    ] 
+  },
+  { 
+    name: 'Command-Sentinel', 
+    url: `${GITHUB_REPO_PREFIX}Command-Sentinel`, 
+    prank_tags: [
+      'April Fools: Commands are pranks 🚨',
+      'Alert: "teapot detected suspicious tea" 🫖',
+      'Log entries: written in tea poetry 🍵📜',
+      'Security level: "steeping..." ☕️🔐',
+      'False positive: blamed on the teapot 🫗'
+    ] 
+  },
+  { 
+    name: 'simple-local-music-player', 
+    url: `${GITHUB_REPO_PREFIX}simple-local-music-player`, 
+    prank_tags: [
+      'April Fools: Music plays backwards 🎵',
+      'Playlist: "Tea Time Tunes" only ☕️🎶',
+      'Volume control: teapot pour animation 🫗',
+      'Next track: chosen by tea leaves 🔮',
+      'Equalizer: preset = "perfect brew" 🎚️'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-Wiki', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-Wiki`, 
+    prank_tags: [
+      'April Fools: Wiki pages are all tea facts 🫖',
+      'Article: "History of the Teapot API" 📚',
+      'Edit conflict: "two teapots, one page" 🫗',
+      'Search: returns tea-related pages only 🔍',
+      'Revision history: "steeped in chaos" ☕️'
+    ] 
+  },
+  { 
+    name: 'EP-XPcheckin', 
+    url: `${GITHUB_REPO_PREFIX}EP-XPcheckin`, 
+    prank_tags: [
+      'April Fools: Checkin gives tea XP instead of points ☕️',
+      'Daily reward: virtual tea bag 🍵',
+      'Streak bonus: "perfect brew" multiplier 🫖',
+      'Leaderboard: ranked by tea consumption 🏆',
+      'Bug: XP spilled, please re-checkin 🫗'
+    ] 
+  },
+  { 
+    name: 'PotatoMC', 
+    url: `${GITHUB_REPO_PREFIX}PotatoMC`, 
+    prank_tags: [
+      'April Fools: Minecraft runs on potato + teapot power 🥔🫖',
+      'New mob: wandering teapot 🫖🚶',
+      'Crafting: teapot + potato = magic ☕️✨',
+      'Server lag: "teapot is thinking" 💭',
+      'Update: added tea plantation biome 🌿🍵'
+    ] 
+  },
+  { 
+    name: 'minecraft-version-list', 
+    url: `${GITHUB_REPO_PREFIX}minecraft-version-list`, 
+    prank_tags: [
+      'April Fools: Versions sorted by tea preference 🍵',
+      'Version name: "1.20 - The Teapot Update" 🫖',
+      'Release notes: written in tea stains ☕️📝',
+      'Compatibility: "works best with Earl Grey" 🫗',
+      'Download: "brewing version..." progress 🔄'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-World-Backup', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-World-Backup`, 
+    prank_tags: [
+      'April Fools: Backups stored in teacups 🫖💾',
+      'Backup size: "3.14 cups of tea" ☕️',
+      'Restore time: "steeping..." animation 🍵⏳',
+      'Compression: "tea-pressed" format 🫗',
+      'Integrity check: "smells like tea" 👃✅'
+    ] 
+  },
+  { 
+    name: 'Quantum-Boot', 
+    url: `${GITHUB_REPO_PREFIX}Quantum-Boot`, 
+    prank_tags: [
+      'April Fools: Boot animation is a teapot startup 🫖💻',
+      'Boot time: "brewing OS..." ☕️⏱️',
+      'Error screen: "teapot kernel panic" 🫗💥',
+      'Success: confetti of tea leaves 🎉🍵',
+      'Debug mode: "talkative teapot" logs 🗣️📋'
+    ] 
+  },
+  { 
+    name: 'MC-CDKer-Generator', 
+    url: `${GITHUB_REPO_PREFIX}MC-CDKer-Generator`, 
+    prank_tags: [
+      'April Fools: CDK gives teapots instead of items 🫖🎁',
+      'CDK format: "TEA-XXXX-POUR-YYYY" ☕️',
+      'Redeem animation: teapot pouring magic 🫗✨',
+      'Invalid code: "not enough sugar" 🍬❌',
+      'Rare drop: golden teapot emoji 🫖👑'
+    ] 
+  },
+  { 
+    name: 'MC-FakePlayer-Generator', 
+    url: `${GITHUB_REPO_PREFIX}MC-FakePlayer-Generator`, 
+    prank_tags: [
+      'April Fools: Fake players are all teapots 🫖👤',
+      'Player skin: teapot with legs 🫖🦵',
+      'Chat message: "I'm brewing... brb" ☕️',
+      'AFK status: "steeping in corner" 🍵',
+      'Kick reason: "teapot overflow" 🫗🚫'
+    ] 
+  },
+  { 
+    name: 'EFI-Boot-NotFound', 
+    url: `${GITHUB_REPO_PREFIX}EFI-Boot-NotFound`, 
+    prank_tags: [
+      'April Fools: Error screen shows teapot not found 🫖❌',
+      'Error code: 418 (obviously) ☕️',
+      'Troubleshoot: "have you tried more tea?" 🍵',
+      'Recovery: "brew new boot sector" 🫗🔄',
+      'Support: "blame the teapot" 🫖🤷'
+    ] 
+  },
+  { 
+    name: 'CSS-Rotating-Button', 
+    url: `${GITHUB_REPO_PREFIX}CSS-Rotating-Button`, 
+    prank_tags: [
+      'April Fools: Button spins into a teapot 🫖🔄',
+      'Hover effect: tea steam animation ☁️🍵',
+      'Click sound: gentle pour 🫗🔊',
+      'Disabled state: "teapot is napping" 😴',
+      'Accessibility: "tea-scented ARIA" 👃♿'
+    ] 
+  },
+  { 
+    name: 'WindowsSystemTools', 
+    url: `${GITHUB_REPO_PREFIX}WindowsSystemTools`, 
+    prank_tags: [
+      'April Fools: Tools only make teapot settings 🫖⚙️',
+      'Task Manager: "teapot processes" tab ☕️📊',
+      'Disk cleanup: "spill cleanup" utility 🫗🧹',
+      'System info: "tea version: 4.18" 🍵ℹ️',
+      'Update: "brewing patches..." 🔄☕️'
+    ] 
+  },
+  { 
+    name: 'Multifunctional-Search-Engine', 
+    url: `${GITHUB_REPO_PREFIX}Multifunctional-Search-Engine`, 
+    prank_tags: [
+      'April Fools: Search only finds teapots 🫖🔍',
+      'Results: ranked by "tea relevance" 🍵📈',
+      'Filter: "show only green tea" 🟢🍵',
+      'No results: "teapot is hiding them" 🫗👀',
+      'Advanced search: "tea leaf algorithm" 🔮'
+    ] 
+  },
+  { 
+    name: 'Tip', 
+    url: `${GITHUB_REPO_PREFIX}Tip`, 
+    prank_tags: [
+      'April Fools: Toast only shows teapot messages 🫖💬',
+      'Success: "tea brewed successfully" ☕️✅',
+      'Error: "teapot spilled the news" 🫗❌',
+      'Warning: "tea is getting cold" 🍵⚠️',
+      'Info: "steeping tips..." 🫖💡'
+    ] 
+  },
 ];
 
-//  Fisher-Yates 完全随机打乱
+// Fisher-Yates 完全随机打乱
 function shuffle<T>(arr: T[]): T[] {
   const newArr = [...arr];
   for (let i = newArr.length - 1; i > 0; i--) {
@@ -154,26 +497,23 @@ function takeRandom<T>(arr: T[], count: number): T[] {
   return shuffle(arr).slice(0, Math.min(count, arr.length));
 }
 
+// 🆕 辅助函数：从仓库的多个标签中随机选一个
+function getRandomPrankTag(repo: Repo): string {
+  return takeRandom(repo.prank_tags, 1)[0];
+}
+
 // 随机生成临时小记录（每次都不一样，用于日志/痕迹）
 function generateTempRecord() {
   const recordTypes = [
-    "teapot_prank_log",
-    "fake_request_trace",
-    "tea_brewing_record",
-    "prank_activated_at",
-    "repo_hijack_note",
-    "teapot_mood_swap",
+    "teapot_prank_log", "fake_request_trace", "tea_brewing_record",
+    "prank_activated_at", "repo_hijack_note", "teapot_mood_swap",
     "api_joke_counter",
   ];
   const actions = [
-    "successfully pranked client",
-    "brewed fresh virtual tea",
-    "shuffled 7 random repos",
-    "hid secret teapot emoji",
-    "rejected serious API request",
-    "generated fake error message",
-    "swapped response for jokes",
-    "stored fake data in teacup",
+    "successfully pranked client", "brewed fresh virtual tea",
+    "shuffled 7 random repos", "hid secret teapot emoji",
+    "rejected serious API request", "generated fake error message",
+    "swapped response for jokes", "stored fake data in teacup",
   ];
   return {
     record_id: `TEMP-${Math.random().toString(36).slice(2, 10).toUpperCase()}`,
@@ -181,17 +521,15 @@ function generateTempRecord() {
     action: takeRandom(actions, 1)[0],
     extra_note: takeRandom([
       "no issues detected (all pranks are intentional)",
-      "tea level: 97%",
-      "mood updated automatically",
-      "repo list shuffled 1x",
-      "joke count +1",
+      "tea level: 97%", "mood updated automatically",
+      "repo list shuffled 1x", "joke count +1",
       "client laughed (probably)",
     ], 1)[0],
     random_seed: Math.floor(Math.random() * 99999999),
   };
 }
 
-// 生成广告/推荐（大幅扩展）
+// 生成广告/推荐（大幅扩展）- ✅ 修改：使用随机 prank_tag
 function generatePrankAd() {
   const randomRepos = takeRandom(repoList, 7);
   const prankSlogans = [
@@ -212,7 +550,7 @@ function generatePrankAd() {
     "Don't trust these repos (or the teapot) 🤥",
     "Secret Repo Drop: Only teapot insiders get this 🤫",
     "April Fools Exclusive: Repos with hidden tea emojis 🫖",
-    "Teapot’s Choice: Hand-picked (not really random) 🎰",
+    "Teapot's Choice: Hand-picked (not really random) 🎰",
   ];
   const prankChallenges = [
     "Star 3 repos before the teapot gets angry ⏰",
@@ -229,7 +567,10 @@ function generatePrankAd() {
   ];
   return {
     slogan: takeRandom(prankSlogans, 1)[0],
-    picks: randomRepos.map(repo => `${repo.name} [${repo.prank_tag}]: ${repo.url}`),
+    // ✅ 修改：每个仓库随机展示一个 prank_tag
+    picks: randomRepos.map(repo => 
+      `${repo.name} [${getRandomPrankTag(repo)}]: ${repo.url}`
+    ),
     prank_disclaimer: "Disclaimer: This teapot is not responsible for any repo pranks (April Fools' Day 2026 🎉)",
     teapot_rating: `${Math.floor(Math.random() * 5) + 1}/5 cups of tea ☕️`,
     april_fools_challenge: takeRandom(prankChallenges, 1)[0],
@@ -298,7 +639,7 @@ export async function GET() {
     ad: generatePrankAd(),
     fake_request_id: `TEAPOT-${Math.floor(Math.random() * 999999)}-APRILFOOLS-${Math.random().toString(36).slice(2,6).toUpperCase()}`,
     fake_load_time: `${(Math.random() * 5).toFixed(2)}s (fake) ⏱️`,
-    temp_record: generateTempRecord(), // 🆕 临时小记录
+    temp_record: generateTempRecord(),
   });
 }
 
@@ -334,6 +675,6 @@ export async function POST() {
     fake_post_processing: takeRandom(postProcessingResults, 1)[0],
     fake_data_saved: `Data saved to teapot storage (${Math.floor(Math.random() * 1000)}KB fake) 💾`,
     fake_response_delay: `${Math.floor(Math.random() * 20)}ms (we were making tea) ⏳`,
-    temp_record: generateTempRecord(), // 🆕 临时小记录
+    temp_record: generateTempRecord(),
   });
 }
