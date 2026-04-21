@@ -101,7 +101,6 @@ const GITHUB_REPO_PREFIX = 'https://github.com/EndlessPixel/';
 
 // ✅ 新增你给的 5 个仓库 + 原有所有仓库
 const repoList: Repo[] = [
-  // 原有
   { name: 'Chat-Box', url: `${GITHUB_REPO_PREFIX}Chat-Box`, prank_tag: 'April Fools: Talks way too much 🗣️' },
   { name: 'EndlessPixel-Modpack', url: `${GITHUB_REPO_PREFIX}EndlessPixel-Modpack`, prank_tag: 'April Fools: May contain fake mods 🎭' },
   { name: 'CSSTextLib', url: `${GITHUB_REPO_PREFIX}CSSTextLib`, prank_tag: 'April Fools: Makes text upside down 🥴' },
@@ -125,13 +124,19 @@ const repoList: Repo[] = [
   { name: 'Files-Panel', url: `${GITHUB_REPO_PREFIX}Files-Panel`, prank_tag: 'April Fools: Files are fake teapots 🫖' },
   { name: 'Command-Sentinel', url: `${GITHUB_REPO_PREFIX}Command-Sentinel`, prank_tag: 'April Fools: Commands are pranks 🚨' },
   { name: 'simple-local-music-player', url: `${GITHUB_REPO_PREFIX}simple-local-music-player`, prank_tag: 'April Fools: Music plays backwards 🎵' },
-
-  // 🔥 你新增的 5 个仓库
   { name: 'EndlessPixel-Wiki', url: `${GITHUB_REPO_PREFIX}EndlessPixel-Wiki`, prank_tag: 'April Fools: Wiki pages are all tea facts 🫖' },
   { name: 'EP-XPcheckin', url: `${GITHUB_REPO_PREFIX}EP-XPcheckin`, prank_tag: 'April Fools: Checkin gives tea XP instead of points ☕️' },
   { name: 'PotatoMC', url: `${GITHUB_REPO_PREFIX}PotatoMC`, prank_tag: 'April Fools: Minecraft runs on potato + teapot power 🥔🫖' },
   { name: 'minecraft-version-list', url: `${GITHUB_REPO_PREFIX}minecraft-version-list`, prank_tag: 'April Fools: Versions sorted by tea preference 🍵' },
   { name: 'EndlessPixel-World-Backup', url: `${GITHUB_REPO_PREFIX}EndlessPixel-World-Backup`, prank_tag: 'April Fools: Backups stored in teacups 🫖💾' },
+  { name: 'Quantum-Boot', url: `${GITHUB_REPO_PREFIX}Quantum-Boot`, prank_tag: 'April Fools: Boot animation is a teapot startup 🫖💻' },
+  { name: 'MC-CDKer-Generator', url: `${GITHUB_REPO_PREFIX}MC-CDKer-Generator`, prank_tag: 'April Fools: CDK gives teapots instead of items 🫖🎁' },
+  { name: 'MC-FakePlayer-Generator', url: `${GITHUB_REPO_PREFIX}MC-FakePlayer-Generator`, prank_tag: 'April Fools: Fake players are all teapots 🫖👤' },
+  { name: 'EFI-Boot-NotFound', url: `${GITHUB_REPO_PREFIX}EFI-Boot-NotFound`, prank_tag: 'April Fools: Error screen shows teapot not found 🫖❌' },
+  { name: 'CSS-Rotating-Button', url: `${GITHUB_REPO_PREFIX}CSS-Rotating-Button`, prank_tag: 'April Fools: Button spins into a teapot 🫖🔄' },
+  { name: 'WindowsSystemTools', url: `${GITHUB_REPO_PREFIX}WindowsSystemTools`, prank_tag: 'April Fools: Tools only make teapot settings 🫖⚙️' },
+  { name: 'Multifunctional-Search-Engine', url: `${GITHUB_REPO_PREFIX}Multifunctional-Search-Engine`, prank_tag: 'April Fools: Search only finds teapots 🫖🔍' },
+  { name: 'Tip', url: `${GITHUB_REPO_PREFIX}Tip`, prank_tag: 'April Fools: Toast only shows teapot messages 🫖💬' },
 ];
 
 //  Fisher-Yates 完全随机打乱
