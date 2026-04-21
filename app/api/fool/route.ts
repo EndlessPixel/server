@@ -420,7 +420,7 @@ const repoList: Repo[] = [
     prank_tags: [
       'April Fools: Fake players are all teapots 🫖👤',
       'Player skin: teapot with legs 🫖🦵',
-      'Chat message: "I'm brewing... brb" ☕️',
+      "Chat message: \"I'm brewing... brb\" ☕️", // ✅ 已修复
       'AFK status: "steeping in corner" 🍵',
       'Kick reason: "teapot overflow" 🫗🚫'
     ] 
