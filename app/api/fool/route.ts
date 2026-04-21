@@ -143,7 +143,7 @@ const repoList: Repo[] = [
     name: 'EndlessPixel-App', 
     url: `${GITHUB_REPO_PREFIX}EndlessPixel-App`, 
     prank_tags: [
-      'April Fools: It's just a teapot 🫖',
+      "April Fools: It's just a teapot 🫖",  // ✅ 已修复
       'App icon: rotating teapot 🔄',
       'Features: brew virtual tea ☕️',
       'Crash report: "teapot overflow" 🫗',
