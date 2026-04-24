@@ -244,11 +244,12 @@ export function HeroSection() {
             })}
           </motion.div>
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-20"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center mb-20 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.9, duration: 0.6 }}
           >
+            {/* 按钮1：服务器状态 */}
             <Link href="/status" className={`${baseBtnClasses} bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-xl hover:shadow-2xl`}>
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
               <Server className="w-5 h-5 mr-2 relative z-10" />
@@ -256,7 +257,7 @@ export function HeroSection() {
               <motion.div className="ml-2 w-2 h-2 bg-green-400 rounded-full relative z-10" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
             </Link>
 
-            {/* 🔥 我给你加的【服务器实况】按钮（风格100%统一） */}
+            {/* 按钮2：服务器实况 */}
             <Link href="/live" className={`${baseBtnClasses} bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl`}>
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
               <svg className="w-5 h-5 mr-2 relative z-10" fill="currentColor" viewBox="0 0 24 24">
@@ -268,11 +269,24 @@ export function HeroSection() {
               </svg>
             </Link>
 
+            {/* 按钮3：下载整合包 */}
             <Link href="/downloads/modpack" className={`${baseBtnClasses} bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 text-slate-800 dark:text-slate-200 shadow-xl hover:shadow-2xl`}>
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-blue-50/30 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
               <Package className="w-5 h-5 mr-2 relative z-10" />
               <span className="relative z-10">下载官方整合包</span>
               <Sparkles className="w-4 h-4 ml-2 text-blue-500 relative z-10" />
+            </Link>
+
+            {/* 按钮4：玩家截图图册 ✅ 你要的第四个 */}
+            <Link href="/gallery" className={`${baseBtnClasses} bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xl hover:shadow-2xl`}>
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
+              <svg className="w-5 h-5 mr-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="relative z-10">玩家截图图册</span>
+              <svg className="w-4 h-4 ml-2 text-yellow-300 relative z-10" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
             </Link>
           </motion.div>
           <br /><br /><br /><br /><br />
