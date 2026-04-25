@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
   Crown, Users, Server, Shield, Globe,
-  Sparkles, Wrench, MessageSquare
+  Sparkles, MessageSquare
 } from "lucide-react"
 
 export function TeamSection() {
@@ -13,7 +13,7 @@ export function TeamSection() {
       iconColor: "text-yellow-600 dark:text-yellow-400",
       bgColor: "bg-red-50 dark:bg-red-950/20",
       borderColor: "border-l-4 border-l-red-500 dark:border-l-red-600",
-      departments: ["创始人", "服务器部", "维护部", "宣传部"],
+      departments: ["创始人", "服务器部", "维护部", "宣传部", "网络部"],
       responsibilities: ["服务器维护", "网站维护", "域名管理", "宣传推广"],
       qq: ["2267848501", "3319182533", "1343352337"]
     },
@@ -37,36 +37,6 @@ export function TeamSection() {
       responsibilities: ["暂时退役"],
       qq: ["2384269718"]
     },
-    {
-      name: "灵月",
-      description: "社群管理员，维护交流群秩序，管理聊天环境与成员行为。",
-      iconColor: "text-green-600 dark:text-green-400",
-      bgColor: "bg-green-50 dark:bg-green-950/20",
-      borderColor: "border-l-4 border-l-green-500 dark:border-l-green-600",
-      departments: ["管理部"],
-      responsibilities: ["社群管理", "秩序维护"],
-      qq: ["3661651904", "773178847"]
-    },
-    {
-      name: "流浪的小李子",
-      description: "后勤支持，负责团队各类杂务、协助处理日常事务。",
-      iconColor: "text-orange-600 dark:text-orange-400",
-      bgColor: "bg-orange-50 dark:bg-orange-950/20",
-      borderColor: "border-l-4 border-l-orange-500 dark:border-l-orange-600",
-      departments: ["杂务部"],
-      responsibilities: ["后勤支持", "事务协助"],
-      qq: ["3190386431"]
-    },
-    {
-      name: "Arielle",
-      description: "技术支持，负责服务器硬件提供与域名相关管理工作。",
-      iconColor: "text-teal-600 dark:text-teal-400",
-      bgColor: "bg-teal-50 dark:bg-teal-950/20",
-      borderColor: "border-l-4 border-l-teal-500 dark:border-l-teal-600",
-      departments: ["服务器部", "网络部"],
-      responsibilities: ["服务器提供", "域名管理"],
-      qq: ["1876967353", "3810656357"]
-    }
   ]
 
   const getDepartmentIcon = (dept: string) => {
@@ -76,8 +46,6 @@ export function TeamSection() {
       "服务器部": Server,
       "维护部": Shield,
       "宣传部": Sparkles,
-      "管理部": Shield,
-      "杂务部": Wrench,
       "网络部": Globe,
       "退役成员": Users,
     }
