@@ -113,7 +113,7 @@ const fetchServerData = async (ip: string, skipCache = false): Promise<ServerDat
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
-    const response = await fetch(`/api/mcserver?ip=${encodeURIComponent(ip)}&t=${Date.now()}`, {
+    const response = await fetch(`/api/mcserver/epmc`, {
       signal: controller.signal,
       headers: {
         'Accept': 'application/json',
@@ -146,18 +146,34 @@ const fetchServerPing = async (host: string): Promise<PingData | null> => {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
-    const res = await fetch(`https://uapis.cn/api/v1/network/ping?host=${encodeURIComponent(host)}&t=${Date.now()}`, {
+
+    const res = await fetch(`/api/ping/epmc`, {
       signal: controller.signal,
-      headers: { Accept: "application/json" }
+      headers: { Accept: "application/json" },
+      
+      // 👇 可选优化：浏览器本地不缓存，每次拿最新延迟
+      cache: "no-store"
     });
+
     clearTimeout(timeout);
 
+    // 👇 优化：先判断 HTTP 状态是否正常
+    if (!res.ok) {
+      console.error("Ping 接口状态异常", res.status);
+      return { min: 0, avg: 0, max: 0, message: "获取延迟失败" };
+    }
+
     const data = await res.json();
-    if (data.code) return { min: 0, avg: 0, max: 0, message: data.message };
+
+    // 👇 优化：防止 data 不存在导致崩溃
+    if (!data || data.code) {
+      return { min: 0, avg: 0, max: 0, message: data?.message || "请求失败" };
+    }
+
     return {
-      min: Number(data.min.toFixed(1)),
-      avg: Number(data.avg.toFixed(1)),
-      max: Number(data.max.toFixed(1)),
+      min: Number(data.min?.toFixed(1)) || 0,
+      avg: Number(data.avg?.toFixed(1)) || 0,
+      max: Number(data.max?.toFixed(1)) || 0,
     };
   } catch (err) {
     console.error("Ping 请求失败", err);
@@ -167,7 +183,7 @@ const fetchServerPing = async (host: string): Promise<PingData | null> => {
 
 const fetchMyIp = async (): Promise<MyIpData | null> => {
   try {
-    const res = await fetch(`https://uapis.cn/api/v1/network/myip?t=${Date.now()}`);
+    const res = await fetch(`https://uapis.cn/api/v1/network/myip?source=commercial`);
     const data = await res.json();
     if (data.code) return null;
     return data;

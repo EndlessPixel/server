@@ -129,6 +129,7 @@ export default function RootLayout({
             }}
           />
         ))}
+        <meta name="referrer" content="no-referrer" />
         <meta name="msvalidate.01" content="B9D8B7001682D3FB5F699A38C4C6DAF4" />
         <meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}`} />
       </head>
