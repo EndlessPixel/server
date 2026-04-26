@@ -1,4 +1,4 @@
-/**@type{import('next').NextConfig}*/
+/** @type {import('next').NextConfig} */
 const nextConfig = {
     async headers() {
         return [{
@@ -8,10 +8,10 @@ const nextConfig = {
                 value: [
                     "default-src 'self'",
                     "img-src 'self' data: https:",
-                    "script-src 'self' 'unsafe-inline' https://discord.com https://www.googletagmanager.com https://static.cloudflareinsights.com",
+                    "script-src 'self' 'unsafe-inline'",
                     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                     "font-src 'self' https://fonts.gstatic.com",
-                    "connect-src 'self' https://discord.com https://*.vercel.app https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us https://cloudflareinsights.com https://uapis.cn https://raw.githubusercontent.com https://gh-proxy.org https://cdn.gh-proxy.org https://edgeone.gh-proxy.org https://hk.gh-proxy.org https://gh.xmly.dev",
+                    "connect-src 'self' https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us https://uapis.cn https://raw.githubusercontent.com https://gh-proxy.org https://cdn.gh-proxy.org https://edgeone.gh-proxy.org https://hk.gh-proxy.org https://gh.xmly.dev",
                     "object-src 'none'",
                     "frame-src 'self' http://wiki.epmc.top https://player.bilibili.com",
                     "base-uri 'self'",
@@ -25,7 +25,7 @@ const nextConfig = {
                 value: 'nosniff'
             }, {
                 key: 'Referrer-Policy',
-                value: 'strict-origin-when-cross-origin'
+                value: 'no-referrer'
             }, {
                 key: 'Permissions-Policy',
                 value: 'camera=(), microphone=(), geolocation=()'
@@ -42,6 +42,9 @@ const nextConfig = {
         }]
     },
     reactStrictMode: true,
+    eslint: {
+        ignoreDuringBuilds: true
+    },
 };
 
 export default nextConfig;

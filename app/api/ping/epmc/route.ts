@@ -1,14 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
 // 在这里换成你要代理的真实API地址
 const TARGET_API_URL = 'https://uapis.cn/api/v1/network/ping?host=epmc.top';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const res = await fetch(TARGET_API_URL, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Forwarded-For': request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
+        'Referer': '',
+        'Origin': '',
       },
     });
 
