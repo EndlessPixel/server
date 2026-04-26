@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     }
 
     const truncatedHistory = truncateHistory(history, 20);
-    let ollamaModel = 'deepseek-r1:14b';
+    const ollamaModel = 'deepseek-r1:14b';
 
     const systemPrompt = await getSystemPrompt();
     const messages = [
