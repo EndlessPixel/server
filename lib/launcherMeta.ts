@@ -82,6 +82,42 @@
   { key: "mcboxlauncher", owner: "lukechu10", repo: "Minecraft-Box-Launcher", displayName: "Minecraft Box Launcher", releases: true, },
   { key: "polymcoffline", owner: "EvilToasterDBU", repo: "PolyMC-Offline", displayName: "PolyMC Offline", releases: false, },
   { key: "xelo", owner: "Xelo-Client", repo: "Xelo-Client", displayName: "Xelo Client", releases: true, },
+  { key: "minecrowdcontrol", owner: "racerxdl", repo: "minecrowdcontrol", displayName: "MineCrowdControl", },
+  { key: "brlauncher", owner: "Mateus7766", repo: "BRLauncher", displayName: "BRLauncher", },
+  { key: "mc-unlisted-versions", owner: "zkitefly", repo: "unlisted-versions-of-minecraft", displayName: "Minecraft Unlisted Versions", },
+  { key: "cmd-launcher", owner: "telecter", repo: "cmd-launcher", displayName: "CMD Launcher", },
+  { key: "innatemc", owner: "InnateMC", repo: "InnateMC", displayName: "InnateMC", },
+  { key: "kosmos", owner: "lectron", repo: "kosmos", displayName: "Kosmos", },
+  { key: "mc-launcher-template", owner: "Ezzud", repo: "minecraftlauncher-template", displayName: "Minecraft Launcher Template", },
+  { key: "ari", owner: "Andy-K-Sparklight", repo: "Ari", displayName: "Ari Launcher", },
+  { key: "teslauncher", owner: "TESLauncher", repo: "TESLauncher", displayName: "TESLauncher", },
+  { key: "launchy", owner: "MineInAbyss", repo: "launchy", displayName: "Launchy", },
+  { key: "mc-rs-bootstrap", owner: "minecraft-rs", repo: "bootstrap", displayName: "Minecraft RS Bootstrap", },
+  { key: "mpm", owner: "BitBuf", repo: "mpm", displayName: "MPM", },
+  { key: "rmcll", owner: "InfinityStudio", repo: "RMCLL", displayName: "RMCLL", },
+  { key: "migurinth", owner: "MiguVT", repo: "migurinth", displayName: "Migurinth", },
+  { key: "morpheus-launcher", owner: "MorpheusLauncher", repo: "MorpheusLauncher", displayName: "Morpheus Launcher", },
+  { key: "lyceris", owner: "BatuhanAksoyy", repo: "lyceris", displayName: "Lyceris", },
+  { key: "345-launcher", owner: "Mehmetali345Dev", repo: "345-Launcher", displayName: "345 Launcher", },
+  { key: "cake-launcher", owner: "Big-Cake-jpg", repo: "Cake-Launcher", displayName: "Cake Launcher", },
+  { key: "mclaunch", owner: "CacahueteSansSel", repo: "mcLaunch", displayName: "mcLaunch", },
+  { key: "chaunserver-full", owner: "chaun14", repo: "chaunServer-full", displayName: "chaunServer Full", },
+  { key: "sml", owner: "Stoozy", repo: "SML", displayName: "SML", },
+  { key: "hackers-mc-launcher", owner: "Alex2772", repo: "hackers-mc-launcher", displayName: "Hackers MC Launcher", },
+  { key: "vanilla-installer", owner: "Fabulously-Optimized", repo: "vanilla-installer-python", displayName: "Vanilla Installer Python", },
+  { key: "nox-launcher", owner: "KraysonStudios", repo: "NoxLauncher", displayName: "Nox Launcher", },
+  { key: "meloncher", owner: "Meloncher", repo: "Meloncher", displayName: "Meloncher", },
+  { key: "mc-rs-downloader", owner: "minecraft-rs", repo: "downloader", displayName: "Minecraft RS Downloader", },
+  { key: "mclaunch-util-lib", owner: "kr5ch", repo: "mclaunch-util-lib", displayName: "MCLaunch Util Lib", },
+  { key: "shiginima-launcher", owner: "guihkx", repo: "com.teamshiginima.ShiginimaLauncher", displayName: "Shiginima Launcher", },
+  { key: "lexplosion", owner: "NightWorldTeam", repo: "Lexplosion", displayName: "Lexplosion", },
+  { key: "mancraft-launcher", owner: "sheep-realms", repo: "ManCraft-Launcher", displayName: "ManCraft Launcher", },
+  { key: "nomi", owner: "Umatriz", repo: "nomi", displayName: "Nomi", },
+  { key: "oxide-launcher", owner: "OxideMC", repo: "oxide-launcher", displayName: "Oxide Launcher", },
+  { key: "xlauncher-ui", owner: "KeimaSenpai", repo: "XLauncher-ui", displayName: "XLauncher UI", },
+  { key: "minecraft-news-rss", owner: "Triteras", repo: "MinecraftNewsRSS", displayName: "Minecraft News RSS", },
+  { key: "dotmclauncher", owner: "dedepete", repo: "dotMCLauncher", displayName: "dotMCLauncher", },
+  { key: "shitty-auth-launcher", owner: "MrLetsplay2003", repo: "ShittyAuthLauncher", displayName: "ShittyAuth Launcher", },
   /*
   { key: "", owner:"", repo: "", displayName: "", },
   ...
@@ -105,61 +141,7 @@
 2025/11更新，Star数量不一定对应，仅为当时的统计数据，不代表当前项目的Star数量。
 如有变化，建议帮忙更新，我可没这么多时间帮你检查。
 
-Star 19
-racerxdl / minecrowdcontrol
-Mateus7766 / BRLauncher
-zkitefly / unlisted-versions-of-minecraft
-
-Star 18
-telecter / cmd-launcher
-InnateMC / InnateMC
-lectron / kosmos
-
-Star 17
-Ezzud / minecraftlauncher-template
-
-Star 16
-Andy-K-Sparklight / Ari
-TESLauncher / TESLauncher
-MineInAbyss / launchy
-
-Star 15
-minecraft-rs / bootstrap
-
-Star 14
-BitBuf / mpm
-InfinityStudio / RMCLL
-MiguVT / migurinth
-
-Star 13
-MorpheusLauncher / MorpheusLauncher
-BatuhanAksoyy / lyceris
-Mehmetali345Dev / 345-Launcher
-Big-Cake-jpg / Cake-Launcher
-
-Star 12
-CacahueteSansSel / mcLaunch
-chaun14 / chaunServer-full
-Stoozy / SML
-Alex2772 / hackers-mc-launcher
-Fabulously-Optimized / vanilla-installer-python
-
-Star 11
-KraysonStudios / NoxLauncher
-Meloncher / Meloncher
-minecraft-rs / downloader
-kr5ch / mclaunch-util-lib
-guihkx / com.teamshiginima.ShiginimaLauncher
-
-Star 10
-NightWorldTeam / Lexplosion
-sheep-realms / ManCraft-Launcher
-Umatriz / nomi
-OxideMC / oxide-launcher
-KeimaSenpai / XLauncher-ui
-Triteras / MinecraftNewsRSS
-dedepete / dotMCLauncher
-MrLetsplay2003 / ShittyAuthLauncher
+..没了，都添加上了
 
 ...Star 10- down 懒得找~~~
 
