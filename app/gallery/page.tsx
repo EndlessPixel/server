@@ -220,6 +220,7 @@ export default function GalleryPage() {
                             </div>
                         </PhotoProvider>
                     )}
+                    想要自己上传图片？前往<a href="https://wiki.epmc.top/dev/image_upload" target="_blank" rel="noopener noreferrer">Wiki</a>查看上传图片的方法
                 </div>
             </main>
 
@@ -234,9 +235,7 @@ export default function GalleryPage() {
                         </div>
 
                         <div className="p-5">
-                            {/* ✅ 修复：暗色模式文字颜色 */}
                             <div className="mb-4 text-sm text-slate-700 dark:text-slate-300 font-medium">点击按钮下载需遵守以下协议：</div>
-                            {/* ✅ 修复：max-h-75 → max-h-[75vh] + 暗色文字颜色 */}
                             <div className="text-xs text-slate-600 dark:text-slate-400 whitespace-pre-wrap max-h-[75vh] overflow-y-auto pr-2 leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg">
                                 {agreement}
                             </div>
