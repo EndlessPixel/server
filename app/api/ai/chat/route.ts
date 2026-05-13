@@ -1,10 +1,13 @@
-import { NextRequest } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+// 暂时停用，后续再考虑是否开启
+
+// import { NextRequest } from 'next/server';
+// import fs from 'fs/promises';
+// import path from 'path';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+/*
 const ipRequestMap = new Map<string, number[]>();
 let systemPromptCache: string | null = null;
 
@@ -36,8 +39,19 @@ function isRateLimited(ip: string | null): boolean {
 function truncateHistory(history: any[], max = 20) {
   return history.slice(-max);
 }
+*/
 
-export async function POST(req: NextRequest) {
+export async function POST() {
+  // 固定返回：服务暂时停用的 SSE 响应
+  return new Response('data: 由于某些原因，本服务暂时停用\n\n', {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+    },
+  });
+
+  /*
   try {
     const ip = req.headers.get('x-forwarded-for') || 'unknown';
     if (isRateLimited(ip)) {
@@ -71,7 +85,6 @@ export async function POST(req: NextRequest) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60000);
 
-    // ✅ 你的新接口
     const upstreamUrl = process.env.API_URL || "https://api.iamhc.cn/v1/chat/completions";
     const apiKey = process.env.API_KEY;
 
@@ -117,4 +130,5 @@ export async function POST(req: NextRequest) {
       headers: { 'Content-Type': 'text/event-stream' },
     });
   }
+  */
 }
