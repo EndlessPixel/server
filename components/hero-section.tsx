@@ -10,7 +10,6 @@ import Link from "next/link"
 import { motion, useInView } from "framer-motion"
 import { useState, useRef } from "react"
 
-
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -29,15 +28,12 @@ const itemVariants = {
 }
 
 export function HeroSection() {
-
   const heroRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(heroRef, { amount: 0.1, once: true })
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null)
-  const [hoveredStat, setHoveredStat] = useState<string | null>(null)
+  const [, setHoveredCard] = useState<string | null>(null)
+  const [] = useState<string | null>(null)
 
-
-  const baseBtnClasses = "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium h-12 px-6 rounded-md transition-all duration-300 relative overflow-hidden"
-
+  const baseBtnClasses = "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium h-11 px-5 rounded-md transition-all duration-300 relative overflow-hidden"
 
   const features = [
     {
@@ -139,7 +135,6 @@ export function HeroSection() {
     { icon: Gem, label: "独特内容", value: "1800+", color: "text-purple-500", description: "丰富玩法" },
   ]
 
-
   const coreFeatures = [
     { icon: Cpu, title: "离线模式", description: "支持所有客户端", color: "text-green-600", bgColor: "bg-green-100 dark:bg-green-900/30", gradient: "from-green-500 to-emerald-500" },
     { icon: Coins, title: "完全免费", description: "无任何付费内容", color: "text-yellow-600", bgColor: "bg-yellow-100 dark:bg-yellow-900/30", gradient: "from-yellow-500 to-amber-500" },
@@ -149,7 +144,6 @@ export function HeroSection() {
     { icon: Shield, title: "安全保障", description: "反作弊系统", color: "text-orange-600", bgColor: "bg-orange-100 dark:bg-orange-900/30", gradient: "from-orange-500 to-red-500" }
   ]
 
-
   const tagFeatures = [
     { icon: Zap, label: "原汁原味体验", color: "text-yellow-500" },
     { icon: Coins, label: "完全免费游玩", color: "text-yellow-500" },
@@ -157,7 +151,7 @@ export function HeroSection() {
   ]
 
   return (
-    <section ref={heroRef} className="relative bg-linear-to-br from-slate-50 via-blue-50/40 to-emerald-50/60 dark:from-slate-900 dark:via-blue-950/30 dark:to-emerald-950/30 py-24 lg:py-32 overflow-hidden">
+    <section ref={heroRef} className="relative bg-linear-to-br from-slate-50 via-blue-50/40 to-emerald-50/60 dark:from-slate-900 dark:via-blue-950/30 dark:to-emerald-950/30 py-12 md:py-24 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-br from-blue-50/20 via-transparent to-emerald-50/20 dark:from-blue-950/10 dark:via-transparent dark:to-emerald-950/10" />
         <motion.div
@@ -175,38 +169,37 @@ export function HeroSection() {
           animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
         />
-
         <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          {/* 徽章 */}
           <motion.div
-            className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm  border-slate-200 dark:border-slate-700 px-6 py-3 rounded-full text-base font-medium text-slate-700 dark:text-slate-300 mb-8 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+            className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 mb-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             initial={{ opacity: 0, y: -20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             whileHover={{ scale: 1.05 }}
           >
             <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}>
-              <Sparkles className="w-5 h-5 text-yellow-500" />
+              <Sparkles className="w-4 h-4 text-yellow-500" />
             </motion.div>
             <span>欢迎来到 Minecraft 1.21.11 新世界</span>
             <motion.div className="w-2 h-2 bg-green-500 rounded-full" animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 2, repeat: Infinity }} />
           </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h1 className="text-7xl md:text-7xl lg:text-7xl font-bold mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
               <span className="bg-linear-to-r from-slate-900 via-blue-700 to-emerald-600 dark:from-slate-100 dark:via-blue-400 dark:to-emerald-400 bg-clip-text text-transparent">
                 无尽像素 | EndlessPixel
               </span>
             </h1>
             <motion.p
-              className="text-2xl md:text-3xl lg:text-4xl font-light text-slate-600 dark:text-slate-400 mt-4 mb-8 max-w-4xl mx-auto leading-tight"
+              className="text-xl sm:text-2xl font-light text-slate-600 dark:text-slate-400 mt-2 mb-6 max-w-4xl mx-auto leading-tight"
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : { opacity: 0 }}
               transition={{ delay: 0.5, duration: 0.6 }}
@@ -214,16 +207,18 @@ export function HeroSection() {
               一个创造<span className="bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent font-semibold">无限可能</span>的 Minecraft 服务器
             </motion.p>
           </motion.div>
+
           <motion.p
-            className="text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-3xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-6 max-w-3xl mx-auto leading-relaxed"
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : { opacity: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
           >
             一个充满活力与创意的 Minecraft 社区！支持无需正版，让所有玩家都能轻松加入冒险之旅，体验愉快、多样、有趣的游戏玩法。
           </motion.p>
+
           <motion.div
-            className="text-lg text-slate-500 dark:text-slate-500 mb-12 max-w-2xl mx-auto flex flex-wrap justify-center gap-3"
+            className="text-sm sm:text-base text-slate-500 dark:text-slate-500 mb-8 max-w-2xl mx-auto flex flex-wrap justify-center gap-2"
             variants={containerVariants}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
@@ -234,64 +229,54 @@ export function HeroSection() {
                 <motion.span
                   key={feature.label}
                   variants={itemVariants}
-                  className="flex items-center gap-2 bg-white/70 dark:bg-slate-800/40 backdrop-blur-sm px-4 py-2 rounded-full  border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 group cursor-pointer"
+                  className="flex items-center gap-1 bg-white/70 dark:bg-slate-800/40 backdrop-blur-sm px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 group cursor-pointer"
                   whileHover={{ scale: 1.05, y: -2 }}
                 >
-                  <Icon className={`w-4 h-4 ${feature.color} group-hover:scale-110 transition-transform`} />
+                  <Icon className={`w-3.5 h-3.5 ${feature.color} group-hover:scale-110 transition-transform`} />
                   {feature.label}
                 </motion.span>
               );
             })}
           </motion.div>
+
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center mb-20 max-w-3xl mx-auto"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-12 max-w-xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.9, duration: 0.6 }}
           >
-            {/* 按钮1：服务器状态 */}
-            <Link href="/status" className={`${baseBtnClasses} bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-xl hover:shadow-2xl`}>
+            <Link href="/status" className={`${baseBtnClasses} bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-xl`}>
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
-              <Server className="w-5 h-5 mr-2 relative z-10" />
-              <span className="relative z-10">查看服务器状态</span>
-              <motion.div className="ml-2 w-2 h-2 bg-green-400 rounded-full relative z-10" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
+              <Server className="w-4.5 h-4.5" />
+              <span>服务器状态</span>
+              <motion.div className="w-2 h-2 bg-green-400 rounded-full" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity }} />
             </Link>
 
-            {/* 按钮2：服务器实况 */}
-            <Link href="/live" className={`${baseBtnClasses} bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl`}>
+            <Link href="/live" className={`${baseBtnClasses} bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl`}>
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
-              <svg className="w-5 h-5 mr-2 relative z-10" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
-              <span className="relative z-10">服务器实况</span>
-              <svg className="w-4 h-4 ml-2 text-pink-300 relative z-10" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-              </svg>
+              <span>服务器实况</span>
             </Link>
 
-            {/* 按钮3：下载整合包 */}
-            <Link href="/downloads/modpack" className={`${baseBtnClasses} bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 text-slate-800 dark:text-slate-200 shadow-xl hover:shadow-2xl`}>
+            <Link href="/downloads/modpack" className={`${baseBtnClasses} bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:border-blue-300 text-slate-800 dark:text-slate-200 shadow-xl`}>
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-blue-50/30 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
-              <Package className="w-5 h-5 mr-2 relative z-10" />
-              <span className="relative z-10">下载官方整合包</span>
-              <Sparkles className="w-4 h-4 ml-2 text-blue-500 relative z-10" />
+              <Package className="w-4.5 h-4.5" />
+              <span>官方整合包</span>
             </Link>
 
-            {/* 按钮4：玩家截图图册 ✅ 你要的第四个 */}
-            <Link href="/gallery" className={`${baseBtnClasses} bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xl hover:shadow-2xl`}>
+            <Link href="/gallery" className={`${baseBtnClasses} bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xl`}>
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
-              <svg className="w-5 h-5 mr-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              <span className="relative z-10">玩家截图图册</span>
-              <svg className="w-4 h-4 ml-2 text-yellow-300 relative z-10" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-              </svg>
+              <span>玩家截图册</span>
             </Link>
           </motion.div>
-          <br /><br /><br /><br /><br />
+
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 max-w-6xl mx-auto"
             variants={containerVariants}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
@@ -306,28 +291,21 @@ export function HeroSection() {
                   onHoverStart={() => setHoveredCard(feature.title)}
                   onHoverEnd={() => setHoveredCard(null)}
                 >
-                  <Card className="group bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl  border-slate-200/60 dark:border-slate-700/60 hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer relative">
-                    <div className="absolute inset-0 bg-linear-to-br from-blue-50/30 to-emerald-50/20 dark:from-blue-900/10 dark:to-emerald-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />
-                    </div>
-                    <CardContent className="p-6 text-center relative z-10">
+                  <Card className="group bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer relative">
+                    <CardContent className="p-4 text-center relative z-10">
                       <motion.div
-                        className={`w-14 h-14 ${feature.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-all duration-300 relative overflow-hidden`}
-                        whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-                        transition={{ scale: { type: "spring", stiffness: 300 }, rotate: { duration: 0.6 } }}
+                        className={`w-12 h-12 ${feature.bgColor} rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:shadow-md transition-all duration-300`}
+                        whileHover={{ scale: 1.05 }}
                       >
-                        <div className={`absolute inset-0 bg-linear-to-r ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                        <Icon className={`w-6 h-6 ${feature.color} group-hover:text-white relative z-10 transition-colors duration-300`} />
+                        <Icon className={`w-5 h-5 ${feature.color} group-hover:text-white transition-colors`} />
                       </motion.div>
-                      <h3 className="font-bold text-slate-900 dark:text-slate-100 mb-2 text-sm group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors">
+                      <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 mb-1">
                         {feature.title}
                       </h3>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 group-hover:text-slate-500 dark:group-hover:text-slate-500 transition-colors leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                         {feature.description}
                       </p>
                     </CardContent>
-                    <div className="absolute inset-0 rounded-xl bg-linear-to-r from-blue-500/0 via-blue-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </Card>
                 </motion.div>
               );
@@ -336,54 +314,27 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div className="py-16" />
+      <div className="py-10 md:py-16" />
 
-      {/* 第二部分：特色功能区（精简重复背景） */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 头部区域 */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16"
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring" }}
-            className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm  border-slate-200 dark:border-slate-700 px-6 py-3 rounded-full text-base font-medium text-slate-700 dark:text-slate-300 mb-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
-            whileHover={{ scale: 1.05 }}
-          >
-            <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}>
-              <Sparkles className="w-5 h-5 text-yellow-500" />
-            </motion.div>
-            <span>丰富功能 • 优质体验</span>
-          </motion.div>
-
-          <motion.h2
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-          >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
             <span className="bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">
               服务器特色功能
             </span>
-          </motion.h2>
-
-          <motion.p
-            className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
+          </h2>
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
             精心设计的游戏功能，全面提升你的 Minecraft 体验
-          </motion.p>
+          </p>
         </motion.div>
 
-        {/* 统计卡片 */}
         <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-10 md:mb-16"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -394,51 +345,28 @@ export function HeroSection() {
               <motion.div
                 key={stat.label}
                 variants={itemVariants}
-                whileHover="hover"
-                onHoverStart={() => setHoveredStat(stat.label)}
-                onHoverEnd={() => setHoveredStat(null)}
               >
-                <div className="relative bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-8  border-slate-200/60 dark:border-slate-700/60 text-center hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer">
-                  <div className="absolute inset-0 bg-linear-to-br from-blue-50/30 to-cyan-50/20 dark:from-blue-900/10 dark:to-cyan-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />
+                <div className="relative bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-xl p-4 md:p-8 border border-slate-200/60 dark:border-slate-700/60 text-center hover:shadow-lg transition-all duration-300">
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-linear-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-3">
+                    <Icon className={`w-6 h-6 md:w-8 md:h-8 ${stat.color}`} />
                   </div>
-
-                  <motion.div
-                    className="w-16 h-16 bg-linear-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 relative overflow-hidden"
-                    whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-                    transition={{ scale: { type: "spring", stiffness: 300 }, rotate: { duration: 0.6 } }}
-                  >
-                    <div className="absolute inset-0 bg-linear-to-r from-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <Icon className={`w-8 h-8 ${stat.color} group-hover:text-white relative z-10 transition-colors duration-300`} />
-                  </motion.div>
-
-                  <motion.div
-                    className="text-3xl font-bold text-slate-900 dark:text-white mb-2 relative z-10"
-                    animate={{ scale: hoveredStat === stat.label ? 1.1 : 1 }}
-                    transition={{ type: "spring", stiffness: 400 }}
-                  >
+                  <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-1">
                     {stat.value}
-                  </motion.div>
-
-                  <div className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-1 relative z-10">
+                  </div>
+                  <div className="text-sm md:text-lg font-semibold text-slate-700 dark:text-slate-300">
                     {stat.label}
                   </div>
-
-                  <div className="text-sm text-slate-500 dark:text-slate-400 relative z-10">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     {stat.description}
                   </div>
-
-                  <div className="absolute inset-0 rounded-2xl bg-linear-to-r from-blue-500/0 via-blue-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
               </motion.div>
             )
           })}
         </motion.div>
 
-        {/* 功能卡片网格 */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -449,126 +377,57 @@ export function HeroSection() {
               <motion.div
                 key={feature.title}
                 variants={itemVariants}
-                whileHover="hover"
-                onHoverStart={() => setHoveredCard(feature.title)}
-                onHoverEnd={() => setHoveredCard(null)}
               >
                 <Card
-                  className={`
-                    group bg-linear-to-br ${feature.lightGradient} backdrop-blur-xl border-2 ${feature.borderColor}
-                    transition-all duration-500 hover:shadow-2xl cursor-pointer
-                    overflow-hidden relative
-                  `}
+                  className={`group bg-linear-to-br ${feature.lightGradient} backdrop-blur-xl border-2 ${feature.borderColor} transition-all duration-300 hover:shadow-lg cursor-pointer overflow-hidden relative`}
                 >
-                  <div className="absolute inset-0 bg-linear-to-br from-blue-50/30 to-cyan-50/20 dark:from-blue-900/10 dark:to-cyan-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />
-                  </div>
-
-                  <CardHeader className="text-center pb-8 pt-10 relative z-10">
-                    <motion.div
-                      className="flex justify-center mb-6"
-                      whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-                      transition={{ scale: { type: "spring", stiffness: 300 }, rotate: { duration: 0.6 } }}
-                    >
-                      <div
-                        className={`
-                          w-20 h-20 ${feature.bgColor} rounded-3xl flex items-center justify-center
-                          group-hover:shadow-2xl transition-all duration-500 relative overflow-hidden
-                        `}
-                      >
-                        <div className={`absolute inset-0 bg-linear-to-r ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                        <Icon className={`w-10 h-10 ${feature.color} group-hover:text-white relative z-10 transition-colors duration-300`} />
+                  <CardHeader className="text-center p-6 md:p-10 relative z-10">
+                    <div className="flex justify-center mb-4 md:mb-6">
+                      <div className={`w-16 h-16 md:w-20 md:h-20 ${feature.bgColor} rounded-2xl md:rounded-3xl flex items-center justify-center`}>
+                        <Icon className={`w-8 h-8 md:w-10 md:h-10 ${feature.color}`} />
                       </div>
-                    </motion.div>
-
-                    <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4 group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors">
+                    </div>
+                    <CardTitle className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">
                       {feature.title}
                     </CardTitle>
-
-                    <CardDescription className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed group-hover:text-slate-500 dark:group-hover:text-slate-300 transition-colors">
+                    <CardDescription className="text-sm md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
                       {feature.description}
                     </CardDescription>
                   </CardHeader>
-
-                  <motion.div
-                    className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 ${feature.bgColor} rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-                    animate={{ width: hoveredCard === feature.title ? "80px" : "64px" }}
-                    transition={{ type: "spring", stiffness: 400 }}
-                  />
-
-                  <div className="absolute inset-0 rounded-2xl bg-linear-to-r from-blue-500/0 via-blue-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </Card>
               </motion.div>
             )
           })}
         </motion.div>
 
-        {/* 底部召唤行动 */}
         <motion.div
-          className="text-center mt-20"
+          className="text-center mt-10 md:mt-20"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
         >
-          <div className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-12  border-slate-200/60 dark:border-slate-700/60 max-w-4xl mx-auto relative overflow-hidden hover:shadow-2xl transition-all duration-500 group">
-            <div className="absolute inset-0 bg-linear-to-br from-blue-50/30 to-cyan-50/20 dark:from-blue-900/10 dark:to-cyan-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />
-            </div>
-
-            <motion.div
-              animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 4, repeat: Infinity, repeatDelay: 2 }}
-              className="relative z-10"
-            >
-              <Award className="w-16 h-16 text-yellow-500 mx-auto mb-6" />
-            </motion.div>
-
-            <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-6 relative z-10">
+          <div className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-6 md:p-12 border border-slate-200/60 dark:border-slate-700/60 max-w-4xl mx-auto">
+            <Award className="w-12 h-12 md:w-16 md:h-16 text-yellow-500 mx-auto mb-4" />
+            <h3 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">
               准备好开始冒险了吗？
             </h3>
-
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed relative z-10">
+            <p className="text-base md:text-xl text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
               加入我们的服务器，体验这些丰富的特色功能，开启你的 Minecraft 新篇章
             </p>
-
-            <div className="flex flex-wrap gap-6 justify-center relative z-10">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  href="/downloads"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
-                >
-                  <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                  <Rocket className="w-6 h-6 relative z-10" />
-                  <span className="relative z-10">下载客户端</span>
-                </Link>
-              </motion.div>
-
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  href="/status"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-white/80 dark:bg-slate-700/50 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-600 hover:border-blue-300 dark:hover:border-blue-600 text-slate-700 dark:text-slate-300 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
-                >
-                  <div className="absolute inset-0 bg-linear-to-r from-transparent via-blue-50/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                  <TrendingUp className="w-6 h-6 relative z-10" />
-                  <span className="relative z-10">查看状态</span>
-                </Link>
-              </motion.div>
-
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <a
-                  href="https://qm.qq.com/q/sFrax2Ilxe"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-white/80 dark:bg-slate-700/50 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-600 hover:border-green-300 dark:hover:border-green-600 text-slate-700 dark:text-slate-300 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
-                >
-                  <div className="absolute inset-0 bg-linear-to-r from-transparent via-green-50/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                  <Heart className="w-6 h-6 text-green-600 dark:text-green-400 relative z-10" />
-                  <span className="relative z-10">加入社区</span>
-                </a>
-              </motion.div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link href="/downloads" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-semibold shadow-lg">
+                <Rocket className="w-5 h-5" />
+                下载客户端
+              </Link>
+              <Link href="/status" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-xl font-semibold shadow-lg">
+                <TrendingUp className="w-5 h-5" />
+                查看状态
+              </Link>
+              <a href="https://qm.qq.com/q/sFrax2Ilxe" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-xl font-semibold shadow-lg">
+                <Heart className="w-5 h-5 text-green-600" />
+                加入社区
+              </a>
             </div>
-
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-linear-to-r from-blue-500 to-cyan-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
         </motion.div>
       </div>
