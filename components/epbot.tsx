@@ -41,12 +41,19 @@ const CURRENT_SESSION_KEY = 'epbot_current_session_id';
 const MAX_STORAGE_PERCENT = 0.9;
 const MAX_CONTEXT_MESSAGES = 25;
 
+// 正确计算 localStorage 实际使用量（字节）
 const getStorageUsagePercent = (): number => {
   try {
-    const data = JSON.stringify(localStorage);
-    const size = new Blob([data]).size;
+    let total = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) {
+        const value = localStorage.getItem(key) || '';
+        total += (key.length + value.length) * 2; // 近似 UTF-16 字节
+      }
+    }
     const quota = 5 * 1024 * 1024;
-    return size / quota;
+    return total / quota;
   } catch {
     return 0;
   }
@@ -71,6 +78,15 @@ export const EPBot = ({ className }: EPBotProps) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const currentSessionIdRef = useRef(currentSessionId);
+  const loadingRef = useRef(loading);
+
+  useEffect(() => {
+    currentSessionIdRef.current = currentSessionId;
+  }, [currentSessionId]);
+  useEffect(() => {
+    loadingRef.current = loading;
+  }, [loading]);
 
   const getSenderName = () => {
     const user = getCookie('mc_user');
@@ -81,6 +97,42 @@ export const EPBot = ({ className }: EPBotProps) => {
     setToast(msg);
     setTimeout(() => setToast(''), 2800);
   };
+
+  // 移除当前会话末尾的空 assistant 占位消息
+  const removeEmptyAssistantPlaceholder = () => {
+    setSessions(prev => {
+      const session = prev.find(s => s.id === currentSessionIdRef.current);
+      if (!session) return prev;
+      const msgs = session.messages;
+      if (msgs.length > 0 && msgs[msgs.length - 1].role === 'assistant' && msgs[msgs.length - 1].content === '') {
+        const newMsgs = msgs.slice(0, -1);
+        const newSessions = prev.map(s =>
+          s.id === currentSessionIdRef.current ? { ...s, messages: newMsgs } : s
+        );
+        return newSessions;
+      }
+      return prev;
+    });
+  };
+
+  // 取消当前进行中的请求并清理占位符
+  const cancelCurrentRequest = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setLoading(false);
+    removeEmptyAssistantPlaceholder();
+  };
+
+  // 组件卸载时取消请求
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const savedSessions = localStorage.getItem(STORAGE_KEY);
@@ -154,11 +206,33 @@ export const EPBot = ({ className }: EPBotProps) => {
     }));
   };
 
-  const deleteMessage = (index: number) => {
-    const updated = [...messages];
-    updated.splice(index, 1);
+  // 删除从 index 开始到末尾的所有消息
+  const deleteMessagesFrom = (index: number) => {
+    const updated = messages.slice(0, index);
     updateCurrentMessages(updated);
-    showToast('✅ 已删除消息');
+    if (editId !== null) setEditId(null);
+    showToast('✅ 已删除后续消息');
+  };
+
+  // 编辑用户消息：删除该消息及之后所有消息，然后重新发送
+  const saveEdit = (index: number) => {
+    const trimmed = editContent.trim();
+    if (!trimmed) {
+      showToast('⚠️ 内容不能为空');
+      setEditId(null);
+      return;
+    }
+    // 截断到该消息之前（即删除当前消息及之后所有消息）
+    const truncatedMessages = messages.slice(0, index);
+    updateCurrentMessages(truncatedMessages);
+    setEditId(null);
+    // 发送编辑后的内容
+    sendCustom(trimmed);
+  };
+
+  // 删除消息：删除该消息及之后所有消息
+  const deleteMessage = (index: number) => {
+    deleteMessagesFrom(index);
   };
 
   const startEdit = (index: number, content: string) => {
@@ -166,21 +240,21 @@ export const EPBot = ({ className }: EPBotProps) => {
     setEditContent(content);
   };
 
-  const saveEdit = (index: number) => {
-    const updated = [...messages];
-    updated[index] = {
-      ...updated[index],
-      content: editContent.trim(),
-      timestamp: Date.now(),
-    };
-    updateCurrentMessages(updated);
-    setEditId(null);
-    showToast('✅ 已保存修改');
-  };
-
+  // 发送消息（使用 input 框的内容）
   const send = async () => {
     const text = input.trim();
     if (!text || loading) return;
+    sendCustom(text);
+  };
+
+  // 核心发送逻辑，接收要发送的文本
+  const sendCustom = async (text: string) => {
+    if (!text || loading) return;
+
+    setEditId(null);
+    if (abortControllerRef.current) {
+      cancelCurrentRequest();
+    }
 
     const userMsg: Message = {
       role: 'user' as MessageRole,
@@ -196,7 +270,6 @@ export const EPBot = ({ className }: EPBotProps) => {
     setInput('');
     setLoading(true);
 
-    abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
@@ -222,7 +295,7 @@ export const EPBot = ({ className }: EPBotProps) => {
             const c = j?.choices?.[0]?.delta?.content || '';
             reply += c;
             setSessions(prev => prev.map(s => {
-              if (s.id !== currentSessionId) return s;
+              if (s.id !== currentSessionIdRef.current) return s;
               const msgs = [...s.messages];
               const last = msgs[msgs.length - 1];
               if (last.role === 'assistant') {
@@ -235,17 +308,27 @@ export const EPBot = ({ className }: EPBotProps) => {
         onerror(err) {
           console.error('Stream error:', err);
           if (!controller.signal.aborted) showToast('❌ 连接中断');
+          removeEmptyAssistantPlaceholder();
         },
       });
     } catch (err) {
-      if (!controller.signal.aborted) showToast('❌ 服务异常');
+      if (!controller.signal.aborted) {
+        showToast('❌ 服务异常');
+        removeEmptyAssistantPlaceholder();
+      }
     } finally {
       setLoading(false);
-      abortControllerRef.current = null;
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+      }
+      if (reply === '') {
+        removeEmptyAssistantPlaceholder();
+      }
     }
   };
 
   const createNewSession = () => {
+    cancelCurrentRequest();
     const newSession: Session = {
       id: crypto.randomUUID(),
       title: '新对话',
@@ -258,6 +341,9 @@ export const EPBot = ({ className }: EPBotProps) => {
   };
 
   const deleteSession = (id: string) => {
+    if (id === currentSessionId) {
+      cancelCurrentRequest();
+    }
     setSessions(prev => {
       const filtered = prev.filter(s => s.id !== id);
       if (filtered.length === 0) {
@@ -279,6 +365,7 @@ export const EPBot = ({ className }: EPBotProps) => {
   };
 
   const switchSession = (id: string) => {
+    cancelCurrentRequest();
     setCurrentSessionId(id);
     setSidebarOpen(false);
   };
@@ -403,6 +490,9 @@ export const EPBot = ({ className }: EPBotProps) => {
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <span>{m.senderName}</span>
               <span>{formatTime(m.timestamp)}</span>
+              <button onClick={() => deleteMessage(i)} className="p-1 hover:text-red-600 dark:hover:text-red-400">
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
             </div>
             <div className="max-w-[85%] bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/15 rounded-2xl px-4 py-3 text-slate-900 dark:text-slate-100 prose prose-sm break-all">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
