@@ -363,7 +363,6 @@ export const EPBot = ({ className }: EPBotProps) => {
           <Menu className="w-5 h-5" />
         </button>
         <h3 className="text-slate-900 dark:text-white font-semibold truncate">{currentSession?.title || 'EPBot 客服助手'}</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400/90">Tasla T10显卡处理推理AI模型的速度可能较慢，请耐心等待AI响应。</p>
       </div>
     </div>
 
