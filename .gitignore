@@ -7,3 +7,4 @@ build
 tsconfig.tsbuildinfo
 cert
 .env.local
+next-env.d.ts
