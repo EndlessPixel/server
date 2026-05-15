@@ -1,0 +1,39 @@
+name: Vercel Deploy Notify
+
+on:
+  repository_dispatch:
+    types:
+      - vercel.deployment.success
+      - vercel.deployment.failed
+
+jobs:
+  discord-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Vercel Deploy Message
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          username: Vercel 部署通知
+          avatar-url: https://assets.vercel.com/image/upload/v1605323040/vercel/favicon.ico
+          content: ""
+          embeds: |
+            [
+              {
+                "title": "${{ github.event_type == 'vercel.deployment.success' && '✅ 部署成功' || '❌ 部署失败' }}",
+                "color": ${{ github.event_type == 'vercel.deployment.success' && 65280 || 16711680 }},
+                "fields": [
+                  {
+                    "name": "分支",
+                    "value": "${{ github.event.client_payload.branch }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "访问地址",
+                    "value": "${{ github.event.client_payload.url }}",
+                    "inline": false
+                  }
+                ],
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }
+            ]
