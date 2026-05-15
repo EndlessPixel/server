@@ -20,8 +20,8 @@ jobs:
           embeds: |
             [
               {
-                "title": "${{ github.event_type == 'vercel.deployment.success' && '✅ 部署成功' || '❌ 部署失败' }}",
-                "color": ${{ github.event_type == 'vercel.deployment.success' && 65280 || 16711680 }},
+                "title": "${{ github.event_type == 'vercel.deployment.success' ? '✅ 部署成功' : '❌ 部署失败' }}",
+                "color": ${{ github.event_type == 'vercel.deployment.success' ? 65280 : 16711680 }},
                 "fields": [
                   {
                     "name": "分支",
@@ -34,6 +34,6 @@ jobs:
                     "inline": false
                   }
                 ],
-                "timestamp": "${{ github.event.head_commit.timestamp }}"
+                "timestamp": "${{ github.event.client_payload.timestamp }}"
               }
             ]
