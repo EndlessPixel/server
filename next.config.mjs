@@ -41,10 +41,7 @@ const nextConfig = {
             hostname: '*.vercel.app'
         }]
     },
-    reactStrictMode: true,
-    eslint: {
-        ignoreDuringBuilds: true
-    },
+    reactStrictMode: true
 };
 
 export default nextConfig;
