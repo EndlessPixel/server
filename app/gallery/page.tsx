@@ -42,7 +42,7 @@ export default function GalleryPage() {
 
     // 分页状态
     const [currentPage, setCurrentPage] = useState(1);
-    const imagesPerPage = 9; // 每页显示9张图片
+    const imagesPerPage = 6; // 每页显示6张图片
 
     const [downloadModal, setDownloadModal] = useState<{
         show: boolean;
