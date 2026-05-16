@@ -1,10 +1,8 @@
-
 const config = {
   siteUrl: 'https://www.epmc.top',
   lastModified: new Date('2026-05-16'),
   revalidate: 86400,
 };
-
 export default function sitemap() {
   return [
     {
