@@ -22,12 +22,14 @@ type Mirror = {
 };
 
 const mirrors: Mirror[] = [
-  { tag: '官方源', url: '', tip: '默认' },
-  { tag: 'Cloudflare', url: 'https://gh-proxy.org/', tip: '推荐' },
-  { tag: 'Fastly', url: 'https://cdn.gh-proxy.org/', tip: '推荐' },
-  { tag: 'Edgeone', url: 'https://edgeone.gh-proxy.org/', tip: '推荐' },
-  { tag: 'Jasonzeng', url: 'https://gh.xmly.dev/', tip: '大文件慎用' },
-  { tag: '香港', url: 'https://hk.gh-proxy.org/', tip: '香港节点' },
+  { tag: '官方源', url: 'https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '默认' },
+  { tag: 'Cloudflare', url: 'https://gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '推荐' },
+  { tag: 'Fastly', url: 'https://cdn.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '推荐' },
+  { tag: 'Edgeone', url: 'https://edgeone.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '推荐' },
+  { tag: 'Jasonzeng', url: 'https://gh.xmly.dev/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '大文件慎用' },
+  { tag: '香港', url: 'https://hk.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '香港节点' },
+  { tag: 'JSdelivrCDN', url: 'https://cdn.jsdelivr.net/gh/EndlessPixel/EndlessPixel-Player-Image@main', tip: '推荐' },
+  
 ];
 
 export default function GalleryPage() {
