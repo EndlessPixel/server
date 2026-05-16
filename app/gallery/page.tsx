@@ -4,7 +4,8 @@ import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { Navigation } from '@/components/navigation';
 import Footer from '@/components/footer';
 import 'react-photo-view/dist/react-photo-view.css';
-import { DownloadIcon, ImageIcon, UserIcon, AlertCircleIcon, CheckCircle2Icon, XIcon, ServerIcon } from 'lucide-react';
+import { DownloadIcon, ImageIcon, UserIcon, AlertCircleIcon, CheckCircle2Icon, XIcon, ServerIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+
 type ImageItem = {
     resolution: string;
     path: string;
@@ -29,8 +30,6 @@ const mirrors: Mirror[] = [
   { tag: '香港', url: 'https://hk.gh-proxy.org/', tip: '香港节点' },
 ];
 
-const FALLBACK_IMAGE = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzkzMzRmYyIvPjx0ZXh0IHg9IjUwIiB5PSIyMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0iI2ZmZiI+5Zu+54K55Zu+5Yqo5paH5Lu25ZCNPC90ZXh0Pjwvc3ZnPg==';
-
 export default function GalleryPage() {
     const [images, setImages] = useState<ImageItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -38,6 +37,10 @@ export default function GalleryPage() {
     const [agreement, setAgreement] = useState<string>('');
     const [agreeLoading, setAgreeLoading] = useState(true);
     const [selectedMirror, setSelectedMirror] = useState<Mirror>(mirrors[0]);
+
+    // 分页状态
+    const [currentPage, setCurrentPage] = useState(1);
+    const imagesPerPage = 9; // 每页显示9张图片
 
     const [downloadModal, setDownloadModal] = useState<{
         show: boolean;
@@ -72,7 +75,11 @@ export default function GalleryPage() {
                 setError(false);
                 const res = await fetch(getFullUrl('https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main/assets.json'));
                 if (!res.ok) throw new Error('请求失败');
-                const data: ImageItem[] = await res.json();
+                let data: ImageItem[] = await res.json();
+                
+                // ✅ 核心：按 date 倒序排序（最新时间排在最前面）
+                data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                
                 setImages(data);
             } catch (err) {
                 setError(true);
@@ -81,7 +88,23 @@ export default function GalleryPage() {
             }
         };
         fetchImages();
+        // 切换镜像时回到第一页
+        setCurrentPage(1);
     }, [selectedMirror]);
+
+    // ✅ 计算当前页需要显示的图片
+    const indexOfLastImage = currentPage * imagesPerPage;
+    const indexOfFirstImage = indexOfLastImage - imagesPerPage;
+    const currentImages = images.slice(indexOfFirstImage, indexOfLastImage);
+    const totalPages = Math.ceil(images.length / imagesPerPage);
+
+    // 切换页码
+    const paginate = (pageNumber: number) => {
+      if (pageNumber < 1 || pageNumber > totalPages) return;
+      setCurrentPage(pageNumber);
+      // 切换页面滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const showToast = (text: string, type: 'success' | 'error') => {
         setToast({ show: true, text, type });
@@ -182,9 +205,15 @@ export default function GalleryPage() {
                             <p className="text-slate-600 dark:text-slate-400">暂无玩家截图</p>
                         </div>
                     ) : (
+                        <>
+                        {/* 图片总数 & 当前页码显示 */}
+                        <div className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                          共 {images.length} 张截图 · 第 {currentPage} / {totalPages} 页
+                        </div>
+
                         <PhotoProvider>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                                {images.map((item) => (
+                                {currentImages.map((item) => (
                                     <div key={item.path} className="group relative rounded-xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                                         <PhotoView src={getFullUrl(item.path)}>
                                             <div className="aspect-video cursor-pointer overflow-hidden">
@@ -192,8 +221,7 @@ export default function GalleryPage() {
                                                   src={getFullUrl(item.path)} 
                                                   alt={`${item.player} - ${item.date}`} 
                                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                                                  loading="lazy" 
-                                                  onError={(e) => e.currentTarget.src = FALLBACK_IMAGE} 
+                                                  loading="lazy"
                                                 />
                                             </div>
                                         </PhotoView>
@@ -203,7 +231,6 @@ export default function GalleryPage() {
                                             <div className="flex flex-wrap gap-3 text-xs text-slate-500">
                                                 <div className="flex items-center gap-1"><UserIcon className="w-3.5 h-3.5" />{item.player}</div>
                                                 <div className="flex items-center gap-1"><ImageIcon className="w-3.5 h-3.5" />{item.resolution} · {item.size}</div>
-                                                {/* ✅ 修复：增加 type="button" */}
                                                 <button type="button" onClick={() => openDownloadModal(item)} className="flex items-center gap-1 hover:text-blue-500 transition-colors cursor-pointer">
                                                     <DownloadIcon className="w-3.5 h-3.5" />下载
                                                 </button>
@@ -218,8 +245,47 @@ export default function GalleryPage() {
                                 ))}
                             </div>
                         </PhotoProvider>
+
+                        {/* ✅ 分页控制器 */}
+                        {totalPages > 1 && (
+                          <div className="mt-8 flex justify-center items-center gap-2">
+                            <button
+                              onClick={() => paginate(currentPage - 1)}
+                              disabled={currentPage === 1}
+                              className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                            >
+                              <ChevronLeft className="w-4 h-4" />
+                            </button>
+                            
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                              <button
+                                key={number}
+                                onClick={() => paginate(number)}
+                                className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
+                                  currentPage === number
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                }`}
+                              >
+                                {number}
+                              </button>
+                            ))}
+                            
+                            <button
+                              onClick={() => paginate(currentPage + 1)}
+                              disabled={currentPage === totalPages}
+                              className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                            >
+                              <ChevronRight className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
+                        </>
                     )}
-                    想要自己上传图片？前往<a href="https://wiki.epmc.top/dev/image_upload" target="_blank" rel="noopener noreferrer">Wiki</a>查看上传图片的方法
+
+                    <div className="mt-8 text-center text-sm text-slate-600 dark:text-slate-400">
+                      想要自己上传图片？前往<a href="https://wiki.epmc.top/dev/image_upload" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Wiki</a>查看上传图片的方法
+                    </div>
                 </div>
             </main>
 
