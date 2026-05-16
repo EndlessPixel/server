@@ -35,7 +35,7 @@ type Mirror = {
 // ✅ 修复：jsdelivr 国内可用 + 路径正确
 const mirrors: Mirror[] = [
   {
-    tag: '官方源',
+    tag: 'GitHub RAW',
     baseUrl: 'https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main',
     tip: '默认',
   },
@@ -60,7 +60,7 @@ const mirrors: Mirror[] = [
     tip: '大文件慎用',
   },
   {
-    tag: '香港',
+    tag: 'HoogKoog',
     baseUrl: 'https://hk.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main',
     tip: '香港节点',
   },
