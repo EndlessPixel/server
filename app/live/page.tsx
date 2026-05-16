@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { CircleDot } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import Footer from '@/components/footer';
 
@@ -37,26 +36,16 @@ function LiveContent() {
 
     return (
         <div className="relative min-h-[calc(100vh-80px)] bg-linear-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 overflow-hidden transition-colors duration-300 pt-4">
-            
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-[120px] -translate-x-1/2 pointer-events-none" />
             <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-purple-500/10 dark:bg-purple-500/20 rounded-full blur-[100px] translate-x-1/3 pointer-events-none" />
-
             <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22grid%22%20width%3D%2260%22%20height%3D%2260%22%20patternUnits%3D%22userSpaceOnUse%22%3E%3Cpath%20d%3D%22M%2060%200%20L%200%200%200%2060%22%20fill%3D%22none%22%20stroke%3D%22rgba(0%2C0%2C0%2C0.05)%22%20stroke-width%3D%221%22%2F%3E%3C%2Fpattern%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23grid)%22%2F%3E%3C%2Fsvg%3E')] dark:bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22grid%22%20width%3D%2260%22%20height%3D%2260%22%20patternUnits%3D%22userSpaceOnUse%22%3E%3Cpath%20d%3D%22M%2060%200%20L%200%200%200%2060%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%255%2C0.03)%22%20stroke-width%3D%221%22%2F%3E%3C%2Fpattern%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23grid)%22%2F%3E%3C%2Fsvg%3E')] opacity-50 dark:opacity-30 pointer-events-none" />
-
             <div className="relative max-w-7xl mx-auto px-4 py-6 md:py-8">
-                
                 <div className="mb-6 text-center md:text-left">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/5 dark:bg-white/5 backdrop-blur-sm border border-black/10 dark:border-white/10 text-black/70 dark:text-white/80 text-sm mb-3">
-                        <CircleDot className="w-3 h-3 text-blue-500" />
-                        系列持续更新中
-                    </div>
                     <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-blue-600 via-purple-500 to-pink-500 dark:from-white dark:via-blue-100 dark:to-purple-200 bg-clip-text text-transparent tracking-tight">
                         EndlessPixel 服务器实况
                     </h1>
                 </div>
-
                 <div className="flex flex-col lg:flex-row gap-6">
-                    
                     <div className="lg:w-80 w-full">
                         <div className="bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl overflow-hidden">
                             <div className="px-4 py-3 border-b border-black/10 dark:border-white/10">
@@ -100,7 +89,6 @@ function LiveContent() {
                             </div>
                         </div>
                     </div>
-
                     <div className="flex-1">
                         <div className="group relative">
                             <div className="relative bg-black/10 dark:bg-black/40 backdrop-blur-sm rounded-2xl p-2 border border-black/15 dark:border-white/20 shadow-2xl">
@@ -113,7 +101,6 @@ function LiveContent() {
                                     />
                                 </div>
                             </div>
-
                             <a 
                                 href={`https://www.bilibili.com/video/${bilibililist[current]}`}
                                 target="_blank"
@@ -122,7 +109,6 @@ function LiveContent() {
                             >
                                 🎬 前往 B 站观看 第{current}期
                             </a>
-
                             <a 
                                 href="https://space.bilibili.com/3546799478409405"
                                 target="_blank"
