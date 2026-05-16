@@ -8,10 +8,10 @@ const nextConfig = {
                 value: [
                     "default-src 'self'",
                     "img-src 'self' data: https:",
-                    "script-src 'self' 'unsafe-inline'",
+                    "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
                     "style-src 'self' 'unsafe-inline'",
                     "font-src 'self' https://fonts.gstatic.com",
-                    "connect-src 'self' https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us https://uapis.cn https://raw.githubusercontent.com https://gh-proxy.org https://cdn.gh-proxy.org https://edgeone.gh-proxy.org https://hk.gh-proxy.org https://gh.xmly.dev",
+                    "connect-src 'self' https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us https://uapis.cn https://raw.githubusercontent.com https://gh-proxy.org https://cdn.gh-proxy.org https://edgeone.gh-proxy.org https://hk.gh-proxy.org https://gh.xmly.dev https://fastly.jsdelivr.net https://gcore.jsdelivr.net",
                     "object-src 'none'",
                     "frame-src 'self' https://player.bilibili.com",
                     "base-uri 'self'",
