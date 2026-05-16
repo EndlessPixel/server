@@ -31,15 +31,49 @@ type Mirror = {
   tip: string;
 };
 
-// 镜像源配置（统一规则：baseUrl 为前缀，不包含完整路径）
+// ✅ 修复：jsdelivr 国内可用 + 路径正确
 const mirrors: Mirror[] = [
-  { tag: '官方源', baseUrl: 'https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '默认' },
-  { tag: 'Cloudflare', baseUrl: 'https://gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '推荐' },
-  { tag: 'Fastly', baseUrl: 'https://cdn.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '推荐' },
-  { tag: 'Edgeone', baseUrl: 'https://edgeone.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '推荐' },
-  { tag: 'Jasonzeng', baseUrl: 'https://gh.xmly.dev/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '大文件慎用' },
-  { tag: '香港', baseUrl: 'https://hk.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main', tip: '香港节点' },
-  { tag: 'JSdelivrCDN', baseUrl: 'https://cdn.jsdelivr.net/gh/EndlessPixel/EndlessPixel-Player-Image@main', tip: '推荐' },
+  {
+    tag: '官方源',
+    baseUrl: 'https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main',
+    tip: '默认',
+  },
+  {
+    tag: 'Cloudflare',
+    baseUrl: 'https://gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main',
+    tip: '推荐',
+  },
+  {
+    tag: 'Fastly',
+    baseUrl: 'https://cdn.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main',
+    tip: '推荐',
+  },
+  {
+    tag: 'Edgeone',
+    baseUrl: 'https://edgeone.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main',
+    tip: '推荐',
+  },
+  {
+    tag: 'Jasonzeng',
+    baseUrl: 'https://gh.xmly.dev/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main',
+    tip: '大文件慎用',
+  },
+  {
+    tag: '香港',
+    baseUrl: 'https://hk.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main',
+    tip: '香港节点',
+  },
+  // ✅ 修复 jsdelivr：国内 fastly 节点 + 路径正确
+  {
+    tag: 'JSdelivr-Fastly',
+    baseUrl: 'https://fastly.jsdelivr.net/gh/EndlessPixel/EndlessPixel-Player-Image@main',
+    tip: '国内稳',
+  },
+  {
+    tag: 'JSdelivr-Gcore',
+    baseUrl: 'https://gcore.jsdelivr.net/gh/EndlessPixel/EndlessPixel-Player-Image@main',
+    tip: '备用',
+  },
 ];
 
 export default function GalleryPage() {
@@ -66,16 +100,17 @@ export default function GalleryPage() {
     type: 'success' | 'error';
   }>({ show: false, text: '', type: 'error' });
 
-  // ==========================
-  // 核心：统一 URL 拼接方法（修复所有路径错误）
-  // ==========================
+  // ✅ 统一 URL 拼接（修复 jsdelivr 路径）
   const getAssetUrl = useCallback((assetPath: string) => {
+    // jsdelivr 不需要 raw 完整路径，直接拼文件
+    if (selectedMirror.tag.startsWith('JSdelivr')) {
+      return `${selectedMirror.baseUrl}${assetPath}`;
+    }
+    // 其他镜像：直接拼接
     return `${selectedMirror.baseUrl}${assetPath}`;
   }, [selectedMirror]);
 
-  // ==========================
   // 加载使用协议
-  // ==========================
   useEffect(() => {
     setAgreeLoading(true);
     fetch(getAssetUrl('/LICENSE'))
@@ -94,9 +129,7 @@ export default function GalleryPage() {
       });
   }, [getAssetUrl]);
 
-  // ==========================
   // 加载图片列表
-  // ==========================
   useEffect(() => {
     const fetchImages = async () => {
       try {
@@ -119,34 +152,26 @@ export default function GalleryPage() {
     setCurrentPage(1); // 切换镜像回到第一页
   }, [getAssetUrl]);
 
-  // ==========================
   // 分页计算
-  // ==========================
   const totalPages = Math.ceil(images.length / imagesPerPage);
   const indexLast = currentPage * imagesPerPage;
   const indexFirst = indexLast - imagesPerPage;
   const currentImages = images.slice(indexFirst, indexLast);
 
-  // ==========================
   // 分页切换
-  // ==========================
   const paginate = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ==========================
   // 提示框
-  // ==========================
   const showToast = (text: string, type: 'success' | 'error') => {
     setToast({ show: true, text, type });
     setTimeout(() => setToast({ show: false, text: '', type: 'error' }), 2600);
   };
 
-  // ==========================
   // 下载弹窗
-  // ==========================
   const openDownloadModal = (item: ImageItem) => {
     if (agreeLoading) {
       showToast('协议加载中，请稍候', 'error');
@@ -166,17 +191,13 @@ export default function GalleryPage() {
     showToast('下载开始！', 'success');
   };
 
-  // ==========================
   // 切换镜像
-  // ==========================
   const handleMirrorChange = (mirror: Mirror) => {
     setSelectedMirror(mirror);
     showToast(`已切换至：${mirror.tag}`, 'success');
   };
 
-  // ==========================
   // 智能分页按钮（适配多页数）
-  // ==========================
   const getPageNumbers = () => {
     const delta = 1;
     const pages: (number | string)[] = [];
