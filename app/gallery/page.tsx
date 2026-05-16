@@ -5,7 +5,6 @@ import { Navigation } from '@/components/navigation';
 import Footer from '@/components/footer';
 import 'react-photo-view/dist/react-photo-view.css';
 import { DownloadIcon, ImageIcon, UserIcon, AlertCircleIcon, CheckCircle2Icon, XIcon, ServerIcon } from 'lucide-react';
-
 type ImageItem = {
     resolution: string;
     path: string;
