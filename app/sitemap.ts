@@ -1,7 +1,7 @@
 
 const config = {
   siteUrl: 'https://www.epmc.top',
-  lastModified: new Date('2025-12-31'),
+  lastModified: new Date('2026-05-16'),
   revalidate: 86400,
 };
 
@@ -48,12 +48,7 @@ export default function sitemap() {
       priority: 0.6,
     },
     {
-      url: `${config.siteUrl}/wiki/`,
-      lastModified: config.lastModified,
-      priority: 0.6,
-    },
-    {
-      url: `${config.siteUrl}/wiki/full_screen_preview/`,
+      url: `https://wiki.epmc.top/`,
       lastModified: config.lastModified,
       priority: 0.6,
     },
@@ -63,7 +58,17 @@ export default function sitemap() {
       priority: 0.5,
     },
     {
-      url: `${config.siteUrl}/dev/`,
+      url: `${config.siteUrl}/login/`,
+      lastModified: config.lastModified,
+      priority: 0.3,
+    },
+    {
+      url: `${config.siteUrl}/live/`,
+      lastModified: config.lastModified,
+      priority: 0.2,
+    },
+    {
+      url: `${config.siteUrl}/gallery/`,
       lastModified: config.lastModified,
       priority: 0.2,
     },
