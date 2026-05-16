@@ -1,6 +1,6 @@
 
 const config = {
-  siteUrl: 'https://www.endlesspixel.cn',
+  siteUrl: 'https://www.epmc.top',
   lastModified: new Date('2025-12-31'),
   revalidate: 86400,
 };
