@@ -7,12 +7,28 @@ import { Toaster } from "@/components/ui/toaster";
 import clsx from "clsx";
 import "./globals.css";
 import FloatActions from "@/components/float-actions";
+
+// 常量统一管理
 const BRAND_NAME = "EndlessPixel Studio";
 const CURRENT_YEAR = new Date().getFullYear().toString();
 const DOMAIN = "https://www.endlesspixel.cn";
 const LOGO = `${DOMAIN}/EndlessPixel.png`;
 const FAVICON_ICO = "/favicon.ico";
 const BANNER_IMAGE = `${DOMAIN}/banner.jpg`;
+
+// 官方社交矩阵
+const SOCIAL_LINKS = {
+  bilibili: "https://space.bilibili.com/3546799478409405",
+  kuaishou: "https://www.kuaishou.com/profile/3xth2cp4jf5ha6c",
+  github: "https://github.com/EndlessPixel",
+  gitee: "https://gitee.com/system_mini",
+  codeberg: "https://codeberg.org/system_mini",
+  discord: "https://discord.gg/k63hRWt3fF",
+  facebook: "https://www.facebook.com/system_mini/",
+  twitch: "https://www.twitch.tv/system_mini",
+  youtube: "https://www.youtube.com/channel/UCMhwQrCnysEi0z0PTB655Eg",
+};
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1.0,
@@ -24,20 +40,32 @@ export const viewport: Viewport = {
   ],
   viewportFit: "cover",
 };
+
 export const metadata: Metadata = {
   metadataBase: new URL(DOMAIN),
   title: {
     default: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-1.21.11",
     template: "%s | EndlessPixel - 免费MC服务器",
   },
-  description: "EndlessPixel提供免费纯净Minecraft Java服务器，支持1.7.2-1.21.11版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验。",
-  keywords: ["Minecraft服务器","免费MC服务器","Java版服务器","Purpur核心","我的世界公益服","EndlessPixel","1.21服务器","无尽像素",],
+  description:
+    "EndlessPixel提供免费纯净Minecraft Java服务器，支持1.7.2-1.21.11版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验，无付费无广告。",
+  keywords: [
+    "Minecraft服务器",
+    "免费MC服务器",
+    "Java版服务器",
+    "Purpur核心",
+    "我的世界公益服",
+    "EndlessPixel",
+    "1.21服务器",
+    "无尽像素",
+  ],
   authors: [{ name: BRAND_NAME }],
   creator: BRAND_NAME,
   publisher: BRAND_NAME,
   alternates: {
     canonical: DOMAIN,
   },
+
   openGraph: {
     type: "website",
     locale: "zh_CN",
@@ -54,13 +82,15 @@ export const metadata: Metadata = {
       },
     ],
   },
+
+  // 保留twitter卡片供Discord/QQ/微信预览，移除无用creator
   twitter: {
     card: "summary_large_image",
     title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-1.21.11",
     description: "免费MC Java服务器，支持1.7.2-1.21.11，无付费无广告！",
     images: [BANNER_IMAGE],
-    creator: "@EndlessPixel Studio",
   },
+
   icons: {
     icon: FAVICON_ICO,
     apple: [
@@ -76,6 +106,7 @@ export const metadata: Metadata = {
       color: "#0a0a0a",
     },
   },
+
   robots: {
     index: true,
     follow: true,
@@ -88,6 +119,8 @@ export const metadata: Metadata = {
     },
   },
 };
+
+// 结构化数据 注入全站社交矩阵 sameAs
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -97,9 +130,20 @@ const jsonLd = [
     logo: LOGO,
     contactPoint: {
       "@type": "ContactPoint",
-      contactType: "客服",
+      contactType: "客服社区",
       url: `${DOMAIN}/contact`,
     },
+    sameAs: [
+      SOCIAL_LINKS.bilibili,
+      SOCIAL_LINKS.kuaishou,
+      SOCIAL_LINKS.github,
+      SOCIAL_LINKS.gitee,
+      SOCIAL_LINKS.codeberg,
+      SOCIAL_LINKS.discord,
+      SOCIAL_LINKS.facebook,
+      SOCIAL_LINKS.twitch,
+      SOCIAL_LINKS.youtube,
+    ],
   },
   {
     "@context": "https://schema.org",
@@ -113,11 +157,16 @@ const jsonLd = [
     },
   },
 ];
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="zh-CN" className={clsx(GeistSans.variable, GeistMono.variable)} suppressHydrationWarning>
+    <html
+      lang="zh-CN"
+      className={clsx(GeistSans.variable, GeistMono.variable)}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="canonical" href={DOMAIN} />
         {jsonLd.map((ld, index) => (
@@ -125,7 +174,7 @@ export default function RootLayout({
             key={index}
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify(ld)
+              __html: JSON.stringify(ld),
             }}
           />
         ))}
@@ -135,8 +184,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground">
         <noscript>
-            本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。<br />
-            Some features of this site require JavaScript. Please enable JS for the best experience.
+          本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。
+          <br />
+          Some features of this site require JavaScript. Please enable JS for the best experience.
         </noscript>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ErrorBoundary>
