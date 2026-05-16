@@ -11,7 +11,7 @@ import FloatActions from "@/components/float-actions";
 // 常量统一管理
 const BRAND_NAME = "EndlessPixel Studio";
 const CURRENT_YEAR = new Date().getFullYear().toString();
-const DOMAIN = "https://www.endlesspixel.cn";
+const DOMAIN = "https://www.epmc.top";
 const LOGO = `${DOMAIN}/EndlessPixel.png`;
 const FAVICON_ICO = "/favicon.ico";
 const BANNER_IMAGE = `${DOMAIN}/banner.jpg`;
