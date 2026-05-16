@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { Navigation } from '@/components/navigation';
 import Footer from '@/components/footer';
@@ -77,15 +78,31 @@ const mirrors: Mirror[] = [
 ];
 
 export default function GalleryPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const getMirrorByTag = useCallback((tag: string | null) => {
+    return mirrors.find((mirror) => mirror.tag === tag) ?? mirrors[0];
+  }, []);
+
+  const getPageFromParam = useCallback((value: string | null) => {
+    const page = Number.parseInt(value ?? '1', 10);
+    return Number.isNaN(page) || page < 1 ? 1 : page;
+  }, []);
+
   const [images, setImages] = useState<ImageItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [agreement, setAgreement] = useState<string>('');
   const [agreeLoading, setAgreeLoading] = useState(true);
-  const [selectedMirror, setSelectedMirror] = useState<Mirror>(mirrors[0]);
+  const [selectedMirror, setSelectedMirror] = useState<Mirror>(
+    getMirrorByTag(searchParams.get('mirror'))
+  );
 
   // 分页
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(
+    getPageFromParam(searchParams.get('page'))
+  );
   const imagesPerPage = 6;
 
   // 弹窗
@@ -99,6 +116,42 @@ export default function GalleryPage() {
     text: string;
     type: 'success' | 'error';
   }>({ show: false, text: '', type: 'error' });
+
+  const updateSearchParams = (options: { mirror?: string; page?: number }) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (options.mirror !== undefined) {
+      if (options.mirror) {
+        params.set('mirror', options.mirror);
+      } else {
+        params.delete('mirror');
+      }
+    }
+
+    if (options.page !== undefined) {
+      if (options.page > 1) {
+        params.set('page', options.page.toString());
+      } else {
+        params.delete('page');
+      }
+    }
+
+    const query = params.toString();
+    const href = query ? `?${query}` : window.location.pathname;
+    router.replace(href, { scroll: false });
+  };
+
+  useEffect(() => {
+    const mirrorFromParams = getMirrorByTag(searchParams.get('mirror'));
+    const pageFromParams = getPageFromParam(searchParams.get('page'));
+
+    if (mirrorFromParams.tag !== selectedMirror.tag) {
+      setSelectedMirror(mirrorFromParams);
+    }
+    if (pageFromParams !== currentPage) {
+      setCurrentPage(pageFromParams);
+    }
+  }, [searchParams, getMirrorByTag, getPageFromParam, selectedMirror.tag, currentPage]);
 
   // ✅ 统一 URL 拼接（修复 jsdelivr 路径）
   const getAssetUrl = useCallback((assetPath: string) => {
@@ -149,7 +202,6 @@ export default function GalleryPage() {
     };
 
     fetchImages();
-    setCurrentPage(1); // 切换镜像回到第一页
   }, [getAssetUrl]);
 
   // 分页计算
@@ -162,6 +214,7 @@ export default function GalleryPage() {
   const paginate = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
+    updateSearchParams({ page });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -194,6 +247,8 @@ export default function GalleryPage() {
   // 切换镜像
   const handleMirrorChange = (mirror: Mirror) => {
     setSelectedMirror(mirror);
+    setCurrentPage(1);
+    updateSearchParams({ mirror: mirror.tag, page: 1 });
     showToast(`已切换至：${mirror.tag}`, 'success');
   };
 
