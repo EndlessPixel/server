@@ -8,8 +8,8 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: "资源下载 - EndlessPixel Minecraft 服务器 - EndlessPixel 整合包",
   description:
-    "下载 EndlessPixel Minecraft 服务器最新客户端整合包。支持 1.21.11 最新版、1.21.10、1.21.9，1.21.8，1.21.4 稳定版，包含 Fabric 模组包和优化配置。提供主分支和 Real 分支两种版本选择。",
-  keywords: ["Minecraft下载", "模组包下载", "Fabric", "客户端下载", "1.21.11", "1.21.9", "1.21.8", "1.21.6", "1.21.4", "EndlessPixel", "整合包"],
+    "下载 EndlessPixel Minecraft 服务器最新客户端整合包。支持 26.1.2 最新版、26.1.1 、26.1、1.21.11、1.21.10、1.21.9、1.21.8、1.21.4 稳定版，包含 Fabric 模组包和优化配置。提供主分支和 Real 分支两种版本选择。",
+  keywords: ["Minecraft下载", "模组包下载", "Fabric", "客户端下载", "26.1.2","26.1.1","26.1","1.21.11", "1.21.9", "1.21.8", "1.21.6", "1.21.4", "EndlessPixel", "整合包"],
   openGraph: {
     title: "资源下载 | EndlessPixel Minecraft 服务器",
     description: "下载 EndlessPixel Minecraft 服务器最新客户端整合包，体验优化的游戏内容和丰富的模组功能。",
@@ -38,14 +38,11 @@ export default function DownloadsPage() {
       <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Page Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent mb-6">
               下载EndlessPixel 整合包
             </h1>
           </div>
-
-          {/* Downloads Section */}
           <div className="bg-white/50 dark:bg-slate-800/30 rounded-2xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
             <Link
               href="/downloads"
@@ -55,8 +52,6 @@ export default function DownloadsPage() {
             </Link>
             <DownloadSection />
           </div>
-
-          {/* Additional Info */}
           <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6  border-slate-200 dark:border-slate-700 backdrop-blur-sm">
               <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">需要帮助？</h3>
