@@ -44,11 +44,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(DOMAIN),
   title: {
-    default: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-1.21.11",
+    default: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-26.1.2",
     template: "%s | EndlessPixel - 免费MC服务器",
   },
   description:
-    "EndlessPixel提供免费纯净Minecraft Java服务器，支持1.7.2-1.21.11版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验，无付费无广告。",
+    "EndlessPixel提供免费纯净Minecraft Java服务器，支持1.7.2-26.1.2版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验，无付费无广告。",
   keywords: [
     "Minecraft服务器",
     "免费MC服务器",
@@ -71,8 +71,8 @@ export const metadata: Metadata = {
     locale: "zh_CN",
     url: DOMAIN,
     siteName: "EndlessPixel",
-    title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-1.21.11",
-    description: "免费Minecraft Java服务器，支持1.7.2-1.21.11版本，Purpur核心+Discord社区，无付费无广告！",
+    title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-26.1.2",
+    description: "免费Minecraft Java服务器，支持1.7.2-26.1.2版本，Purpur核心+Discord社区，无付费无广告！",
     images: [
       {
         url: BANNER_IMAGE,
@@ -86,8 +86,8 @@ export const metadata: Metadata = {
   // 保留twitter卡片供Discord/QQ/微信预览，移除无用creator
   twitter: {
     card: "summary_large_image",
-    title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-1.21.11",
-    description: "免费MC Java服务器，支持1.7.2-1.21.11，无付费无广告！",
+    title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-26.1.2",
+    description: "免费MC Java服务器，支持1.7.2-26.1.2，无付费无广告！",
     images: [BANNER_IMAGE],
   },
 
