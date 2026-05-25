@@ -113,6 +113,7 @@ export const EPBot = ({ className }: EPBotProps) => {
   };
 
   const cancelCurrentRequest = () => {
+    if (!loadingRef.current) return;  // ✅ 只在有活跃请求时取消
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
@@ -135,7 +136,7 @@ export const EPBot = ({ className }: EPBotProps) => {
 
     setEditId(null);
     if (abortControllerRef.current) {
-      cancelCurrentRequest();
+      cancelCurrentRequest();  // 现在只会在 loading 为 true 时真正取消
     }
 
     const userMsg: Message = {
@@ -207,7 +208,9 @@ export const EPBot = ({ className }: EPBotProps) => {
       removeEmptyAssistantPlaceholder();
     } finally {
       setLoading(false);
-      if (abortControllerRef.current === controller) abortControllerRef.current = null;
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;  // ✅ 确保只清空当前请求的 controller
+      }
       if (reply === '') removeEmptyAssistantPlaceholder();
     }
   };
