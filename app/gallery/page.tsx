@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
@@ -32,7 +33,7 @@ type Mirror = {
   tip: string;
 };
 
-// ✅ 修复：jsdelivr 国内可用 + 路径正确
+// ✅ 镜像列表
 const mirrors: Mirror[] = [
   {
     tag: 'GitHub RAW',
@@ -64,7 +65,6 @@ const mirrors: Mirror[] = [
     baseUrl: 'https://hk.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-Player-Image/main',
     tip: '香港节点',
   },
-  // ✅ 修复 jsdelivr：国内 fastly 节点 + 路径正确
   {
     tag: 'JSdelivr-Fastly',
     baseUrl: 'https://fastly.jsdelivr.net/gh/EndlessPixel/EndlessPixel-Player-Image@main',
@@ -77,7 +77,7 @@ const mirrors: Mirror[] = [
   },
 ];
 
-export default function GalleryPage() {
+function GalleryContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -153,13 +153,11 @@ export default function GalleryPage() {
     }
   }, [searchParams, getMirrorByTag, getPageFromParam, selectedMirror.tag, currentPage]);
 
-  // ✅ 统一 URL 拼接（修复 jsdelivr 路径）
+  // ✅ 统一 URL 拼接
   const getAssetUrl = useCallback((assetPath: string) => {
-    // jsdelivr 不需要 raw 完整路径，直接拼文件
     if (selectedMirror.tag.startsWith('JSdelivr')) {
       return `${selectedMirror.baseUrl}${assetPath}`;
     }
-    // 其他镜像：直接拼接
     return `${selectedMirror.baseUrl}${assetPath}`;
   }, [selectedMirror]);
 
@@ -191,7 +189,6 @@ export default function GalleryPage() {
         const res = await fetch(getAssetUrl('/assets.json'));
         if (!res.ok) throw new Error('请求失败');
         const data: ImageItem[] = await res.json();
-        // 按时间最新排序
         data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setImages(data);
       } catch (err) {
@@ -252,7 +249,7 @@ export default function GalleryPage() {
     showToast(`已切换至：${mirror.tag}`, 'success');
   };
 
-  // 智能分页按钮（适配多页数）
+  // 智能分页按钮
   const getPageNumbers = () => {
     const delta = 1;
     const pages: (number | string)[] = [];
@@ -363,7 +360,6 @@ export default function GalleryPage() {
                       key={item.path}
                       className="group relative rounded-xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                     >
-                      {/* 图片预览 */}
                       <PhotoView src={getAssetUrl(item.path)}>
                         <div className="aspect-video cursor-pointer overflow-hidden">
                           <img
@@ -378,7 +374,6 @@ export default function GalleryPage() {
                         </div>
                       </PhotoView>
 
-                      {/* 信息 */}
                       <div className="p-3 space-y-1.5">
                         <h3 className="text-slate-900 dark:text-white font-medium text-sm truncate">
                           {item.date}
@@ -529,5 +524,14 @@ export default function GalleryPage() {
 
       <Footer />
     </>
+  );
+}
+
+// ✅ 默认导出用 Suspense 包裹，解决 useSearchParams 静态生成问题
+export default function GalleryPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">加载中...</div>}>
+      <GalleryContent />
+    </Suspense>
   );
 }
