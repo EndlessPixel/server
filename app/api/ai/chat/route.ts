@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     ];
 
     const openaiBody = {
-      model: "qwen3.5-397b-a17b",
+      model: "qwen/qwen3.5-397b-a17b",
       messages: fullMessages,
       stream: true,
       temperature: 0.2,  // 降低到 0.2，让回答更稳定
