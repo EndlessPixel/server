@@ -113,7 +113,11 @@ export const EPBot = ({ className }: EPBotProps) => {
   };
 
   const cancelCurrentRequest = () => {
-    if (!loadingRef.current) return;  // ✅ 只在有活跃请求时取消
+    if (!loadingRef.current) {
+      console.log('[cancelCurrentRequest] No active request, skipping');
+      return;  // ✅ 只在有活跃请求时取消
+    }
+    console.log('[cancelCurrentRequest] Cancelling active request');
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
@@ -132,11 +136,18 @@ export const EPBot = ({ className }: EPBotProps) => {
   };
 
   const sendMessage = async (text: string) => {
-    if (!text.trim() || loadingRef.current) return;
+    console.log('[sendMessage] Called with text:', text.substring(0, 50));
+    if (!text.trim() || loadingRef.current) {
+      console.log('[sendMessage] Early return - empty text or already loading');
+      return;
+    }
 
     setEditId(null);
-    if (abortControllerRef.current) {
-      cancelCurrentRequest();  // 现在只会在 loading 为 true 时真正取消
+    
+    // 只在用户明确发送新消息时才取消当前请求（而不是在组件重新渲染时）
+    if (abortControllerRef.current && loadingRef.current) {
+      console.log('[sendMessage] Cancelling previous active request');
+      cancelCurrentRequest();
     }
 
     const userMsg: Message = {
@@ -160,21 +171,46 @@ export const EPBot = ({ className }: EPBotProps) => {
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
+    console.log('[sendMessage] Created new controller, starting request');
     let reply = '';
 
     try {
+      console.log('[sendMessage] Starting fetchEventSource request');
       await fetchEventSource('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ history: newHistory }),
+        body: JSON.stringify({ messages: newHistory }),
         signal: controller.signal,
+        async onopen(response) {
+          console.log('[onopen] Response status:', response.status, response.ok);
+          console.log('[onopen] Content-Type:', response.headers.get('content-type'));
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+        },
         onmessage(ev) {
-          if (ev.data === '[DONE]') return;
+          console.log('[onmessage] Received event data:', ev.data.substring(0, 100));
+          if (ev.data === '[DONE]') {
+            console.log('[onmessage] Stream completed');
+            return;
+          }
           try {
             const j = JSON.parse(ev.data);
-            const content = j.content ?? j.choices?.[0]?.delta?.content;
+            // 处理 AI SDK 格式（经过 API 转换后的格式）
+            let content = '';
+            if (j.type === 'text-delta' && j.delta) {
+              content = j.delta;
+            } else if (j.content) {
+              // 兼容直接返回 content 的格式
+              content = j.content;
+            } else if (j.choices?.[0]?.delta?.content) {
+              // 兼容原始 OpenAI 格式（如果 API 没有转换）
+              content = j.choices[0].delta.content;
+            }
+            
             if (content) {
               reply += content;
+              console.log('[onmessage] Accumulated reply length:', reply.length);
               setSessions(prev => prev.map(s => {
                 if (s.id !== currentSessionIdRef.current) return s;
                 const msgs = [...s.messages];
@@ -198,18 +234,51 @@ export const EPBot = ({ className }: EPBotProps) => {
           }
         },
         onerror(err) {
-          console.error('Stream error:', err);
-          if (!controller.signal.aborted) showToast('❌ 连接中断');
+          console.log('[onerror] Called, aborted status:', controller.signal.aborted);
+          console.log('[onerror] Error details:', err);
+          if (!controller.signal.aborted) {
+            console.error('[onerror] Stream error details:', err);
+            showToast('❌ 连接中断');
+          } else {
+            console.log('[onerror] Stream cancelled by user (expected during Fast Refresh)');
+          }
           removeEmptyAssistantPlaceholder();
+        },
+        onclose() {
+          console.log('[onclose] Connection closed, reply length:', reply.length);
         },
       });
     } catch (err) {
-      if (!controller.signal.aborted) showToast('❌ 服务异常');
+      const isAborted = controller.signal.aborted;
+      console.log('[catch] Error caught, aborted status:', isAborted);
+      
+      // 检查是否是浏览器扩展引起的错误
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      const errorStack = err instanceof Error ? (err.stack || '') : '';
+      const isExtensionError = errorStack.includes('chrome-extension://') || 
+                               errorStack.includes('inspector.js');
+      
+      if (isExtensionError) {
+        console.warn('[catch] Error from browser extension (not a real error):', errorMessage);
+        // 不显示错误提示，因为请求实际上是成功的
+      } else if (!isAborted) {
+        console.error('[catch] Request error:', err);
+        showToast('❌ 服务异常');
+      } else {
+        // 用户主动取消请求或 Fast Refresh 导致的中断
+        if (errorMessage.includes('Fast Refresh') || errorMessage.includes('rebuilding')) {
+          console.warn('[catch] Request interrupted by Fast Refresh (development mode behavior)');
+        } else {
+          console.log('[catch] Request cancelled by user (expected behavior)');
+        }
+      }
       removeEmptyAssistantPlaceholder();
     } finally {
+      console.log('[sendMessage] Finally block - reply length:', reply.length);
       setLoading(false);
       if (abortControllerRef.current === controller) {
         abortControllerRef.current = null;  // ✅ 确保只清空当前请求的 controller
+        console.log('[sendMessage] Cleared controller reference');
       }
       if (reply === '') removeEmptyAssistantPlaceholder();
     }
@@ -321,6 +390,19 @@ export const EPBot = ({ className }: EPBotProps) => {
     setCurrentSessionId(targetId);
     const targetSession = parsedSessions.find(s => s.id === targetId);
     if (targetSession) setMessages(targetSession.messages);
+  }, []);
+
+  // 组件卸载时清理（包括热更新）
+  useEffect(() => {
+    return () => {
+      // Fast Refresh 在开发环境中会触发此清理函数
+      // 在生产环境中，这表示组件真正被卸载
+      if (abortControllerRef.current) {
+        console.log('[cleanup] Component unmounting');
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
