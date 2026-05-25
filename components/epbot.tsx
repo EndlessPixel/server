@@ -145,8 +145,7 @@ export const EPBot = ({ className }: EPBotProps) => {
       senderName: getSenderName(),
     };
 
-    const recentMessages = messagesRef.current.slice(-MAX_CONTEXT_MESSAGES);
-    const newHistory = [...recentMessages, userMsg];
+    const newHistory = [...messagesRef.current.slice(-MAX_CONTEXT_MESSAGES), userMsg];
 
     const withPlaceholder: Message[] = [...newHistory, {
       role: 'assistant',
@@ -193,7 +192,9 @@ export const EPBot = ({ className }: EPBotProps) => {
                 return newMsgs;
               });
             }
-          } catch {}
+          } catch (err) {
+            console.warn('SSE parse error:', ev.data);
+          }
         },
         onerror(err) {
           console.error('Stream error:', err);
@@ -215,14 +216,9 @@ export const EPBot = ({ className }: EPBotProps) => {
     if (input.trim() && !loading) sendMessage(input.trim());
   };
 
-  const deleteFrom = (index: number) => {
-    const newMessages = messages.slice(0, index);
-    updateCurrentMessages(newMessages);
-    showToast('✅ 已删除后续消息');
-  };
-
   const deleteMessage = (index: number) => {
-    deleteFrom(index);
+    updateCurrentMessages(messages.slice(0, index));
+    showToast('✅ 已删除后续消息');
   };
 
   const startEdit = (index: number, content: string) => {
@@ -242,9 +238,10 @@ export const EPBot = ({ className }: EPBotProps) => {
     setEditId(null);
     sendMessage(trimmed);
   };
-
   const createNewSession = () => {
     if (loading) cancelCurrentRequest();
+    setEditId(null);
+    setEditContent('');
     const newSession: Session = {
       id: crypto.randomUUID(),
       title: '新对话',
@@ -256,7 +253,6 @@ export const EPBot = ({ className }: EPBotProps) => {
     setMessages([]);
     setSidebarOpen(false);
   };
-
   const deleteSession = (id: string) => {
     if (loading && id === currentSessionId) cancelCurrentRequest();
     setSessions(prev => {
