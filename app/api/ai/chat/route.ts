@@ -68,8 +68,8 @@ export async function POST(req: NextRequest) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 120000);
 
-    // 从环境变量读取 API base URL，默认为 api.iamhc.cn
-    const apiBaseUrl = process.env.API_BASE_URL || "https://api.iamhc.cn";
+    // 从环境变量读取 API base URL，默认为 https://new.xinjianya.top
+    const apiBaseUrl = process.env.API_BASE_URL || "https://new.xinjianya.top";
     const upstreamUrl = `${apiBaseUrl}/v1/chat/completions`;
     const apiKey = process.env.API_KEY;
     if (!apiKey) {
@@ -94,22 +94,33 @@ export async function POST(req: NextRequest) {
       const errorBody = await upstream.text();
       console.error("API 错误:", upstream.status, errorBody);
       
-      // 尝试解析错误信息，提供更友好的提示
+      // 透传上游错误信息到前端
+      let errorCode = 'unknown_error';
       let errorMessage = '服务异常';
+      let errorType = 'api_error';
+      
       try {
         const errorJson = JSON.parse(errorBody);
-        if (errorJson.error?.message) {
-          errorMessage = errorJson.error.message;
-          // 如果是模型不可用，给出更明确的提示
-          if (errorMessage.includes('model_not_found') || errorMessage.includes('No available channel')) {
-            errorMessage = 'AI 模型暂时不可用，请稍后重试';
-          }
+        if (errorJson.error) {
+          errorCode = errorJson.error.code || errorCode;
+          errorMessage = errorJson.error.message || errorMessage;
+          errorType = errorJson.error.type || errorType;
         }
       } catch {
-        // 如果解析失败，使用默认消息
+        // 如果解析失败，使用原始错误文本
+        errorMessage = errorBody.substring(0, 200);
       }
       
-      return new Response(`data: {"type":"error","errorText":"${errorMessage}"}\n\ndata: [DONE]\n\n`, {
+      // 构建包含完整错误信息的响应
+      const errorResponse = {
+        type: 'error',
+        code: errorCode,
+        message: errorMessage,
+        errorType: errorType,
+        status: upstream.status,
+      };
+      
+      return new Response(`data: ${JSON.stringify(errorResponse)}\n\ndata: [DONE]\n\n`, {
         headers: { 'Content-Type': 'text/event-stream' },
       });
     }
