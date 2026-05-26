@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 
 // 在这里换成你要代理的真实API地址
-const TARGET_API_URL = 'https://project-ic83o.vercel.app/api/hardware-info';
+const TARGET_API_URL = `${process.env.TARGET_API_URL}` + '/api/hardware-info';
 
 export async function GET(request: NextRequest) {
   try {

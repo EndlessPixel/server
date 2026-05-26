@@ -1,7 +1,8 @@
 import { NextResponse, NextRequest } from 'next/server';
 
+// 从环境变量读取API源地址
 // 在这里换成你要代理的真实API地址
-const TARGET_API_URL = 'https://project-ic83o.vercel.app/api/real-time-data';
+const TARGET_API_URL = `${process.env.TARGET_API_URL}` + '/api/real-time-data';
 
 export async function GET(request: NextRequest) {
   try {
