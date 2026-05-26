@@ -38,81 +38,60 @@ interface GitHubRelease {
   assets: Array<{ name: string; download_count: number; browser_download_url: string }>;
 }
 const cn = (...e: any[]) => e.filter(Boolean).join(' ');
-/**
- * 比较 EndlessPixel 整合包的自定义语义化版本号
- * 适配规则：
- * - 版本格式示例：v10-1.6（正式版）、v10-b4（预发布版）、1.21.11-v10-1.6（完整格式）
- * - 核心逻辑：先比较主版本号数字部分，再区分正式版/预发布版，最后比较预发布后缀数字
- * - 返回值：1 表示v1 > v2；-1 表示v1 < v2；0 表示版本相等
- * @param v1 第一个需要比较的版本号字符串
- * @param v2 第二个需要比较的版本号字符串
- * @returns 比较结果（1/-1/0）
- */
 const compareSemanticVersions = (v1: string, v2: string): number => {
-  /**
-   * 解析 EndlessPixel 自定义版本号，分离主版本号和预发布后缀
-   * 解析规则：
-   * 1. 预发布后缀识别：以 "-" 后跟字母开头的部分（如 -b4、-beta2、-rc1）
-   * 2. 主版本号提取：移除预发布后缀后，提取所有数字部分转为数字数组
-   *    - 示例1：v10-1.6 → 无预发布后缀 → 主版本号 [10,1,6]
-   *    - 示例2：v10-b4 → 预发布后缀 "b4" → 主版本号 [10]
-   *    - 示例3：1.21.11-v10-1.5 → 无预发布后缀 → 主版本号 [1,21,11,10,1,5]
-   * @param version 待解析的版本号字符串
-   * @returns 解析结果：mainParts（主版本号数字数组）、preRelease（预发布后缀）
-   */
-  const parseVersion = (version: string) => {
+  const parse = (v: string) => {
+    // 1. 提取纯数字段，忽略所有字母、横杠前缀
+    const digits = v.match(/(\d+\.\d+(\.\d+)?)/g) || [];
+    const mcParts = digits[0]?.split(".").map(Number) || [0];
 
+    // 2. 判断 MC 版本类型（决定 1.21 < 26.1 < 26.1.2）
+    let mcScore = 0;
+    if (mcParts[0] === 1) mcScore = 1;       // 1.21.x
+    else if (mcParts.length === 2) mcScore = 2; // 26.1
+    else if (mcParts.length === 3) mcScore = 3; // 26.1.2
 
-    const preReleaseMatch = version.match(/-([a-zA-Z]+.*)$/);
+    // 3. 提取后缀类型 a / b / 正式版
+    const isA = /-a\d+/.test(v);
+    const isB = /-b\d+/.test(v);
+    const type = isA ? 0 : isB ? 1 : 2; // a=0, b=1, 正式=2
 
-    const preRelease = preReleaseMatch ? preReleaseMatch[1] : '';
+    // 4. 提取后缀数字
+    const numMatch = v.match(/-[ab]?(\d+)/) || [];
+    const subNum = parseInt(numMatch[1] || "0");
 
+    // 5. 提取最终版本号数字（如 3.7 → 3.7）
+    const lastParts = digits[digits.length - 1]?.split(".").map(Number) || [0];
 
-
-
-    const mainVersionStr = preRelease ? version.replace(/-[a-zA-Z]+.*$/, '') : version;
-
-    const mainParts = mainVersionStr.match(/\d+/g)?.map(Number) || [];
-
-    return { mainParts, preRelease };
+    return { mcScore, mcParts, type, subNum, lastParts };
   };
 
+  const a = parse(v1);
+  const b = parse(v2);
 
-  const { mainParts: p1, preRelease: pr1 } = parseVersion(v1);
-  const { mainParts: p2, preRelease: pr2 } = parseVersion(v2);
-
-
-
-  const maxLen = Math.max(p1.length, p2.length);
-  for (let i = 0; i < maxLen; i++) {
-
-    const num1 = p1[i] || 0;
-    const num2 = p2[i] || 0;
-
-
-    if (num1 > num2) return 1;
-    if (num1 < num2) return -1;
+  // 1. 先比 MC 大版本等级：1.21 < 26.1 < 26.1.2
+  if (a.mcScore !== b.mcScore) {
+    return a.mcScore - b.mcScore;
   }
 
-
-
-  if (!pr1 && pr2) return 1;
-  if (pr1 && !pr2) return -1;
-
-
-  if (pr1 && pr2) {
-    /**
-     * 提取预发布后缀中的数字（如 b4 → 4，beta10 → 10，rc3 → 3）
-     * 无数字则返回 0（如 beta → 0）
-     * @param pr 预发布后缀字符串
-     * @returns 后缀中的数字（无则为0）
-     */
-    const getPreNum = (pr: string) => Number(pr.match(/\d+/)?.[0] || 0);
-
-
-    return getPreNum(pr1) - getPreNum(pr2);
+  // 2. 比 MC 具体数字（26.1.2 > 26.1.1）
+  for (let i = 0; i < Math.max(a.mcParts.length, b.mcParts.length); i++) {
+    const an = a.mcParts[i] ?? 0;
+    const bn = b.mcParts[i] ?? 0;
+    if (an !== bn) return an - bn;
   }
 
+  // 3. 比类型：正式 > b > a
+  if (a.type !== b.type) return a.type - b.type;
+
+  // 4. 比子版本数字（b3 > b2，a3 > a2）
+  if (a.subNum !== b.subNum) return a.subNum - b.subNum;
+
+  // 5. 比最后版本号（3.7 > 3.6 > 1.0）
+  for (let i = 0; i < Math.max(a.lastParts.length, b.lastParts.length); i++) {
+    const an = a.lastParts[i] ?? 0;
+    const bn = b.lastParts[i] ?? 0;
+    if (an !== bn) return an - bn;
+  }
 
   return 0;
 };
@@ -135,18 +114,6 @@ export function DownloadSection() {
       const res = await fetch('https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases?per_page=500');
       if (!res.ok) throw new Error(String(res.status));
       const data: GitHubRelease[] = await res.json();
-      const getLatestReleaseId = (branch: Branch) => {
-        const branchReleases = data.filter(r =>
-          (branch === 'main' && !/real/i.test(r.tag_name)) ||
-          (branch === 'real' && /real/i.test(r.tag_name))
-        ).filter(r => !r.prerelease);
-        if (branchReleases.length === 0) return null;
-        return branchReleases.sort((a, b) =>
-          new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
-        )[0].id;
-      };
-      const latestMain = getLatestReleaseId('main');
-      const latestReal = getLatestReleaseId('real');
       const parsed: ParsedRelease[] = data.map(r => {
         const branch: Branch = /real/i.test(r.name + r.tag_name) ? 'real' : 'main';
         const files = r.assets.map(a => ({
@@ -160,13 +127,49 @@ export function DownloadSection() {
           mcVersion: r.tag_name.match(/^(\d+\.\d+\.\d+)/)?.[1] ?? 'Unknown',
           releaseDate: new Date(r.published_at).toLocaleDateString('zh-CN'),
           isPrerelease: r.prerelease,
-          isLatest: (branch === 'main' && r.id === latestMain) || (branch === 'real' && r.id === latestReal),
+          isLatest: false, // 先初始化为 false，后续再计算
           downloadCount: files.reduce((s, f) => s + f.downloadCount, 0),
           files,
           changelog: r.body || '暂无更新日志。',
           branch,
         };
       });
+
+      // 按分支和MC大版本分组，找出每组的最新版本
+      const groupedReleases: Record<string, Record<string, ParsedRelease[]>> = {};
+      parsed.forEach(r => {
+        if (!groupedReleases[r.branch]) {
+          groupedReleases[r.branch] = {};
+        }
+        // 提取MC大版本作为分组key（如 "1.21" 或 "26.1"）
+        const mcMajorVersion = r.mcVersion.split('.').slice(0, 2).join('.');
+        if (!groupedReleases[r.branch][mcMajorVersion]) {
+          groupedReleases[r.branch][mcMajorVersion] = [];
+        }
+        groupedReleases[r.branch][mcMajorVersion].push(r);
+      });
+
+      // 为每个分组的最新版本设置 isLatest 标志
+      Object.keys(groupedReleases).forEach(branch => {
+        Object.keys(groupedReleases[branch]).forEach(mcVersion => {
+          const releases = groupedReleases[branch][mcVersion];
+          // 过滤掉预发布版，找到最新的正式版
+          const stableReleases = releases.filter(r => !r.isPrerelease);
+          if (stableReleases.length > 0) {
+            const latestStable = stableReleases.sort((a, b) =>
+              compareSemanticVersions(b.version, a.version)
+            )[0];
+            latestStable.isLatest = true;
+          } else if (releases.length > 0) {
+            // 如果没有正式版，则标记最新的预发布版
+            const latest = releases.sort((a, b) =>
+              compareSemanticVersions(b.version, a.version)
+            )[0];
+            latest.isLatest = true;
+          }
+        });
+      });
+
       setReleases(parsed);
     } catch {
       toast({ title: '获取版本信息失败', variant: 'destructive' });
@@ -185,8 +188,6 @@ export function DownloadSection() {
       .sort((a, b) => {
         const m = sortOrder === 'asc' ? 1 : -1;
         if (sortBy === 'semantic') {
-          if (a.isLatest && !b.isLatest) return -1;
-          if (!a.isLatest && b.isLatest) return 1;
           return m * compareSemanticVersions(a.version, b.version);
         }
         if (sortBy === 'releaseDate') {
@@ -213,16 +214,6 @@ export function DownloadSection() {
         </h1>
         <p className="text-muted-foreground">选择适合你的分支版本，体验不同游戏乐趣</p>
       </div>
-      <Tabs defaultValue={activeBranch} onValueChange={v => { setActiveBranch(v as Branch); setPage(1); }}>
-        <TabsList className="grid grid-cols-2">
-          <TabsTrigger value="main" className="gap-2">
-            <Star className="w-4 h-4" /> Main 分支
-          </TabsTrigger>
-          <TabsTrigger value="real" className="gap-2">
-            <Shield className="w-4 h-4" /> Real 分支
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
       <Card className="p-4 space-y-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="relative flex-1">
@@ -237,6 +228,17 @@ export function DownloadSection() {
           <Button variant="outline" onClick={fetchReleases}>刷新</Button>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-muted-foreground">分支：</span>
+          <Tabs defaultValue={activeBranch} onValueChange={v => { setActiveBranch(v as Branch); setPage(1); }}>
+            <TabsList className="grid grid-cols-2">
+              <TabsTrigger value="main" className="gap-2">
+                <Star className="w-4 h-4" /> Main 分支
+              </TabsTrigger>
+              <TabsTrigger value="real" className="gap-2">
+                <Shield className="w-4 h-4" /> Real 分支 (不再维护)
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
           <span className="text-sm text-muted-foreground">排序：</span>
           {(['semantic', 'releaseDate', 'downloadCount'] as const).map(key => (
             <Button
