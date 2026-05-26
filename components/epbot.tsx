@@ -196,6 +196,40 @@ export const EPBot = ({ className }: EPBotProps) => {
           }
           try {
             const j = JSON.parse(ev.data);
+            
+            // 处理错误消息
+            if (j.type === 'error') {
+              console.error('[onmessage] API Error received:', j);
+              const errorMsg = j.message || j.errorText || '未知错误';
+              const errorCode = j.code ? `[${j.code}]` : '';
+              const errorDetail = j.status ? `(HTTP ${j.status})` : '';
+              
+              // 在聊天界面显示错误信息
+              const fullErrorMsg = `${errorCode} ${errorMsg} ${errorDetail}`.trim();
+              reply = fullErrorMsg;
+              
+              setSessions(prev => prev.map(s => {
+                if (s.id !== currentSessionIdRef.current) return s;
+                const msgs = [...s.messages];
+                const last = msgs[msgs.length - 1];
+                if (last.role === 'assistant') {
+                  msgs[msgs.length - 1] = { ...last, content: fullErrorMsg };
+                }
+                return { ...s, messages: msgs };
+              }));
+              setMessages(prev => {
+                const newMsgs = [...prev];
+                const last = newMsgs[newMsgs.length - 1];
+                if (last.role === 'assistant') {
+                  newMsgs[newMsgs.length - 1] = { ...last, content: fullErrorMsg };
+                }
+                return newMsgs;
+              });
+              
+              showToast(`❌ ${errorMsg}`);
+              return;
+            }
+            
             // 处理 AI SDK 格式（经过 API 转换后的格式）
             let content = '';
             if (j.type === 'text-delta' && j.delta) {
