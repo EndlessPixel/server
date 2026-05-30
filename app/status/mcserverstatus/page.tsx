@@ -6,7 +6,8 @@ import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, Cpu, MessageSquare, AlertTriangle, ArrowLeft, Wifi, WifiOff, Clock, RefreshCw, ChevronDown, ChevronUp, Zap, Shield, RotateCcw, Gauge, AlertOctagon, MapPin } from "lucide-react";
+import { Users, Cpu, MessageSquare, AlertTriangle, ArrowLeft, Wifi, WifiOff, Clock, RefreshCw, ChevronDown, ChevronUp, Zap, Shield, RotateCcw, Gauge, AlertOctagon, MapPin, Loader2 } from "lucide-react";
+import { List, type RowComponentProps } from "react-window"; // react-window v2.x API
 
 interface Player {
   name: string;
@@ -127,7 +128,7 @@ const fetchServerData = async (ip: string, skipCache = false): Promise<ServerDat
 
     try {
       sessionStorage.setItem(cacheKey, JSON.stringify({ _ts: Date.now(), data }));
-      if (data.icon) localStorage.setItem(`mcserver:icon:${ip}`, data.icon);
+      // ❌ 移除无用的 localStorage 图标存储
     } catch (e) {
       console.warn("缓存存储失败:", e);
     }
@@ -150,14 +151,11 @@ const fetchServerPing = async (host: string): Promise<PingData | null> => {
     const res = await fetch(`/api/ping/epmc`, {
       signal: controller.signal,
       headers: { Accept: "application/json" },
-      
-      // 👇 可选优化：浏览器本地不缓存，每次拿最新延迟
       cache: "no-store"
     });
 
     clearTimeout(timeout);
 
-    // 👇 优化：先判断 HTTP 状态是否正常
     if (!res.ok) {
       console.error("Ping 接口状态异常", res.status);
       return { min: 0, avg: 0, max: 0, message: "获取延迟失败" };
@@ -165,15 +163,19 @@ const fetchServerPing = async (host: string): Promise<PingData | null> => {
 
     const data = await res.json();
 
-    // 👇 优化：防止 data 不存在导致崩溃
     if (!data || data.code) {
       return { min: 0, avg: 0, max: 0, message: data?.message || "请求失败" };
     }
 
+    // 修复 toFixed 可能产生 NaN 的问题
+    const minVal = isNaN(Number(data.min)) ? 0 : Number(data.min);
+    const avgVal = isNaN(Number(data.avg)) ? 0 : Number(data.avg);
+    const maxVal = isNaN(Number(data.max)) ? 0 : Number(data.max);
+
     return {
-      min: Number(data.min?.toFixed(1)) || 0,
-      avg: Number(data.avg?.toFixed(1)) || 0,
-      max: Number(data.max?.toFixed(1)) || 0,
+      min: Number(minVal.toFixed(1)),
+      avg: Number(avgVal.toFixed(1)),
+      max: Number(maxVal.toFixed(1)),
     };
   } catch (err) {
     console.error("Ping 请求失败", err);
@@ -191,6 +193,20 @@ const fetchMyIp = async (): Promise<MyIpData | null> => {
     console.error("获取公网IP失败：", err);
     return null;
   }
+};
+
+// 新增 PlayerRow 组件（使用 data 从 rowProps 传入）
+const PlayerRow = ({ index, style, data }: RowComponentProps<{ data: Player[] }>) => {
+  const player = data[index];
+  if (!player) return null;
+  return (
+    <div style={style} className="flex items-center gap-2 p-2 border-b border-slate-100 dark:border-slate-800">
+      <div className="w-8 h-8 rounded-full bg-linear-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+        {player.name.charAt(0).toUpperCase()}
+      </div>
+      <span className="text-sm truncate">{player.name}</span>
+    </div>
+  );
 };
 
 export default function McServerStatusPage() {
@@ -211,18 +227,21 @@ export default function McServerStatusPage() {
   const isMountedRef = useRef(true);
   const lastRefreshRef = useRef<number>(0);
 
+  // 修复 debounce 类型错误（浏览器环境）
   const debounce = (func: Function, delay: number) => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     return (...args: any[]) => {
-      clearTimeout(timeoutId);
+      if (timeoutId) clearTimeout(timeoutId);
       timeoutId = setTimeout(() => func.apply(null, args), delay);
     };
   };
 
   const loadServerData = useCallback(async (skipCache = false) => {
+    // P0: 强制刷新防并发锁
+    if (isLoading) return;
     if (!isMountedRef.current) return;
-    const now = Date.now();
 
+    const now = Date.now();
     if (!skipCache && now - lastRefreshRef.current < 2000) {
       console.log("请求过于频繁，跳过本次请求");
       return;
@@ -243,8 +262,11 @@ export default function McServerStatusPage() {
         setServerData(data);
         setPingData(ping);
         setMyIpData(ip);
-        setLastUpdated(new Date());
-        if (data) setRefreshCount(prev => prev + 1);
+        // 仅在成功获取数据时更新时间戳和刷新次数
+        if (data) {
+          setLastUpdated(new Date());
+          setRefreshCount(prev => prev + 1);
+        }
       }
     } catch (err) {
       if (isMountedRef.current) {
@@ -254,7 +276,7 @@ export default function McServerStatusPage() {
     } finally {
       if (isMountedRef.current) setIsLoading(false);
     }
-  }, []);
+  }, [isLoading]);
 
   const debouncedLoadServerData = useCallback(
     debounce(() => loadServerData(false), 1000),
@@ -277,6 +299,7 @@ export default function McServerStatusPage() {
 
   useEffect(() => {
     isMountedRef.current = true;
+    // 修复：清除初始化定时器，防止内存泄漏
     const initTimer = setTimeout(() => loadServerData(false), 100);
     return () => {
       isMountedRef.current = false;
@@ -284,6 +307,31 @@ export default function McServerStatusPage() {
     };
   }, [loadServerData]);
 
+  const renderPlayerList = () => {
+    const players = serverData?.players?.list;
+    if (!players || players.length === 0) {
+      return <p className="text-slate-500 dark:text-slate-400 text-sm p-4">暂无在线玩家</p>;
+    }
+
+    const itemHeight = 48;
+    const maxHeight = 400;
+    const listHeight = Math.min(players.length * itemHeight, maxHeight);
+
+    return (
+      <div style={{ height: listHeight, width: '100%' }}>
+        <List
+          defaultHeight={listHeight}
+          rowCount={players.length}
+          rowHeight={itemHeight}
+          rowComponent={PlayerRow}
+          rowProps={{ data: players }}
+          style={{ width: '100%' }}
+        />
+      </div>
+    );
+  };
+
+  // 骨架屏仅在初次加载且无数据时显示（避免闪烁）
   const renderSkeletonLoader = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {Array.from({ length: 6 }).map((_, i) => (
@@ -321,24 +369,6 @@ export default function McServerStatusPage() {
     </Card>
   );
 
-  const renderPlayerList = () => {
-    if (!serverData?.players?.list || serverData.players.list.length === 0) {
-      return <p className="text-slate-500 dark:text-slate-400 text-sm">暂无在线玩家</p>;
-    }
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-        {serverData.players.list.map((player, index) => (
-          <div key={index} className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-800/50 rounded-md">
-            <div className="w-8 h-8 rounded-full bg-linear-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-              {player.name.charAt(0).toUpperCase()}
-            </div>
-            <span className="text-sm truncate">{player.name}</span>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   const renderPingCard = () => {
     if (!pingData || pingData.message) {
       return (
@@ -374,6 +404,9 @@ export default function McServerStatusPage() {
     );
   };
 
+  // 判断是否为初次加载（无数据且正在加载）
+  const isInitialLoading = isLoading && !serverData;
+
   return (
     <>
       <Navigation />
@@ -400,15 +433,20 @@ export default function McServerStatusPage() {
               <RotateCcw size={12} className="mr-1" /> 刷新次数: {refreshCount}
             </Badge>
 
-            {/* 普通刷新 */}
             <Button onClick={handleRefresh} disabled={isLoading} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
               {isLoading ? <RefreshCw size={16} className="animate-spin" /> : <><RefreshCw size={16} className="mr-1" />刷新</>}
             </Button>
 
-            {/* 强制刷新（跳过缓存） */}
             <Button onClick={handleForceRefresh} disabled={isLoading} size="sm" className="bg-red-600 hover:bg-red-700 text-white">
               {isLoading ? <AlertOctagon size={16} className="animate-spin" /> : <><AlertOctagon size={16} className="mr-1" />强制刷新</>}
             </Button>
+
+            {/* 刷新中提示（非初次加载时显示） */}
+            {isLoading && !isInitialLoading && (
+              <Badge variant="outline" className="text-xs bg-blue-50 dark:bg-blue-900/20">
+                <Loader2 size={12} className="mr-1 animate-spin" /> 刷新中
+              </Badge>
+            )}
           </div>
         </div>
 
@@ -419,7 +457,6 @@ export default function McServerStatusPage() {
                 <Cpu size={16} className="text-green-500" />服务器地址： {ACTIVE_NODE.ip}
               </div>
 
-              {/* 我的公网IP */}
               {myIpData ? (
                 <>
                   <div className="flex flex-col gap-1 p-3 bg-white dark:bg-slate-800/30 rounded-lg">
@@ -443,9 +480,9 @@ export default function McServerStatusPage() {
           </CardContent>
         </Card>
 
-        {isLoading && renderSkeletonLoader()}
-        {!isLoading && error && renderErrorState()}
-        {!isLoading && serverData && (
+        {isInitialLoading && renderSkeletonLoader()}
+        {!isInitialLoading && error && !serverData && renderErrorState()}
+        {serverData && (
           <>
             <Card className="mb-8 shadow-lg border-0 bg-linear-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-900/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -539,8 +576,6 @@ export default function McServerStatusPage() {
             </div>
           </>
         )}
-
-        {!isLoading && !serverData && !error && renderErrorState()}
       </main>
       <Footer />
     </>
