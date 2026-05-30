@@ -2,11 +2,10 @@
 import Link from "next/link";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
-import { Server, Globe, Activity, ArrowRight, Users, CheckCircle2, AlertCircle, Info} from "lucide-react";
+import { Server, Globe, Activity, ArrowRight, Users} from "lucide-react";
 interface ServiceItem {
   name: string;
   path: string;
@@ -18,7 +17,7 @@ interface ServiceItem {
 }
 const SERVICES: ServiceItem[] = [
   {
-    name: "Minecraft 服务器",
+    name: "Minecraft 服务器状态",
     path: "/status/mcserverstatus",
     icon: Server,
     status: "online",
@@ -26,47 +25,15 @@ const SERVICES: ServiceItem[] = [
     color: "from-green-500 to-emerald-600"
   },
   {
-    name: "服务状态监控",
-    path: "https://stats.uptimerobot.com/uHTdCauXWA",
+    name: "服务器性能监控",
+    path: "http://sys.epmc.qzz.io:18000",
     icon: Activity,
     status: "online",
-    description: "全方位服务监控",
+    description: "服务器性能监控",
     color: "from-blue-500 to-cyan-600",
     external: true
   }
 ];
-const StatusBadge: React.FC<{ status: string }> = React.memo(({ status }) => {
-  let icon, color, text;
-  
-  switch (status) {
-    case "online":
-      icon = <CheckCircle2 className="w-3.5 h-3.5" />;
-      color = "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
-      text = "在线";
-      break;
-    case "offline":
-      icon = <AlertCircle className="w-3.5 h-3.5" />;
-      color = "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
-      text = "离线";
-      break;
-    case "maintenance":
-      icon = <Info className="w-3.5 h-3.5" />;
-      color = "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400";
-      text = "维护中";
-      break;
-    default:
-      icon = <Info className="w-3.5 h-3.5" />;
-      color = "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300";
-      text = "未知";
-  }
-  
-  return (
-    <Badge className={`${color} flex items-center gap-1`}>
-      {icon}
-      {text}
-    </Badge>
-  );
-});
 const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service }) => {
   const Icon = service.icon;
   return (
@@ -80,7 +47,6 @@ const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service })
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-slate-900 dark:text-white text-lg">{service.name}</h3>
-                <StatusBadge status={service.status} />
               </div>
               <p className="text-slate-600 dark:text-slate-400 text-sm">{service.description}</p>
             </div>
