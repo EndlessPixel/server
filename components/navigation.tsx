@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Download, Activity, BookOpen, Users, Home, ChevronRight, Search } from 'lucide-react';
+import { Menu, X, Download, Activity, Users, Home, ChevronRight, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import LoginButton from '@/components/login';
 
@@ -237,11 +237,10 @@ export function Navigation() {
   const pathname = usePathname();
   useLockBody(isMenuOpen);
   const navItems = [
-    { href: '/', label: '首页', icon: Home, description: '主页' },
-    { href: '/downloads', label: '资源下载', icon: Download, description: '模组包/启动器下载' },
-    { href: '/status', label: '状态查询', icon: Activity, description: '服务器状态' },
-    { href: '/wiki', label: 'Wiki', icon: BookOpen, description: '服务器专属百科' },
-    { href: '/about', label: '关于我们', icon: Users, description: '团队介绍' },
+    { href: '/', label: '首页', icon: Home},
+    { href: '/downloads', label: '资源下载', icon: Download},
+    { href: '/status', label: '状态查询', icon: Activity},
+    { href: '/about', label: '关于我们', icon: Users},
   ];
 
   return (
@@ -350,7 +349,6 @@ export function Navigation() {
                       <Icon className="w-5 h-5" />
                       <div>
                         <div className="font-medium">{item.label}</div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">{item.description}</div>
                       </div>
                     </MotionLink>
                   );
