@@ -70,7 +70,7 @@ export function LauncherListPage() {
               className="inline-flex items-center gap-2 bg-linear-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400  border-blue-200/50 dark:border-blue-700/50 px-6 py-3 rounded-2xl text-base font-semibold backdrop-blur-sm mb-6"
             >
               <Sparkles className="w-5 h-5" />
-              最后更新：2025/01/17
+              最后更新：2025/05/25
             </motion.div>
 
             <motion.h1
@@ -143,12 +143,8 @@ export function LauncherListPage() {
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                       <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shine" />
                     </div>
-
-                    {/* 顶部图标区域 */}
                     <div className="relative z-10">
-                      {/* 核心逻辑：先判断是否有releases字段 → 再判断值为true/false */}
                       {
-                        // 第一种情况：有releases字段且值为true（已验证存在）
                         r.releases === true ? (
                           <motion.div
                             className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400  border-emerald-200/60 dark:border-emerald-700/40 rounded-full text-xs font-medium"
@@ -160,7 +156,6 @@ export function LauncherListPage() {
                             已验证 - Releases已存在
                           </motion.div>
                         ) :
-                          // 2. 有 Releases 但无文件（empty，新增）
                           r.releases === "empty" ? (
                             <motion.div
                               className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400  border-blue-200/60 dark:border-blue-700/40 rounded-full text-xs font-medium"
@@ -172,7 +167,6 @@ export function LauncherListPage() {
                               已验证 - Releases存在但无发布文件
                             </motion.div>
                           ) :
-                            // 第二种情况：有releases字段且值为false（已验证不存在）
                             r.releases === false ? (
                               <motion.div
                                 className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-red-500/10 text-red-600 dark:text-red-400  border-red-200/60 dark:border-red-700/40 rounded-full text-xs font-medium"
@@ -184,7 +178,6 @@ export function LauncherListPage() {
                                 已验证 - Releases不存在
                               </motion.div>
                             ) :
-                              // 第三种情况：无releases字段（未验证）
                               (
                                 <motion.div
                                   className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400  border-amber-200/60 dark:border-amber-700/40 rounded-full text-xs font-medium"
