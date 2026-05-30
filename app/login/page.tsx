@@ -11,17 +11,17 @@ export default function LoginPage() {
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [agreeTerms, setAgreeTerms] = useState(false);
-    // 弹窗控制
     const [modalType, setModalType] = useState<'terms' | 'privacy' | null>(null);
     const router = useRouter();
 
-    // 页面入场动画
+    // SQL 注入检测正则（最常见危险字符）
+    const sqlInjectionPattern = /['";<>#*=\/\\\-\(\)]/i;
+
     useEffect(() => {
         const timer = setTimeout(() => setShowForm(true), 300);
         return () => clearTimeout(timer);
     }, []);
 
-    // 已登录自动跳转
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const redirect = urlParams.get('redirect');
@@ -30,7 +30,6 @@ export default function LoginPage() {
         }
     }, [router]);
 
-    // Cookie 工具
     function setCookie(name: string, value: string, days = 7) {
         const date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -53,6 +52,13 @@ export default function LoginPage() {
             setError('请输入用户名');
             return;
         }
+
+        // 👇 SQL 注入检测
+        if (sqlInjectionPattern.test(username)) {
+            setError('请不要在用户名输入某些特殊字符，别以为我不知道你要干什么。');
+            return;
+        }
+
         if (!agreeTerms) {
             setError('请阅读并同意用户协议与隐私政策');
             return;
@@ -71,12 +77,10 @@ export default function LoginPage() {
         }, 900);
     };
 
-    // 关闭弹窗
     const closeModal = () => setModalType(null);
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col relative overflow-hidden">
-            {/* 背景装饰 */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-3xl opacity-70"></div>
                 <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-300/20 dark:bg-purple-600/10 rounded-full blur-3xl opacity-70"></div>
@@ -123,7 +127,6 @@ export default function LoginPage() {
                             />
                         </div>
 
-                        {/* 协议勾选 + 弹窗链接 */}
                         <div className="flex items-start gap-2.5 mt-2">
                             <input
                                 type="checkbox"
@@ -179,22 +182,11 @@ export default function LoginPage() {
                 </div>
             </main>
 
-            {/* 全局弹窗蒙层 */}
             {modalType && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    {/* 遮罩 */}
-                    <div 
-                        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                        onClick={closeModal}
-                    />
-                    {/* 弹窗内容 */}
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={closeModal} />
                     <div className="relative w-full max-w-lg max-h-[80vh] overflow-auto bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6 border border-slate-200 dark:border-slate-700 z-10">
-                        <button
-                            onClick={closeModal}
-                            className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                        >
-                            ✕
-                        </button>
+                        <button onClick={closeModal} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
 
                         {modalType === 'terms' ? (
                             <>
@@ -225,10 +217,7 @@ export default function LoginPage() {
                             </>
                         )}
 
-                        <button
-                            onClick={closeModal}
-                            className="mt-6 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm"
-                        >
+                        <button onClick={closeModal} className="mt-6 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm">
                             我已阅读并了解
                         </button>
                     </div>
