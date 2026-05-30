@@ -1,12 +1,24 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { Noto_Sans_SC } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/toaster";
+import { AppearanceProvider } from "@/lib/appearance-context";
+import { AppearanceSettingsManager } from "@/components/appearance-settings-container";
+import Script from "next/script";
 import clsx from "clsx";
 import "./globals.css";
 import FloatActions from "@/components/float-actions";
+
+// 加载 Noto Sans SC 字体
+const notoSansSC = Noto_Sans_SC({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+  variable: '--font-noto-sans-sc',
+});
 
 // 常量统一管理
 const BRAND_NAME = "EndlessPixel Studio";
@@ -164,20 +176,11 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={clsx(GeistSans.variable, GeistMono.variable)}
+      className={clsx(GeistSans.variable, GeistMono.variable, notoSansSC.variable)}
       suppressHydrationWarning
     >
       <head>
         <link rel="canonical" href={DOMAIN} />
-        {jsonLd.map((ld, index) => (
-          <script
-            key={index}
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(ld),
-            }}
-          />
-        ))}
         <meta name="referrer" content="no-referrer" />
         <meta name="msvalidate.01" content="B9D8B7001682D3FB5F699A38C4C6DAF4" />
         <meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}`} />
@@ -188,12 +191,29 @@ export default function RootLayout({
           <br />
           Some features of this site require JavaScript. Please enable JS for the best experience.
         </noscript>
+        
+        {/* JSON-LD 结构化数据 */}
+        {jsonLd.map((ld, index) => (
+          <Script
+            key={index}
+            id={`json-ld-${index}`}
+            type="application/ld+json"
+            strategy="afterInteractive"
+          >
+            {JSON.stringify(ld)}
+          </Script>
+        ))}
+        
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <ErrorBoundary>
-            {children}
-            <FloatActions />
-          </ErrorBoundary>
-          <Toaster />
+          <AppearanceProvider>
+            <AppearanceSettingsManager>
+              <ErrorBoundary>
+                {children}
+                <FloatActions />
+              </ErrorBoundary>
+              <Toaster />
+            </AppearanceSettingsManager>
+          </AppearanceProvider>
         </ThemeProvider>
       </body>
     </html>

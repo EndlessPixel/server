@@ -1,9 +1,22 @@
+/* 从 Google Fonts 引入 Noto Sans SC */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap');
+
+/* 自定义字体 */
+@font-face {
+  font-family: 'ChillReunion Round';
+  src: url('/fonts/ChillReunion_Round.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @import "tailwindcss/preflight";
 @import "tailwindcss/utilities";
 @tailwind utilities;
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
+
 :root {
   --background: oklch(1 0.005 240);
   --foreground: oklch(0.145 0.01 240);
@@ -130,4 +143,22 @@
 }
 .page-container {
   padding-right: 4px;
+}
+
+/* 防止横向滚动的工具类 */
+.overflow-x-hidden {
+  overflow-x: hidden !important;
+}
+
+/* 字体类 - 用于调试和验证 */
+.font-noto-sans {
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.font-songti {
+  font-family: 'SimSun', 'STSong', '宋体', serif !important;
+}
+
+.font-chill-reunion {
+  font-family: 'ChillReunion Round', 'Noto Sans SC', sans-serif !important;
 }
