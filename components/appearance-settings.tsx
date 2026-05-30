@@ -149,7 +149,7 @@ export function AppearanceSettingsPanel({ isOpen, onClose }: AppearanceSettingsP
                       <div className="space-y-0.5">
                         <Label className="text-sm font-medium">地址栏和输入框</Label>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                          显示页面导航路径和搜索框
+                          显示页面导航搜索框
                         </p>
                       </div>
                       <Switch
