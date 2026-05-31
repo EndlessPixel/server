@@ -29,12 +29,12 @@ export function TeamSection() {
     },
     {
       name: "LANt",
-      description: "前核心技术成员，曾负责服务器与域名管理，目前暂时退役。",
+      description: "团队成员，负责提供域名服务。",
       iconColor: "text-blue-600 dark:text-blue-400",
       bgColor: "bg-blue-50 dark:bg-blue-950/20",
       borderColor: "border-l-4 border-l-blue-500 dark:border-l-blue-600",
-      departments: ["退役成员"],
-      responsibilities: ["暂时退役"],
+      departments: ["网络部"],
+      responsibilities: ["域名管理"],
       qq: ["2384269718"]
     },
   ]
@@ -47,7 +47,6 @@ export function TeamSection() {
       "维护部": Shield,
       "宣传部": Sparkles,
       "网络部": Globe,
-      "退役成员": Users,
     }
     return iconMap[dept] || Users
   }
@@ -106,7 +105,7 @@ export function TeamSection() {
               </div>
 
               {/* QQ 联系方式 */}
-              <div>
+              <div className="mb-3 flex flex-col">
                 <span className="block text-sm font-medium mb-2 items-center gap-1">
                   <MessageSquare className="w-3.5 h-3.5" />QQ 联系
                 </span>
