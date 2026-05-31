@@ -175,7 +175,7 @@ export function HeroSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <motion.div
-            className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 mb-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+            className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm  border-slate-200 dark:border-slate-700 px-4 py-2 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 mb-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             initial={{ opacity: 0, y: -20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -229,7 +229,7 @@ export function HeroSection() {
                 <motion.span
                   key={feature.label}
                   variants={itemVariants}
-                  className="flex items-center gap-1 bg-white/70 dark:bg-slate-800/40 backdrop-blur-sm px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 group cursor-pointer"
+                  className="flex items-center gap-1 bg-white/70 dark:bg-slate-800/40 backdrop-blur-sm px-3 py-1.5 rounded-full r-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 group cursor-pointer"
                   whileHover={{ scale: 1.05, y: -2 }}
                 >
                   <Icon className={`w-3.5 h-3.5 ${feature.color} group-hover:scale-110 transition-transform`} />
@@ -260,7 +260,7 @@ export function HeroSection() {
               <span>服务器实况</span>
             </Link>
 
-            <Link href="/downloads/modpack" className={`${baseBtnClasses} bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:border-blue-300 text-slate-800 dark:text-slate-200 shadow-xl`}>
+            <Link href="/downloads/modpack" className={`${baseBtnClasses} bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm r-slate-200 dark:border-slate-700 hover:border-blue-300 text-slate-800 dark:text-slate-200 shadow-xl`}>
               <div className="absolute inset-0 bg-linear-to-r from-transparent via-blue-50/30 to-transparent -skew-x-6 -translate-x-full hover:translate-x-full transition-transform duration-700 pointer-events-none" />
               <Package className="w-4.5 h-4.5" />
               <span>官方整合包</span>
@@ -291,7 +291,7 @@ export function HeroSection() {
                   onHoverStart={() => setHoveredCard(feature.title)}
                   onHoverEnd={() => setHoveredCard(null)}
                 >
-                  <Card className="group bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer relative">
+                  <Card className="group bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl  border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer relative">
                     <CardContent className="p-4 text-center relative z-10">
                       <motion.div
                         className={`w-12 h-12 ${feature.bgColor} rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:shadow-md transition-all duration-300`}
@@ -346,7 +346,7 @@ export function HeroSection() {
                 key={stat.label}
                 variants={itemVariants}
               >
-                <div className="relative bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-xl p-4 md:p-8 border border-slate-200/60 dark:border-slate-700/60 text-center hover:shadow-lg transition-all duration-300">
+                <div className="relative bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-xl p-4 md:p-8 r-slate-200/60 dark:border-slate-700/60 text-center hover:shadow-lg transition-all duration-300">
                   <div className="w-12 h-12 md:w-16 md:h-16 bg-linear-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-3">
                     <Icon className={`w-6 h-6 md:w-8 md:h-8 ${stat.color}`} />
                   </div>
@@ -406,7 +406,7 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
         >
-          <div className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-6 md:p-12 border border-slate-200/60 dark:border-slate-700/60 max-w-4xl mx-auto">
+          <div className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-6 md:p-12 r-slate-200/60 dark:border-slate-700/60 max-w-4xl mx-auto">
             <Award className="w-12 h-12 md:w-16 md:h-16 text-yellow-500 mx-auto mb-4" />
             <h3 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">
               准备好开始冒险了吗？
@@ -419,11 +419,11 @@ export function HeroSection() {
                 <Rocket className="w-5 h-5" />
                 下载客户端
               </Link>
-              <Link href="/status" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-xl font-semibold shadow-lg">
+              <Link href="/status" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-700  border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-xl font-semibold shadow-lg">
                 <TrendingUp className="w-5 h-5" />
                 查看状态
               </Link>
-              <a href="https://qm.qq.com/q/sFrax2Ilxe" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-xl font-semibold shadow-lg">
+              <a href="https://qm.qq.com/q/sFrax2Ilxe" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-700  border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 rounded-xl font-semibold shadow-lg">
                 <Heart className="w-5 h-5 text-green-600" />
                 加入社区
               </a>

@@ -279,7 +279,7 @@ function GalleryContent() {
           </div>
 
           {/* 镜像切换 */}
-          <div className="mb-6 p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+          <div className="mb-6 p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm  border-slate-200 dark:border-slate-800">
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
                 <ServerIcon className="w-4 h-4 text-blue-500" />
@@ -292,7 +292,7 @@ function GalleryContent() {
                     onClick={() => handleMirrorChange(mirror)}
                     className={`px-3 py-1.5 text-xs rounded-full transition-all ${
                       selectedMirror.tag === mirror.tag
-                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium border border-blue-200 dark:border-blue-800'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium  border-blue-200 dark:border-blue-800'
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                     title={mirror.tip}
@@ -306,12 +306,12 @@ function GalleryContent() {
           </div>
 
           {/* 使用声明 */}
-          <div className="mb-8 p-4 md:p-5 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-xl shadow-sm">
+          <div className="mb-8 p-4 md:p-5 bg-blue-50 dark:bg-blue-950/20  border-blue-200 dark:border-blue-800 rounded-xl shadow-sm">
             <div className="flex items-center gap-2 mb-3">
               <CheckCircle2Icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               <h2 className="font-bold text-blue-800 dark:text-blue-300">使用声明 & 版权协议</h2>
             </div>
-            <div className="mt-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-xs font-medium text-red-600 dark:text-red-400">
+            <div className="mt-3 p-2 bg-red-50 dark:bg-red-900/20  border-red-200 dark:border-red-800 rounded text-xs font-medium text-red-600 dark:text-red-400">
               重要提醒：无论你是直接下载、右键另存为、F12 获取图片链接、或从 GitHub 仓库下载，均受到 CC BY-NC-SA 4.0 协议保护，请合规使用！
             </div>
           </div>
@@ -358,7 +358,7 @@ function GalleryContent() {
                   {currentImages.map((item) => (
                     <div
                       key={item.path}
-                      className="group relative rounded-xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                      className="group relative rounded-xl overflow-hidden bg-white dark:bg-slate-900  border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                     >
                       <PhotoView src={getAssetUrl(item.path)}>
                         <div className="aspect-video cursor-pointer overflow-hidden">
@@ -413,7 +413,7 @@ function GalleryContent() {
                   <button
                     onClick={() => paginate(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700"
+                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800  border-slate-200 dark:border-slate-700 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -426,7 +426,7 @@ function GalleryContent() {
                         className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
                           currentPage === page
                             ? 'bg-blue-600 text-white'
-                            : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                            : 'bg-white dark:bg-slate-800  border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                         }`}
                       >
                         {page}
@@ -441,7 +441,7 @@ function GalleryContent() {
                   <button
                     onClick={() => paginate(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700"
+                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800  border-slate-200 dark:border-slate-700 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
