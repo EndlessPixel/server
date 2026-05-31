@@ -3,34 +3,14 @@
 import { useState, useTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { LauncherDownloadPage } from "@/components/launcher-download-page";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-    AlertCircle,
-    ArrowRight,
-    Github,
-    Download,
-    Sparkles,
-    Share2,
-    Rocket,
-    Globe,
-    Clock,
-    CheckCircle2,
-} from "lucide-react";
+import { AlertCircle, ArrowRight, Download, Sparkles, Share2, Rocket, Globe, Clock, CheckCircle2 } from "lucide-react";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { motion } from "framer-motion";
-
-
-
 
 const parseGithubUrl = (url: string): { isValid: boolean; owner?: string; repo?: string } => {
     try {
@@ -63,9 +43,6 @@ const parseGithubUrl = (url: string): { isValid: boolean; owner?: string; repo?:
     }
 };
 
-
-
-
 export default function CustomDownloadsPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -74,10 +51,8 @@ export default function CustomDownloadsPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [copied, setCopied] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
-
     const githubUrl = searchParams.get("url");
     const repoInfo = githubUrl ? parseGithubUrl(githubUrl) : { isValid: false };
-
 
     if (githubUrl && repoInfo.isValid && repoInfo.owner && repoInfo.repo) {
         return (
@@ -92,24 +67,17 @@ export default function CustomDownloadsPage() {
         );
     }
 
-
-
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const trimmed = inputUrl.trim();
         if (!trimmed) return;
-
         setIsLoading(true);
-
         const info = parseGithubUrl(trimmed);
         if (!info.isValid || !info.owner || !info.repo) {
             alert("请输入有效的 GitHub 仓库地址，例如：github.com/owner/repo");
             setIsLoading(false);
             return;
         }
-
-
         try {
             const apiUrl = `https://api.github.com/repos/${info.owner}/${info.repo}/releases?per_page=1`;
             const res = await fetch(apiUrl, {
@@ -119,7 +87,6 @@ export default function CustomDownloadsPage() {
                     "User-Agent": "CustomDownloadsPage",
                 },
             });
-
             if (res.ok) {
                 const releases = await res.json();
                 if (Array.isArray(releases) && releases.length > 0) {
@@ -130,14 +97,11 @@ export default function CustomDownloadsPage() {
                     return;
                 }
             }
-
-
             alert(
                 "❌ 该仓库暂无公开的 Release 版本，无法生成下载页。\n\n请确认：\n1. 仓库是公开的\n2. 已在 GitHub 上创建至少一个 Release（非 tag）"
             );
         } catch (error) {
             console.warn("GitHub API 调用失败（可能因速率限制），尝试直接跳转...", error);
-
             startTransition(() => {
                 router.push(`/downloads/custom_downloads?url=${encodeURIComponent(trimmed)}`);
             });
@@ -145,14 +109,9 @@ export default function CustomDownloadsPage() {
             setIsLoading(false);
         }
     };
-
-
-
-
     const handleShare = async () => {
         if (typeof window === "undefined") return;
         const url = window.location.href;
-
         try {
             if (navigator.share) {
                 await navigator.share({ title: document.title, url });
@@ -176,9 +135,6 @@ export default function CustomDownloadsPage() {
             console.error("分享失败:", err);
         }
     };
-
-
-
 
     return (
         <>
@@ -209,7 +165,6 @@ export default function CustomDownloadsPage() {
                             输入任意 GitHub 仓库地址，一键生成专业、美观、支持镜像加速的下载页面。
                         </p>
                     </motion.div>
-
                     {/* 主卡片 */}
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -221,7 +176,7 @@ export default function CustomDownloadsPage() {
                             <CardHeader className="text-center pb-6 pt-10 relative">
                                 <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-emerald-500"></div>
                                 <div className="w-16 h-16 bg-linear-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-5 shadow-lg">
-                                    <Github className="w-8 h-8 text-white" />
+                                    <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" className="w-8 h-8 text-white" />
                                 </div>
                                 <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">
                                     输入 GitHub 仓库地址
@@ -376,7 +331,7 @@ export default function CustomDownloadsPage() {
                                     <CardContent className="p-5">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 bg-linear-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shrink-0">
-                                                <Github className="w-5 h-5 text-white" />
+                                                <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" className="w-5 h-5 text-white" />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2 mb-1">
