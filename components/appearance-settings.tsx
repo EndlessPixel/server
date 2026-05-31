@@ -228,6 +228,8 @@ export function AppearanceSettingsPanel({ isOpen, onClose }: AppearanceSettingsP
                             { value: "default", label: "系统默认"},
                             { value: "noto-sans", label: "Noto Sans SC"},
                             { value: "songti", label: "宋体"},
+                            { value: "dengxian", label: "等线"},
+                            { value: "kaiti", label: "楷体"},
                             { value: "chill-reunion", label: "ChillReunion"},
                           ].map((font) => {
                             const isActive = settings.customFont === font.value;
@@ -256,6 +258,8 @@ export function AppearanceSettingsPanel({ isOpen, onClose }: AppearanceSettingsP
                                     fontFamily: 
                                       font.value === "noto-sans" ? "'Noto Sans SC', sans-serif" :
                                       font.value === "songti" ? "'SimSun', 'STSong', serif" :
+                                      font.value === "dengxian" ? "'DengXian', 'Microsoft YaHei', sans-serif" :
+                                      font.value === "kaiti" ? "'KaiTi', 'STKaiti', serif" :
                                       font.value === "chill-reunion" ? "'ChillReunion Round', sans-serif" :
                                       undefined
                                   }}
