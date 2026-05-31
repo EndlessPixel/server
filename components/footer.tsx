@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Server, Github, MessageCircle, Video, Smartphone, Gamepad2, Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight, Twitch, Facebook, Activity, Images, Code } from "lucide-react";
+import { Server, Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight, Activity, Images, Code } from "lucide-react";
 import { RunningDuration } from "./running-duration";
 
 type SocialLink = { icon: React.ElementType; href: string; label: string };
@@ -90,13 +90,41 @@ const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
 
 export function Footer() {
   const socialLinks: SocialLink[] = [
-    { icon: Github, href: "https://github.com/EndlessPixel", label: "GitHub" },
-    { icon: MessageCircle, href: "https://qm.qq.com/q/sFrax2Ilxe", label: "QQ群" },
-    { icon: Gamepad2, href: "https://discord.gg/k63hRWt3fF", label: "Discord" },
-    { icon: Video, href: "https://space.bilibili.com/3546799478409405", label: "Bilibili" },
-    { icon: Smartphone, href: "https://kuaishou.cn/profile/3xth2cp4jf5ha6c", label: "快手" },
-    { icon: Twitch, href: "https://www.twitch.tv/system_mini", label: "Twitch" },
-    { icon: Facebook, href: "https://www.facebook.com/system_mini", label: "Facebook" },
+    {
+      icon: () => <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" />,
+      href: "https://github.com/EndlessPixel",
+      label: "GitHub"
+    },
+    {
+      icon: () => <img src="https://cdn.simpleicons.org/qq/white" width="18" height="18" alt="QQ群" />,
+      href: "https://qm.qq.com/q/sFrax2Ilxe",
+      label: "QQ群"
+    },
+    {
+      icon: () => <img src="https://cdn.simpleicons.org/discord/white" width="18" height="18" alt="Discord" />,
+      href: "https://discord.gg/k63hRWt3fF",
+      label: "Discord"
+    },
+    {
+      icon: () => <img src="https://cdn.simpleicons.org/bilibili/white" width="18" height="18" alt="Bilibili" />,
+      href: "https://space.bilibili.com/3546799478409405",
+      label: "Bilibili"
+    },
+    {
+      icon: () => <img src="https://cdn.simpleicons.org/kuaishou/white" width="18" height="18" alt="快手" />,
+      href: "https://kuaishou.cn/profile/3xth2cp4jf5ha6c",
+      label: "快手"
+    },
+    {
+      icon: () => <img src="https://cdn.simpleicons.org/twitch/white" width="18" height="18" alt="Twitch" />,
+      href: "https://www.twitch.tv/system_mini",
+      label: "Twitch"
+    },
+    {
+      icon: () => <img src="https://cdn.simpleicons.org/facebook/white" width="18" height="18" alt="Facebook" />,
+      href: "https://www.facebook.com/system_mini",
+      label: "Facebook"
+    },
   ];
 
   const navLinks: NavLink[] = [

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Mail, MessageCircle, Github, Users, Clock, Gamepad2, Star, ExternalLink, Sparkles, Gift, Heart } from "lucide-react";
+import { Mail, MessageCircle, Users, Clock, Star, ExternalLink, Sparkles, Gift, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 const MotionCard = motion(Card);
 const MotionButton = motion(Button);
@@ -17,7 +17,7 @@ export function ContactSection() {
       name: "QQ 群",
       value: "870594910",
       description: "官方 QQ 交流群",
-      icon: MessageCircle,
+      icon: () => <img src="https://cdn.simpleicons.org/qq/white" width="18" height="18" alt="QQ" />,
       color: "text-blue-600 dark:text-blue-400",
       bgColor: "bg-blue-50 dark:bg-blue-950/30",
       borderColor: "border-blue-200 dark:border-blue-800",
@@ -43,7 +43,7 @@ export function ContactSection() {
       name: "Discord",
       value: "EndlessPixel Server",
       description: "官方 Discord 服务器",
-      icon: Gamepad2,
+      icon: () => <img src="https://cdn.simpleicons.org/discord/white" width="18" height="18" alt="Discord" />,
       color: "text-purple-600 dark:text-purple-400",
       bgColor: "bg-purple-50 dark:bg-purple-950/30",
       borderColor: "border-purple-200 dark:border-purple-800",
@@ -56,7 +56,7 @@ export function ContactSection() {
       name: "GitHub",
       value: "EndlessPixel",
       description: "开源项目和技术交流",
-      icon: Github,
+      icon: () => <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" />,
       color: "text-gray-600 dark:text-gray-300",
       bgColor: "bg-gray-50 dark:bg-gray-900/30",
       borderColor: "border-gray-200 dark:border-gray-700",

@@ -94,8 +94,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-
-  // 保留twitter卡片供Discord/QQ/微信预览，移除无用creator
   twitter: {
     card: "summary_large_image",
     title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-26.1.2",

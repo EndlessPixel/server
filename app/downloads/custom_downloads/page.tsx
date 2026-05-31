@@ -1,4 +1,3 @@
-
 import { Suspense } from 'react';
 import CustomDownloadsPage from './client-page';
 
