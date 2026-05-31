@@ -59,7 +59,7 @@
     "react-markdown": "^10.1.0",
     "react-photo-view": "^1.2.7",
     "react-window": "^2.2.7",
-    "recharts": "^3.8.0",
+    "recharts": "^3.8.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "simple-icons": "^16.21.0",
