@@ -466,7 +466,7 @@ export const EPBot = ({ className }: EPBotProps) => {
 
   return (
     <div className={cn(
-      "flex h-160 w-200 max-w-[95vw] rounded-2xl border border-white/10 dark:border-white/10 bg-white dark:bg-slate-900/98 backdrop-blur-md shadow-2xl overflow-hidden relative",
+      "flex h-160 w-200 max-w-[95vw] rounded-2xl  border-white/10 dark:border-white/10 bg-white dark:bg-slate-900/98 backdrop-blur-md shadow-2xl overflow-hidden relative",
       className
     )}>
       {toast && <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-5 py-2 rounded-lg bg-slate-800 text-white text-sm shadow-lg">{toast}</div>}
@@ -485,7 +485,7 @@ export const EPBot = ({ className }: EPBotProps) => {
         </div>
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
           {sessions.sort((a,b)=>b.createdAt-a.createdAt).map(session=>(
-            <div key={session.id} className={cn("group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors", session.id===currentSessionId?"bg-blue-100 dark:bg-blue-600/20 border border-blue-500":"hover:bg-slate-100 dark:hover:bg-slate-800/50")} onClick={()=>switchSession(session.id)}>
+            <div key={session.id} className={cn("group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors", session.id===currentSessionId?"bg-blue-100 dark:bg-blue-600/20  border-blue-500":"hover:bg-slate-100 dark:hover:bg-slate-800/50")} onClick={()=>switchSession(session.id)}>
               <div className="flex-1 truncate text-sm text-slate-900 dark:text-slate-300">{session.title}</div>
               <button onClick={(e)=>{e.stopPropagation(); deleteSession(session.id);}} className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-100 dark:hover:bg-red-600/20"><Trash2 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 hover:text-red-600" /></button>
             </div>
@@ -517,7 +517,7 @@ export const EPBot = ({ className }: EPBotProps) => {
                   <button onClick={()=>setEditId(null)} className="text-slate-500 p-1"><XIcon className="w-4 h-4"/></button>
                 </div>
               ) : (
-                <div className="max-w-[80%] bg-blue-100 dark:bg-blue-600/30 border border-blue-400 dark:border-blue-400/40 rounded-2xl px-4 py-3 text-blue-950 dark:text-blue-100 text-sm break-all">{m.content}</div>
+                <div className="max-w-[80%] bg-blue-100 dark:bg-blue-600/30  border-blue-400 dark:border-blue-400/40 rounded-2xl px-4 py-3 text-blue-950 dark:text-blue-100 text-sm break-all">{m.content}</div>
               )}
             </div>
           ) : (
@@ -526,7 +526,7 @@ export const EPBot = ({ className }: EPBotProps) => {
                 <span>{m.senderName}</span><span>{formatTime(m.timestamp)}</span>
                 <button onClick={()=>deleteMessage(i)} className="p-1 hover:text-red-600"><Trash2 className="w-3.5 h-3.5"/></button>
               </div>
-              <div className="max-w-[85%] bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/15 rounded-2xl px-4 py-3 text-slate-900 dark:text-slate-100 prose prose-sm break-all">
+              <div className="max-w-[85%] bg-slate-100 dark:bg-slate-800/90  border-slate-200 dark:border-white/15 rounded-2xl px-4 py-3 text-slate-900 dark:text-slate-100 prose prose-sm break-all">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
               </div>
             </div>
@@ -535,7 +535,7 @@ export const EPBot = ({ className }: EPBotProps) => {
         </div>
 
         <div className="p-4 border-t border-slate-200 dark:border-white/10 flex gap-3 items-end bg-white dark:bg-transparent">
-          <textarea ref={textareaRef} className="flex-1 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/15 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none max-h-36 overflow-y-auto text-sm" value={input} onChange={e=>setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="输入消息... (Shift+Enter 换行)" disabled={loading} rows={1}/>
+          <textarea ref={textareaRef} className="flex-1 bg-slate-100 dark:bg-slate-800/80  border-slate-200 dark:border-white/15 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none max-h-36 overflow-y-auto text-sm" value={input} onChange={e=>setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="输入消息... (Shift+Enter 换行)" disabled={loading} rows={1}/>
           <button onClick={send} disabled={loading} className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white p-3 rounded-xl flex items-center justify-center disabled:opacity-50 shadow-md"><Send className="w-5 h-5"/></button>
         </div>
         <div className="p-4 border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 bg-white dark:bg-transparent">注意：AI模型回复可能包含错误信息，请不要过度依赖AI模型的回复内容。</div>

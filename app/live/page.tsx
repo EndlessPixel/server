@@ -47,7 +47,7 @@ function LiveContent() {
                 </div>
                 <div className="flex flex-col lg:flex-row gap-6">
                     <div className="lg:w-80 w-full">
-                        <div className="bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl overflow-hidden">
+                        <div className="bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-2xl  border-black/10 dark:border-white/10 shadow-2xl overflow-hidden">
                             <div className="px-4 py-3 border-b border-black/10 dark:border-white/10">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ function LiveContent() {
                     </div>
                     <div className="flex-1">
                         <div className="group relative">
-                            <div className="relative bg-black/10 dark:bg-black/40 backdrop-blur-sm rounded-2xl p-2 border border-black/15 dark:border-white/20 shadow-2xl">
+                            <div className="relative bg-black/10 dark:bg-black/40 backdrop-blur-sm rounded-2xl p-2  border-black/15 dark:border-white/20 shadow-2xl">
                                 <div className="relative overflow-hidden rounded-xl">
                                     <iframe
                                         src={`//player.bilibili.com/player.html?bvid=${bilibililist[current]}&page=1&high_quality=1&muted=0&autoplay=1`}

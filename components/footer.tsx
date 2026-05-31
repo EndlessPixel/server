@@ -16,7 +16,7 @@ const SocialLinks = ({ links }: { links: SocialLink[] }) => (
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 bg-slate-800/50 hover:bg-slate-700 rounded-lg transition-all hover:scale-110 border border-slate-700/50 hover:border-emerald-500/50"
+          className="p-2 bg-slate-800/50 hover:bg-slate-700 rounded-lg transition-all hover:scale-110  border-slate-700/50 hover:border-emerald-500/50"
           title={social.label}
         >
           <Icon className="w-5 h-5 text-slate-300 hover:text-emerald-400" />
