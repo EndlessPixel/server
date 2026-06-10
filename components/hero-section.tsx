@@ -9,6 +9,7 @@ import {
 import Link from "next/link"
 import { motion, useInView } from "framer-motion"
 import { useState, useRef } from "react"
+import ServerIpBox from "./server-ip-box";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -239,6 +240,8 @@ export function HeroSection() {
             })}
           </motion.div>
 
+          <ServerIpBox />
+
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-12 max-w-xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
@@ -274,6 +277,16 @@ export function HeroSection() {
               <span>玩家截图册</span>
             </Link>
           </motion.div>
+
+          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            🧊 别的服务器：吹自己“稳定高性能”，监控藏得比什么都深。<br/>
+            我们：<span className="text-cyan-400 font-bold">Xeon Gold 6148 16 核 + 24GB 真实占用 + 磁盘 / 网络 / 负载全裸奔</span>。
+            想验证？链接就在下面，欢迎随时来对线。
+            <Link href="http://sys.epmc.qzz.io:18000" className="ml-1 underline underline-offset-2 hover:text-cyan-400" target="_blank">
+              点我公开处刑 →
+            </Link>
+          </p>
+          <br /><br />
 
           <motion.div
             className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 max-w-6xl mx-auto"
