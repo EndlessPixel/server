@@ -6,7 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "dev-https": "next dev --experimental-https --experimental-https-key ./cert/localhost-key.pem --experimental-https-cert ./cert/localhost.pem",
-    "lint": "next lint",
+    "lint": "npx eslint app components --max-warnings=0",
+    "lint:fix": "npx eslint app components --fix",
     "start": "next start"
   },
   "dependencies": {
@@ -69,11 +70,13 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.5.0",
+    "eslint-config-next": "^16.2.9",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3"
