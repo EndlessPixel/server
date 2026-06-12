@@ -254,18 +254,23 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 sticky top-0 z-40 shadow-md transition-shadow">
+      <nav 
+        className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 sticky top-0 z-40 shadow-md transition-shadow"
+        role="navigation"
+        aria-label="主导航"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <MotionLink
               href="/"
-              className="flex items-center space-x-2 py-2 px-3 rounded-xl hover:bg-slate-100/70 dark:hover:bg-slate-800/70"
+              className="flex items-center space-x-2 py-2 px-3 rounded-xl hover:bg-slate-100/70 dark:hover:bg-slate-800/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               whileHover={{ scale: 1.03 }}
+              aria-label="返回首页"
             >
-              <img src="/EndlessPixel.png" alt="Logo" className="h-8 w-auto" />
+              <img src="/EndlessPixel.png" alt="EndlessPixel Logo" style={{ width: '40%', height: '40%' }} />
             </MotionLink>
 
-            <div className="hidden md:flex items-center space-x-1">
+            <div className="hidden md:flex items-center space-x-1" role="menubar">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
@@ -273,8 +278,10 @@ export function Navigation() {
                   <MotionLink
                     key={item.href}
                     href={item.href}
+                    role="menuitem"
+                    aria-current={isActive ? 'page' : undefined}
                     className={cn(
-                      'flex flex-col items-center space-y-1 px-4 py-3 rounded-xl min-w-20 transition-colors',
+                      'flex flex-col items-center space-y-1 px-4 py-3 rounded-xl min-w-20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
                       isActive
                         ? 'text-blue-600 dark:text-blue-400 bg-blue-50/70 dark:bg-blue-900/20'
                         : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/50'
@@ -282,24 +289,26 @@ export function Navigation() {
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Icon className={cn('w-5 h-5', isActive && 'scale-110')} />
+                    <Icon className={cn('w-5 h-5', isActive && 'scale-110')} aria-hidden="true" />
                     <span className="text-sm font-medium">{item.label}</span>
                     {isActive && (
                       <motion.div
                         className="w-5 h-1 rounded-full bg-blue-500"
                         layoutId="underline"
+                        aria-hidden="true"
                       />
                     )}
                   </MotionLink>
                 );
               })}
-              <div className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2" />
+              <div className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2" aria-hidden="true" />
               <button
                 onClick={openSettings}
-                className="w-11 h-11 px-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors"
-                aria-label="外观设置"
+                className="w-11 h-11 px-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                aria-label="打开外观设置"
+                aria-haspopup="dialog"
               >
-                <Settings className="h-5 w-5 text-slate-700 dark:text-slate-300" />
+                <Settings className="h-5 w-5 text-slate-700 dark:text-slate-300" aria-hidden="true" />
               </button>
               <LoginButton />
             </div>
@@ -307,21 +316,25 @@ export function Navigation() {
             <div className="md:hidden flex items-center space-x-2">
               <button
                 onClick={openSettings}
-                className="w-11 h-11 px-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors"
-                aria-label="外观设置"
+                className="w-11 h-11 px-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                aria-label="打开外观设置"
+                aria-haspopup="dialog"
               >
-                <Settings className="h-5 w-5 text-slate-700 dark:text-slate-300" />
+                <Settings className="h-5 w-5 text-slate-700 dark:text-slate-300" aria-hidden="true" />
               </button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMenuOpen((o) => !o)}
-                className="h-11 w-11 p-0 rounded-full"
+                className="h-11 w-11 p-0 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                aria-label={isMenuOpen ? "关闭菜单" : "打开菜单"}
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-menu"
               >
                 {isMenuOpen ? (
-                  <X className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+                  <X className="w-5 h-5 text-slate-700 dark:text-slate-300" aria-hidden="true" />
                 ) : (
-                  <Menu className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+                  <Menu className="w-5 h-5 text-slate-700 dark:text-slate-300" aria-hidden="true" />
                 )}
               </Button>
             </div>
@@ -340,13 +353,17 @@ export function Navigation() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              aria-hidden="true"
             />
             <motion.div
+              id="mobile-menu"
               className="fixed top-0 left-0 right-0 bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 z-50 md:hidden"
               initial={{ y: '-100%' }}
               animate={{ y: 0 }}
               exit={{ y: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              role="menu"
+              aria-label="移动端导航菜单"
             >
               <div className="px-4 pt-20 pb-6 space-y-1">
                 {navItems.map((item, i) => {
@@ -356,9 +373,11 @@ export function Navigation() {
                     <MotionLink
                       key={item.href}
                       href={item.href}
+                      role="menuitem"
+                      aria-current={isActive ? 'page' : undefined}
                       onClick={() => setIsMenuOpen(false)}
                       className={cn(
-                        'flex items-center space-x-4 px-4 py-3 rounded-xl',
+                        'flex items-center space-x-4 px-4 py-3 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
                         isActive
                           ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
                           : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -367,7 +386,7 @@ export function Navigation() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.05 * i }}
                     >
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-5 h-5" aria-hidden="true" />
                       <div>
                         <div className="font-medium">{item.label}</div>
                       </div>
