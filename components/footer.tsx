@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { Server, Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight, Activity, Images, Code } from "lucide-react";
 import { RunningDuration } from "./running-duration";
 
@@ -66,7 +67,7 @@ const NavLinks = ({ links }: { links: NavLink[] }) => (
 const BrandLogo = () => {
   return (
     <div className="flex items-center gap-3 mb-6">
-      <img src="/favicon.ico" alt="EndlessPixel" className="w-12 h-12 rounded-xl" />
+      <Image src="/favicon.ico" alt="EndlessPixel" width={48} height={48} className="rounded-xl" />
       <h2 className="font-bold text-3xl bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
         EndlessPixel
       </h2>
