@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
@@ -497,7 +498,7 @@ export default function McServerStatusPage() {
                     {serverData.icon ? (
                       <img src={serverData.icon} alt="Server Icon" className="w-24 h-24 rounded-xl shadow-lg border-4 border-white dark:border-slate-700" onError={(e) => (e.target as HTMLImageElement).src = '/default-server-icon.png'} />
                     ) : (
-                      <img src="/default-server-icon.png" alt="Default Icon" className="w-24 h-24 rounded-xl shadow-lg border-4 border-white dark:border-slate-700" />
+                      <Image src="/default-server-icon.png" alt="Default Icon" width={96} height={96} className="rounded-xl shadow-lg border-4 border-white dark:border-slate-700" />
                     )}
                   </div>
                   <div className="grow">
