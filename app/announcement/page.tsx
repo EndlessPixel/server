@@ -1,8 +1,11 @@
+"use client";
+
 import { Navigation } from "@/components/navigation";
 import Footer from "@/components/footer";
+import { useState, useMemo } from "react";
 
 const announcements = [
-    // ID 18 -> 最新的，应该在最上面
+
     {
         "id": 18,
         "title": "【网络优化】服务器节点全面升级",
@@ -11,7 +14,7 @@ const announcements = [
         "time": "17:09",
         "year": 2025,
         "month": 4,
-        "tags": ["网络优化", "节点"]
+        "tags": ["网络优化", "基础设施"]
     },
     {
         "id": 17,
@@ -31,7 +34,7 @@ const announcements = [
         "time": "18:08",
         "year": 2025,
         "month": 3,
-        "tags": ["安全", "病毒", "重装"]
+        "tags": ["安全", "故障"]
     },
     {
         "id": 15,
@@ -46,12 +49,12 @@ const announcements = [
     {
         "id": 14,
         "title": "【技术报告】延迟问题根源查明",
-        "summary": "确认超高延迟原因为 VMware 虚拟网卡问题。",
+        "summary": "确认超高延迟原因为 VMware 虚拟网卡问题，已禁用该网卡并切换至 VirtIO 驱动，延迟恢复至正常水平。",
         "date": "2025-03-25",
         "time": "21:20",
         "year": 2025,
         "month": 3,
-        "tags": ["故障", "网络", "vmware"]
+        "tags": ["故障", "网络优化"]
     },
     {
         "id": 13,
@@ -61,7 +64,7 @@ const announcements = [
         "time": "22:23",
         "year": 2025,
         "month": 3,
-        "tags": ["域名"]
+        "tags": ["品牌"]
     },
     {
         "id": 12,
@@ -71,7 +74,7 @@ const announcements = [
         "time": "20:29",
         "year": 2025,
         "month": 3,
-        "tags": ["更名", "品牌"]
+        "tags": ["品牌"]
     },
     {
         "id": 11,
@@ -81,7 +84,7 @@ const announcements = [
         "time": "17:33",
         "year": 2025,
         "month": 3,
-        "tags": ["故障", "延迟"]
+        "tags": ["故障", "网络优化"]
     },
     {
         "id": 10,
@@ -91,7 +94,7 @@ const announcements = [
         "time": "19:23",
         "year": 2025,
         "month": 3,
-        "tags": ["推广", "入驻"]
+        "tags": ["推广"]
     },
     {
         "id": 9,
@@ -105,13 +108,13 @@ const announcements = [
     },
     {
         "id": 8,
-        "title": "【核心更换通知】",
-        "summary": "服务器核心已从 Mohist 更改为 Paper，当前版本保持为 1.20.1 不变，此项变更将提升服务器运行效率。",
+        "title": "【核心更换】迁移至 Paper 提升稳定性",
+        "summary": "服务器核心已从 Mohist 更改为 Paper，版本保持 1.20.1 不变。Paper 在高并发下表现出更低的延迟和更高的 TPS，玩家体验将更加流畅。",
         "date": "2025-01-14",
         "time": "08:35",
         "year": 2025,
         "month": 1,
-        "tags": ["核心更换", "paper"]
+        "tags": ["核心更换", "性能"]
     },
     {
         "id": 7,
@@ -121,7 +124,7 @@ const announcements = [
         "time": "20:24",
         "year": 2024,
         "month": 12,
-        "tags": ["命名", "品牌"]
+        "tags": ["品牌"]
     },
     {
         "id": 6,
@@ -131,7 +134,7 @@ const announcements = [
         "time": "13:33",
         "year": 2024,
         "month": 11,
-        "tags": ["到期", "迁移预告"]
+        "tags": ["迁移", "基础设施"]
     },
     {
         "id": 5,
@@ -141,100 +144,317 @@ const announcements = [
         "time": "20:34",
         "year": 2024,
         "month": 11,
-        "tags": ["迁移", "阿里云", "优化"]
+        "tags": ["迁移", "基础设施"]
     },
     {
         "id": 4,
-        "title": "【版本调整公告】",
-        "summary": "由于性能问题，服务器从 1.20.2 降级回 1.20.1，继续使用 Mohist 核心维持运行。",
+        "title": "【版本调整】回退至 1.20.1 解决性能问题",
+        "summary": "由于 1.20.2 版本出现未知性能下降，服务器已降级回 1.20.1，继续使用 Mohist 核心维持运行。玩法不受影响。",
         "date": "2024-10-13",
         "time": "10:46",
         "year": 2024,
         "month": 10,
-        "tags": ["版本回退", "mohist"]
+        "tags": ["版本回退", "核心更换"]
     },
     {
         "id": 3,
-        "title": "【核心更换尝试】",
+        "title": "【核心更换】尝试 Mohist 混合核心",
         "summary": "因 Forge 报错问题难以解决，现已改用 Mohist 核心，版本升级至 1.20.2，支持插件和模组混合运行。",
         "date": "2024-10-01",
         "time": "19:34",
         "year": 2024,
         "month": 10,
-        "tags": ["核心更换", "mohist"]
+        "tags": ["核心更换", "架构"]
     },
     {
         "id": 2,
-        "title": "【功能扩展通知】",
-        "summary": "计划添加 Forge 支持以丰富玩法，但因持续报错问题，暂时搁置该计划。",
+        "title": "【功能扩展】计划引入 Forge 模组支持",
+        "summary": "计划添加 Forge 支持以丰富玩法，但因持续报错问题，暂时搁置该计划。后续将评估其他模组加载方案。",
         "date": "2024-09-28",
         "time": "21:09",
         "year": 2024,
         "month": 9,
-        "tags": ["forge", "搁置"]
+        "tags": ["架构", "搁置"]
     },
     {
         "id": 1,
-        "title": "【服务器创立公告】",
-        "summary": "服务器初始版本：1.20.1，使用 Vanilla 原版核心运行，由服主个人电脑搭建，初期对服务器配置了解有限。",
+        "title": "【服务器创立】EndlessPixel 前身诞生",
+        "summary": "服务器初始版本：1.20.1，使用 Vanilla 原版核心运行，由服主个人电脑搭建。这是旅途的起点。",
         "date": "2024-09-16",
         "time": "01:53",
         "year": 2024,
         "month": 9,
-        "tags": ["创立", "vanilla"]
+        "tags": ["创立"]
     }
 ];
 
 export default function AnnouncementPage() {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+    // 提取所有唯一标签
+    const allTags = useMemo(() => {
+        const tagsSet = new Set<string>();
+        announcements.forEach(item => {
+            item.tags.forEach(tag => tagsSet.add(tag));
+        });
+        return Array.from(tagsSet).sort();
+    }, []);
+
+    // 筛选公告（标题、摘要匹配搜索词 + 标签匹配）
+    const filteredAnnouncements = useMemo(() => {
+        let filtered = [...announcements];
+
+        // 搜索词筛选
+        if (searchTerm.trim()) {
+            const term = searchTerm.toLowerCase().trim();
+            filtered = filtered.filter(item =>
+                item.title.toLowerCase().includes(term) ||
+                item.summary.toLowerCase().includes(term)
+            );
+        }
+
+        // 标签筛选
+        if (selectedTag) {
+            filtered = filtered.filter(item =>
+                item.tags.includes(selectedTag)
+            );
+        }
+
+        // 按时间倒序排序（最新的在前）
+        filtered.sort((a, b) => {
+            const dateA = new Date(`${a.date} ${a.time}`);
+            const dateB = new Date(`${b.date} ${b.time}`);
+            return dateB.getTime() - dateA.getTime();
+        });
+
+        return filtered;
+    }, [searchTerm, selectedTag]);
+
+    // 清除所有筛选
+    const clearFilters = () => {
+        setSearchTerm("");
+        setSelectedTag(null);
+    };
+
+    // 处理标签点击
+    const handleTagClick = (tag: string) => {
+        setSelectedTag(selectedTag === tag ? null : tag);
+    };
+
+    // 是否有筛选条件激活
+    const hasActiveFilters = searchTerm.trim() !== "" || selectedTag !== null;
+
     return (
         <>
             <Navigation />
 
+            {/* 背景装饰效果 */}
+            <div className="relative min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300 overflow-hidden">
+                {/* 炫酷背景渐变效果 */}
+                <div className="absolute inset-0 bg-linear-to-br from-blue-50/30 via-transparent to-purple-50/30 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/20 pointer-events-none" />
+                <div className="absolute top-20 right-10 w-72 h-72 bg-blue-400/10 dark:bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-20 left-10 w-96 h-96 bg-purple-400/10 dark:bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="min-h-screen bg-white dark:bg-gray-950 px-4 py-12 transition-colors duration-300">
+                <div className="relative px-4 py-12">
+                    <header className="max-w-3xl mx-auto mb-12 text-center">
+                        <h1 className="text-4xl md:text-5xl font-light bg-linear-to-r from-gray-900 via-blue-600 to-gray-900 dark:from-gray-100 dark:via-blue-400 dark:to-gray-100 bg-clip-text text-transparent tracking-wide animate-fade-in">
+                            服务器公告
+                        </h1>
+                    </header>
 
-                <header className="max-w-3xl mx-auto mb-12 text-center">
-                    <h1 className="text-3xl font-light text-gray-900 dark:text-gray-100 tracking-wide">
-                        服务器大事记
-                    </h1>
-                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                        自甲辰年至丙午年 · EndlessPixel
-                    </p>
-                </header>
-
-                {/* 时间轴容器 */}
-                {/* 亮色：浅灰线 | 暗色：深灰线 */}
-                <div className="max-w-3xl mx-auto relative border-l border-gray-200 dark:border-gray-800 pl-6">
-                    {announcements.map((item) => (
-                        <div key={item.id} className="mb-10 relative">
-                            {/* 时间轴圆点 */}
-                            {/* 亮色：白底蓝边 | 暗色：黑底蓝边 */}
-                            <span className="absolute -left-7.75 top-1 w-3 h-3 bg-white dark:bg-gray-950 border-2 border-blue-400 rounded-full"></span>
-
-                            <div className="group">
-                                {/* 标题：亮色黑字，暗色白字，Hover变蓝 */}
-                                <h2 className="text-lg font-normal text-gray-800 dark:text-gray-200 group-hover:text-blue-500 transition-colors">
-                                    {item.title}
-                                </h2>
-
-                                {/* 正文：亮色深灰，暗色浅灰 */}
-                                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                                    {item.summary}
-                                </p>
-
-                                {/* 时间：亮色中灰，暗色深灰 */}
-                                <time className="mt-3 block text-xs text-gray-500 dark:text-gray-500">
-                                    {item.year} 年 {item.month} 月
-                                    <span className="mx-2">·</span>
-                                    {item.date} {item.time}
-                                </time>
+                    {/* 搜索和筛选区域 */}
+                    <div className="max-w-3xl mx-auto mb-8 space-y-4 animate-fade-in-up">
+                        {/* 搜索框 */}
+                        <div className="relative group">
+                            <div className="absolute inset-0 bg-linear-to-r from-blue-500/20 to-purple-500/20 rounded-xl blur-lg group-focus-within:opacity-100 opacity-0 transition-opacity duration-300" />
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="搜索公告标题或内容..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="w-full px-5 py-3 pl-12 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300 shadow-lg hover:shadow-xl"
+                                />
+                                <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                {searchTerm && (
+                                    <button
+                                        onClick={() => setSearchTerm("")}
+                                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                )}
                             </div>
                         </div>
-                    ))}
+
+                        {/* 标签云和筛选状态 */}
+                        <div className="space-y-3">
+                            {/* 标签列表 */}
+                            <div className="flex flex-wrap gap-2">
+                                {allTags.map((tag) => (
+                                    <button
+                                        key={tag}
+                                        onClick={() => handleTagClick(tag)}
+                                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 transform hover:scale-105 ${selectedTag === tag
+                                                ? "bg-linear-to-r from-blue-500 to-purple-500 text-white shadow-lg shadow-blue-500/30"
+                                                : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 hover:shadow-md"
+                                            }`}
+                                    >
+                                        #{tag}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* 激活的筛选条件显示 */}
+                            {hasActiveFilters && (
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-gray-500 dark:text-gray-400">
+                                        找到 <span className="font-semibold text-blue-500">{filteredAnnouncements.length}</span> 条公告
+                                    </span>
+                                    <button
+                                        onClick={clearFilters}
+                                        className="px-3 py-1 text-xs text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors flex items-center gap-1 group"
+                                    >
+                                        <svg className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        清除筛选
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* 时间轴容器 */}
+                    <div className="max-w-3xl mx-auto relative">
+                        {/* 空状态提示 */}
+                        {filteredAnnouncements.length === 0 && (
+                            <div className="text-center py-16 animate-fade-in">
+                                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
+                                    <svg className="w-10 h-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <p className="text-gray-500 dark:text-gray-400">暂无相关公告</p>
+                                <button
+                                    onClick={clearFilters}
+                                    className="mt-4 text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                                >
+                                    查看全部公告 →
+                                </button>
+                            </div>
+                        )}
+
+                        {/* 时间轴线 */}
+                        {filteredAnnouncements.map((item, index) => (
+                            <div
+                                key={item.id}
+                                className="mb-12 relative animate-fade-in-up"
+                                style={{ animationDelay: `${index * 0.05}s` }}
+                            >
+                                {/* 时间轴圆点 - 炫酷脉冲效果 */}
+                                <div className="absolute left-[-1.85rem] top-5">
+                                    <div className="relative">
+                                        <div className="w-3 h-3 bg-white dark:bg-gray-950 border-2 border-blue-400 rounded-full relative z-10 shadow-lg shadow-blue-500/50" />
+                                        <div className="absolute inset-0 w-3 h-3 bg-blue-400 rounded-full animate-ping opacity-40" />
+                                    </div>
+                                </div>
+
+                                {/* 卡片内容 */}
+                                <div className="group relative ml-2 md:ml-0">
+                                    {/* 炫酷卡片背景 - 渐变边框效果 */}
+                                    <div className="absolute inset-0 bg-linear-to-r from-blue-500/0 via-blue-500/0 to-purple-500/0 rounded-xl group-hover:from-blue-500/10 group-hover:via-purple-500/10 group-hover:to-pink-500/10 transition-all duration-500 blur-xl" />
+
+                                    <div className="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-5 md:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200/50 dark:border-gray-700/50 hover:border-blue-300/50 dark:hover:border-blue-700/50 transform hover:-translate-y-1">
+                                        {/* 标题行 */}
+                                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                            {item.title}
+                                        </h2>
+
+                                        {/* 标签列表 */}
+                                        <div className="mt-3 flex flex-wrap gap-1.5">
+                                            {item.tags.map((tag) => (
+                                                <span
+                                                    key={tag}
+                                                    onClick={() => handleTagClick(tag)}
+                                                    className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 transform hover:scale-105"
+                                                >
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+
+                                        {/* 正文 */}
+                                        <p className="mt-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                            {item.summary}
+                                        </p>
+
+                                        {/* 时间信息 */}
+                                        <div className="mt-4 flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <time>
+                                                {item.year} 年 {item.month} 月
+                                                <span className="mx-2">·</span>
+                                                {item.date} {item.time}
+                                            </time>
+                                        </div>
+
+                                        {/* 炫酷装饰线 */}
+                                        <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 
             <Footer />
+
+            {/* 自定义动画样式 */}
+            <style jsx>{`
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
+                    }
+                }
+                
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .animate-fade-in {
+                    animation: fadeIn 0.6s ease-out;
+                }
+                
+                .animate-fade-in-up {
+                    animation: fadeInUp 0.5s ease-out forwards;
+                    opacity: 0;
+                }
+                
+                .border-gradient-l {
+                    border-left-color: transparent;
+                    background: linear-gradient(to bottom, #3b82f6, #a855f7);
+                    background-clip: border-box;
+                }
+            `}</style>
         </>
     );
 }
