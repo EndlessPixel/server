@@ -7,6 +7,7 @@ import { ArrowUpRight, ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
+import { DownloadCardSkeleton } from "@/components/ui/skeleton-templates";
 export interface LauncherDownloadPageProps {
   owner: string;
   repo: string;
@@ -65,7 +66,15 @@ export function LauncherDownloadPage({
             >
               <span className="text-sm font-medium">返回</span>
             </button>
-            <Suspense fallback={<div className="p-8 text-center">加载下载区域中...</div>}>
+            <Suspense fallback={
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <DownloadCardSkeleton key={i} />
+                  ))}
+                </div>
+              </div>
+            }>
               <DownloadSection
                 githubApiUrl={`https://api.github.com/repos/${repoOwner}/${repoName}/releases`}
                 itemsPerPage={20}
