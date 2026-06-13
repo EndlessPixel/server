@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Download, Activity, Users, Home, ChevronRight, Search, Settings } from 'lucide-react';
+import { Menu, X, Download, Activity, Users, Home, ChevronRight, Search, Settings, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import LoginButton from '@/components/login';
 import { useAppearance } from '@/lib/appearance-context';
@@ -246,15 +246,16 @@ export function Navigation() {
   const { openSettings } = useAppearanceSettings();
   useLockBody(isMenuOpen);
   const navItems = [
-    { href: '/', label: '首页', icon: Home},
-    { href: '/downloads', label: '资源下载', icon: Download},
-    { href: '/status', label: '状态查询', icon: Activity},
-    { href: '/about', label: '关于我们', icon: Users},
+    { href: '/', label: '首页', icon: Home },
+    { href: '/downloads', label: '资源', icon: Download },
+    { href: '/status', label: '状态', icon: Activity },
+    { href: '/announcement', label: '公告', icon: Bell },
+    { href: '/about', label: '关于', icon: Users },
   ];
 
   return (
     <>
-      <nav 
+      <nav
         className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 sticky top-0 z-40 shadow-md transition-shadow"
         role="navigation"
         aria-label="主导航"
@@ -267,7 +268,11 @@ export function Navigation() {
               whileHover={{ scale: 1.03 }}
               aria-label="返回首页"
             >
-              <img src="/EndlessPixel.png" alt="EndlessPixel Logo" style={{ width: '40%', height: '40%' }} />
+              <img
+                src="/EndlessPixel.png"
+                alt="EndlessPixel Logo"
+                className="w-64 h-8 object-contain"   // 40px，推荐
+              />
             </MotionLink>
 
             <div className="hidden md:flex items-center space-x-1" role="menubar">
@@ -393,7 +398,7 @@ export function Navigation() {
                     </MotionLink>
                   );
                 })}
-                <br/>
+                <br />
                 <LoginButton />
               </div>
 
