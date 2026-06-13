@@ -1,5 +1,5 @@
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
+import { PageLayout, PageHeader, ContentContainer } from "@/components/page-layout"
+import { HelpSection } from "@/components/help-section"
 import type { Metadata } from "next"
 import { Grid, Link2, Package, Smartphone } from "lucide-react";
 import Link from "next/link";
@@ -63,69 +63,42 @@ export default function DownloadsPage() {
         },
     ];
     return (
-        <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-cyan-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-cyan-950/20">
-            <Navigation />
-            <main className="py-8">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent mb-6">
-                            资源下载
-                        </h1>
-                        <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                            下载超多种类的资源，从 Minecraft Launcher 到 EndlessPixel Modpack和APP，应有尽有。
-                        </p>
-                    </div>
-                    <div className="grid gap-6 md:grid-cols-2 mb-16">
-                        {downloadItems.map((item, index) => (
-                            <Link
-                                key={index}
-                                href={item.href}
-                                className="group block p-6 bg-white/80 dark:bg-slate-800/50 rounded-2xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-800/70 transition-all duration-300 hover:shadow-lg hover:scale-105"
-                            >
-                                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-r ${item.color} text-white mb-4 group-hover:scale-110 transition-transform`}>
-                                    {item.icon}
-                                </div>
-                                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                                    {item.title}
-                                </h3>
-                                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                                    {item.description}
-                                </p>
-                                <div className="mt-4 flex items-center text-sm font-medium text-blue-600 dark:text-blue-400">
-                                    <span>立即下载</span>
-                                    <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-
-                    {/* Additional Info */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6  border-slate-200 dark:border-slate-700 backdrop-blur-sm">
-                            <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">需要帮助？</h3>
-                            <div className="space-y-4 text-slate-600 dark:text-slate-400">
-                                <p>如果您在下载或安装过程中遇到任何问题：</p>
-                                <div className="flex flex-wrap gap-3">
-                                    <a
-                                        href="https://qm.qq.com/q/sFrax2Ilxe"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-800 rounded-lg text-sm font-medium text-blue-700 dark:text-blue-300 transition-colors"
-                                    >
-                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6z" />
-                                        </svg>
-                                        加入 QQ 群
-                                    </a>
-                                </div>
+        <PageLayout>
+            <ContentContainer>
+                <PageHeader 
+                    title="资源下载" 
+                    description="下载超多种类的资源，从 Minecraft Launcher 到 EndlessPixel Modpack和APP，应有尽有。"
+                />
+                <div className="grid gap-6 md:grid-cols-2 mb-16">
+                    {downloadItems.map((item, index) => (
+                        <Link
+                            key={index}
+                            href={item.href}
+                            className="group block p-6 bg-white/80 dark:bg-slate-800/50 rounded-2xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-800/70 transition-all duration-300 hover:shadow-lg hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                            aria-label={`下载 ${item.title}`}
+                        >
+                            <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-r ${item.color} text-white mb-4 group-hover:scale-110 transition-transform`}>
+                                {item.icon}
                             </div>
-                        </div>
-                    </div>
+                            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+                                {item.title}
+                            </h3>
+                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                {item.description}
+                            </p>
+                            <div className="mt-4 flex items-center text-sm font-medium text-blue-600 dark:text-blue-400">
+                                <span>立即下载</span>
+                                <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </Link>
+                    ))}
                 </div>
-            </main>
-            <Footer />
-        </div>
+
+                {/* Additional Info */}
+                <HelpSection />
+            </ContentContainer>
+        </PageLayout>
     )
 }
