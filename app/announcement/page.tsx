@@ -5,9 +5,52 @@ import Footer from "@/components/footer";
 import { useState, useMemo } from "react";
 
 const announcements = [
-
     {
-        "id": 18,
+        "title": "【邮件】我们新增了官方专属邮箱",
+        "summary": "为了更好地服务玩家，我们新增了官方专属邮箱：support@endlesspixel.cn",
+        "date": "2026-04-30",
+        "time": "22:26",
+        "year": 2026,
+        "month": 4,
+        "tags": ["邮件"]
+    },
+    {
+        "title": "【推广】我们在MCList上架了",
+        "summary": "我们又上架了一个新平台waw~ https://www.mclists.cn/server/9339.html",
+        "date": "2026-03-29",
+        "time": "23:17",
+        "year": 2026,
+        "month": 3,
+        "tags": ["推广"]
+    },
+    {
+        "title": "【重要通知】我们的endlesspixel.fun域名到期了",
+        "summary": "2026 年 3 月 24 日，EndlessPixel 官方域名将到期。请注意：域名到期后，EndlessPixel所有服务将无法正常通过域名访问。",
+        "date": "2026-03-24",
+        "time": "20:31",
+        "year": 2026,
+        "month": 3,
+        "tags": ["重要通知"]
+    },
+    {
+        "title": "【域名】我们购入了新的域名endlesspixl.cn",
+        "summary": "我们已购入了新的域名 endlesspixl.cn，这是我们的新域名，由于替代我们的endlesspixel.fun。",
+        "date": "2026-02-20",
+        "time": "16:53",
+        "year": 2026,
+        "month": 2,
+        "tags": ["域名"]
+    },
+    {
+        "title": "【推广】我们上架了我的世界服务器站",
+        "summary": "我们成功上架了我的世界服务器站，这将为我们的宣传提供一个新的平台。欢迎大家前来点赞，以提升我们服务器的排名。网址：https://www.wdsjfwq.com/server-1955.html",
+        "date": "2026-01-31",
+        "time": "19:09",
+        "year": 2026,
+        "month": 1,
+        "tags": ["推广"]
+    },
+    {
         "title": "【网络优化】服务器节点全面升级",
         "summary": "已完成全球节点架构的全面升级：新增广州、湖北、湖南连接节点，网络带宽和延迟得到显著优化，支持更高并发连接数。",
         "date": "2025-04-04",
@@ -17,7 +60,6 @@ const announcements = [
         "tags": ["网络优化", "基础设施"]
     },
     {
-        "id": 17,
         "title": "【迁移完成】高延迟问题已解决",
         "summary": "服务器迁移至新数据中心后：平均延迟从 380ms 降至 65ms，丢包率归零，新增备用网络通道。",
         "date": "2025-04-03",
@@ -27,7 +69,6 @@ const announcements = [
         "tags": ["迁移", "网络优化"]
     },
     {
-        "id": 16,
         "title": "【安全警报】病毒入侵处理通报",
         "summary": "3 月 27 日检测到病毒攻击后，已重装所有宿主系统，玩家数据 100% 完整保留，已恢复正常服务。如有疑问，请联系客服。",
         "date": "2025-03-27",
@@ -37,7 +78,6 @@ const announcements = [
         "tags": ["安全", "故障"]
     },
     {
-        "id": 15,
         "title": "【重要通知】存档重置与补偿措施",
         "summary": "由于服务器存档文件意外损坏，不得不进行存档重置。为表达歉意，将向所有玩家发放补偿：木头 x64、煤 x32、铁锭 x16、金锭 x8、钻石 x4、下界合金碎片 x2。",
         "date": "2025-03-25",
@@ -47,7 +87,6 @@ const announcements = [
         "tags": ["存档重置", "补偿"]
     },
     {
-        "id": 14,
         "title": "【技术报告】延迟问题根源查明",
         "summary": "确认超高延迟原因为 VMware 虚拟网卡问题，已禁用该网卡并切换至 VirtIO 驱动，延迟恢复至正常水平。",
         "date": "2025-03-25",
@@ -57,7 +96,6 @@ const announcements = [
         "tags": ["故障", "网络优化"]
     },
     {
-        "id": 13,
         "title": "【域名更新】endlesspixel.fun 正式启用",
         "summary": "全新域名 endlesspixel.fun 现已注册并启用，旧域名将继续保留 30 天用于跳转，建议各位玩家尽快更新书签。",
         "date": "2025-03-24",
@@ -67,7 +105,6 @@ const announcements = [
         "tags": ["品牌"]
     },
     {
-        "id": 12,
         "title": "【更名公告】PixelAdventure → EndlessPixel",
         "summary": "即日起，服务器正式更名为 EndlessPixel！新名称象征着打造无限可能像素世界的愿景，配套的新 LOGO 和官网将在本周内更新。",
         "date": "2025-03-24",
@@ -77,7 +114,6 @@ const announcements = [
         "tags": ["品牌"]
     },
     {
-        "id": 11,
         "title": "【故障通报】异常高延迟警告",
         "summary": "自当日 14:00 起出现间歇性 400ms+ 延迟、部分区块加载异常，技术团队正在检查网络硬件、分析流量日志，尚未定位根本原因。",
         "date": "2025-03-24",
@@ -87,7 +123,6 @@ const announcements = [
         "tags": ["故障", "网络优化"]
     },
     {
-        "id": 10,
         "title": "【渠道拓展】官方服务器上架",
         "summary": "现已入驻 minecraftservers.org，平台支持服务器状态实时监控和玩家评价系统，搜索 'PixelAdventure' 即可找到。",
         "date": "2025-03-13",
@@ -97,7 +132,6 @@ const announcements = [
         "tags": ["推广"]
     },
     {
-        "id": 9,
         "title": "【硬件升级】服务器性能大幅提升",
         "summary": "全新服务器配置已上线：48 核 CPU、96GB 内存、1.5TB NVMe 固态硬盘、千兆独享带宽，可支持 2025 人同时在线！",
         "date": "2025-03-15",
@@ -107,7 +141,6 @@ const announcements = [
         "tags": ["硬件升级", "性能"]
     },
     {
-        "id": 8,
         "title": "【核心更换】迁移至 Paper 提升稳定性",
         "summary": "服务器核心已从 Mohist 更改为 Paper，版本保持 1.20.1 不变。Paper 在高并发下表现出更低的延迟和更高的 TPS，玩家体验将更加流畅。",
         "date": "2025-01-14",
@@ -117,7 +150,6 @@ const announcements = [
         "tags": ["核心更换", "性能"]
     },
     {
-        "id": 7,
         "title": "【品牌升级】PixelAdventure 正式命名",
         "summary": "经过玩家投票，'像素探险 (PixelAdventure)' 从候选名中胜出，将用于服务器标识、官网及社群平台。",
         "date": "2024-12-06",
@@ -127,7 +159,6 @@ const announcements = [
         "tags": ["品牌"]
     },
     {
-        "id": 6,
         "title": "【服务迁移】阿里云服务器到期通知",
         "summary": "当前阿里云服务器将于 12 月 15 日到期，正在评估 AWS 和腾讯云替代方案，迁移期间可能出现短暂停机。",
         "date": "2024-11-30",
@@ -137,7 +168,6 @@ const announcements = [
         "tags": ["迁移", "基础设施"]
     },
     {
-        "id": 5,
         "title": "【稳定升级】服务器迁移至阿里云",
         "summary": "为提供更稳定的服务，已完成阿里云上海节点部署，每日 3 次自动备份，DDOS 防护系统启用，平均延迟降低至 50ms。",
         "date": "2024-11-08",
@@ -147,7 +177,6 @@ const announcements = [
         "tags": ["迁移", "基础设施"]
     },
     {
-        "id": 4,
         "title": "【版本调整】回退至 1.20.1 解决性能问题",
         "summary": "由于 1.20.2 版本出现未知性能下降，服务器已降级回 1.20.1，继续使用 Mohist 核心维持运行。玩法不受影响。",
         "date": "2024-10-13",
@@ -157,7 +186,6 @@ const announcements = [
         "tags": ["版本回退", "核心更换"]
     },
     {
-        "id": 3,
         "title": "【核心更换】尝试 Mohist 混合核心",
         "summary": "因 Forge 报错问题难以解决，现已改用 Mohist 核心，版本升级至 1.20.2，支持插件和模组混合运行。",
         "date": "2024-10-01",
@@ -167,7 +195,6 @@ const announcements = [
         "tags": ["核心更换", "架构"]
     },
     {
-        "id": 2,
         "title": "【功能扩展】计划引入 Forge 模组支持",
         "summary": "计划添加 Forge 支持以丰富玩法，但因持续报错问题，暂时搁置该计划。后续将评估其他模组加载方案。",
         "date": "2024-09-28",
@@ -177,7 +204,6 @@ const announcements = [
         "tags": ["架构", "搁置"]
     },
     {
-        "id": 1,
         "title": "【服务器创立】EndlessPixel 前身诞生",
         "summary": "服务器初始版本：1.20.1，使用 Vanilla 原版核心运行，由服主个人电脑搭建。这是旅途的起点。",
         "date": "2024-09-16",
@@ -353,7 +379,7 @@ export default function AnnouncementPage() {
                         {/* 时间轴线 */}
                         {filteredAnnouncements.map((item, index) => (
                             <div
-                                key={item.id}
+                                key={`${item.date}-${item.time}`}
                                 className="mb-12 relative animate-fade-in-up"
                                 style={{ animationDelay: `${index * 0.05}s` }}
                             >
