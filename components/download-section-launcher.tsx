@@ -1,68 +1,25 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
-  Download, Package, ChevronDown, ChevronUp, ExternalLink,
-  Star, Zap, ArrowUp, ArrowDown, Search, Filter, Archive, Tag, Eye, GitBranch, Clock,
-  Rocket, Calendar, TrendingUp, ChevronLeft, ChevronRight, RefreshCw,
-  AlertCircle, XCircle, Clock as ClockIcon, WifiOff
+  Star, GitBranch, Eye, Clock, Archive, Tag, Loader2, WifiOff, XCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
-import remarkGfm from "remark-gfm";
-import { Input } from "@/components/ui/input";
-import { useSearchParams, useRouter } from "next/navigation";
+import {
+  Toolbar,
+  MirrorFooter,
+  useReleaseFilter,
+  InfiniteReleaseGrid,
+  GitHubRelease,
+  ParsedRelease,
+} from "@/components/download-base";
+import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 
-
-interface LauncherMeta {
-  id: string;
-  name: string;
-  description: string;
-  githubRepo: string;
-  category: string;
-  tags: string[];
-  icon?: string;
-  featured?: boolean;
-}
-
-interface ParsedRelease {
-  name: string
-  version: string
-  mcVersion: string
-  releaseDate: string
-  isPrerelease: boolean
-  isLatest: boolean
-  downloadCount: number
-  files: Array<{
-    name: string
-    downloadUrl: string
-    downloadCount: number
-  }>
-  changelog: string
-  tags?: string[]
-}
-
-interface GitHubRelease {
-  id: number
-  tag_name: string
-  name: string
-  body: string
-  published_at: string
-  html_url: string
-  prerelease: boolean
-  assets: Array<{
-    name: string
-    download_count: number
-    browser_download_url: string
-  }>
-}
+// ============ 类型定义 ============
 
 interface GitHubRepoInfo {
   description: string;
@@ -76,66 +33,64 @@ interface GitHubRepoInfo {
 }
 
 type RequestStatus = "idle" | "loading" | "success" | "error" | "timeout";
-interface RequestError {
-  code?: number;
-  message: string;
-  type: "404" | "403" | "timeout" | "network" | "other";
-}
 
-interface DownloadSectionProps {
+// ============ Props ============
+
+interface DownloadSectionLauncherProps {
   githubApiUrl: string;
   title?: string;
   description?: string;
-  showPrereleases?: boolean;
   itemsPerPage?: number;
-  launcherMeta?: LauncherMeta;
   requestTimeout?: number;
 }
 
+// ============ 仓库信息卡片骨架屏 ============
 
+function RepoInfoCardSkeleton() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="max-w-6xl mx-auto bg-white/80 dark:bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm p-6"
+    >
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
+            <Skeleton className="w-10 h-10 rounded-full" />
+            <div className="space-y-1">
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-3 w-12" />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-6">
+        <Skeleton className="h-4 w-32" />
+        <div className="flex flex-wrap gap-2 mt-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-6 w-16 rounded-full" />
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
-const usePaginationParams = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
-
-
-  useEffect(() => {
-    const pageParam = searchParams.get('page');
-    if (pageParam) {
-      const page = parseInt(pageParam, 10);
-      if (!isNaN(page) && page > 0) {
-        setCurrentPage(page);
-      }
-    }
-  }, [searchParams]);
-
-
-  const updateUrlParams = useCallback((params: Record<string, string | number | null>) => {
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    Object.entries(params).forEach(([key, value]) => {
-      if (value === null || value === undefined) {
-        newSearchParams.delete(key);
-      } else {
-        newSearchParams.set(key, value.toString());
-      }
-    });
-    router.replace(`?${newSearchParams.toString()}`, { scroll: false });
-  }, [searchParams, router]);
-
-  return { currentPage, setCurrentPage, updateUrlParams };
-};
-
-
+// ============ 仓库信息卡片 ============
 
 function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
   return (
-    <Card className="max-w-6xl mx-auto bg-white/80 dark:bg-slate-800/60 backdrop-blur-md  border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-6xl mx-auto bg-white/80 dark:bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm"
+      aria-label="仓库信息"
+    >
       <CardContent className="p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
             <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
-              <Star className="w-5 h-5 text-yellow-500" />
+              <Star className="w-5 h-5 text-yellow-500" aria-hidden="true" />
             </div>
             <div>
               <div className="text-xl font-bold text-slate-900 dark:text-white">
@@ -144,9 +99,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-xs text-slate-500 dark:text-slate-400">Stars</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
+          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-              <GitBranch className="w-5 h-5 text-blue-500" />
+              <GitBranch className="w-5 h-5 text-blue-500" aria-hidden="true" />
             </div>
             <div>
               <div className="text-xl font-bold text-slate-900 dark:text-white">
@@ -155,9 +110,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-xs text-slate-500 dark:text-slate-400">Forks</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
+          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
             <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
-              <Eye className="w-5 h-5 text-green-500" />
+              <Eye className="w-5 h-5 text-green-500" aria-hidden="true" />
             </div>
             <div>
               <div className="text-xl font-bold text-slate-900 dark:text-white">
@@ -166,9 +121,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-xs text-slate-500 dark:text-slate-400">Watchers</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
+          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
             <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-              <Clock className="w-5 h-5 text-purple-500" />
+              <Clock className="w-5 h-5 text-purple-500" aria-hidden="true" />
             </div>
             <div>
               <div className="text-sm font-semibold text-slate-900 dark:text-white">
@@ -180,9 +135,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
         </div>
 
         {repoInfo.archived && (
-          <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg  border-amber-200/50 dark:border-amber-800/30">
+          <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200/50 dark:border-amber-800/30">
             <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
-              <Archive className="w-5 h-5" />
+              <Archive className="w-5 h-5" aria-hidden="true" />
               <span className="font-medium">此仓库已归档，可能不再维护</span>
             </div>
           </div>
@@ -191,7 +146,7 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
         {repoInfo.topics.length > 0 && (
           <div className="mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <Tag className="w-4 h-4 text-slate-500" />
+              <Tag className="w-4 h-4 text-slate-500" aria-hidden="true" />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">主题标签：</span>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -204,892 +159,315 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
           </div>
         )}
       </CardContent>
-    </Card>
+    </motion.article>
   );
 }
 
+// ============ 错误状态组件 ============
 
-function ReleaseCard({
-  release,
-  isExpanded,
-  onToggleExpand,
-  getMirrorUrl
-}: {
-  release: ParsedRelease;
-  isExpanded: boolean;
-  onToggleExpand: () => void;
-  getMirrorUrl: (host: string, originalUrl: string) => string;
-}) {
-
-  const [showChangelog, setShowChangelog] = useState(false);
-  const hasManyFiles = release.files.length > 4;
-  const displayFiles = isExpanded ? release.files : release.files.slice(0, 4);
-
-  const getVersionType = () => {
-    return release.isPrerelease ? "预发布版" : "正式版";
+function ErrorState({ status, onRetry }: { status: RequestStatus; onRetry: () => void }) {
+  const getErrorInfo = () => {
+    switch (status) {
+      case "timeout":
+        return { icon: Clock, title: "请求超时", message: "GitHub API 响应时间过长，请稍后重试" };
+      case "error":
+        return { icon: WifiOff, title: "网络错误", message: "无法连接到 GitHub API，请检查网络连接" };
+      default:
+        return { icon: XCircle, title: "获取失败", message: "无法获取版本信息，请稍后重试" };
+    }
   };
 
-  const getVersionBadgeColor = () => {
-    if (release.isPrerelease) return "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-300";
-    return "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300";
-  };
+  const { icon: Icon, title, message } = getErrorInfo();
 
   return (
-    <Card className={cn(
-      "relative overflow-hidden transition-all duration-300 hover:shadow-md",
-      release.isLatest
-        ? "border-green-200 bg-green-50/80 dark:bg-green-900/10 dark:border-green-800/50"
-        : "bg-white/80 dark:bg-slate-800/60 backdrop-blur-md border-slate-200/80 dark:border-slate-700/80"
-    )}>
-      {release.isLatest && (
-        <div className="absolute top-4 right-4">
-          <Badge className="bg-green-600 text-white px-4 py-1.5 shadow-md flex items-center gap-1 rounded-lg">
-            <Zap className="w-3 h-3" />
-            最新版本
-          </Badge>
-        </div>
-      )}
-
-      <CardHeader className="pb-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3 flex-1">
-            <div className="p-2.5 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-              <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white truncate">
-                  {release.name}
-                </CardTitle>
-                <Badge className={cn(getVersionBadgeColor(), "px-2 py-1 rounded-md")}>
-                  {getVersionType()}
-                </Badge>
-              </div>
-              <CardDescription className="flex flex-wrap items-center gap-4 text-sm">
-                <span className="flex items-center gap-1.5">
-                  <Rocket className="w-4 h-4" />
-                  {release.version}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4" />
-                  {release.releaseDate}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Download className="w-4 h-4" />
-                  {release.downloadCount.toLocaleString()} 次下载
-                </span>
-              </CardDescription>
-            </div>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          {displayFiles.map((file) => {
-            const mirrors = [
-              { name: "Cloudflare 主站（全球加速）", url: getMirrorUrl("https://gh-proxy.org", file.downloadUrl), tag: "Cloudflare" },
-              { name: "Fastly CDN", url: getMirrorUrl("https://cdn.gh-proxy.org", file.downloadUrl), tag: "Fastly" },
-              { name: "Edgeone 全球加速", url: getMirrorUrl("https://edgeone.gh-proxy.org", file.downloadUrl), tag: "Edgeone" },
-              { name: "Jasonzeng 文件代理加速", url: getMirrorUrl("https://gh.xmly.dev", file.downloadUrl), tag: "Jasonzeng" },
-              { name: "香港 国内线路优化", url: getMirrorUrl("https://hk.gh-proxy.org", file.downloadUrl), tag: "香港", tip: "大文件下载不建议使用！" },
-            ];
-
-            return (
-              <div key={file.name} className="bg-white/50 dark:bg-slate-800/30 rounded-xl p-4  border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium text-slate-900 dark:text-white truncate">{file.name}</span>
-                      <Badge variant="outline" className="text-xs bg-slate-100 dark:bg-slate-700">
-                        {file.downloadCount.toLocaleString()} 次下载
-                      </Badge>
-                    </div>
-                  </div>
-                  <Button size="sm" asChild className="flex items-center gap-2 h-9 px-4">
-                    <a href={file.downloadUrl} target="_blank" rel="noopener noreferrer">
-                      <Download className="w-4 h-4" />
-                      官方下载
-                    </a>
-                  </Button>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-xs text-slate-500 dark:text-slate-400">镜像下载（如遇GitHub下载缓慢可尝试）：</div>
-                  {mirrors.some(m => m.tip) && (
-                    <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-1.5 rounded  border-amber-200/50 dark:border-amber-800/30">
-                      ⚠️ 香港线路下载大文件时不建议使用
-                    </div>
-                  )}
-                  <div className="flex flex-wrap gap-2">
-                    {mirrors.map((mirror) => (
-                      <Button
-                        key={mirror.url}
-                        size="xs"
-                        variant="outline"
-                        asChild
-                        className="flex items-center gap-2 text-xs h-8 px-3 border-slate-200 dark:border-slate-700"
-                        title={mirror.tip || mirror.name}
-                      >
-                        <a href={mirror.url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-3 h-3" />
-                          {mirror.tag}
-                        </a>
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {hasManyFiles && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onToggleExpand}
-              className="flex items-center gap-2 w-full justify-center py-2.5  border-slate-200/50 dark:border-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/30 transition-all"
-            >
-              {isExpanded ? (
-                <>
-                  <ChevronUp className="w-4 h-4" />
-                  收起 {release.files.length - 4} 个文件
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4" />
-                  展开全部 {release.files.length} 个文件
-                </>
-              )}
-            </Button>
-          )}
-        </div>
-
-        <div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowChangelog(!showChangelog)}
-            className="flex items-center gap-2 w-full justify-center py-2.5  border-slate-200/50 dark:border-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/30 transition-all"
-          >
-            {showChangelog ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            {showChangelog ? "隐藏更新日志" : "查看更新日志"}
-          </Button>
-
-          {showChangelog && (
-            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl  border-slate-200/50 dark:border-slate-700/50 prose prose-sm max-w-none dark:prose-invert wrap-break-word overflow-auto max-h-80">
-              <ReactMarkdown
-                rehypePlugins={[rehypeRaw]}
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  a: ({ node, ...props }) => (
-                    <a target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300" {...props} />
-                  )
-                }}
-              >
-                {release.changelog}
-              </ReactMarkdown>
-            </div>
-          )}
-        </div>
+    <Card className="border-red-200 dark:border-red-800 bg-red-50/80 dark:bg-red-900/10">
+      <CardContent className="py-16 text-center">
+        <Icon className="w-12 h-12 mx-auto text-red-500 dark:text-red-400 mb-4" aria-hidden="true" />
+        <h3 className="text-lg font-semibold text-red-700 dark:text-red-300 mb-2">{title}</h3>
+        <p className="text-red-600 dark:text-red-400 mb-4">{message}</p>
+        <Button variant="outline" onClick={onRetry} className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          重试
+        </Button>
       </CardContent>
     </Card>
   );
 }
 
+// ============ 主组件 ============
 
-export function DownloadSection({
+export function DownloadSectionLauncher({
   githubApiUrl,
-  description = "选择适合您的版本进行下载",
-  showPrereleases = true,
+  title = "下载资源",
+  description = "选择适合你的版本进行下载",
   itemsPerPage = 20,
-  launcherMeta,
   requestTimeout = 15000,
-}: DownloadSectionProps) {
-
+}: DownloadSectionLauncherProps) {
   const { toast } = useToast();
-  const { currentPage, setCurrentPage, updateUrlParams } = usePaginationParams();
 
-
-  const [allReleases, setAllReleases] = useState<ParsedRelease[]>([]);
-  const [currentPageReleases, setCurrentPageReleases] = useState<ParsedRelease[]>([]);
-  const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<"semantic" | "releaseDate" | "downloadCount">("semantic");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [tags, setTags] = useState<string[]>([]);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalReleases, setTotalReleases] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [releases, setReleases] = useState<ParsedRelease[]>([]);
   const [repoInfo, setRepoInfo] = useState<GitHubRepoInfo | null>(null);
-  const [expandedFiles, setExpandedFiles] = useState<Set<string>>(new Set());
-  const [releasesStatus, setReleasesStatus] = useState<RequestStatus>("loading");
-  const [repoStatus, setRepoStatus] = useState<RequestStatus>("loading");
-  const [requestError, setRequestError] = useState<RequestError | null>(null);
+  const [repoStatus, setRepoStatus] = useState<RequestStatus>("idle");
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<'semantic' | 'releaseDate' | 'downloadCount'>('semantic');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [displayedCount, setDisplayedCount] = useState(itemsPerPage);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [allReleases, setAllReleases] = useState<ParsedRelease[]>([]);
 
+  // 获取仓库信息
+  const fetchRepoInfo = async () => {
+    const repoUrlMatch = githubApiUrl.match(/repos\/([^\/]+)\/([^\/]+)/);
+    if (!repoUrlMatch) return;
 
-
-  const handleRequestError = useCallback((error: any, context: string): RequestError => {
-    let errorInfo: RequestError = {
-      message: "未知错误，请稍后重试",
-      type: "other"
-    };
-
-    if (error.message === "Timeout") {
-      errorInfo = {
-        message: `请求${context}超时（${requestTimeout / 1000}秒），请检查网络或稍后重试`,
-        type: "timeout"
-      };
-    } else if (error.code || error.status) {
-      const statusCode = error.code || error.status;
-      errorInfo.code = statusCode;
-
-      if (statusCode === 404) {
-        errorInfo = { code: 404, message: `${context}不存在（404），请检查API地址是否正确`, type: "404" };
-      } else if (statusCode === 403) {
-        errorInfo = { code: 403, message: `无权限访问${context}（403），可能是API限制或认证问题`, type: "403" };
-      } else {
-        errorInfo = { code: statusCode, message: `获取${context}失败（${statusCode}）：${error.message || "服务器错误"}`, type: "other" };
-      }
-    } else if (error.message.includes("Failed to fetch") || error.message.includes("Network")) {
-      errorInfo = { message: `网络错误，无法连接到${context}，请检查网络连接`, type: "network" };
-    }
-
-
-    toast({
-      title: "操作失败",
-      description: errorInfo.message,
-      variant: "destructive"
-    });
-
-    return errorInfo;
-  }, [toast, requestTimeout]);
-
-
-  const fetchRepoInfo = useCallback(async () => {
-    setRepoStatus("loading");
     try {
-      const match = githubApiUrl.match(/repos\/([^/]+\/[^/]+)\/releases/);
-      if (!match) {
-        setRepoStatus("success");
-        return;
-      }
-
-      const repoPath = match[1];
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), requestTimeout);
-
-      const response = await fetch(`https://api.github.com/repos/${repoPath}`, {
-        headers: { Accept: "application/vnd.github.v3+json" },
-        signal: controller.signal
+      const res = await fetch(`https://api.github.com/repos/${repoUrlMatch[1]}/${repoUrlMatch[2]}`, {
+        signal: AbortSignal.timeout(requestTimeout),
       });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw { status: response.status, message: response.statusText };
-      }
-
-      const data = await response.json();
-      setRepoInfo({
-        description: data.description || "",
-        stargazers_count: data.stargazers_count || 0,
-        archived: data.archived || false,
-        topics: data.topics || [],
-        updated_at: data.updated_at || "",
-        language: data.language || "",
-        forks_count: data.forks_count || 0,
-        watchers_count: data.watchers_count || 0,
-      });
+      if (!res.ok) throw new Error(String(res.status));
+      const data: GitHubRepoInfo = await res.json();
+      setRepoInfo(data);
       setRepoStatus("success");
-    } catch (error: any) {
-      if (error.name === "AbortError") {
-        handleRequestError({ message: "Timeout" }, "仓库信息");
-      } else {
-        handleRequestError(error, "仓库信息");
-      }
+    } catch {
       setRepoStatus("error");
     }
-  }, [githubApiUrl, handleRequestError, requestTimeout]);
+  };
 
-
-  const fetchReleases = useCallback(async () => {
-    setReleasesStatus("loading");
-    setRequestError(null);
-
+  // 获取发布版本
+  const fetchReleases = async () => {
     try {
-      let allData: GitHubRelease[] = [];
-      let page = 1;
-      let hasMore = true;
+      setLoading(true);
+      setRepoStatus("loading");
 
-      while (hasMore) {
-        const url = new URL(githubApiUrl);
-        url.searchParams.set('per_page', '100');
-        url.searchParams.set('page', page.toString());
+      // 并行获取仓库信息和发布版本
+      await Promise.all([fetchRepoInfo(), fetchReleasesData()]);
+    } catch {
+      toast({ title: '获取版本信息失败', variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), requestTimeout);
+  const fetchReleasesData = async (page: number = 1) => {
+    try {
+      // GitHub API 默认只返回30条数据，需要添加 per_page 参数
+      const apiUrl = githubApiUrl.includes('?')
+        ? `${githubApiUrl}&per_page=100&page=${page}`
+        : `${githubApiUrl}?per_page=100&page=${page}`;
 
-        const response = await fetch(url.toString(), {
-          headers: { Accept: "application/vnd.github.v3+json" },
-          signal: controller.signal
-        });
+      const res = await fetch(apiUrl, {
+        signal: AbortSignal.timeout(requestTimeout),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const data: GitHubRelease[] = await res.json();
 
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          throw { status: response.status, message: response.statusText };
-        }
-
-        const data: GitHubRelease[] = await response.json();
-        if (data.length === 0) {
-          hasMore = false;
-          break;
-        }
-
-        allData = [...allData, ...data];
-        page++;
-        if (page > 10) break;
-      }
-
-      const filteredData = showPrereleases ? allData : allData.filter(release => !release.prerelease);
-      const latestRelease = filteredData
-        .filter(release => !release.prerelease)
-        .sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime())[0];
-
-      const parsedReleases: ParsedRelease[] = filteredData.map((release) => {
-        const mcVersionMatch = release.tag_name.match(/^(\d+\.\d+\.\d+)/);
-        const mcVersion = mcVersionMatch ? mcVersionMatch[1] : "Unknown";
-
-        const files = release.assets.map((asset) => ({
-          name: asset.name || "",
-          downloadUrl: asset.browser_download_url || "",
-          downloadCount: asset.download_count || 0,
+      const parsed: ParsedRelease[] = data.map(r => {
+        const files = r.assets.map(a => ({
+          name: a.name,
+          downloadUrl: a.browser_download_url,
+          downloadCount: a.download_count,
         }));
-
-        const downloadCount = files.reduce((total, file) => total + file.downloadCount, 0);
-        const releaseDate = new Date(release.published_at).toLocaleDateString("zh-CN");
-        const isLatest = latestRelease ? release.id === latestRelease.id : false;
-
-        const tagMatches = release.tag_name.match(/(beta|rc|alpha|stable|latest)/gi) || [];
-        const bodyTags = release.body ? release.body.match(/\[(\w+)\]/g)?.map(tag => tag.replace(/\[|\]/g, '')) || [] : [];
-        const releaseTags = [...new Set([...tagMatches, ...bodyTags])];
-
         return {
-          name: release.name || release.tag_name || "",
-          version: release.tag_name || "",
-          mcVersion,
-          releaseDate,
-          isPrerelease: release.prerelease || false,
-          isLatest,
-          downloadCount,
+          name: r.name || r.tag_name,
+          version: r.tag_name,
+          mcVersion: r.tag_name.match(/^(\d+\.\d+(\.\d+)?)/)?.[1] ?? 'Unknown',
+          releaseDate: new Date(r.published_at).toLocaleDateString('zh-CN'),
+          isPrerelease: r.prerelease,
+          isLatest: false,
+          downloadCount: files.reduce((s, f) => s + f.downloadCount, 0),
           files,
-          changelog: release.body || "暂无更新日志。",
-          tags: releaseTags.length > 0 ? releaseTags : undefined
+          changelog: r.body || '暂无更新日志。',
         };
       });
 
-      setAllReleases(parsedReleases);
-      const allTags = Array.from(new Set(parsedReleases.flatMap((release) => release.tags || [])));
-      setTags(allTags);
-      setReleasesStatus("success");
-
-    } catch (error: any) {
-      let errorInfo: RequestError;
-
-      if (error.name === "AbortError") {
-        errorInfo = handleRequestError({ message: "Timeout" }, "版本数据");
-      } else {
-        errorInfo = handleRequestError(error, "版本数据");
-      }
-
-      setRequestError(errorInfo);
-      setReleasesStatus("error");
-    }
-  }, [githubApiUrl, showPrereleases, handleRequestError, requestTimeout]);
-
-
-  const compareSemanticVersions = useCallback((v1: string, v2: string): number => {
-    const parseVersion = (version: string) => {
-      const preReleaseMatch = version.match(/-([a-zA-Z]+.*)$/);
-      const preRelease = preReleaseMatch ? preReleaseMatch[1] : '';
-      const mainParts = (preRelease ? version.replace(/-[a-zA-Z]+.*$/, '') : version)
-        .match(/\d+/g)?.map(Number) || [];
-      return { mainParts, preRelease };
-    };
-
-    const { mainParts: p1, preRelease: pr1 } = parseVersion(v1);
-    const { mainParts: p2, preRelease: pr2 } = parseVersion(v2);
-
-    const maxLen = Math.max(p1.length, p2.length);
-    for (let i = 0; i < maxLen; i++) {
-      const num1 = p1[i] || 0;
-      const num2 = p2[i] || 0;
-      if (num1 > num2) return 1;
-      if (num1 < num2) return -1;
-    }
-
-    if (!pr1 && pr2) return 1;
-    if (pr1 && !pr2) return -1;
-
-    if (pr1 && pr2) {
-      const getPreNum = (pr: string) => Number(pr.match(/\d+/)?.[0] || 0);
-      return getPreNum(pr1) - getPreNum(pr2);
-    }
-
-    return 0;
-  }, []);
-
-
-  const semanticCompare = useCallback((a: ParsedRelease, b: ParsedRelease) => {
-    const versionCompare = compareSemanticVersions(a.version, b.version);
-    return versionCompare !== 0 ? versionCompare : (a.isLatest ? -1 : b.isLatest ? 1 : 0);
-  }, [compareSemanticVersions]);
-
-
-  const processReleases = useCallback((releases: ParsedRelease[]) => {
-    return releases
-      .filter((release) =>
-        release.name.toLowerCase().includes(search.toLowerCase()) ||
-        release.version.toLowerCase().includes(search.toLowerCase()) ||
-        release.mcVersion.toLowerCase().includes(search.toLowerCase())
-      )
-      .filter((release) => (selectedTag ? release.tags?.includes(selectedTag) : true))
-      .sort((a, b) => {
-        if (sortBy === "semantic") {
-          return sortOrder === "asc" ? semanticCompare(a, b) : -semanticCompare(a, b);
-        } else if (sortBy === "releaseDate") {
-          const dateCompare = new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
-          return sortOrder === "asc" ? -dateCompare : dateCompare;
+      // 如果是第一页，标记最新版本
+      if (page === 1 && parsed.length > 0) {
+        const stableReleases = parsed.filter(r => !r.isPrerelease);
+        if (stableReleases.length > 0) {
+          stableReleases.sort((a, b) => b.releaseDate.localeCompare(a.releaseDate))[0].isLatest = true;
         } else {
-          const countCompare = b.downloadCount - a.downloadCount;
-          return sortOrder === "asc" ? -countCompare : countCompare;
+          parsed.sort((a, b) => b.releaseDate.localeCompare(a.releaseDate))[0].isLatest = true;
         }
-      });
-  }, [search, selectedTag, sortBy, sortOrder, semanticCompare]);
+      }
 
-
-  const getMirrorUrl = useCallback((host: string, originalUrl: string) => {
-    const cleanUrl = originalUrl.replace(/^https?:\/\//, '');
-    return `${host}/${cleanUrl}`;
-  }, []);
-
-
-  const handleSortChange = useCallback((criteria: "semantic" | "releaseDate" | "downloadCount") => {
-    if (sortBy === criteria) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(criteria);
-      setSortOrder("desc");
-    }
-    setCurrentPage(1);
-    updateUrlParams({ page: 1 });
-  }, [sortBy, sortOrder, setCurrentPage, updateUrlParams]);
-
-
-  const toggleFileExpansion = useCallback((releaseVersion: string) => {
-    setExpandedFiles(prev => {
-      const newExpanded = new Set(prev);
-      if (newExpanded.has(releaseVersion)) {
-        newExpanded.delete(releaseVersion);
+      // 更新数据
+      if (page === 1) {
+        setAllReleases(parsed);
+        setReleases(parsed);
       } else {
-        newExpanded.add(releaseVersion);
+        setAllReleases(prev => [...prev, ...parsed]);
+        setReleases(prev => [...prev, ...parsed]);
       }
-      return newExpanded;
-    });
-  }, []);
 
+      // 判断是否还有更多数据
+      setHasMore(parsed.length === 100);
 
-  const generatePaginationButtons = useMemo(() => {
-    const buttons = [];
-    const maxVisiblePages = 5;
-
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      return parsed;
+    } catch {
+      throw new Error('Failed to fetch releases');
     }
+  };
 
-    for (let i = startPage; i <= endPage; i++) {
-      buttons.push(
-        <Button
-          key={i}
-          variant={i === currentPage ? "default" : "outline"}
-          size="sm"
-          onClick={() => {
-            setCurrentPage(i);
-            updateUrlParams({ page: i });
-          }}
-          className={cn(
-            "rounded-full transition-all hover:scale-105",
-            i === currentPage ? 'bg-blue-600 hover:bg-blue-700' : ''
-          )}
-        >
-          {i}
-        </Button>
-      );
+  // 加载更多数据
+  const handleLoadMore = async () => {
+    if (isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
+    try {
+      const nextPage = Math.floor(allReleases.length / 100) + 1;
+      await fetchReleasesData(nextPage);
+      setDisplayedCount(prev => prev + itemsPerPage);
+    } catch {
+      toast({ title: '加载更多失败', variant: 'destructive' });
+    } finally {
+      setIsLoadingMore(false);
     }
-
-    return buttons;
-  }, [currentPage, totalPages, updateUrlParams]);
-
-
-  const renderErrorState = useCallback(() => {
-    let errorIcon = <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />;
-    let errorTitle = "获取数据失败";
-
-    if (requestError) {
-      switch (requestError.type) {
-        case "404":
-          errorIcon = <XCircle className="w-12 h-12 text-orange-500 mx-auto mb-4" />;
-          errorTitle = "资源不存在";
-          break;
-        case "403":
-          errorIcon = <AlertCircle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />;
-          errorTitle = "无访问权限";
-          break;
-        case "timeout":
-          errorIcon = <ClockIcon className="w-12 h-12 text-blue-500 mx-auto mb-4" />;
-          errorTitle = "请求超时";
-          break;
-        case "network":
-          errorIcon = <WifiOff className="w-12 h-12 text-purple-500 mx-auto mb-4" />;
-          errorTitle = "网络连接失败";
-          break;
-      }
-    }
-
-    return (
-      <Card className="border-dashed">
-        <CardContent className="py-16 text-center">
-          {errorIcon}
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{errorTitle}</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-6">{requestError?.message || "无法获取版本信息，请稍后重试"}</p>
-          <Button onClick={fetchReleases} variant="default" className="gap-2">
-            <RefreshCw className="w-4 h-4" />
-            重新加载
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }, [requestError, fetchReleases]);
-
-
-  const renderRepoInfoSkeleton = useCallback(() => (
-    <Card className="max-w-6xl mx-auto bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm  border-slate-200 dark:border-slate-700">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex items-center gap-2">
-              <Skeleton className="w-4 h-4 rounded-full" />
-              <div>
-                <Skeleton className="h-8 w-16 mb-1" />
-                <Skeleton className="h-4 w-12" />
-              </div>
-            </div>
-          ))}
-        </div>
-        <Skeleton className="h-10 w-full mt-6" />
-      </CardContent>
-    </Card>
-  ), []);
-
-
+  };
 
   useEffect(() => {
     fetchReleases();
-    fetchRepoInfo();
-  }, [fetchReleases, fetchRepoInfo]);
+  }, [githubApiUrl]);
 
+  const filtered = useReleaseFilter(allReleases, search, sortBy, sortOrder);
 
-  useEffect(() => {
-    if (allReleases.length === 0) return;
-
-    const processedReleases = processReleases(allReleases);
-    setTotalReleases(processedReleases.length);
-
-    const calculatedTotalPages = Math.ceil(processedReleases.length / itemsPerPage);
-    setTotalPages(Math.max(1, calculatedTotalPages));
-
-    const validPage = Math.min(Math.max(1, currentPage), calculatedTotalPages);
-    if (validPage !== currentPage) {
-      setCurrentPage(validPage);
-      updateUrlParams({ page: validPage });
-    }
-
-    const startIndex = (validPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    setCurrentPageReleases(processedReleases.slice(startIndex, endIndex));
-
-  }, [allReleases, currentPage, itemsPerPage, processReleases, updateUrlParams]);
-
-
-  if (releasesStatus === "loading") {
+  // 加载状态
+  if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="text-center space-y-4">
-          {renderRepoInfoSkeleton()}
-        </div>
-        <div className="bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm rounded-xl p-6  border-slate-200 dark:border-slate-700">
-          <Skeleton className="h-10 w-full mb-4" />
-          <div className="flex gap-2">
-            {[1, 2, 3].map(i => (
-              <Skeleton key={i} className="h-8 w-24 rounded-md" />
-            ))}
+      <section className="space-y-6" aria-label="下载资源区域">
+        {/* 标题区域 */}
+        <header className="text-center space-y-3">
+          <h2 className="text-3xl font-bold bg-linear-to-r from-slate-800 to-blue-800 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
+            {title}
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            {description}
+          </p>
+        </header>
+
+        {/* 仓库信息骨架屏 */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key="repo-skeleton"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            <RepoInfoCardSkeleton />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* 工具栏骨架屏 */}
+        <Card className="p-4 bg-white/80 dark:bg-slate-800/60 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80">
+          <div className="space-y-4">
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="relative flex-1">
+                <Skeleton className="w-full h-12 rounded-lg" />
+              </div>
+              <Button variant="outline" disabled className="lg:w-auto">
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                加载中...
+              </Button>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">排序：</span>
+              {['版本号', '发布日期', '下载量'].map((label) => (
+                <Skeleton key={label} className="h-9 w-20 rounded-lg" />
+              ))}
+            </div>
           </div>
-        </div>
+        </Card>
+
+        {/* 版本列表骨架屏 */}
         <div className="space-y-4">
-          {[1, 2, 3].map(i => (
-            <Card key={i} className="overflow-hidden">
-              <CardHeader>
-                <Skeleton className="h-6 w-1/3 mb-2" />
-                <Skeleton className="h-4 w-1/2" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-24 w-full mb-4" />
-                <Skeleton className="h-8 w-1/4" />
-              </CardContent>
-            </Card>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <Card className="border-slate-200/80 dark:border-slate-700/80">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <Skeleton className="w-16 h-16 rounded-xl" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-6 w-32" />
+                      <div className="flex flex-wrap gap-2">
+                        <Skeleton className="h-5 w-20 rounded-full" />
+                        <Skeleton className="h-5 w-20 rounded-full" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {Array.from({ length: 2 }).map((_, j) => (
+                      <Skeleton key={j} className="h-16 rounded-xl" />
+                    ))}
+                  </div>
+                  <Skeleton className="h-8 w-full mt-4" />
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </section>
     );
   }
 
-
-  if (releasesStatus === "error") {
-    return (
-      <div className="space-y-6">
-        <div className="text-center space-y-4">
-          {repoStatus === "loading" ? renderRepoInfoSkeleton() : repoInfo && <RepoInfoCard repoInfo={repoInfo} />}
-        </div>
-        <div className="bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm rounded-xl p-6  border-slate-200 dark:border-slate-700">
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            <div className="flex-1 w-full">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                <Input
-                  className="pl-10 w-full"
-                  placeholder="搜索版本号、名称、MC版本…"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" onClick={fetchReleases} className="flex items-center gap-2">
-                <RefreshCw className="w-4 h-4" />
-                刷新
-              </Button>
-            </div>
-          </div>
-        </div>
-        {renderErrorState()}
-      </div>
-    );
+  // 错误状态
+  if (repoStatus === "error" && releases.length === 0) {
+    return <ErrorState status={repoStatus} onRetry={fetchReleases} />;
   }
-
 
   return (
-    <div className="space-y-8">
-      <div className="text-center space-y-6">
-        {launcherMeta?.name && (
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">
-              {launcherMeta.name}
-            </h2>
-            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              {launcherMeta.description || description}
-            </p>
-          </div>
-        )}
-        {repoStatus === "loading" ? renderRepoInfoSkeleton() : repoInfo && <RepoInfoCard repoInfo={repoInfo} />}
+    <section className="space-y-6" aria-label="下载资源区域">
+      {/* 标题区域 */}
+      <header className="text-center space-y-3">
+        <h2 className="text-3xl font-bold bg-linear-to-r from-slate-800 to-blue-800 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
+          {title}
+        </h2>
+        <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+          {description}
+        </p>
+      </header>
+
+      {/* 仓库信息卡片 */}
+      {repoInfo && <RepoInfoCard repoInfo={repoInfo} />}
+
+      {/* 工具栏 */}
+      <Card className="p-4 bg-white/80 dark:bg-slate-800/60 backdrop-blur-md border-slate-200/80 dark:border-slate-700/80">
+        <Toolbar
+          search={search}
+          onSearchChange={setSearch}
+          sortBy={sortBy}
+          onSortByChange={setSortBy}
+          sortOrder={sortOrder}
+          onSortOrderChange={setSortOrder}
+          onRefresh={fetchReleases}
+          loading={loading}
+          placeholder="搜索版本号、名称..."
+        />
+      </Card>
+
+      {/* 版本列表 */}
+      <div className="space-y-4">
+        <InfiniteReleaseGrid
+          list={filtered.slice(0, displayedCount)}
+          hasMore={hasMore && filtered.length > displayedCount}
+          isLoadingMore={isLoadingMore}
+          onLoadMore={handleLoadMore}
+          initialLoadCount={itemsPerPage}
+        />
       </div>
 
-      <div className="bg-white/80 dark:bg-slate-800/60 backdrop-blur-md rounded-xl p-6  border-slate-200/80 dark:border-slate-700/80 shadow-sm">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="flex-1 w-full">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-              <Input
-                className="pl-10 w-full h-12 rounded-lg border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500/20"
-                placeholder="搜索版本号、名称、MC版本…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              onClick={fetchReleases}
-              className="flex items-center gap-2 h-12 px-4 border-slate-200 dark:border-slate-700"
-            >
-              <RefreshCw className="w-4 h-4" />
-              刷新
-            </Button>
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 mt-6 pt-6 border-t border-slate-200/50 dark:border-slate-700/50">
-          <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-            <Filter className="w-4 h-4 text-slate-500" />
-            排序方式：
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {([
-              { key: "semantic" as const, label: "版本号", icon: Rocket },
-              { key: "releaseDate" as const, label: "发布日期", icon: Calendar },
-              { key: "downloadCount" as const, label: "下载量", icon: TrendingUp }
-            ]).map(({ key, label, icon: Icon }) => (
-              <Button
-                key={key}
-                variant={sortBy === key ? "default" : "outline"}
-                size="sm"
-                onClick={() => handleSortChange(key)}
-                className="flex items-center gap-2 h-9 px-4 rounded-lg"
-              >
-                <Icon className="w-4 h-4" />
-                {sortBy === key && (sortOrder === "asc" ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />)}
-                {label}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {tags.length > 0 && (
-          <div className="flex flex-col sm:flex-row gap-4 mt-6 pt-6 border-t border-slate-200/50 dark:border-slate-700/50">
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-              <Filter className="w-4 h-4 text-slate-500" />
-              标签筛选：
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant={selectedTag === null ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedTag(null)}
-                className="h-9 px-4 rounded-lg"
-              >
-                全部
-              </Button>
-              {tags.map((tag) => (
-                <Button
-                  key={tag}
-                  variant={selectedTag === tag ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedTag(tag)}
-                  className="h-9 px-4 rounded-lg"
-                >
-                  {tag}
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      <Tabs defaultValue="releases" className="w-full">
-        <TabsContent value="releases" className="space-y-6">
-          {totalReleases === 0 ? (
-            <Card className="border-dashed bg-white/50 dark:bg-slate-800/30">
-              <CardContent className="py-16 text-center">
-                <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">暂无可用版本</h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">当前筛选条件下没有找到匹配的版本</p>
-                <Button onClick={fetchReleases} variant="outline">
-                  重新获取
-                </Button>
-              </CardContent>
-            </Card>
-          ) : currentPageReleases.length === 0 ? (
-            <Card className="border-dashed bg-white/50 dark:bg-slate-800/30">
-              <CardContent className="py-16 text-center">
-                <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">当前页无数据</h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">请尝试切换到其他页码</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-6">
-              {currentPageReleases.map((release) => (
-                <ReleaseCard
-                  key={release.version}
-                  release={release}
-                  isExpanded={expandedFiles.has(release.version)}
-                  onToggleExpand={() => toggleFileExpansion(release.version)}
-                  getMirrorUrl={getMirrorUrl}
-                />
-              ))}
-
-              {totalPages > 1 && (
-                <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-6 p-4 bg-white/50 dark:bg-slate-800/30 rounded-xl  border-slate-200/50 dark:border-slate-700/50">
-                  <div className="text-sm text-slate-600 dark:text-slate-400">
-                    第 <span className="font-medium text-slate-900 dark:text-white">{currentPage}</span> 页，
-                    共 <span className="font-medium text-slate-900 dark:text-white">{totalPages}</span> 页，
-                    总计 <span className="font-medium text-slate-900 dark:text-white">{totalReleases}</span> 个版本
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => {
-                        if (currentPage > 1) {
-                          const newPage = currentPage - 1;
-                          setCurrentPage(newPage);
-                          updateUrlParams({ page: newPage });
-                        }
-                      }}
-                      disabled={currentPage === 1}
-                      className="rounded-full h-10 w-10 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </Button>
-                    <div className="flex items-center gap-1">
-                      {generatePaginationButtons}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => {
-                        if (currentPage < totalPages) {
-                          const newPage = currentPage + 1;
-                          setCurrentPage(newPage);
-                          updateUrlParams({ page: newPage });
-                        }
-                      }}
-                      disabled={currentPage === totalPages}
-                      className="rounded-full h-10 w-10 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
-
-      <div className="text-center text-sm text-slate-600 dark:text-slate-400 mt-4 p-6 bg-white/50 dark:bg-slate-800/30 rounded-xl  border-slate-200/50 dark:border-slate-700/50">
-        <p className="mb-4 font-medium text-slate-700 dark:text-slate-300">加速下载服务由以下镜像站点提供：</p>
-        <div className="flex flex-wrap gap-3 justify-center">
-          <a
-            href="https://gh-proxy.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2 bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 rounded-lg transition-all hover:shadow-md hover:scale-105"
-          >
-            gh-proxy.com
-          </a>
-          <a
-            href="https://gh.jasonzeng.dev/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2 bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 rounded-lg transition-all hover:shadow-md hover:scale-105"
-          >
-            gh.jasonzeng.dev
-          </a>
-        </div>
-      </div>
-    </div>
+      {/* 镜像说明 */}
+      <MirrorFooter />
+    </section>
   );
 }
+
+// 保持原有导出名称兼容
+export { DownloadSectionLauncher as DownloadSection };
