@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-type FontOption = "default" | "noto-sans" | "songti" | "chill-reunion";
+type FontOption = "default" | "noto-sans" | "songti" | "dengxian" | "kaiti" | "chill-reunion";
 
 interface AppearanceSettings {
   showAddressBar: boolean;
@@ -88,7 +88,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     const body = document.body;
     
     // 移除所有字体类
-    body.classList.remove('font-noto-sans', 'font-songti', 'font-chill-reunion');
+    body.classList.remove('font-noto-sans', 'font-songti', 'font-dengxian', 'font-kaiti', 'font-chill-reunion');
     
     if (settings.useCustomFont) {
       switch (settings.customFont) {
@@ -100,6 +100,14 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
         case "songti":
           body.style.fontFamily = "'SimSun', 'STSong', '宋体', serif";
           body.classList.add('font-songti');
+          break;
+        case "dengxian":
+          body.style.fontFamily = "'DengXian', 'Microsoft YaHei', sans-serif";
+          body.classList.add('font-dengxian');
+          break;
+        case "kaiti":
+          body.style.fontFamily = "'KaiTi', 'STKaiti', '楷体', serif";
+          body.classList.add('font-kaiti');
           break;
         case "chill-reunion":
           // ChillReunion 回退到 Noto Sans SC
