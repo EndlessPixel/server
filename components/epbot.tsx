@@ -538,7 +538,7 @@ export const EPBot = ({ className }: EPBotProps) => {
           <textarea ref={textareaRef} className="flex-1 bg-slate-100 dark:bg-slate-800/80  border-slate-200 dark:border-white/15 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none max-h-36 overflow-y-auto text-sm" value={input} onChange={e=>setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="输入消息... (Shift+Enter 换行)" disabled={loading} rows={1}/>
           <button onClick={send} disabled={loading} className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white p-3 rounded-xl flex items-center justify-center disabled:opacity-50 shadow-md"><Send className="w-5 h-5"/></button>
         </div>
-        <div className="p-4 border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 bg-white dark:bg-transparent">注意：AI模型回复可能包含错误信息，请不要过度依赖AI模型的回复内容。</div>
+        <div className="p-4 border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 bg-white dark:bg-transparent">注意：AI模型回复可能包含错误信息，请注意辨别，不要过度依赖AI模型的回复内容。</div>
       </div>
     </div>
   );
