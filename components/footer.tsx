@@ -1,11 +1,28 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { Server, Heart, ExternalLink, Users, Download, BookOpen, Eye, ChevronRight, Activity, Images, Code } from "lucide-react";
+import {
+  Server,
+  Heart,
+  ExternalLink,
+  Users,
+  Download,
+  BookOpen,
+  Eye,
+  ChevronRight,
+  Activity,
+  Images,
+  Code,
+} from "lucide-react";
 import { RunningDuration } from "./running-duration";
 
 type SocialLink = { icon: React.ElementType; href: string; label: string };
-type NavLink = { icon: React.ElementType; href: string; label: string; external?: boolean };
+type NavLink = {
+  icon: React.ElementType;
+  href: string;
+  label: string;
+  external?: boolean;
+};
 
 const SocialLinks = ({ links }: { links: SocialLink[] }) => (
   <div className="flex flex-wrap gap-3">
@@ -67,7 +84,13 @@ const NavLinks = ({ links }: { links: NavLink[] }) => (
 const BrandLogo = () => {
   return (
     <div className="flex items-center gap-3 mb-6">
-      <Image src="/favicon.ico" alt="EndlessPixel" width={48} height={48} className="rounded-xl" />
+      <Image
+        src="/favicon.ico"
+        alt="EndlessPixel"
+        width={48}
+        height={48}
+        className="rounded-xl"
+      />
       <h2 className="font-bold text-3xl bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
         EndlessPixel
       </h2>
@@ -79,7 +102,10 @@ const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
   const currentYear = new Date().getFullYear();
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-400 text-sm pt-6 border-t border-slate-800/50 mt-6">
-      <span>&copy; {startYear}{currentYear > startYear ? `–${currentYear}` : ""} EndlessPixel Studio</span>
+      <span>
+        &copy; {startYear}
+        {currentYear > startYear ? `–${currentYear}` : ""} EndlessPixel Studio
+      </span>
       <div className="flex items-center gap-2">
         <span>Made with</span>
         <Heart className="w-4 h-4 text-red-400 fill-current animate-pulse" />
@@ -92,39 +118,88 @@ const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
 export function Footer() {
   const socialLinks: SocialLink[] = [
     {
-      icon: () => <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/github/white"
+          width="18"
+          height="18"
+          alt="GitHub"
+        />
+      ),
       href: "https://github.com/EndlessPixel",
-      label: "GitHub"
+      label: "GitHub",
     },
     {
-      icon: () => <img src="https://cdn.simpleicons.org/qq/white" width="18" height="18" alt="QQ群" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/qq/white"
+          width="18"
+          height="18"
+          alt="QQ群"
+        />
+      ),
       href: "https://qm.qq.com/q/sFrax2Ilxe",
-      label: "QQ群"
+      label: "QQ群",
     },
     {
-      icon: () => <img src="https://cdn.simpleicons.org/discord/white" width="18" height="18" alt="Discord" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/discord/white"
+          width="18"
+          height="18"
+          alt="Discord"
+        />
+      ),
       href: "https://discord.gg/k63hRWt3fF",
-      label: "Discord"
+      label: "Discord",
     },
     {
-      icon: () => <img src="https://cdn.simpleicons.org/bilibili/white" width="18" height="18" alt="Bilibili" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/bilibili/white"
+          width="18"
+          height="18"
+          alt="Bilibili"
+        />
+      ),
       href: "https://space.bilibili.com/3546799478409405",
-      label: "Bilibili"
+      label: "Bilibili",
     },
     {
-      icon: () => <img src="https://cdn.simpleicons.org/kuaishou/white" width="18" height="18" alt="快手" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/kuaishou/white"
+          width="18"
+          height="18"
+          alt="快手"
+        />
+      ),
       href: "https://kuaishou.cn/profile/3xth2cp4jf5ha6c",
-      label: "快手"
+      label: "快手",
     },
     {
-      icon: () => <img src="https://cdn.simpleicons.org/twitch/white" width="18" height="18" alt="Twitch" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/twitch/white"
+          width="18"
+          height="18"
+          alt="Twitch"
+        />
+      ),
       href: "https://www.twitch.tv/system_mini",
-      label: "Twitch"
+      label: "Twitch",
     },
     {
-      icon: () => <img src="https://cdn.simpleicons.org/facebook/white" width="18" height="18" alt="Facebook" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/facebook/white"
+          width="18"
+          height="18"
+          alt="Facebook"
+        />
+      ),
       href: "https://www.facebook.com/system_mini",
-      label: "Facebook"
+      label: "Facebook",
     },
   ];
 
@@ -134,9 +209,24 @@ export function Footer() {
     { icon: Download, href: "/downloads", label: "资源下载" },
     { icon: Eye, href: "/status", label: "服务器状态" },
     { icon: Users, href: "/about", label: "关于我们" },
-    { icon: Code, href: "https://github.com/EndlessPixel/server", label: "官网代码仓库", external: true },
-    { icon: BookOpen, href: "https://wiki.epmc.top", label: "Wiki 百科", external: true },
-    { icon: Server, href: "http://sys.epmc.qzz.io:18000", label: "状态监控", external: true },
+    {
+      icon: Code,
+      href: "https://github.com/EndlessPixel/server",
+      label: "官网代码仓库",
+      external: true,
+    },
+    {
+      icon: BookOpen,
+      href: "https://wiki.epmc.top",
+      label: "Wiki 百科",
+      external: true,
+    },
+    {
+      icon: Server,
+      href: "http://sys.epmc.qzz.io:18000",
+      label: "状态监控",
+      external: true,
+    },
   ];
 
   return (
@@ -147,7 +237,8 @@ export function Footer() {
           <div className="space-y-4">
             <BrandLogo />
             <p className="text-slate-400 text-sm leading-relaxed max-w-md">
-              EndlessPixel 是一个由热爱 Minecraft 的玩家组成的社区，致力于提供有趣、自由、开放、和平的游戏世界。
+              EndlessPixel 是一个由热爱 Minecraft
+              的玩家组成的社区，致力于提供有趣、自由、开放、和平的游戏世界。
             </p>
             <SocialLinks links={socialLinks} />
             <p className="text-sm text-slate-400">服务器创立至今：</p>
@@ -157,11 +248,15 @@ export function Footer() {
           {/* 右侧：2列导航 */}
           <div className="grid grid-cols-2 gap-8">
             <div>
-              <h3 className="font-semibold text-lg mb-4 text-slate-100">快速导航</h3>
+              <h3 className="font-semibold text-lg mb-4 text-slate-100">
+                快速导航
+              </h3>
               <NavLinks links={navLinks.slice(0, 4)} />
             </div>
             <div>
-              <h3 className="font-semibold text-lg mb-4 text-slate-100">&nbsp;</h3>
+              <h3 className="font-semibold text-lg mb-4 text-slate-100">
+                &nbsp;
+              </h3>
               <NavLinks links={navLinks.slice(4)} />
             </div>
           </div>

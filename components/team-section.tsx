@@ -1,18 +1,27 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Crown, Users, Server, Shield, Globe, Sparkles, MessageSquare } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Crown,
+  Users,
+  Server,
+  Shield,
+  Globe,
+  Sparkles,
+  MessageSquare,
+} from "lucide-react";
 
 export function TeamSection() {
   const teamMembers = [
     {
       name: "system_mini",
-      description: "团队创始人，全面负责服务器运维、网站更新、域名管理及对外宣传推广。",
+      description:
+        "团队创始人，全面负责服务器运维、网站更新、域名管理及对外宣传推广。",
       iconColor: "text-yellow-600 dark:text-yellow-400",
       bgColor: "bg-red-50 dark:bg-red-950/20",
       borderColor: "border-l-4 border-l-red-500 dark:border-l-red-600",
       departments: ["创始人", "服务器部", "维护部", "宣传部", "网络部"],
       responsibilities: ["服务器维护", "网站维护", "域名管理", "宣传推广"],
-      qq: ["2267848501", "3319182533", "1343352337"]
+      qq: ["2267848501", "3319182533", "1343352337"],
     },
     {
       name: "MCL",
@@ -22,7 +31,7 @@ export function TeamSection() {
       borderColor: "border-l-4 border-l-purple-500 dark:border-l-purple-600",
       departments: ["副创始人"],
       responsibilities: ["团队管理", "日常协调"],
-      qq: ["3785267350"]
+      qq: ["3785267350"],
     },
     {
       name: "LANt",
@@ -32,21 +41,21 @@ export function TeamSection() {
       borderColor: "border-l-4 border-l-blue-500 dark:border-l-blue-600",
       departments: ["网络部"],
       responsibilities: ["域名管理"],
-      qq: ["2384269718"]
+      qq: ["2384269718"],
     },
-  ]
+  ];
 
   const getDepartmentIcon = (dept: string) => {
     const iconMap: Record<string, any> = {
-      "创始人": Crown,
-      "副创始人": Crown,
-      "服务器部": Server,
-      "维护部": Shield,
-      "宣传部": Sparkles,
-      "网络部": Globe,
-    }
-    return iconMap[dept] || Users
-  }
+      创始人: Crown,
+      副创始人: Crown,
+      服务器部: Server,
+      维护部: Shield,
+      宣传部: Sparkles,
+      网络部: Globe,
+    };
+    return iconMap[dept] || Users;
+  };
 
   return (
     <Card className="border-l-4 border-blue-500 dark:border-blue-600 bg-card/95 dark:bg-card/95">
@@ -78,7 +87,7 @@ export function TeamSection() {
                 <span className="block text-sm font-medium">职位 / 部门</span>
                 <div className="flex flex-wrap gap-1.5">
                   {member.departments.map((dept) => {
-                    const Icon = getDepartmentIcon(dept)
+                    const Icon = getDepartmentIcon(dept);
                     return (
                       <Badge
                         key={dept}
@@ -88,7 +97,7 @@ export function TeamSection() {
                         <Icon className="w-3 h-3" />
                         {dept}
                       </Badge>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -104,7 +113,8 @@ export function TeamSection() {
               {/* QQ 联系方式 */}
               <div className="mb-3 flex flex-col">
                 <span className="block text-sm font-medium mb-2 items-center gap-1">
-                  <MessageSquare className="w-3.5 h-3.5" />QQ 联系
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  QQ 联系
                 </span>
                 <div className="text-sm text-muted-foreground bg-muted/30 dark:bg-muted/20 rounded-md px-3 py-2 font-mono">
                   {member.qq.join("  ·  ")}
@@ -115,5 +125,5 @@ export function TeamSection() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

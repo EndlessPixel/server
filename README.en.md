@@ -1,4 +1,3 @@
-
 # EndlessPixel Web
 
 [![Next.js](https://img.shields.io/badge/Next.js-16+-000?logo=next.js)](https://nextjs.org)
@@ -12,17 +11,17 @@ Official website of EndlessPixel Server, built with Next.js App Router + TypeScr
 
 ## ✨ Features
 
-- ⚡ Next.js 16 full-stack React framework, SSR/SSG/ISR ready  
-- 🎨 Tailwind CSS 4 utility-first, dark-mode out of the box  
-- 📦 80+ launchers & mod-packs high-speed download, custom mirror support  
-- 🧪 Strict TypeScript checking, ESLint + Prettier automated   
+- ⚡ Next.js 16 full-stack React framework, SSR/SSG/ISR ready
+- 🎨 Tailwind CSS 4 utility-first, dark-mode out of the box
+- 📦 80+ launchers & mod-packs high-speed download, custom mirror support
+- 🧪 Strict TypeScript checking, ESLint + Prettier automated
 - 📱 Responsive layout, PWA offline support (Workbox auto-generated)
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js ≥ 18  
+- Node.js ≥ 18
 - npm ≥ 9
 
 ### Local Development
@@ -44,16 +43,16 @@ Visit [http://localhost:3000](http://localhost:3000) or [https://localhost:3000]
 
 ## 🤝 Contributing
 
-1. Fork the repository  
-2. Create feature branch: `git checkout -b feat/xxx`  
-3. Commit: `git commit -m "feat: add xxx"` (follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/))  
-4. Push and open a Pull Request  
+1. Fork the repository
+2. Create feature branch: `git checkout -b feat/xxx`
+3. Commit: `git commit -m "feat: add xxx"` (follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/))
+4. Push and open a Pull Request
 5. Merge after CI & code review
 
 ### Code Style
 
-- TypeScript strict mode on  
-- Prefer Tailwind CSS, avoid inline styles  
+- TypeScript strict mode on
+- Prefer Tailwind CSS, avoid inline styles
 - Run `npm run lint && npm run type-check` before commit
 
 ## 📄 License
@@ -63,7 +62,7 @@ Commercial use, modification and redistribution are allowed, but modified networ
 
 ## 💬 Get in Touch
 
-- Issues & Ideas: [open an issue](https://github.com/EndlessPixel/server/issues/new/choose)  
+- Issues & Ideas: [open an issue](https://github.com/EndlessPixel/server/issues/new/choose)
 - Discussions: [GitHub Discussions](https://github.com/EndlessPixel/server/discussions)
 
 ---

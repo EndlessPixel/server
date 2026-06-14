@@ -1,8 +1,20 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
-type FontOption = "default" | "noto-sans" | "songti" | "dengxian" | "kaiti" | "chill-reunion";
+type FontOption =
+  | "default"
+  | "noto-sans"
+  | "songti"
+  | "dengxian"
+  | "kaiti"
+  | "chill-reunion";
 
 interface AppearanceSettings {
   showAddressBar: boolean;
@@ -29,7 +41,9 @@ const defaultSettings: AppearanceSettings = {
   customFont: "default",
 };
 
-const AppearanceContext = createContext<AppearanceContextType | undefined>(undefined);
+const AppearanceContext = createContext<AppearanceContextType | undefined>(
+  undefined,
+);
 
 export function AppearanceProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<AppearanceSettings>(defaultSettings);
@@ -54,7 +68,10 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     setSettings((prev) => {
       const newSettings = { ...prev, ...updates };
       try {
-        localStorage.setItem("appearance-settings", JSON.stringify(newSettings));
+        localStorage.setItem(
+          "appearance-settings",
+          JSON.stringify(newSettings),
+        );
       } catch (error) {
         console.error("Failed to save appearance settings:", error);
       }
@@ -67,7 +84,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     if (!isLoaded) return;
 
     const root = document.documentElement;
-    
+
     if (settings.theme === "system") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const updateTheme = () => {
@@ -86,33 +103,41 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     if (!isLoaded) return;
 
     const body = document.body;
-    
+
     // 移除所有字体类
-    body.classList.remove('font-noto-sans', 'font-songti', 'font-dengxian', 'font-kaiti', 'font-chill-reunion');
-    
+    body.classList.remove(
+      "font-noto-sans",
+      "font-songti",
+      "font-dengxian",
+      "font-kaiti",
+      "font-chill-reunion",
+    );
+
     if (settings.useCustomFont) {
       switch (settings.customFont) {
         case "noto-sans":
           // 使用 Next.js 注入的 CSS 变量
-          body.style.fontFamily = "var(--font-noto-sans-sc), 'Microsoft YaHei', sans-serif";
-          body.classList.add('font-noto-sans');
+          body.style.fontFamily =
+            "var(--font-noto-sans-sc), 'Microsoft YaHei', sans-serif";
+          body.classList.add("font-noto-sans");
           break;
         case "songti":
           body.style.fontFamily = "'SimSun', 'STSong', '宋体', serif";
-          body.classList.add('font-songti');
+          body.classList.add("font-songti");
           break;
         case "dengxian":
           body.style.fontFamily = "'DengXian', 'Microsoft YaHei', sans-serif";
-          body.classList.add('font-dengxian');
+          body.classList.add("font-dengxian");
           break;
         case "kaiti":
           body.style.fontFamily = "'KaiTi', 'STKaiti', '楷体', serif";
-          body.classList.add('font-kaiti');
+          body.classList.add("font-kaiti");
           break;
         case "chill-reunion":
           // ChillReunion 回退到 Noto Sans SC
-          body.style.fontFamily = "'ChillReunion Round', var(--font-noto-sans-sc), sans-serif";
-          body.classList.add('font-chill-reunion');
+          body.style.fontFamily =
+            "'ChillReunion Round', var(--font-noto-sans-sc), sans-serif";
+          body.classList.add("font-chill-reunion");
           break;
         default:
           body.style.fontFamily = "";

@@ -1,11 +1,27 @@
 "use client";
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Mail, MessageCircle, Users, Clock, Star, ExternalLink, Sparkles, Gift, Heart } from "lucide-react";
+import {
+  Mail,
+  MessageCircle,
+  Users,
+  Clock,
+  Star,
+  ExternalLink,
+  Sparkles,
+  Gift,
+  Heart,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 const MotionCard = motion(Card);
 const MotionButton = motion(Button);
@@ -17,14 +33,22 @@ export function ContactSection() {
       name: "QQ 群",
       value: "870594910",
       description: "官方 QQ 交流群",
-      icon: () => <img src="https://cdn.simpleicons.org/qq/white" width="18" height="18" alt="QQ" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/qq/white"
+          width="18"
+          height="18"
+          alt="QQ"
+        />
+      ),
       color: "text-blue-600 dark:text-blue-400",
       bgColor: "bg-blue-50 dark:bg-blue-950/30",
       borderColor: "border-blue-200 dark:border-blue-800",
       hoverColor: "hover:bg-blue-100 dark:hover:bg-blue-900/30",
       action: "加入群聊",
       gradient: "from-blue-500 to-cyan-500",
-      onClick: () => window.open("https://qm.qq.com/cgi-bin/qm/qr?k=870594910", "_blank"),
+      onClick: () =>
+        window.open("https://qm.qq.com/cgi-bin/qm/qr?k=870594910", "_blank"),
     },
     {
       name: "邮箱",
@@ -43,7 +67,14 @@ export function ContactSection() {
       name: "Discord",
       value: "EndlessPixel Server",
       description: "官方 Discord 服务器",
-      icon: () => <img src="https://cdn.simpleicons.org/discord/white" width="18" height="18" alt="Discord" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/discord/white"
+          width="18"
+          height="18"
+          alt="Discord"
+        />
+      ),
       color: "text-purple-600 dark:text-purple-400",
       bgColor: "bg-purple-50 dark:bg-purple-950/30",
       borderColor: "border-purple-200 dark:border-purple-800",
@@ -56,7 +87,14 @@ export function ContactSection() {
       name: "GitHub",
       value: "EndlessPixel",
       description: "开源项目和技术交流",
-      icon: () => <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" />,
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/github/white"
+          width="18"
+          height="18"
+          alt="GitHub"
+        />
+      ),
       color: "text-gray-600 dark:text-gray-300",
       bgColor: "bg-gray-50 dark:bg-gray-900/30",
       borderColor: "border-gray-200 dark:border-gray-700",
@@ -73,9 +111,10 @@ export function ContactSection() {
       icon: Clock,
       color: "text-orange-500 dark:text-orange-400",
       bgColor: "bg-orange-50 dark:bg-orange-950/20",
-    }
+    },
   ];
-  const getItemKey = (method: typeof contactMethods[0]) => `${method.name}-${method.value}`;
+  const getItemKey = (method: (typeof contactMethods)[0]) =>
+    `${method.name}-${method.value}`;
   return (
     <div className="space-y-10">
       <MotionCard
@@ -105,9 +144,9 @@ export function ContactSection() {
               visible: {
                 opacity: 1,
                 transition: {
-                  staggerChildren: 0.1
-                }
-              }
+                  staggerChildren: 0.1,
+                },
+              },
             }}
             initial="hidden"
             animate="visible"
@@ -121,33 +160,36 @@ export function ContactSection() {
                   key={key}
                   variants={{
                     hidden: { opacity: 0, y: 20 },
-                    visible: { opacity: 1, y: 0 }
+                    visible: { opacity: 1, y: 0 },
                   }}
                   className={cn(
                     " rounded-xl p-5 transition-all duration-300 cursor-pointer group overflow-hidden relative",
                     method.borderColor,
                     method.bgColor,
                     method.hoverColor,
-                    isHovered ? "shadow-md" : "shadow-sm"
+                    isHovered ? "shadow-md" : "shadow-sm",
                   )}
                   onClick={method.onClick}
                   onMouseEnter={() => setHoveredItem(key)}
                   onMouseLeave={() => setHoveredItem(null)}
                   whileHover={{
                     y: -5,
-                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02)"
+                    boxShadow:
+                      "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02)",
                   }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <motion.div
                     className="absolute inset-0 bg-linear-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ backgroundImage: `linear-gradient(135deg, rgba(59,130,246,0.05), rgba(14,165,233,0.05))` }}
+                    style={{
+                      backgroundImage: `linear-gradient(135deg, rgba(59,130,246,0.05), rgba(14,165,233,0.05))`,
+                    }}
                   />
                   <motion.div
                     className="absolute inset-0 rounded-xl pointer-events-none"
                     style={{
-                      boxShadow: `inset 0 0 0 1px ${isHovered ? 'rgba(59,130,246,0.3)' : 'transparent'}`,
-                      transition: 'box-shadow 0.3s ease'
+                      boxShadow: `inset 0 0 0 1px ${isHovered ? "rgba(59,130,246,0.3)" : "transparent"}`,
+                      transition: "box-shadow 0.3s ease",
                     }}
                   />
                   <div className="flex items-start space-x-3">
@@ -155,7 +197,7 @@ export function ContactSection() {
                       className={`p-2.5 rounded-lg ${method.bgColor} mt-0.5 shrink-0`}
                       whileHover={{
                         scale: 1.15,
-                        boxShadow: `0 0 15px -3px rgba(59,130,246,0.15)`
+                        boxShadow: `0 0 15px -3px rgba(59,130,246,0.15)`,
                       }}
                       transition={{ duration: 0.3 }}
                     >
@@ -163,7 +205,9 @@ export function ContactSection() {
                         <Icon className={`w-5.5 h-5.5 ${method.color}`} />
                         <motion.div
                           className="absolute inset-0 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          style={{ background: `linear-gradient(135deg, ${method.gradient})` }}
+                          style={{
+                            background: `linear-gradient(135deg, ${method.gradient})`,
+                          }}
                         />
                       </div>
                     </motion.div>
@@ -180,8 +224,8 @@ export function ContactSection() {
                         <motion.span
                           className="text-sm font-mono text-foreground dark:text-foreground/90 bg-muted/50 dark:bg-muted/30 px-2.5 py-1.5 rounded-lg"
                           whileHover={{
-                            backgroundColor: 'rgba(59,130,246,0.08)',
-                            transition: { duration: 0.2 }
+                            backgroundColor: "rgba(59,130,246,0.08)",
+                            transition: { duration: 0.2 },
                           }}
                         >
                           {method.value}
@@ -191,8 +235,8 @@ export function ContactSection() {
                           variant="ghost"
                           className="ml-2 text-muted-foreground dark:text-muted-foreground/70 group-hover:text-blue-600 dark:group-hover:text-blue-400 flex items-center gap-1"
                           whileHover={{
-                            backgroundColor: 'rgba(59,130,246,0.08)',
-                            transition: { duration: 0.2 }
+                            backgroundColor: "rgba(59,130,246,0.08)",
+                            transition: { duration: 0.2 },
                           }}
                         >
                           <span>{method.action}</span>
@@ -236,9 +280,9 @@ export function ContactSection() {
               visible: {
                 opacity: 1,
                 transition: {
-                  staggerChildren: 0.15
-                }
-              }
+                  staggerChildren: 0.15,
+                },
+              },
             }}
             initial="hidden"
             animate="visible"
@@ -247,14 +291,20 @@ export function ContactSection() {
               const Icon = info.icon;
 
               return (
-                <motion.div key={info.title} variants={{
-                  hidden: { opacity: 0, x: -20 },
-                  visible: { opacity: 1, x: 0 }
-                }}>
+                <motion.div
+                  key={info.title}
+                  variants={{
+                    hidden: { opacity: 0, x: -20 },
+                    visible: { opacity: 1, x: 0 },
+                  }}
+                >
                   <div className="flex items-center space-x-3 py-3 px-1 group">
                     <motion.div
                       className={`p-2.5 rounded-lg ${info.bgColor}`}
-                      whileHover={{ scale: 1.1, boxShadow: `0 0 15px -3px rgba(16,185,129,0.15)` }}
+                      whileHover={{
+                        scale: 1.1,
+                        boxShadow: `0 0 15px -3px rgba(16,185,129,0.15)`,
+                      }}
                     >
                       <Icon className={`w-5 h-5 ${info.color}`} />
                     </motion.div>
@@ -272,7 +322,7 @@ export function ContactSection() {
                   {index < supportInfo.length - 1 && (
                     <motion.div
                       initial={{ width: 0 }}
-                      animate={{ width: '100%' }}
+                      animate={{ width: "100%" }}
                       transition={{ duration: 0.8, delay: 0.3 }}
                     >
                       <Separator className="my-2 bg-/50 dark:bg-/30" />
@@ -305,7 +355,12 @@ export function ContactSection() {
               scale: [1.1, 1, 1.1],
               opacity: [0.1, 0.3, 0.1],
             }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2,
+            }}
           />
         </div>
         <CardContent className="pt-8 pb-6 relative z-10">
@@ -315,17 +370,14 @@ export function ContactSection() {
                 className="bg-linear-to-r from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400 bg-clip-text text-transparent"
                 animate={{
                   scale: [1, 1.05, 1],
-                  rotate: [0, 2, -2, 0]
+                  rotate: [0, 2, -2, 0],
                 }}
                 transition={{ duration: 3, repeat: Infinity, repeatDelay: 5 }}
               >
                 我们一岁啦！🎉
               </motion.span>
             </CardTitle>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <MotionBadge className="bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 px-3 py-1.5 flex items-center gap-1.5">
                 <Star className="w-4 h-4 fill-yellow-300 text-yellow-300" />
                 <span>周年庆</span>
@@ -361,7 +413,12 @@ export function ContactSection() {
               className="bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => window.open("https://qm.qq.com/cgi-bin/qm/qr?k=870594910", "_blank")}
+              onClick={() =>
+                window.open(
+                  "https://qm.qq.com/cgi-bin/qm/qr?k=870594910",
+                  "_blank",
+                )
+              }
             >
               <Gift className="w-4.5 h-4.5 mr-2" />
               加入我们，共庆周年

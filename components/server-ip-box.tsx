@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Check, Copy, Server } from "lucide-react"
+import { useState } from "react";
+import { Check, Copy, Server } from "lucide-react";
 
-const SERVER_IP = "epmc.top"
+const SERVER_IP = "epmc.top";
 
 export default function ServerIpBox() {
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
 
   const copy = () => {
-    navigator.clipboard.writeText(SERVER_IP)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    navigator.clipboard.writeText(SERVER_IP);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -41,7 +41,8 @@ export default function ServerIpBox() {
         </span>
 
         {/* 复制按钮：做成边框小图标，而不是实心块 */}
-        <div className="
+        <div
+          className="
           ml-auto 
           p-1.5 
           border border-slate-500/50 
@@ -49,7 +50,8 @@ export default function ServerIpBox() {
           group-hover:border-cyan-400/50
           group-hover:bg-cyan-400/10
           transition-all
-        ">
+        "
+        >
           {copied ? (
             <Check className="w-4 h-4 text-cyan-400" />
           ) : (
@@ -60,5 +62,5 @@ export default function ServerIpBox() {
       <br />
       <br />
     </div>
-  )
+  );
 }

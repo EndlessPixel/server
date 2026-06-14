@@ -13,7 +13,8 @@ export function BackToTop() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const totalHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       const progress = (window.pageYOffset / totalHeight) * 100;
       setScrollProgress(Math.min(progress, 100));
       setIsVisible(window.pageYOffset > 300);
@@ -67,13 +68,16 @@ export function BackToTop() {
               "relative h-16 w-16 rounded-full shadow-xl transition-all duration-300 overflow-hidden",
               "bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white",
               " border-white/20 hover:border-white/40",
-              "active:scale-95 focus:ring-2 focus:ring-blue-500/30 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900"
+              "active:scale-95 focus:ring-2 focus:ring-blue-500/30 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900",
             )}
             onClick={scrollToTop}
             size="icon"
             aria-label="回到顶部"
           >
-            <svg className="absolute inset-0 w-full h-full p-1.5" viewBox="0 0 100 100">
+            <svg
+              className="absolute inset-0 w-full h-full p-1.5"
+              viewBox="0 0 100 100"
+            >
               <circle
                 cx="50"
                 cy="50"
@@ -92,7 +96,10 @@ export function BackToTop() {
                 strokeDasharray="283"
                 strokeDashoffset={283 - (283 * scrollProgress) / 100}
                 strokeLinecap="round"
-                style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%" }}
+                style={{
+                  transform: "rotate(-90deg)",
+                  transformOrigin: "50% 50%",
+                }}
                 transition={{ duration: 0.3, ease: "linear" }}
               />
             </svg>

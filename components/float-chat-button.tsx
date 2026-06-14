@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import EPBot from './epbot';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MessageCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import EPBot from "./epbot";
 
 export function FloatChatButton() {
   const [open, setOpen] = useState(false);
@@ -31,9 +31,9 @@ export function FloatChatButton() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          'h-16 w-16 rounded-full shadow-xl flex items-center justify-center',
-          'bg-linear-to-r from-purple-600 to-pink-600 text-white',
-          'hover:from-purple-700 hover:to-pink-700  border-white/20'
+          "h-16 w-16 rounded-full shadow-xl flex items-center justify-center",
+          "bg-linear-to-r from-purple-600 to-pink-600 text-white",
+          "hover:from-purple-700 hover:to-pink-700  border-white/20",
         )}
       >
         <MessageCircle className="h-7 w-7" />

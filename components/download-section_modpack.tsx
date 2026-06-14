@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, Shield } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Star, Shield } from "lucide-react";
 import {
   Pagination,
   ReleaseGrid,
@@ -17,18 +17,20 @@ import {
   compareSemanticVersions,
   GitHubRelease,
   ParsedRelease,
-} from '@/components/download-base';
+} from "@/components/download-base";
 
-type Branch = 'main' | 'real';
+type Branch = "main" | "real";
 
 export function DownloadSectionModpack() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [releases, setReleases] = useState<ParsedRelease[]>([]);
-  const [activeBranch, setActiveBranch] = useState<Branch>('main');
-  const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<'semantic' | 'releaseDate' | 'downloadCount'>('semantic');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [activeBranch, setActiveBranch] = useState<Branch>("main");
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<
+    "semantic" | "releaseDate" | "downloadCount"
+  >("semantic");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
   const PER_PAGE = 10;
 
@@ -39,13 +41,17 @@ export function DownloadSectionModpack() {
   const fetchReleases = async () => {
     try {
       setLoading(true);
-      const res = await fetch('https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases?per_page=500');
+      const res = await fetch(
+        "https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases?per_page=500",
+      );
       if (!res.ok) throw new Error(String(res.status));
       const data: GitHubRelease[] = await res.json();
 
-      const parsed: ParsedRelease[] = data.map(r => {
-        const branch: Branch = /real/i.test(r.name + r.tag_name) ? 'real' : 'main';
-        const files = r.assets.map(a => ({
+      const parsed: ParsedRelease[] = data.map((r) => {
+        const branch: Branch = /real/i.test(r.name + r.tag_name)
+          ? "real"
+          : "main";
+        const files = r.assets.map((a) => ({
           name: a.name,
           downloadUrl: a.browser_download_url,
           downloadCount: a.download_count,
@@ -53,24 +59,27 @@ export function DownloadSectionModpack() {
         return {
           name: r.name || r.tag_name,
           version: r.tag_name,
-          mcVersion: r.tag_name.match(/^(\d+\.\d+\.\d+)/)?.[1] ?? 'Unknown',
-          releaseDate: new Date(r.published_at).toLocaleDateString('zh-CN'),
+          mcVersion: r.tag_name.match(/^(\d+\.\d+\.\d+)/)?.[1] ?? "Unknown",
+          releaseDate: new Date(r.published_at).toLocaleDateString("zh-CN"),
           isPrerelease: r.prerelease,
           isLatest: false,
           downloadCount: files.reduce((s, f) => s + f.downloadCount, 0),
           files,
-          changelog: r.body || '暂无更新日志。',
+          changelog: r.body || "暂无更新日志。",
           branch,
         };
       });
 
       // 按分支和MC大版本分组，找出每组的最新版本
-      const groupedReleases: Record<string, Record<string, ParsedRelease[]>> = {};
-      parsed.forEach(r => {
+      const groupedReleases: Record<
+        string,
+        Record<string, ParsedRelease[]>
+      > = {};
+      parsed.forEach((r) => {
         if (!groupedReleases[r.branch!]) {
           groupedReleases[r.branch!] = {};
         }
-        const mcMajorVersion = r.mcVersion.split('.').slice(0, 2).join('.');
+        const mcMajorVersion = r.mcVersion.split(".").slice(0, 2).join(".");
         if (!groupedReleases[r.branch!][mcMajorVersion]) {
           groupedReleases[r.branch!][mcMajorVersion] = [];
         }
@@ -78,18 +87,18 @@ export function DownloadSectionModpack() {
       });
 
       // 为每个分组的最新版本设置 isLatest 标志
-      Object.keys(groupedReleases).forEach(branch => {
-        Object.keys(groupedReleases[branch]).forEach(mcVersion => {
+      Object.keys(groupedReleases).forEach((branch) => {
+        Object.keys(groupedReleases[branch]).forEach((mcVersion) => {
           const releases = groupedReleases[branch][mcVersion];
-          const stableReleases = releases.filter(r => !r.isPrerelease);
+          const stableReleases = releases.filter((r) => !r.isPrerelease);
           if (stableReleases.length > 0) {
             const latestStable = stableReleases.sort((a, b) =>
-              compareSemanticVersions(b.version, a.version)
+              compareSemanticVersions(b.version, a.version),
             )[0];
             latestStable.isLatest = true;
           } else if (releases.length > 0) {
             const latest = releases.sort((a, b) =>
-              compareSemanticVersions(b.version, a.version)
+              compareSemanticVersions(b.version, a.version),
             )[0];
             latest.isLatest = true;
           }
@@ -98,13 +107,19 @@ export function DownloadSectionModpack() {
 
       setReleases(parsed);
     } catch {
-      toast({ title: '获取版本信息失败', variant: 'destructive' });
+      toast({ title: "获取版本信息失败", variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
-  const filtered = useReleaseFilter(releases, search, sortBy, sortOrder, activeBranch);
+  const filtered = useReleaseFilter(
+    releases,
+    search,
+    sortBy,
+    sortOrder,
+    activeBranch,
+  );
   const { total, paged } = usePagination(filtered, page, PER_PAGE);
 
   if (loading) {
@@ -139,7 +154,9 @@ export function DownloadSectionModpack() {
 
         {/* 分支选择 */}
         <div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-700/50">
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">分支：</span>
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+            分支：
+          </span>
           <Tabs
             defaultValue={activeBranch}
             onValueChange={(v) => {
@@ -161,7 +178,12 @@ export function DownloadSectionModpack() {
               >
                 <Shield className="w-4 h-4" aria-hidden="true" />
                 Real 分支
-                <Badge variant="outline" className="ml-1 text-xs border-slate-400">不再维护</Badge>
+                <Badge
+                  variant="outline"
+                  className="ml-1 text-xs border-slate-400"
+                >
+                  不再维护
+                </Badge>
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -169,7 +191,13 @@ export function DownloadSectionModpack() {
       </Card>
 
       {/* 版本列表 */}
-      <Tabs defaultValue={activeBranch} onValueChange={(v) => { setActiveBranch(v as Branch); setPage(1); }}>
+      <Tabs
+        defaultValue={activeBranch}
+        onValueChange={(v) => {
+          setActiveBranch(v as Branch);
+          setPage(1);
+        }}
+      >
         <TabsContent value="main" className="space-y-4 pt-4">
           <Pagination total={total} current={page} onPage={setPage} />
           <ReleaseGrid list={paged} showBranchBadge={true} />

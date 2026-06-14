@@ -11,7 +11,19 @@ import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, User, MessageSquare, ExternalLink, Tag, GitPullRequest, AlertCircle, CheckCircle, Clock, Eye} from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  User,
+  MessageSquare,
+  ExternalLink,
+  Tag,
+  GitPullRequest,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Eye,
+} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -58,7 +70,7 @@ const getTimeAgo = (d: string) => {
 
 const getContrastColor = (hex: string) => {
   const h = hex.length === 6 ? hex : hex.repeat(2);
-  const [r, g, b] = [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16));
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.substr(i, 2), 16));
   return (r * 299 + g * 587 + b * 114) / 1000 > 128 ? "#000" : "#fff";
 };
 
@@ -130,33 +142,45 @@ export default function GitHubIssueDetail({
             setIssue(parsed.data);
           }
         }
-      } catch { }
+      } catch {}
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), 8_000);
       const issueRes = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/issues/${id}`,
-        { headers: { Accept: "application/vnd.github.v3+json" }, signal: ctrl.signal }
+        {
+          headers: { Accept: "application/vnd.github.v3+json" },
+          signal: ctrl.signal,
+        },
       );
       clearTimeout(t);
       if (!issueRes.ok) throw new Error(`HTTP ${issueRes.status}`);
       const issueData: GitHubIssueDetail = await issueRes.json();
       setIssue(issueData);
       try {
-        sessionStorage.setItem(issueKey, JSON.stringify({ _ts: Date.now(), data: issueData }));
-      } catch { }
+        sessionStorage.setItem(
+          issueKey,
+          JSON.stringify({ _ts: Date.now(), data: issueData }),
+        );
+      } catch {}
       const ctrl2 = new AbortController();
       const t2 = setTimeout(() => ctrl2.abort(), 8_000);
       const commentsRes = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/issues/${id}/comments`,
-        { headers: { Accept: "application/vnd.github.v3+json" }, signal: ctrl2.signal }
+        {
+          headers: { Accept: "application/vnd.github.v3+json" },
+          signal: ctrl2.signal,
+        },
       );
       clearTimeout(t2);
       if (commentsRes.ok) {
         const commentsData: GitHubComment[] = await commentsRes.json();
         setComments(commentsData);
         try {
-          sessionStorage.setItem(commentsKey, JSON.stringify({ _ts: Date.now(), data: commentsData }));
-        } catch { }
+          sessionStorage.setItem(
+            commentsKey,
+            JSON.stringify({ _ts: Date.now(), data: commentsData }),
+          );
+        } catch {}
       }
     } catch (e: any) {
       setError(e.message);
@@ -190,8 +214,12 @@ export default function GitHubIssueDetail({
             <Card className="bg-red-50 dark:bg-red-900/20  border-red-200 dark:border-red-800">
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">加载失败</h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-6">{error ?? "未找到问题详情"}</p>
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+                  加载失败
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-6">
+                  {error ?? "未找到问题详情"}
+                </p>
                 <div className="flex gap-3 justify-center">
                   <Button variant="outline" onClick={() => router.back()}>
                     <ArrowLeft className="w-4 h-4 mr-2" />
@@ -219,7 +247,12 @@ export default function GitHubIssueDetail({
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <Button variant="ghost" size="sm" asChild className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="flex items-center gap-2"
+                >
                   <a href="../issues">
                     <ArrowLeft className="w-4 h-4" />
                     返回问题列表
@@ -241,14 +274,23 @@ export default function GitHubIssueDetail({
             </div>
 
             <div className="flex items-center gap-3">
-              <Button onClick={refreshData} variant="outline" size="sm" className="flex items-center gap-2">
+              <Button
+                onClick={refreshData}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
                 <Clock className="w-4 h-4" />
                 刷新
               </Button>
               <Button asChild size="sm">
-                <a href={issue.html_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                  <ExternalLink className="w-4 h-4" />
-                  在 GitHub 查看
+                <a
+                  href={issue.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />在 GitHub 查看
                 </a>
               </Button>
             </div>
@@ -263,11 +305,15 @@ export default function GitHubIssueDetail({
                     <User className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">创建者</div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      创建者
+                    </div>
                     <div className="text-lg font-semibold text-slate-900 dark:text-slate-100 truncate">
                       {issue.user.login}
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">问题报告者</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      问题报告者
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -280,11 +326,15 @@ export default function GitHubIssueDetail({
                     <Calendar className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">创建时间</div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      创建时间
+                    </div>
                     <div className="text-lg font-semibold text-slate-900 dark:text-slate-100 truncate">
                       {new Date(issue.created_at).toLocaleDateString("zh-CN")}
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{getTimeAgo(issue.created_at)}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      {getTimeAgo(issue.created_at)}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -297,11 +347,15 @@ export default function GitHubIssueDetail({
                     <MessageSquare className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">评论数</div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      评论数
+                    </div>
                     <div className="text-lg font-semibold text-slate-900 dark:text-slate-100 truncate">
                       {issue.comments}
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">讨论数量</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      讨论数量
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -311,22 +365,34 @@ export default function GitHubIssueDetail({
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
-                    {isPR ? <GitPullRequest className="w-5 h-5" /> :
-                      issue.state === "open" ? <AlertCircle className="w-5 h-5" /> :
-                        <CheckCircle className="w-5 h-5" />}
+                    {isPR ? (
+                      <GitPullRequest className="w-5 h-5" />
+                    ) : issue.state === "open" ? (
+                      <AlertCircle className="w-5 h-5" />
+                    ) : (
+                      <CheckCircle className="w-5 h-5" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">状态</div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      状态
+                    </div>
                     <div className="text-lg font-semibold text-slate-900 dark:text-slate-100 truncate">
                       <Badge
-                        variant={issue.state === "open" ? "default" : "secondary"}
+                        variant={
+                          issue.state === "open" ? "default" : "secondary"
+                        }
                         className={
                           issue.state === "open"
                             ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
                             : "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
                         }
                       >
-                        {isPR ? "Pull Request" : issue.state === "open" ? "开放" : "已关闭"}
+                        {isPR
+                          ? "Pull Request"
+                          : issue.state === "open"
+                            ? "开放"
+                            : "已关闭"}
                       </Badge>
                     </div>
                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -344,10 +410,12 @@ export default function GitHubIssueDetail({
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Tag className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-                  <h3 className="font-semibold text-slate-900 dark:text-white">标签</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white">
+                    标签
+                  </h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {issue.labels.map(lb => (
+                  {issue.labels.map((lb) => (
                     <Badge
                       key={lb.name}
                       variant="outline"
@@ -370,10 +438,16 @@ export default function GitHubIssueDetail({
           <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl flex items-center gap-3">
-                {isPR ? <GitPullRequest className="w-6 h-6 text-purple-500" /> :
-                  issue.state === "open" ? <AlertCircle className="w-6 h-6 text-green-500" /> :
-                    <CheckCircle className="w-6 h-6 text-purple-500" />}
-                <span className="text-slate-900 dark:text-white">{issue.title}</span>
+                {isPR ? (
+                  <GitPullRequest className="w-6 h-6 text-purple-500" />
+                ) : issue.state === "open" ? (
+                  <AlertCircle className="w-6 h-6 text-green-500" />
+                ) : (
+                  <CheckCircle className="w-6 h-6 text-purple-500" />
+                )}
+                <span className="text-slate-900 dark:text-white">
+                  {issue.title}
+                </span>
               </CardTitle>
               <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1">
@@ -381,8 +455,7 @@ export default function GitHubIssueDetail({
                   最后更新 {timeAgo}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Eye className="w-4 h-4" />
-                  #{issue.number}
+                  <Eye className="w-4 h-4" />#{issue.number}
                 </span>
               </div>
             </CardHeader>
@@ -441,12 +514,16 @@ export default function GitHubIssueDetail({
                   <MessageSquare className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white">讨论评论</h2>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">共 {comments.length} 条评论</p>
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+                    讨论评论
+                  </h2>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    共 {comments.length} 条评论
+                  </p>
                 </div>
               </div>
               <div className="space-y-6">
-                {comments.map(c => (
+                {comments.map((c) => (
                   <Card
                     key={c.id}
                     className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm"
@@ -469,12 +546,16 @@ export default function GitHubIssueDetail({
                             </div>
                           </div>
                         </div>
-                        <div className="text-xs text-slate-400 dark:text-slate-500">#{c.id}</div>
+                        <div className="text-xs text-slate-400 dark:text-slate-500">
+                          #{c.id}
+                        </div>
                       </div>
                       <div className="prose prose-sm max-w-none dark:prose-invert prose-slate">
                         <div
                           className="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4  border-slate-200 dark:border-slate-700"
-                          dangerouslySetInnerHTML={{ __html: c.body_html || "" }}
+                          dangerouslySetInnerHTML={{
+                            __html: c.body_html || "",
+                          }}
                         />
                       </div>
                     </CardContent>
@@ -486,8 +567,12 @@ export default function GitHubIssueDetail({
             <Card className="text-center py-16 border-dashed">
               <CardContent>
                 <MessageSquare className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">暂无评论</h3>
-                <p className="text-slate-600 dark:text-slate-400">成为第一个参与讨论的人</p>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                  暂无评论
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  成为第一个参与讨论的人
+                </p>
               </CardContent>
             </Card>
           )}
@@ -507,7 +592,9 @@ export default function GitHubIssueDetail({
                 </a>
                 。自动更新，缓存时间 30 秒。
               </p>
-              <p className="mt-2">想要参与讨论？点击右上角在 GitHub 中查看完整对话。</p>
+              <p className="mt-2">
+                想要参与讨论？点击右上角在 GitHub 中查看完整对话。
+              </p>
             </CardContent>
           </Card>
         </div>
