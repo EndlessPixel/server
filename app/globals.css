@@ -10,6 +10,24 @@
   font-display: swap;
 }
 
+/* 方正粗圆简体 */
+@font-face {
+  font-family: 'FZCuYuan-M03S';
+  src: url('/fonts/FZCuYuan.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* HYTanMeiRen 55W */
+@font-face {
+  font-family: 'HYTangMeiRen-55W';
+  src: url('/fonts/HYTangMeiRen-55W.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @import "tailwindcss/preflight";
 @import "tailwindcss/utilities";
 @tailwind utilities;
@@ -161,4 +179,12 @@
 
 .font-chill-reunion {
   font-family: "ChillReunion Round", "Noto Sans SC", sans-serif !important;
+}
+
+.font-fz-cuyuan {
+  font-family: 'FZCuYuan-M03S', '方正粗圆简体', 'FZCuYuan', sans-serif !important;
+}
+
+.font-hy-tangmeiren {
+  font-family: 'HYTangMeiRen-55W', 'HYTangMeiRen', sans-serif !important;
 }

@@ -29,6 +29,8 @@ const FONT_OPTIONS = [
   { value: "dengxian", label: "等线", example: "等线示例文字", fontFamily: "'DengXian', 'Microsoft YaHei', sans-serif" },
   { value: "kaiti", label: "楷体", example: "楷体示例文字", fontFamily: "'KaiTi', 'STKaiti', serif" },
   { value: "chill-reunion", label: "ChillReunion", example: "ChillReunion 示例", fontFamily: "'ChillReunion Round', sans-serif" },
+  { value: "fz-cuyuan", label: "方正粗圆简体", example: "方正粗圆简体示例文字",fontFamily: "'FZCuYuan-M03S', '方正粗圆简体', 'FZCuYuan', sans-serif" },
+  { value: "hy-tangmeiren", label: "HYTangMeiRen 55W", example: "HYTangMeiRen 55W 示例文字", fontFamily: "'HYTangMeiRen-55W', 'HYTangMeiRen', sans-serif" }
 ] as const;
 
 // 设置按钮组件（保持不变，但可以 memo）

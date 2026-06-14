@@ -14,7 +14,9 @@ type FontOption =
   | "songti"
   | "dengxian"
   | "kaiti"
-  | "chill-reunion";
+  | "chill-reunion"
+  | "fz-cuyuan"
+  | "hy-tangmeiren";
 
 interface AppearanceSettings {
   showAddressBar: boolean;
@@ -111,6 +113,8 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
       "font-dengxian",
       "font-kaiti",
       "font-chill-reunion",
+      "font-fz-cuyuan",
+      "font-hy-tangmeiren",
     );
 
     if (settings.useCustomFont) {
@@ -138,6 +142,18 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
           body.style.fontFamily =
             "'ChillReunion Round', var(--font-noto-sans-sc), sans-serif";
           body.classList.add("font-chill-reunion");
+          break;
+        case "fz-cuyuan":
+          // 方正粗圆简体
+          body.style.fontFamily =
+            "'FZCuYuan-M03S', '方正粗圆简体', 'FZCuYuan', sans-serif";
+          body.classList.add("font-fz-cuyuan");
+          break;
+        case "hy-tangmeiren":
+          // HYTangMeiRen 55W
+          body.style.fontFamily =
+            "'HYTangMeiRen-55W', 'HYTangMeiRen', sans-serif";
+          body.classList.add("font-hy-tangmeiren");
           break;
         default:
           body.style.fontFamily = "";
