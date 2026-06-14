@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
     if (!body || !Array.isArray(body.messages)) {
       return sseError('请求格式错误');
     }
-    const { messages } = body;
+    const { messages, model } = body;  // 解构 model 参数（可选）
 
     // 3. 加载系统提示词
     let systemPrompt: string;
@@ -99,9 +99,21 @@ export async function POST(req: NextRequest) {
       ...messages.slice(-20),
     ];
 
-    // 4. 构建上游请求
+    // 4. 构建上游请求，支持自定义模型
+    // 默认模型：qwen/qwen3-next-80b-a3b-instruct
+    // 如果提供了 model 参数，则使用指定模型
+    const defaultModel = "qwen/qwen3-next-80b-a3b-instruct";
+    const selectedModel = (model && typeof model === 'string' && model.trim()) 
+      ? model.trim() 
+      : defaultModel;
+
+    // 可选：验证模型格式，防止注入
+    if (selectedModel.length > 100 || !/^[a-zA-Z0-9_\-/\.]+$/.test(selectedModel)) {
+      return sseError('无效的模型参数');
+    }
+
     const openaiBody = {
-      model: "qwen/qwen3-next-80b-a3b-instruct",
+      model: selectedModel,  // 使用选择的模型
       messages: fullMessages,
       stream: true,
       temperature: 0.2,
