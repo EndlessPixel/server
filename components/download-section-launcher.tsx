@@ -5,7 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Star, GitBranch, Eye, Clock, Archive, Tag, Loader2, WifiOff, XCircle
+  Star,
+  GitBranch,
+  Eye,
+  Clock,
+  Archive,
+  Tag,
+  Loader2,
+  WifiOff,
+  XCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -55,7 +63,10 @@ function RepoInfoCardSkeleton() {
     >
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
+          <div
+            key={i}
+            className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl"
+          >
             <Skeleton className="w-10 h-10 rounded-full" />
             <div className="space-y-1">
               <Skeleton className="h-6 w-16" />
@@ -96,7 +107,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-xl font-bold text-slate-900 dark:text-white">
                 {repoInfo.stargazers_count.toLocaleString()}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">Stars</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                Stars
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
@@ -107,7 +120,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-xl font-bold text-slate-900 dark:text-white">
                 {repoInfo.forks_count.toLocaleString()}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">Forks</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                Forks
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
@@ -118,7 +133,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-xl font-bold text-slate-900 dark:text-white">
                 {repoInfo.watchers_count.toLocaleString()}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">Watchers</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                Watchers
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
@@ -129,7 +146,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-sm font-semibold text-slate-900 dark:text-white">
                 {new Date(repoInfo.updated_at).toLocaleDateString("zh-CN")}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">最后更新</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                最后更新
+              </div>
             </div>
           </div>
         </div>
@@ -147,11 +166,17 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
           <div className="mt-6">
             <div className="flex items-center gap-2 mb-3">
               <Tag className="w-4 h-4 text-slate-500" aria-hidden="true" />
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">主题标签：</span>
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                主题标签：
+              </span>
             </div>
             <div className="flex flex-wrap gap-2">
               {repoInfo.topics.map((topic) => (
-                <Badge key={topic} variant="secondary" className="px-3 py-1 text-xs bg-slate-100 dark:bg-slate-700">
+                <Badge
+                  key={topic}
+                  variant="secondary"
+                  className="px-3 py-1 text-xs bg-slate-100 dark:bg-slate-700"
+                >
                   {topic}
                 </Badge>
               ))}
@@ -165,15 +190,33 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
 
 // ============ 错误状态组件 ============
 
-function ErrorState({ status, onRetry }: { status: RequestStatus; onRetry: () => void }) {
+function ErrorState({
+  status,
+  onRetry,
+}: {
+  status: RequestStatus;
+  onRetry: () => void;
+}) {
   const getErrorInfo = () => {
     switch (status) {
       case "timeout":
-        return { icon: Clock, title: "请求超时", message: "GitHub API 响应时间过长，请稍后重试" };
+        return {
+          icon: Clock,
+          title: "请求超时",
+          message: "GitHub API 响应时间过长，请稍后重试",
+        };
       case "error":
-        return { icon: WifiOff, title: "网络错误", message: "无法连接到 GitHub API，请检查网络连接" };
+        return {
+          icon: WifiOff,
+          title: "网络错误",
+          message: "无法连接到 GitHub API，请检查网络连接",
+        };
       default:
-        return { icon: XCircle, title: "获取失败", message: "无法获取版本信息，请稍后重试" };
+        return {
+          icon: XCircle,
+          title: "获取失败",
+          message: "无法获取版本信息，请稍后重试",
+        };
     }
   };
 
@@ -182,12 +225,32 @@ function ErrorState({ status, onRetry }: { status: RequestStatus; onRetry: () =>
   return (
     <Card className="border-red-200 dark:border-red-800 bg-red-50/80 dark:bg-red-900/10">
       <CardContent className="py-16 text-center">
-        <Icon className="w-12 h-12 mx-auto text-red-500 dark:text-red-400 mb-4" aria-hidden="true" />
-        <h3 className="text-lg font-semibold text-red-700 dark:text-red-300 mb-2">{title}</h3>
+        <Icon
+          className="w-12 h-12 mx-auto text-red-500 dark:text-red-400 mb-4"
+          aria-hidden="true"
+        />
+        <h3 className="text-lg font-semibold text-red-700 dark:text-red-300 mb-2">
+          {title}
+        </h3>
         <p className="text-red-600 dark:text-red-400 mb-4">{message}</p>
-        <Button variant="outline" onClick={onRetry} className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        <Button
+          variant="outline"
+          onClick={onRetry}
+          className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        >
+          <svg
+            className="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
           </svg>
           重试
         </Button>
@@ -212,8 +275,10 @@ export function DownloadSectionLauncher({
   const [repoInfo, setRepoInfo] = useState<GitHubRepoInfo | null>(null);
   const [repoStatus, setRepoStatus] = useState<RequestStatus>("idle");
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<'semantic' | 'releaseDate' | 'downloadCount'>('semantic');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortBy, setSortBy] = useState<
+    "semantic" | "releaseDate" | "downloadCount"
+  >("semantic");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [displayedCount, setDisplayedCount] = useState(itemsPerPage);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -225,9 +290,12 @@ export function DownloadSectionLauncher({
     if (!repoUrlMatch) return;
 
     try {
-      const res = await fetch(`https://api.github.com/repos/${repoUrlMatch[1]}/${repoUrlMatch[2]}`, {
-        signal: AbortSignal.timeout(requestTimeout),
-      });
+      const res = await fetch(
+        `https://api.github.com/repos/${repoUrlMatch[1]}/${repoUrlMatch[2]}`,
+        {
+          signal: AbortSignal.timeout(requestTimeout),
+        },
+      );
       if (!res.ok) throw new Error(String(res.status));
       const data: GitHubRepoInfo = await res.json();
       setRepoInfo(data);
@@ -246,7 +314,7 @@ export function DownloadSectionLauncher({
       // 并行获取仓库信息和发布版本
       await Promise.all([fetchRepoInfo(), fetchReleasesData()]);
     } catch {
-      toast({ title: '获取版本信息失败', variant: 'destructive' });
+      toast({ title: "获取版本信息失败", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -255,7 +323,7 @@ export function DownloadSectionLauncher({
   const fetchReleasesData = async (page: number = 1) => {
     try {
       // GitHub API 默认只返回30条数据，需要添加 per_page 参数
-      const apiUrl = githubApiUrl.includes('?')
+      const apiUrl = githubApiUrl.includes("?")
         ? `${githubApiUrl}&per_page=100&page=${page}`
         : `${githubApiUrl}?per_page=100&page=${page}`;
 
@@ -265,8 +333,8 @@ export function DownloadSectionLauncher({
       if (!res.ok) throw new Error(String(res.status));
       const data: GitHubRelease[] = await res.json();
 
-      const parsed: ParsedRelease[] = data.map(r => {
-        const files = r.assets.map(a => ({
+      const parsed: ParsedRelease[] = data.map((r) => {
+        const files = r.assets.map((a) => ({
           name: a.name,
           downloadUrl: a.browser_download_url,
           downloadCount: a.download_count,
@@ -274,23 +342,27 @@ export function DownloadSectionLauncher({
         return {
           name: r.name || r.tag_name,
           version: r.tag_name,
-          mcVersion: r.tag_name.match(/^(\d+\.\d+(\.\d+)?)/)?.[1] ?? 'Unknown',
-          releaseDate: new Date(r.published_at).toLocaleDateString('zh-CN'),
+          mcVersion: r.tag_name.match(/^(\d+\.\d+(\.\d+)?)/)?.[1] ?? "Unknown",
+          releaseDate: new Date(r.published_at).toLocaleDateString("zh-CN"),
           isPrerelease: r.prerelease,
           isLatest: false,
           downloadCount: files.reduce((s, f) => s + f.downloadCount, 0),
           files,
-          changelog: r.body || '暂无更新日志。',
+          changelog: r.body || "暂无更新日志。",
         };
       });
 
       // 如果是第一页，标记最新版本
       if (page === 1 && parsed.length > 0) {
-        const stableReleases = parsed.filter(r => !r.isPrerelease);
+        const stableReleases = parsed.filter((r) => !r.isPrerelease);
         if (stableReleases.length > 0) {
-          stableReleases.sort((a, b) => b.releaseDate.localeCompare(a.releaseDate))[0].isLatest = true;
+          stableReleases.sort((a, b) =>
+            b.releaseDate.localeCompare(a.releaseDate),
+          )[0].isLatest = true;
         } else {
-          parsed.sort((a, b) => b.releaseDate.localeCompare(a.releaseDate))[0].isLatest = true;
+          parsed.sort((a, b) =>
+            b.releaseDate.localeCompare(a.releaseDate),
+          )[0].isLatest = true;
         }
       }
 
@@ -299,8 +371,8 @@ export function DownloadSectionLauncher({
         setAllReleases(parsed);
         setReleases(parsed);
       } else {
-        setAllReleases(prev => [...prev, ...parsed]);
-        setReleases(prev => [...prev, ...parsed]);
+        setAllReleases((prev) => [...prev, ...parsed]);
+        setReleases((prev) => [...prev, ...parsed]);
       }
 
       // 判断是否还有更多数据
@@ -308,7 +380,7 @@ export function DownloadSectionLauncher({
 
       return parsed;
     } catch {
-      throw new Error('Failed to fetch releases');
+      throw new Error("Failed to fetch releases");
     }
   };
 
@@ -320,9 +392,9 @@ export function DownloadSectionLauncher({
     try {
       const nextPage = Math.floor(allReleases.length / 100) + 1;
       await fetchReleasesData(nextPage);
-      setDisplayedCount(prev => prev + itemsPerPage);
+      setDisplayedCount((prev) => prev + itemsPerPage);
     } catch {
-      toast({ title: '加载更多失败', variant: 'destructive' });
+      toast({ title: "加载更多失败", variant: "destructive" });
     } finally {
       setIsLoadingMore(false);
     }
@@ -373,8 +445,10 @@ export function DownloadSectionLauncher({
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">排序：</span>
-              {['版本号', '发布日期', '下载量'].map((label) => (
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                排序：
+              </span>
+              {["版本号", "发布日期", "下载量"].map((label) => (
                 <Skeleton key={label} className="h-9 w-20 rounded-lg" />
               ))}
             </div>

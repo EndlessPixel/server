@@ -1,12 +1,15 @@
 # 安全政策
 
 ## 报告漏洞
+
 ### 正确的提交方式
+
 - **禁止**在 GitHub Issues/Pull Requests/Discussions 中公开安全漏洞
 - **推荐**：发送邮件至 support@endlesspixel.com（优先处理）
 - **备选**：通过 GitHub 私有漏洞报告功能提交：https://github.com/EndlessPixel/server/security/advisories/new
 
 ### 漏洞报告应包含的信息
+
 1. 漏洞所在的功能模块/代码路径
 2. 复现步骤（尽可能详细）
 3. 影响范围（哪些版本/功能受影响）
@@ -14,6 +17,7 @@
 5. （可选）你发现的临时修复方案
 
 ## 响应流程
+
 1. 我们会在 48 小时内确认收到你的漏洞报告
 2. 7 天内给出漏洞评估结果和修复时间表
 3. 修复完成后，会向你反馈并协商公开时间

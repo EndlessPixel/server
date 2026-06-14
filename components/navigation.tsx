@@ -1,27 +1,39 @@
-'use client';
-import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Download, Activity, Users, Home, ChevronRight, Search, Settings, Bell } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import LoginButton from '@/components/login';
-import { useAppearance } from '@/lib/appearance-context';
-import { useAppearanceSettings } from '@/components/appearance-settings-container';
+"use client";
+import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Menu,
+  X,
+  Download,
+  Activity,
+  Users,
+  Home,
+  ChevronRight,
+  Search,
+  Settings,
+  Bell,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import LoginButton from "@/components/login";
+import { useAppearance } from "@/lib/appearance-context";
+import { useAppearanceSettings } from "@/components/appearance-settings-container";
 
 function useLockBody(lock: boolean) {
   useEffect(() => {
     if (!lock) return;
     const origin = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = origin; };
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = origin;
+    };
   }, [lock]);
 }
 
 const formatLabel = (s: string) =>
-  s.replace(/-/g, ' ')
-    .replace(/\b\w/g, c => c.toUpperCase());
+  s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 const MotionLink = motion.create(Link);
 function ExplorerBar() {
@@ -76,7 +88,7 @@ function ExplorerBar() {
 
     const typeChar = () => {
       if (index < text.length) {
-        setDisplaySaying(prev => prev + text.charAt(index));
+        setDisplaySaying((prev) => prev + text.charAt(index));
         index++;
         typingTimer.current = setTimeout(typeChar, 50 + Math.random() * 50);
       }
@@ -152,13 +164,12 @@ function ExplorerBar() {
         acc.push({ href, label: formatLabel(seg) });
         return acc;
       },
-      [{ href: "/", label: "首页" }]
+      [{ href: "/", label: "首页" }],
     );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="h-14 flex items-center gap-4">
-
         {!editMode && (
           <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
             {crumbs.map((c, i) => (
@@ -169,7 +180,7 @@ function ExplorerBar() {
                   "flex items-center gap-1.5 transition-colors",
                   i === crumbs.length - 1
                     ? "font-medium text-slate-900 dark:text-white"
-                    : "cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
+                    : "cursor-pointer hover:text-blue-600 dark:hover:text-blue-400",
                 )}
                 whileHover={{ scale: 1.03 }}
               >
@@ -217,7 +228,7 @@ function ExplorerBar() {
           <div
             onClick={handleSayingClick}
             className={`text-xs text-slate-400 dark:text-slate-500 truncate max-w-[40%] mx-auto py-2 text-center cursor-pointer transition-all hover:text-slate-600 dark:hover:text-slate-300 whitespace-normal
-              ${isFlickering ? 'animate-pulse opacity-50' : ''}
+              ${isFlickering ? "animate-pulse opacity-50" : ""}
             `}
           >
             {isSayingLoading ? (
@@ -246,11 +257,11 @@ export function Navigation() {
   const { openSettings } = useAppearanceSettings();
   useLockBody(isMenuOpen);
   const navItems = [
-    { href: '/', label: '首页', icon: Home },
-    { href: '/downloads', label: '资源', icon: Download },
-    { href: '/status', label: '状态', icon: Activity },
-    { href: '/announcement', label: '公告', icon: Bell },
-    { href: '/about', label: '关于', icon: Users },
+    { href: "/", label: "首页", icon: Home },
+    { href: "/downloads", label: "资源", icon: Download },
+    { href: "/status", label: "状态", icon: Activity },
+    { href: "/announcement", label: "公告", icon: Bell },
+    { href: "/about", label: "关于", icon: Users },
   ];
 
   return (
@@ -271,11 +282,14 @@ export function Navigation() {
               <img
                 src="/EndlessPixel.png"
                 alt="EndlessPixel Logo"
-                className="w-64 h-8 object-contain"   // 40px，推荐
+                className="w-64 h-8 object-contain" // 40px，推荐
               />
             </MotionLink>
 
-            <div className="hidden md:flex items-center space-x-1" role="menubar">
+            <div
+              className="hidden md:flex items-center space-x-1"
+              role="menubar"
+            >
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
@@ -284,17 +298,20 @@ export function Navigation() {
                     key={item.href}
                     href={item.href}
                     role="menuitem"
-                    aria-current={isActive ? 'page' : undefined}
+                    aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      'flex flex-col items-center space-y-1 px-4 py-3 rounded-xl min-w-20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+                      "flex flex-col items-center space-y-1 px-4 py-3 rounded-xl min-w-20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
                       isActive
-                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50/70 dark:bg-blue-900/20'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/50'
+                        ? "text-blue-600 dark:text-blue-400 bg-blue-50/70 dark:bg-blue-900/20"
+                        : "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/50",
                     )}
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Icon className={cn('w-5 h-5', isActive && 'scale-110')} aria-hidden="true" />
+                    <Icon
+                      className={cn("w-5 h-5", isActive && "scale-110")}
+                      aria-hidden="true"
+                    />
                     <span className="text-sm font-medium">{item.label}</span>
                     {isActive && (
                       <motion.div
@@ -306,14 +323,20 @@ export function Navigation() {
                   </MotionLink>
                 );
               })}
-              <div className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2" aria-hidden="true" />
+              <div
+                className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2"
+                aria-hidden="true"
+              />
               <button
                 onClick={openSettings}
                 className="w-11 h-11 px-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 aria-label="打开外观设置"
                 aria-haspopup="dialog"
               >
-                <Settings className="h-5 w-5 text-slate-700 dark:text-slate-300" aria-hidden="true" />
+                <Settings
+                  className="h-5 w-5 text-slate-700 dark:text-slate-300"
+                  aria-hidden="true"
+                />
               </button>
               <LoginButton />
             </div>
@@ -325,7 +348,10 @@ export function Navigation() {
                 aria-label="打开外观设置"
                 aria-haspopup="dialog"
               >
-                <Settings className="h-5 w-5 text-slate-700 dark:text-slate-300" aria-hidden="true" />
+                <Settings
+                  className="h-5 w-5 text-slate-700 dark:text-slate-300"
+                  aria-hidden="true"
+                />
               </button>
               <Button
                 variant="ghost"
@@ -337,9 +363,15 @@ export function Navigation() {
                 aria-controls="mobile-menu"
               >
                 {isMenuOpen ? (
-                  <X className="w-5 h-5 text-slate-700 dark:text-slate-300" aria-hidden="true" />
+                  <X
+                    className="w-5 h-5 text-slate-700 dark:text-slate-300"
+                    aria-hidden="true"
+                  />
                 ) : (
-                  <Menu className="w-5 h-5 text-slate-700 dark:text-slate-300" aria-hidden="true" />
+                  <Menu
+                    className="w-5 h-5 text-slate-700 dark:text-slate-300"
+                    aria-hidden="true"
+                  />
                 )}
               </Button>
             </div>
@@ -363,10 +395,10 @@ export function Navigation() {
             <motion.div
               id="mobile-menu"
               className="fixed top-0 left-0 right-0 bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 z-50 md:hidden"
-              initial={{ y: '-100%' }}
+              initial={{ y: "-100%" }}
               animate={{ y: 0 }}
-              exit={{ y: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              exit={{ y: "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
               role="menu"
               aria-label="移动端导航菜单"
             >
@@ -379,13 +411,13 @@ export function Navigation() {
                       key={item.href}
                       href={item.href}
                       role="menuitem"
-                      aria-current={isActive ? 'page' : undefined}
+                      aria-current={isActive ? "page" : undefined}
                       onClick={() => setIsMenuOpen(false)}
                       className={cn(
-                        'flex items-center space-x-4 px-4 py-3 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+                        "flex items-center space-x-4 px-4 py-3 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
                         isActive
-                          ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                          : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800",
                       )}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -401,7 +433,6 @@ export function Navigation() {
                 <br />
                 <LoginButton />
               </div>
-
             </motion.div>
           </>
         )}

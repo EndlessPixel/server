@@ -14,10 +14,10 @@ import FloatActions from "@/components/float-actions";
 
 // 加载 Noto Sans SC 字体
 const notoSansSC = Noto_Sans_SC({
-  subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
-  display: 'swap',
-  variable: '--font-noto-sans-sc',
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+  variable: "--font-noto-sans-sc",
 });
 
 // 常量统一管理
@@ -84,7 +84,8 @@ export const metadata: Metadata = {
     url: DOMAIN,
     siteName: "EndlessPixel",
     title: "EndlessPixel - 免费纯净Minecraft Java服务器 | 1.7.2-26.1.2",
-    description: "免费Minecraft Java服务器，支持1.7.2-26.1.2版本，Purpur核心+Discord社区，无付费无广告！",
+    description:
+      "免费Minecraft Java服务器，支持1.7.2-26.1.2版本，Purpur核心+Discord社区，无付费无广告！",
     images: [
       {
         url: BANNER_IMAGE,
@@ -174,7 +175,11 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={clsx(GeistSans.variable, GeistMono.variable, notoSansSC.variable)}
+      className={clsx(
+        GeistSans.variable,
+        GeistMono.variable,
+        notoSansSC.variable,
+      )}
       suppressHydrationWarning
     >
       <head>
@@ -187,9 +192,10 @@ export default function RootLayout({
         <noscript>
           本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。
           <br />
-          Some features of this site require JavaScript. Please enable JS for the best experience.
+          Some features of this site require JavaScript. Please enable JS for
+          the best experience.
         </noscript>
-        
+
         {/* JSON-LD 结构化数据 */}
         {jsonLd.map((ld, index) => (
           <Script
@@ -201,7 +207,7 @@ export default function RootLayout({
             {JSON.stringify(ld)}
           </Script>
         ))}
-        
+
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AppearanceProvider>
             <AppearanceSettingsManager>

@@ -17,10 +17,12 @@ export function HelpSection({
   showGithubIssue = true,
   githubIssueUrl = "https://github.com/EndlessPixel/server/issues",
   showWiki = false,
-  wikiUrl = "https://wiki.epmc.top"
+  wikiUrl = "https://wiki.epmc.top",
 }: HelpSectionProps) {
   return (
-    <Card className={`bg-white/80 dark:bg-slate-800/50 rounded-xl backdrop-blur-sm border-slate-200 dark:border-slate-700 ${className}`}>
+    <Card
+      className={`bg-white/80 dark:bg-slate-800/50 rounded-xl backdrop-blur-sm border-slate-200 dark:border-slate-700 ${className}`}
+    >
       <CardContent className="p-6">
         <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4 flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-blue-500" aria-hidden="true" />
@@ -82,7 +84,7 @@ interface BackButtonProps {
 export function BackButton({
   href,
   label = "返回",
-  className = ""
+  className = "",
 }: BackButtonProps) {
   return (
     <Link

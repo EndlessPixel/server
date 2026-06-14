@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { launcherRepos } from "@/lib/launcherMeta";
-import { ArrowLeft, Download, Sparkles, Rocket, CheckCircle, XCircle, AlertCircle, FileQuestion } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  Sparkles,
+  Rocket,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  FileQuestion,
+} from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,9 +22,9 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const itemVariants = {
@@ -26,9 +35,9 @@ const itemVariants = {
     transition: {
       type: "spring" as const,
       stiffness: 100,
-      damping: 12
-    }
-  }
+      damping: 12,
+    },
+  },
 };
 
 const cardHoverVariants = {
@@ -38,9 +47,9 @@ const cardHoverVariants = {
     transition: {
       type: "spring" as const,
       stiffness: 400,
-      damping: 25
-    }
-  }
+      damping: 25,
+    },
+  },
 };
 
 // 骨架屏卡片组件
@@ -65,7 +74,9 @@ function LauncherCardSkeleton() {
 export function LauncherListPage() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [repoStatus, setRepoStatus] = useState<Record<string, boolean | "empty">>({});
+  const [repoStatus, setRepoStatus] = useState<
+    Record<string, boolean | "empty">
+  >({});
 
   // 并行获取所有仓库的 releases 状态
   useEffect(() => {
@@ -74,21 +85,27 @@ export function LauncherListPage() {
         // 并行请求所有仓库的 releases 状态
         const promises = launcherRepos.map(async (repo) => {
           try {
-            const res = await fetch(`https://api.github.com/repos/${repo.owner}/${repo.repo}/releases`, {
-              signal: AbortSignal.timeout(5000),
-            });
+            const res = await fetch(
+              `https://api.github.com/repos/${repo.owner}/${repo.repo}/releases`,
+              {
+                signal: AbortSignal.timeout(5000),
+              },
+            );
             if (!res.ok) return { key: repo.key, status: false };
-            
+
             const data = await res.json();
             if (!Array.isArray(data) || data.length === 0) {
               return { key: repo.key, status: "empty" as const };
             }
-            
+
             // 检查是否有发布文件
-            const hasAssets = data.some((release: any) => 
-              release.assets && release.assets.length > 0
+            const hasAssets = data.some(
+              (release: any) => release.assets && release.assets.length > 0,
             );
-            return { key: repo.key, status: hasAssets ? true : "empty" as const };
+            return {
+              key: repo.key,
+              status: hasAssets ? true : ("empty" as const),
+            };
           } catch {
             return { key: repo.key, status: false };
           }
@@ -113,7 +130,7 @@ export function LauncherListPage() {
   }, []);
 
   // 获取仓库状态显示
-  const getReleaseStatus = (repo: typeof launcherRepos[0]) => {
+  const getReleaseStatus = (repo: (typeof launcherRepos)[0]) => {
     if (loading) return undefined;
     return repoStatus[repo.key] ?? repo.releases;
   };
@@ -299,7 +316,10 @@ export function LauncherListPage() {
                                 <span>立即下载</span>
                                 <motion.div
                                   animate={{ x: hoveredCard === r.key ? 5 : 0 }}
-                                  transition={{ type: "spring", stiffness: 500 }}
+                                  transition={{
+                                    type: "spring",
+                                    stiffness: 500,
+                                  }}
                                 >
                                   <Download className="w-4 h-4 ml-2" />
                                 </motion.div>
