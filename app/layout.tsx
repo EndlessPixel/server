@@ -187,7 +187,9 @@ export default function RootLayout({
         <meta name="referrer" content="no-referrer" />
         <meta name="msvalidate.01" content="B9D8B7001682D3FB5F699A38C4C6DAF4" />
         <meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}`} />
-        <link rel="preload" href="/fonts/ChillReunion_Round.otf" as="font" />
+        <link rel="preload" href="/fonts/ChillReunion_Round.otf" as="font" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/FZCuYuan.ttf" as="font" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/HYTangMeiRen-55W.ttf" as="font" crossOrigin="anonymous" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground">
         <noscript>
