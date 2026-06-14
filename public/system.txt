@@ -56,44 +56,48 @@
 http://wiki.epmc.top + 下方路径
 
 【Wiki 精确路径】
-/docs                           → 文档首页
-/beginner/version               → 服务器版本说明
-/beginner/rule                  → 服务器规则
-/beginner/link                  → 相关链接
-/beginner/antifraud_reminder    → 官方安全防骗提醒
-/beginner/problem_feedback      → 问题反馈通道
-/server_common/login            → 登录与注册指令
-/server_common/slimefun         → 粘液科技指令
-/server_common/tp               → 传送指令
-/server_common/skin             → 皮肤指令
-/server_common/skill            → 技能指令
-/server_common/dominion         → 领地指令
-/server_common/killme           → 自杀指令
-/server_common/welfare          → 福利指令
-/server_feature/overworld       → 主世界维度升级
-/server_feature/nether          → 下界维度升级
-/server_feature/end             → 末地维度升级
-/server_feature/ocean           → 海洋探索
-/server_feature/structure       → 原版结构更新
-/server_feature/interaction     → 特殊交互功能
-/server_feature/enchant         → 特色附魔系统
-/server_feature/cutter          → 大师切割机
-/server_feature/warden_loot     → 更多循声守卫战利品
-/server_feature/achievement     → BlazeandCave 成就包
-/server_feature/enchanted_apple → 附魔金苹果配方
-/server_feature/slimefun        → 粘液科技玩法
-/safe/block_lock                → 箱子锁
-/safe/dominion                  → 领地保护
-/faq/common                     → 常见连接问题
-/faq/other                      → 其他疑难问题
-/modpack/integration            → 整合包简介
-/about/intro                    → 关于 EndlessPixel
-/about/team                     → 团队成员
-/about/support                  → 服务支持信息
-/about/essay                    → 服主写的古文
-/anniversary                    → 一周年庆特别公告
-/dev/api                        → API开放文档
-/dev/image_upload               → 上传图片到玩家图册
+/docs                              → 文档首页
+/beginner/version                  → 服务器版本说明
+/beginner/rule                     → 服务器规则
+/beginner/link                     → 相关链接
+/beginner/antifraud_reminder       → 官方安全防骗提醒
+/beginner/problem_feedback         → 问题反馈通道
+/server_common/login               → 登录与注册指令
+/server_common/slimefun            → 粘液科技指令
+/server_common/tp                  → 传送指令
+/server_common/skin                → 皮肤指令
+/server_common/skill               → 技能指令
+/server_common/dominion            → 领地指令
+/server_common/killme              → 自杀指令
+/server_common/welfare             → 福利指令
+/server_feature/overworld          → 主世界维度升级
+/server_feature/nether             → 下界维度升级
+/server_feature/end                → 末地维度升级
+/server_feature/ocean              → 海洋探索
+/server_feature/structure          → 原版结构更新
+/server_feature/interaction        → 特殊交互功能
+/server_feature/enchant            → 特色附魔系统
+/server_feature/cutter             → 大师切割机
+/server_feature/warden_loot        → 更多循声守卫战利品
+/server_feature/achievement        → BlazeandCave 成就包
+/server_feature/enchanted_apple    → 附魔金苹果配方
+/server_feature/slimefun           → 粘液科技玩法
+/safe/block_lock                   → 箱子锁
+/safe/dominion                     → 领地保护
+/faq/common                        → 常见连接问题
+/faq/other                         → 其他疑难问题
+/modpack/integration               → 整合包简介
+/about/intro                       → 关于 EndlessPixel
+/about/team                        → 团队成员
+/about/support                     → 服务支持信息
+/about/essay                       → 服主写的古文
+/anniversary                       → 一周年庆特别公告
+/dev/api                           → API开放文档
+/dev/api_docs/api                  → 基础API接口
+/dev/api_docs/ai_customer_service  → AI客服接口
+/dev/api_docs/hardware_information → 服务器硬件信息接口
+/dev/api_docs/fool                 → 愚人节整蛊接口
+/dev/image_upload                  → 上传图片到玩家图册
 
 相关信息
 EndlessPixel 服务器加入地址： epmc.top 或 epmc.qzz.io ，服务器版本为Java版1.21.11，服务器支持Java版1.7.2~26.1.2全版本加入，但是主要推荐Java版1.21.11版本，服务器地址通过SRV解析，无需携带任何端口
