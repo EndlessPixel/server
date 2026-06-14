@@ -5,6 +5,7 @@ import path from 'path';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+// ---------- 限流（带自动清理）----------
 const ipRequestMap = new Map<string, number[]>();
 
 function isRateLimited(ip: string | null): boolean {
@@ -14,11 +15,22 @@ function isRateLimited(ip: string | null): boolean {
   const maxReq = 10;
   const requests = ipRequestMap.get(ip) ?? [];
   const recent = requests.filter(t => now - t < windowMs);
+  
   if (recent.length >= maxReq) return true;
+  
   ipRequestMap.set(ip, [...recent, now]);
+  
+  if (ipRequestMap.size > 1000) {
+    for (const [key, timestamps] of ipRequestMap.entries()) {
+      if (timestamps.every(t => now - t > windowMs)) {
+        ipRequestMap.delete(key);
+      }
+    }
+  }
   return false;
 }
 
+// ---------- 系统提示词缓存 ----------
 let systemPromptCache: string | null = null;
 async function getSystemPrompt(): Promise<string> {
   if (systemPromptCache) return systemPromptCache;
@@ -33,51 +45,86 @@ async function getSystemPrompt(): Promise<string> {
   }
 }
 
+// ---------- 获取真实 IP ----------
+function getClientIP(req: NextRequest): string | null {
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  return req.headers.get('x-real-ip') || null;
+}
+
+// ---------- 辅助函数：返回 SSE 错误（始终 200 状态码）----------
+function sseError(errorText: string): Response {
+  // 过滤敏感信息：只返回友好提示，不要暴露内部细节
+  const safeError = errorText
+    .replace(/API_KEY.*/i, '配置错误')
+    .replace(/read system\.txt/i, '服务初始化失败')
+    .replace(/fetch failed/i, '网络连接失败');
+  const body = `data: {"type":"error","errorText":"${safeError}"}\n\ndata: [DONE]\n\n`;
+  return new Response(body, {
+    status: 200,  // 关键：总是 200，避免前端抛异常
+    headers: { 'Content-Type': 'text/event-stream' },
+  });
+}
+
 export async function POST(req: NextRequest) {
+  const controller = new AbortController();
+  let timeout: NodeJS.Timeout | null = null;
+  
   try {
-    const ip = req.headers.get('x-forwarded-for') || 'unknown';
+    // 1. 限流
+    const ip = getClientIP(req);
     if (isRateLimited(ip)) {
-      return new Response('data: {"type":"error","errorText":"请求过于频繁"}\n\ndata: [DONE]\n\n', {
-        headers: { 'Content-Type': 'text/event-stream' },
-      });
+      return sseError('请求过于频繁，请稍后再试');
     }
 
-    const { messages } = await req.json();
-    if (!messages || !Array.isArray(messages)) {
-      return new Response('data: {"type":"error","errorText":"格式错误"}\n\ndata: [DONE]\n\n', {
-        headers: { 'Content-Type': 'text/event-stream' },
-      });
+    // 2. 解析请求体
+    const body = await req.json().catch(() => null);
+    if (!body || !Array.isArray(body.messages)) {
+      return sseError('请求格式错误');
+    }
+    const { messages } = body;
+
+    // 3. 加载系统提示词
+    let systemPrompt: string;
+    try {
+      systemPrompt = await getSystemPrompt();
+    } catch (err) {
+      return sseError('服务初始化失败，请联系管理员');
     }
 
-    const systemPrompt = await getSystemPrompt();
     const fullMessages = [
       { role: 'system', content: systemPrompt },
       ...messages.slice(-20),
     ];
 
+    // 4. 构建上游请求
     const openaiBody = {
-      model: "qwen/qwen3.5-397b-a17b",
+      model: "qwen/qwen3-next-80b-a3b-instruct",
       messages: fullMessages,
       stream: true,
       temperature: 0.2,
       top_p: 0.7,
       presence_penalty: 0.5,
-      frequency_penalty: 0.3
+      frequency_penalty: 0.3,
+      max_tokens: 4096
     };
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 120000);
 
     const apiBaseUrl = process.env.API_BASE_URL || "https://new.xinjianya.top";
     const upstreamUrl = `${apiBaseUrl}/v1/chat/completions`;
     const apiKey = process.env.API_KEY;
     if (!apiKey) {
-      throw new Error("API_KEY 未设置");
+      console.error('API_KEY not set');
+      return sseError('服务配置错误');
     }
 
-    // ==============================================
-    // ✅ 这里是修复 Cloudflare 403 的核心代码
-    // ==============================================
+    // 5. 合并信号：后端超时 + 前端取消
+    timeout = setTimeout(() => controller.abort(), 120000);
+    if (req.signal) {
+      req.signal.addEventListener('abort', () => controller.abort());
+    }
+
     const headers = {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${apiKey}`,
@@ -86,116 +133,59 @@ export async function POST(req: NextRequest) {
       "Referer": apiBaseUrl,
       "Origin": apiBaseUrl,
       "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "same-origin"
+      "Sec-Fetch-Site": "cross-site"
     };
 
-    // 使用原生 fetch + 真实浏览器指纹绕过 CF
     const upstream = await fetch(upstreamUrl, {
       method: "POST",
       signal: controller.signal,
       headers: headers,
       body: JSON.stringify(openaiBody),
-      keepalive: true
     });
 
-    clearTimeout(timeout);
-    console.log('[API] Upstream response status:', upstream.status, upstream.ok);
-    console.log('[API] Upstream headers:', Object.fromEntries(upstream.headers.entries()));
+    if (timeout) clearTimeout(timeout);
+    timeout = null;
 
+    // 6. 上游返回非 200 -> 转换为 SSE 错误
     if (!upstream.ok) {
-      const errorBody = await upstream.text();
-      console.error("API 错误:", upstream.status, errorBody);
-      
-      let errorCode = 'unknown_error';
-      let errorMessage = '服务异常';
-      let errorType = 'api_error';
-      
-      try {
-        const errorJson = JSON.parse(errorBody);
-        if (errorJson.error) {
-          errorCode = errorJson.error.code || errorCode;
-          errorMessage = errorJson.error.message || errorMessage;
-          errorType = errorJson.error.type || errorType;
-        }
-      } catch {}
-      
-      const errorResponse = {
-        type: 'error',
-        code: errorCode,
-        message: errorMessage,
-        errorType: errorType,
-        status: upstream.status,
-      };
-      
-      return new Response(`data: ${JSON.stringify(errorResponse)}\n\ndata: [DONE]\n\n`, {
-        headers: { 'Content-Type': 'text/event-stream' },
-      });
+      let errorMsg = `上游服务暂时不可用 (${upstream.status})`;
+      // 尝试读取具体错误，但仅用于日志，不返回给前端
+      const errorBody = await upstream.text().catch(() => '');
+      console.error(`上游错误 ${upstream.status}:`, errorBody.slice(0, 500));
+      // 对常见的 401/403/429 给出更友好的提示
+      if (upstream.status === 401 || upstream.status === 403) {
+        errorMsg = '认证失败，请联系管理员';
+      } else if (upstream.status === 429) {
+        errorMsg = '上游服务限流，请稍后再试';
+      } else if (upstream.status >= 500) {
+        errorMsg = '上游服务繁忙，请稍后再试';
+      }
+      return sseError(errorMsg);
     }
 
-    const messageId = crypto.randomUUID();
-
-    let buffer = '';
-    let messageCount = 0;
-    const transformStream = new TransformStream({
-      async transform(chunk, controller) {
-        buffer += new TextDecoder().decode(chunk);
-        
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-        
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            messageCount++;
-            const data = line.slice(6);
-            if (data === '[DONE]') {
-              console.log('[API] Received [DONE], total messages:', messageCount);
-              controller.enqueue(new TextEncoder().encode('data: {"type":"finish"}\n\ndata: [DONE]\n\n'));
-              continue;
-            }
-            try {
-              const parsed = JSON.parse(data);
-              const delta = parsed.choices?.[0]?.delta;
-              const content = delta?.content;
-              if (content) {
-                const out = JSON.stringify({
-                  type: 'text-delta',
-                  id: messageId,
-                  delta: content,
-                });
-                controller.enqueue(new TextEncoder().encode(`data: ${out}\n\n`));
-              }
-            } catch (e) {}
-          }
-        }
-      },
-      flush() {
-        if (buffer.trim()) {
-          console.debug('[API] Flushing remaining buffer:', buffer.substring(0, 100));
-        }
-        console.log('[API] TransformStream flushed, total messages processed:', messageCount);
-      },
-    });
-
-    const transformedBody = upstream.body?.pipeThrough(transformStream);
-    if (!transformedBody) {
-      console.error('[API] Upstream body is null');
-      throw new Error('无法获取上游响应体');
-    }
-
-    console.log('[API] Starting to stream response to client');
-    return new Response(transformedBody, {
+    // 7. 直接透传上游 SSE 流（标准 OpenAI 格式）
+    return new Response(upstream.body, {
+      status: 200,  // 仍然返回 200，保证前端不抛异常
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache, no-transform',
-        Connection: 'keep-alive',
+        'Connection': 'keep-alive',
+        'X-Accel-Buffering': 'no',
       },
     });
 
   } catch (err) {
-    console.error('API Error:', err);
-    const message = err instanceof Error && err.name === 'AbortError' ? '请求超时' : '服务异常，请稍后再试';
-    return new Response(`data: {"type":"error","errorText":"${message}"}\n\ndata: [DONE]\n\n`, {
-      headers: { 'Content-Type': 'text/event-stream' },
-    });
+    if (timeout) clearTimeout(timeout);
+    console.error('API 内部错误:', err);
+    
+    let errorText = '服务异常，请稍后再试';
+    if (err instanceof Error) {
+      if (err.name === 'AbortError') {
+        errorText = '请求被取消或超时';
+      } else if (err.message.includes('fetch failed')) {
+        errorText = '网络连接失败，请检查网络';
+      }
+    }
+    return sseError(errorText);
   }
 }
