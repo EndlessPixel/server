@@ -175,9 +175,89 @@ export async function POST(req: NextRequest) {
       return sseError(errorMsg);
     }
 
-    // 7. 直接透传上游 SSE 流（标准 OpenAI 格式）
-    return new Response(upstream.body, {
-      status: 200,  // 仍然返回 200，保证前端不抛异常
+    // 7. 解析上游 SSE 流，提取 usage 并转换为前端期望的格式
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+    const reader = upstream.body!.getReader();
+
+    let buffer = '';
+    let hasSentUsage = false;
+
+    (async () => {
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          
+          // 按行处理 SSE 数据
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || ''; // 保留最后一个不完整的行
+
+          for (const line of lines) {
+            const trimmedLine = line.trim();
+            if (!trimmedLine || !trimmedLine.startsWith('data: ')) continue;
+
+            const dataStr = trimmedLine.slice(6); // 去掉 "data: " 前缀
+            
+            if (dataStr === '[DONE]') {
+              // 流结束，发送 [DONE]
+              await writer.write(encoder.encode(`data: [DONE]\n\n`));
+              continue;
+            }
+
+            try {
+              const chunk = JSON.parse(dataStr);
+              
+              // 检查是否有 usage 信息
+              if (chunk.usage && !hasSentUsage) {
+                hasSentUsage = true;
+                // 转换 usage 格式为前端期望的格式
+                const usageData = {
+                  type: 'usage',
+                  usage: {
+                    promptTokens: chunk.usage.prompt_tokens,
+                    completionTokens: chunk.usage.completion_tokens,
+                    totalTokens: chunk.usage.total_tokens
+                  }
+                };
+                await writer.write(encoder.encode(`data: ${JSON.stringify(usageData)}\n\n`));
+              }
+
+              // 提取内容并转换为前端期望的格式
+              const content = chunk.choices?.[0]?.delta?.content;
+              if (content) {
+                const textDelta = {
+                  type: 'text-delta',
+                  delta: content
+                };
+                await writer.write(encoder.encode(`data: ${JSON.stringify(textDelta)}\n\n`));
+              }
+            } catch (e) {
+              // 忽略解析错误，继续处理
+              console.warn('Failed to parse SSE chunk:', e);
+            }
+          }
+        }
+
+        // 确保发送 [DONE]
+        if (!hasSentUsage) {
+          await writer.write(encoder.encode(`data: [DONE]\n\n`));
+        }
+        
+        await writer.close();
+      } catch (err) {
+        console.error('Stream processing error:', err);
+        await writer.abort(err as Error);
+      }
+    })();
+
+    return new Response(readable, {
+      status: 200,
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache, no-transform',

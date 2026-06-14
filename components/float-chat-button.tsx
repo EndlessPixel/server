@@ -4,10 +4,14 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import EPBot from "./epbot";
+import EPBotChat from "./epbot-chat"; // 直接导入聊天组件，不导入按钮
 
 export function FloatChatButton() {
   const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <div className="flex flex-col items-end">
@@ -21,7 +25,7 @@ export function FloatChatButton() {
             transition={{ duration: 0.2 }}
             className="mb-3"
           >
-            <EPBot />
+            <EPBotChat isOpen={open} onClose={handleClose} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -33,7 +37,7 @@ export function FloatChatButton() {
         className={cn(
           "h-16 w-16 rounded-full shadow-xl flex items-center justify-center",
           "bg-linear-to-r from-purple-600 to-pink-600 text-white",
-          "hover:from-purple-700 hover:to-pink-700  border-white/20",
+          "hover:from-purple-700 hover:to-pink-700 border-white/20",
         )}
       >
         <MessageCircle className="h-7 w-7" />
