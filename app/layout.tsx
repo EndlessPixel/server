@@ -5,13 +5,13 @@ import { Noto_Sans_SC } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/toaster";
-import { AppearanceProvider, useAppearance } from "@/lib/appearance-context";
+import { AppearanceProvider } from "@/lib/appearance-context";
 import { AppearanceSettingsManager } from "@/components/appearance-settings-container";
 import Script from "next/script";
 import clsx from "clsx";
 import "./globals.css";
 import FloatActions from "@/components/float-actions";
-import MouseTrailEffect from "@/components/mouse-trail-effect";
+import { MouseTrailWrapper } from "@/components/mouse-trail-wrapper";
 
 // 加载 Noto Sans SC 字体
 const notoSansSC = Noto_Sans_SC({
@@ -170,15 +170,6 @@ const jsonLd = [
   },
 ];
 
-// 鼠标轨迹效果包装组件（根据设置条件渲染）
-function MouseTrailWrapper() {
-  const { settings } = useAppearance();
-  
-  if (!settings.showMouseTrail) return null;
-  
-  return <MouseTrailEffect />;
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -202,9 +193,6 @@ export default function RootLayout({
         <link rel="preload" href="/fonts/HYTangMeiRen-55W.ttf" as="font" crossOrigin="anonymous" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground">
-        {/* 全局鼠标拖影特效，fixed穿透事件，放在body最顶部 */}
-        <MouseTrailWrapper />
-
         <noscript>
           本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。
           <br />
@@ -226,6 +214,9 @@ export default function RootLayout({
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AppearanceProvider>
+            {/* 全局鼠标拖影特效，根据用户设置条件渲染 */}
+            <MouseTrailWrapper />
+            
             <AppearanceSettingsManager>
               <ErrorBoundary>
                 {children}
