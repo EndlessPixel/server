@@ -255,6 +255,7 @@ export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const { openSettings } = useAppearanceSettings();
+  const { settings } = useAppearance();
   useLockBody(isMenuOpen);
   const navItems = [
     { href: "/", label: "首页", icon: Home },
@@ -338,7 +339,7 @@ export function Navigation() {
                   aria-hidden="true"
                 />
               </button>
-              <LoginButton />
+              {settings.showLoginButton && <LoginButton />}
             </div>
 
             <div className="md:hidden flex items-center space-x-2">
@@ -431,7 +432,7 @@ export function Navigation() {
                   );
                 })}
                 <br />
-                <LoginButton />
+                {settings.showLoginButton && <LoginButton />}
               </div>
             </motion.div>
           </>

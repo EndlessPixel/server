@@ -238,6 +238,14 @@ export const AppearanceSettingsPanel = memo(function AppearanceSettingsPanel({ i
 
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
+                      <Label className="text-sm font-medium">登录按钮</Label>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">显示用户登录/退出按钮</p>
+                    </div>
+                    <Switch checked={settings.showLoginButton} onCheckedChange={createToggleHandler("showLoginButton")} />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
                       <Label className="text-sm font-medium">一言</Label>
                       <p className="text-xs text-slate-500 dark:text-slate-400">显示随机名言警句</p>
                     </div>
