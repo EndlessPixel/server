@@ -11,6 +11,7 @@ import Script from "next/script";
 import clsx from "clsx";
 import "./globals.css";
 import FloatActions from "@/components/float-actions";
+import MouseTrailEffect from "@/components/mouse-trail-effect";
 
 // 加载 Noto Sans SC 字体
 const notoSansSC = Noto_Sans_SC({
@@ -192,6 +193,9 @@ export default function RootLayout({
         <link rel="preload" href="/fonts/HYTangMeiRen-55W.ttf" as="font" crossOrigin="anonymous" />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground">
+        {/* 全局鼠标拖影特效，fixed穿透事件，放在body最顶部 */}
+        <MouseTrailEffect />
+
         <noscript>
           本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。
           <br />
