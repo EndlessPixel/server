@@ -170,7 +170,7 @@ function ExplorerBar() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="h-14 flex items-center gap-4">
-        {!editMode && (
+        {settings.showBreadcrumb && !editMode && (
           <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
             {crumbs.map((c, i) => (
               <motion.div

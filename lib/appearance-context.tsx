@@ -23,6 +23,7 @@ interface AppearanceSettings {
   showSaying: boolean;
   showAIChat: boolean;
   showBackToTop: boolean;
+  showBreadcrumb: boolean;
   theme: "light" | "dark" | "system";
   useCustomFont: boolean;
   customFont: FontOption;
@@ -39,6 +40,7 @@ const defaultSettings: AppearanceSettings = {
   showSaying: true,
   showAIChat: true,
   showBackToTop: true,
+  showBreadcrumb: true,
   theme: "system",
   useCustomFont: false,
   customFont: "default",
