@@ -6,6 +6,15 @@ import { useState, useMemo } from "react";
 
 const announcements = [
     {
+        "title": "【爱发电】我们上线了爱发电",
+        "summary": "我们已上线了爱发电，玩家可以在爱发电上为我们的服务器提供资金支持。https://www.ifdian.net/a/system_mini",
+        "date": "2026-06-15",
+        "time": "20:31",
+        "year": 2026,
+        "month": 6,
+        "tags": ["爱发电", "资金支持"]
+    },
+    {
         "title": "【邮件】我们新增了官方专属邮箱",
         "summary": "为了更好地服务玩家，我们新增了官方专属邮箱：support@endlesspixel.cn",
         "date": "2026-04-30",
