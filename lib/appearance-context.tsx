@@ -24,6 +24,7 @@ interface AppearanceSettings {
   showAIChat: boolean;
   showBackToTop: boolean;
   showBreadcrumb: boolean;
+  showLoginButton: boolean;
   theme: "light" | "dark" | "system";
   useCustomFont: boolean;
   customFont: FontOption;
@@ -41,6 +42,7 @@ const defaultSettings: AppearanceSettings = {
   showAIChat: true,
   showBackToTop: true,
   showBreadcrumb: true,
+  showLoginButton: true,
   theme: "system",
   useCustomFont: false,
   customFont: "default",
