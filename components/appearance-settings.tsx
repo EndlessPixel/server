@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings, X, Palette, Type, Monitor, Moon, Sun } from "lucide-react";
+import { Settings, X, Palette, Type, Monitor, Moon, Sun, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -250,6 +250,24 @@ export const AppearanceSettingsPanel = memo(function AppearanceSettingsPanel({ i
                       <p className="text-xs text-slate-500 dark:text-slate-400">显示滚动到顶部的快捷按钮</p>
                     </div>
                     <Switch checked={settings.showBackToTop} onCheckedChange={createToggleHandler("showBackToTop")} />
+                  </div>
+                </div>
+
+                <div className="h-px bg-slate-200 dark:bg-slate-700" />
+
+                {/* 特效设置 */}
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    特效设置
+                  </Label>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm font-medium">鼠标轨迹效果</Label>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">显示鼠标移动时的彩色轨迹和粒子特效</p>
+                    </div>
+                    <Switch checked={settings.showMouseTrail} onCheckedChange={createToggleHandler("showMouseTrail")} />
                   </div>
                 </div>
 
