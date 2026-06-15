@@ -26,6 +26,7 @@ interface AppearanceSettings {
   theme: "light" | "dark" | "system";
   useCustomFont: boolean;
   customFont: FontOption;
+  showMouseTrail: boolean;
 }
 
 interface AppearanceContextType {
@@ -41,6 +42,7 @@ const defaultSettings: AppearanceSettings = {
   theme: "system",
   useCustomFont: false,
   customFont: "default",
+  showMouseTrail: false,
 };
 
 const AppearanceContext = createContext<AppearanceContextType | undefined>(

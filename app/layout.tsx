@@ -5,7 +5,7 @@ import { Noto_Sans_SC } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/toaster";
-import { AppearanceProvider } from "@/lib/appearance-context";
+import { AppearanceProvider, useAppearance } from "@/lib/appearance-context";
 import { AppearanceSettingsManager } from "@/components/appearance-settings-container";
 import Script from "next/script";
 import clsx from "clsx";
@@ -170,6 +170,15 @@ const jsonLd = [
   },
 ];
 
+// 鼠标轨迹效果包装组件（根据设置条件渲染）
+function MouseTrailWrapper() {
+  const { settings } = useAppearance();
+  
+  if (!settings.showMouseTrail) return null;
+  
+  return <MouseTrailEffect />;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -194,7 +203,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground">
         {/* 全局鼠标拖影特效，fixed穿透事件，放在body最顶部 */}
-        <MouseTrailEffect />
+        <MouseTrailWrapper />
 
         <noscript>
           本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。
