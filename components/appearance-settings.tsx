@@ -222,10 +222,18 @@ export const AppearanceSettingsPanel = memo(function AppearanceSettingsPanel({ i
 
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label className="text-sm font-medium">地址栏和输入框</Label>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">显示页面导航搜索框</p>
+                      <Label className="text-sm font-medium">地址栏输入框</Label>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">显示地址栏输入框，用于快速导航页面输入</p>
                     </div>
                     <Switch checked={settings.showAddressBar} onCheckedChange={createToggleHandler("showAddressBar")} />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm font-medium">面包屑导航</Label>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">显示页面路径导航（首页 / 资源 / ...）</p>
+                    </div>
+                    <Switch checked={settings.showBreadcrumb} onCheckedChange={createToggleHandler("showBreadcrumb")} />
                   </div>
 
                   <div className="flex items-center justify-between">
