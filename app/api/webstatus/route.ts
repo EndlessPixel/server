@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 
 // 在这里换成你要代理的真实API地址
-const TARGET_API_URL = 'https://uapis.cn/api/v1/network/urlstatus?url=https%3A%2F%2Fwww.epmc.top';
+const TARGET_API_URL = 'https://uapis.cn/api/v1/network/urlstatus?url=https%3A%2F%2Fwww.endlesspixel.cn';
 
 export async function GET(request: NextRequest) {
   try {

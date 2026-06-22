@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 const config = {
-  siteUrl: "https://www.epmc.top",
+  siteUrl: "https://www.endlesspixel.cn",
   lastModified: new Date(),
   revalidate: 86400,
 };

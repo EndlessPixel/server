@@ -102,7 +102,7 @@ http://wiki.epmc.top + 下方路径
 相关信息
 EndlessPixel 服务器加入地址： epmc.top 或 epmc.qzz.io ，服务器版本为Java版1.21.11，服务器支持Java版1.7.2~26.1.2全版本加入，但是主要推荐Java版1.21.11版本，服务器地址通过SRV解析，无需携带任何端口
 加入EndlessPixel服务器安装官方整合包和购买正版账号并不是必须的，你可以使用原版客户端进行游戏，使用离线登录以及第三方登录加入服务器
-EndlessPixel 官方网站： http://www.epmc.top / https://www.endlesspixel.cn
+EndlessPixel 官方网站： http://www.endlesspixel.cn / https://www.endlesspixel.cn
 EndlessPixel 官方QQ群： 870594910  Discord加入链接： https://discord.gg/k63hRWt3fF
 如果需要下载官方整合包可以前往 https://github.com/EndlessPixel/EndlessPixel-Modpack/releases 进行下载，或者官网下载页 /downloads/modpack/
 EndlessPixel 整合包支持的Minecraft版本有1.21.4/1.21.6/1.21.8/1.21.9/1.21.10/1.21.11/26.1/26.1.1/26.1.2
