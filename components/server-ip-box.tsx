@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, Copy, Server } from "lucide-react";
 
-const SERVER_IP = "epmc.top";
+const SERVER_IP = "mc.endlesspixel.cn";
 
 export default function ServerIpBox() {
   const [copied, setCopied] = useState(false);
@@ -37,7 +37,7 @@ export default function ServerIpBox() {
 
         {/* 文字部分：用 slate-200 代替亮绿色，更柔和高级 */}
         <span className="text-base font-medium text-slate-200 group-hover:text-white transition-colors">
-          加入地址：epmc.top
+          加入地址：mc.endlesspixel.cn
         </span>
 
         {/* 复制按钮：做成边框小图标，而不是实心块 */}

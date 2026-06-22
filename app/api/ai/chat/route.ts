@@ -34,13 +34,13 @@ function isRateLimited(ip: string | null): boolean {
 let systemPromptCache: string | null = null;
 async function getSystemPrompt(): Promise<string> {
   if (systemPromptCache) return systemPromptCache;
-  const filePath = path.join(process.cwd(), 'public', 'system.txt');
+  const filePath = path.join(process.cwd(), 'public', 'system.md');
   try {
     const content = await fs.readFile(filePath, 'utf-8');
     systemPromptCache = content;
     return content;
   } catch (err) {
-    console.error('Failed to read system.txt:', err);
+    console.error('Failed to read system.md:', err);
     throw new Error('系统提示词加载失败');
   }
 }
@@ -100,9 +100,9 @@ export async function POST(req: NextRequest) {
     ];
 
     // 4. 构建上游请求，支持自定义模型
-    // 默认模型：qwen/qwen3-next-80b-a3b-instruct
+    // 默认模型：grok-4.20-multi-agent-xhigh
     // 如果提供了 model 参数，则使用指定模型
-    const defaultModel = "qwen/qwen3-next-80b-a3b-instruct";
+    const defaultModel = "grok-4.20-multi-agent-xhigh";
     const selectedModel = (model && typeof model === 'string' && model.trim()) 
       ? model.trim() 
       : defaultModel;

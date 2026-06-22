@@ -217,7 +217,7 @@ export function Footer() {
     },
     {
       icon: BookOpen,
-      href: "https://wiki.epmc.top",
+      href: "https://wiki.endlesspixel.cn",
       label: "Wiki 百科",
       external: true,
     },

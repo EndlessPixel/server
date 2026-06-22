@@ -399,7 +399,7 @@ function GalleryContent() {
           <div className="mt-10 text-center text-sm text-slate-600 dark:text-slate-400">
             想要上传自己的截图？前往
             <a
-              href="https://wiki.epmc.top/dev/image_upload"
+              href="https://wiki.endlesspixel.cn/dev/image_upload"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline ml-1"
