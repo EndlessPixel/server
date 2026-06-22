@@ -17,7 +17,7 @@ export function HelpSection({
   showGithubIssue = true,
   githubIssueUrl = "https://github.com/EndlessPixel/server/issues",
   showWiki = false,
-  wikiUrl = "https://wiki.epmc.top",
+  wikiUrl = "https://wiki.endlesspixel.cn",
 }: HelpSectionProps) {
   return (
     <Card

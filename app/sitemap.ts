@@ -76,7 +76,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     // 外部链接
     {
-      url: "https://wiki.epmc.top/",
+      url: "https://wiki.endlesspixel.cn/",
       lastModified: config.lastModified,
       changeFrequency: "weekly",
       priority: 0.6,
