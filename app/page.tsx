@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "EndlessPixel - 免费纯净Minecraft Java服务器",
     description:
       "一个充满活力与创意的 Minecraft 社区！支持无需正版，让所有玩家都能轻松加入冒险之旅。",
-    url: "https://www.epmc.top/",
+    url: "https://www.endlesspixel.cn/",
     type: "website",
     images: [
       {
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://www.epmc.top/",
+    canonical: "https://www.endlesspixel.cn/",
   },
   icons: {
     icon: "/favicon.ico",
