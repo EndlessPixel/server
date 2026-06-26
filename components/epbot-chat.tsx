@@ -1056,10 +1056,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                           ))
                         )}
                       </div>
-
-                      <div className="p-2 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-400 shrink-0">
-                        提示：推荐模型经过优化，适合大多数对话场景
-                      </div>
                     </div>
                   )}
                 </div>
@@ -1148,7 +1144,23 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                       </button>
                     </div>
                     <div className="max-w-[85%] bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/10 rounded-2xl px-4 py-3 text-slate-900 dark:text-slate-100 prose prose-sm wrap-break-word">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          a: ({ href, ...props }) => {
+                            if (!href) return <a {...props} />;
+                            const encodedUrl = encodeURIComponent(href);
+                            return (
+                              <a
+                                href={`/ai_link?url=${encodedUrl}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                {...props}
+                              />
+                            );
+                          },
+                        }}
+                      >
                         {m.content}
                       </ReactMarkdown>
                     </div>
