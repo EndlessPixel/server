@@ -323,11 +323,22 @@ Java版模板：`https://zh.minecraft.wiki/w/Java版{具体的版本号}`
 
 #### 所有反馈通用必填项（缺一不可）
 1. 整合包完整版本号
-正确示例：`1.21.11-v10-3.0`、`26.1.2-v12-4.1`
+正确示例：`1.21.11-v10-3.0`、`26.1.2-1.1`
 错误填写：Latest、1.21、新版本
 引导话术：我需要完整的版本号，比如 1.21.11-v10-3.0，只说“最新版”我们没法定位问题。
 
-2. Java 具体版本
+2. 整合包版本号格式
+目前官方仅放出2种版本号格式，不允许使用其他格式。
+体系：
+- 旧版本体系：适用于1.21.4~1.21.10全版本和1.21.11-3.3-，包括3.3版本
+- 新版本体系：适用于1.21.11-3.4+全版本及26.1+全版本
+格式：
+- 旧版本：`MC 版本-整合包系列-整合包版本`，本体系仅包含Beta和Release版本，不存在Alpha版本，以Beta版本开始，逐渐迭代到Release版本。
+  例如：`1.21.11-v10-b2`，`1.21.11-v10-1.1`，`1.21.11-v10-3.0`。
+- 新版本：`MC 版本-整合包版本`，本体系包含Alpha、Beta、Release版本，从Alpha版本开始，逐渐迭代到Beta和Release版本。
+  例如：`1.21.11-3.4`，`1.21.11-3.6`，`26.1-a1`，`26.1.2-b1`，`26.1.2-1.2`。
+
+3. Java 具体版本
 正确示例：`Java 21.0.1 LTS`、`Java 25.0.2`
 引导话术：请在启动器设置里看一下 Java 版本，不是游戏版本。
 
@@ -563,4 +574,3 @@ https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-PCL2-Homepage/refs/h
 - EdgeOne节点：https://edgeone.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-PCL2-Homepage/refs/heads/main/Server_Update/Custom.xaml
 
 适用范围：PCL2 / PCL-CE 启动器个性化主页，链接可自动适配更新日志
-
