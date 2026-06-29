@@ -5,16 +5,15 @@ import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Menu,
-  X,
+  Menu, 
+  X, 
   Download,
   Activity,
   Users,
   Home,
   ChevronRight,
   Search,
-  Settings,
-  Bell,
+  Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoginButton from "@/components/login";
@@ -261,7 +260,6 @@ export function Navigation() {
     { href: "/", label: "首页", icon: Home },
     { href: "/downloads", label: "资源", icon: Download },
     { href: "/status", label: "状态", icon: Activity },
-    { href: "/announcement", label: "公告", icon: Bell },
     { href: "/about", label: "关于", icon: Users },
   ];
 
