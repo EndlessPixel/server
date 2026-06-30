@@ -7,6 +7,7 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/toaster";
 import { AppearanceProvider } from "@/lib/appearance-context";
 import { AppearanceSettingsManager } from "@/components/appearance-settings-container";
+import { StatReporter } from "@/components/stat-reporter";
 import Script from "next/script";
 import clsx from "clsx";
 import "./globals.css";
@@ -223,6 +224,7 @@ export default function RootLayout({
                 <FloatActions />
               </ErrorBoundary>
               <Toaster />
+              <StatReporter />
             </AppearanceSettingsManager>
           </AppearanceProvider>
         </ThemeProvider>
