@@ -480,6 +480,138 @@ const repoList: Repo[] = [
       'Info: "steeping tips..." 🫖💡'
     ] 
   },
+  { 
+    name: 'MC-AIChat', 
+    url: `${GITHUB_REPO_PREFIX}MC-AIChat`, 
+    prank_tags: [
+      'April Fools: AI only talks about teapots 🫖',
+      'Chat context: always brewing tea ☕️',
+      'Database: stores tea preferences 🍵',
+      'Multi-language: tea dialects only 🗣️',
+      'OpenAI API: returns tea recipes instead 🔮'
+    ] 
+  },
+  { 
+    name: 'server', 
+    url: `${GITHUB_REPO_PREFIX}server`, 
+    prank_tags: [
+      'April Fools: Website serves tea instead of pages 🫖',
+      'Homepage: teapot spinning animation 🌀',
+      'Server status: "brewing..." ☕️',
+      'Download modpack: actually downloads tea leaves 🍵',
+      'Footer: "powered by tea and TypeScript" 🫗'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-PCL2-Homepage', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-PCL2-Homepage`, 
+    prank_tags: [
+      'April Fools: PCL2 homepage shows teapot launcher 🫖',
+      'Launch button: "brew Minecraft" ☕️',
+      'Server status: measured in tea cups 🍵',
+      'Theme: Earl Grey edition 🫗',
+      'Error: "teapot failed to launch" 💥'
+    ] 
+  },
+  { 
+    name: 'pcl2-mrpack-converter', 
+    url: `${GITHUB_REPO_PREFIX}pcl2-mrpack-converter`, 
+    prank_tags: [
+      'April Fools: Converts modpacks to tea recipes 🍵',
+      'Output format: .tea instead of .mrpack 🫖',
+      'ForgeCDN removal: replaced with tea leaves 🫗',
+      'Conversion time: "steeping..." ⏳',
+      'Success: "perfect cup of modpack" ☕️✅'
+    ] 
+  },
+  { 
+    name: 'FakePlayer-CE', 
+    url: `${GITHUB_REPO_PREFIX}FakePlayer-CE`, 
+    prank_tags: [
+      'April Fools: Fake players are sentient teapots 🫖👤',
+      'Skin: teapot with legs 🫖🦵',
+      'Chat: "I need more tea!" ☕️',
+      'AFK: "brewing in corner" 🍵',
+      'Kick reason: "teapot overflow" 🫗'
+    ] 
+  },
+  { 
+    name: 'nuxtor', 
+    url: `${GITHUB_REPO_PREFIX}nuxtor`, 
+    prank_tags: [
+      'April Fools: Builds desktop apps shaped like teapots 🫖💻',
+      'Tauri backend: powered by tea steam ☕️',
+      'Nuxt 4: "Tea mode" enabled 🍵',
+      'UI components: all teapot-themed 🎨',
+      'Bundle size: measured in tea bags 🫗'
+    ] 
+  },
+  { 
+    name: 'website-statistics', 
+    url: `${GITHUB_REPO_PREFIX}website-statistics`, 
+    prank_tags: [
+      'April Fools: Stats show tea consumption instead of visitors 🍵',
+      'SQLite: stores tea leaf readings 🫖',
+      'API: returns "brewing..." status ☕️',
+      'Analytics: "teapot engagement" metric 📊',
+      'Dashboard: made of tea-stained glass 🫗'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-Player-Image', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-Player-Image`, 
+    prank_tags: [
+      'April Fools: Player images replaced with teapot avatars 🫖🖼️',
+      'Render: teapot with player name 🍵',
+      'Color palette: tea-themed only 🎨',
+      'Upload: "brewing avatar..." progress ☕️',
+      'Default: "mystery teapot" 🫖❓'
+    ] 
+  },
+  { 
+    name: 'EndlessPixel-Bug-Tracker', 
+    url: `${GITHUB_REPO_PREFIX}EndlessPixel-Bug-Tracker`, 
+    prank_tags: [
+      'April Fools: All bugs are teapot-related 🫖🐛',
+      'Issue template: "Teapot malfunction" 🫗',
+      'Priority: "steeping" vs "brewing" ☕️',
+      'Labels: green tea, black tea, oolong 🍵',
+      'Resolution: "fixed by adding sugar" 🍬'
+    ] 
+  },
+  { 
+    name: 'RGBFile', 
+    url: `${GITHUB_REPO_PREFIX}RGBFile`, 
+    prank_tags: [
+      'April Fools: Converts files to tea-colored RGB stripes 🍵🎨',
+      'Encoding: tea leaf pattern algorithm 🔮',
+      'Decoding: "steep the image" to get file ☕️',
+      'Colors: all shades of tea (green, brown, amber) 🫖',
+      'Lossless: unless you add milk 🥛'
+    ] 
+  },
+  { 
+    name: 'CDKer', 
+    url: `${GITHUB_REPO_PREFIX}CDKer`, 
+    prank_tags: [
+      'April Fools: CDK generates teapot items instead 🫖🎁',
+      'Code format: "TEA-XXXX-POUR" ☕️',
+      'Redeem: teapot pouring animation 🫗',
+      'Invalid: "not enough sugar" 🍬',
+      'Rare: golden teapot with wings 🫖🌟'
+    ] 
+  },
+  { 
+    name: 'easybot-react-vite-template', 
+    url: `${GITHUB_REPO_PREFIX}easybot-react-vite-template`, 
+    prank_tags: [
+      'April Fools: React components are all teapots 🫖⚛️',
+      'Vite build: "brew the app" ☕️',
+      'HMR: "hot tea reload" 🍵',
+      'Template: "Teapot Starter" 🫖🚀',
+      'Docs: written in tea stains 📜'
+    ] 
+  }
 ];
 
 // Fisher-Yates 完全随机打乱
