@@ -5,8 +5,6 @@ const STATISTICS_API = "http://45.205.31.33:6000/api/stats";
 async function reportStatistics(request: NextRequest) {
   try {
     const serverTime = Math.floor(Date.now() / 1000);
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
     
     await fetch(STATISTICS_API, {
       method: "POST",
@@ -19,10 +17,9 @@ async function reportStatistics(request: NextRequest) {
         client_time: serverTime,
         server_time: serverTime,
       }),
-      signal: controller.signal,
+      cache: "no-cache",
+      keepalive: true,
     });
-    
-    clearTimeout(timeoutId);
   } catch {
     // 上报失败不影响主业务
   }
@@ -35,7 +32,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
-  reportStatistics(request);
+  await reportStatistics(request);
   
   return NextResponse.next();
 }
