@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const STATISTICS_API = "http://45.205.31.33:6000/api/stats";
+const STATISTICS_API = "/api/stats/proxy";
 
 export function StatReporter() {
   useEffect(() => {
