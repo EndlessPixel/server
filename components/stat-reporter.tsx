@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const STATISTICS_API = "/api/stats/proxy";
 
 export function StatReporter() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const reportStatistics = async () => {
       try {
@@ -17,7 +20,7 @@ export function StatReporter() {
           },
           body: JSON.stringify({
             url: window.location.href,
-            path: window.location.pathname,
+            path: window.location.pathname + window.location.search,
             client_time: clientTime,
             server_time: clientTime,
           }),
@@ -29,7 +32,7 @@ export function StatReporter() {
     };
 
     reportStatistics();
-  }, []);
+  }, [pathname]);
 
   return null;
 }
