@@ -6,6 +6,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     
     const ip =
+      request.headers.get("x-vercel-ip") ||
       request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
       request.headers.get("x-real-ip") ||
       request.headers.get("cf-connecting-ip") ||
@@ -17,8 +18,8 @@ export async function POST(request: NextRequest) {
       const req = http.request(
         {
           hostname: "45.205.31.33",
-          port: 6000,
-          path: "/api/stats",
+          port: 5000,
+          path: "/api/statistics",
           method: "POST",
           headers: {
             "Content-Type": "application/json",
