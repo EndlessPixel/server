@@ -17,6 +17,7 @@ export function StatReporter() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "referer": window.location.href,
           },
           body: JSON.stringify({
             url: new URL(window.location.href).origin,
