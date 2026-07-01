@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-const STATISTICS_API = "http://45.205.31.33:6000/api/stats";
+const STATISTICS_API = "//45.205.31.33:6000/api/stats";
 
 export function StatReporter() {
   const pathname = usePathname();
