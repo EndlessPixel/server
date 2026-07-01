@@ -19,7 +19,7 @@ export function StatReporter() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            url: window.location.href,
+            url: new URL(window.location.href).origin,
             path: window.location.pathname + window.location.search,
             client_time: clientTime,
             server_time: clientTime,
