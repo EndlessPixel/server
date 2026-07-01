@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Users, Cpu, MessageSquare, AlertTriangle, ArrowLeft, Wifi, WifiOff, Clock, RefreshCw, ChevronDown, ChevronUp, Zap, Shield, RotateCcw, Gauge, AlertOctagon, MapPin, Loader2 } from "lucide-react";
-import { List, type RowComponentProps } from "react-window"; // react-window v2.x API
+import { List, type RowComponentProps } from "react-window";
 
 interface Player {
   name: string;
