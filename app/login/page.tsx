@@ -36,14 +36,14 @@ export default function LoginPage() {
         const date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         const expires = `expires=${date.toUTCString()}`;
-        
+
         // 修复：对 value 进行编码，防止特殊字符破坏 cookie 格式
         const encodedValue = encodeURIComponent(value);
-        
+
         // 修复：添加 Secure 和 HttpOnly 建议（注意：HttpOnly 需要服务端设置）
         // 这里至少添加 __Host- 前缀保护（如果支持）
         const secure = window.location.protocol === 'https:' ? 'Secure;' : '';
-        
+
         document.cookie = `${name}=${encodedValue}; ${expires}; path=/; SameSite=Lax; ${secure}`;
     }
 
@@ -102,12 +102,12 @@ export default function LoginPage() {
 
             if (res.ok && data.success === true) {
                 // 修复：验证返回的 name 格式
-                const userName = data.name && validUsernamePattern.test(data.name) 
-                    ? data.name 
+                const userName = data.name && validUsernamePattern.test(data.name)
+                    ? data.name
                     : username;
-                
+
                 setCookie('mc_user', userName);
-                
+
                 // 修复：使用 searchParams 获取 redirect
                 const redirect = searchParams.get('redirect') || '/';
                 router.push(redirect);
@@ -138,9 +138,8 @@ export default function LoginPage() {
 
             <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative z-10">
                 <div
-                    className={`w-full max-w-md bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-xl p-6 sm:p-8 border-slate-200 dark:border-slate-700 transition-all duration-700 ${
-                        showForm ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                    }`}
+                    className={`w-full max-w-md bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-xl p-6 sm:p-8 border-slate-200 dark:border-slate-700 transition-all duration-700 ${showForm ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                        }`}
                 >
                     <div className="text-center mb-8">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
@@ -154,7 +153,7 @@ export default function LoginPage() {
 
                     <form onSubmit={handleLogin} className="space-y-4" noValidate>
                         {error && (
-                            <div 
+                            <div
                                 className="bg-red-50/80 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-4 py-2.5 rounded-lg text-sm shadow-sm"
                                 role="alert"
                             >
@@ -226,6 +225,10 @@ export default function LoginPage() {
                             </label>
                         </div>
 
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                            为保障账号与数据安全，暂不支持网页直接注册。请先加入服务器，再使用注册指令完成创建。
+                        </p>
+
                         <button
                             type="submit"
                             disabled={loading}
@@ -255,15 +258,15 @@ export default function LoginPage() {
 
             {/* 协议弹窗 */}
             {modalType && (
-                <div 
+                <div
                     className="fixed inset-0 z-50 flex items-center justify-center p-4"
                     role="dialog"
                     aria-modal="true"
                 >
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={closeModal} />
                     <div className="relative w-full max-w-lg max-h-[80vh] overflow-auto bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6 border border-slate-200 dark:border-slate-700 z-10">
-                        <button 
-                            onClick={closeModal} 
+                        <button
+                            onClick={closeModal}
                             className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
                             aria-label="关闭弹窗"
                         >
@@ -286,8 +289,8 @@ export default function LoginPage() {
                             </>
                         )}
 
-                        <button 
-                            onClick={closeModal} 
+                        <button
+                            onClick={closeModal}
                             className="mt-6 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm transition-colors"
                         >
                             我已阅读并了解
