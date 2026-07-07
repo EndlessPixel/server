@@ -9,7 +9,7 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "img-src 'self' data: https: http://45.205.31.33:8080 http://82.152.64.152:8080",
+              "img-src 'self' data: https: http://45.205.31.33:8080",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
