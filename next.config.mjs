@@ -13,7 +13,7 @@ const nextConfig = {
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "connect-src 'self' https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us https://uapis.cn https://raw.githubusercontent.com https://gh-proxy.org https://cdn.gh-proxy.org https://edgeone.gh-proxy.org https://hk.gh-proxy.org https://gh.xmly.dev https://fastly.jsdelivr.net https://gcore.jsdelivr.net http://45.205.31.33:8080 http://82.152.64.152:8080 http://45.205.31.33:6000",
+              "connect-src 'self' https://api.github.com https://avatars.githubusercontent.com https://api.mcsrvstat.us https://uapis.cn https://raw.githubusercontent.com https://gh-proxy.org https://cdn.gh-proxy.org https://edgeone.gh-proxy.org https://hk.gh-proxy.org https://gh.xmly.dev https://fastly.jsdelivr.net https://gcore.jsdelivr.net http://45.205.31.33:8080 http://45.205.31.33:6000 https://q.qlogo.cn/",
               "object-src 'none'",
               "frame-src 'self' https://player.bilibili.com",
               "base-uri 'self'",
