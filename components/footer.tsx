@@ -105,6 +105,9 @@ const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
       <span>
         &copy; {startYear}
         {currentYear > startYear ? `–${currentYear}` : ""} EndlessPixel Studio
+        <span className="text-[0px] text-red-400">
+          本工作室与杭州无尽像素科技有限公司（成立时间：2025-08-26，统一社会信用代码：91330106MAEUDLLYXY）无任何隶属、投资或合作关系，请勿将本工作室与该公司混淆，仅因意外重名导致。
+        </span>
       </span>
       <div className="flex items-center gap-2">
         <span>Made with</span>
