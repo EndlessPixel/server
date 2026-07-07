@@ -14,6 +14,8 @@ import {
   MapPinIcon,
   FingerprintIcon,
   CalendarIcon,
+  BanIcon,
+  QrCodeIcon,
 } from 'lucide-react';
 
 interface UserInfo {
@@ -23,6 +25,11 @@ interface UserInfo {
   ipLocation: string;
   createdAt: string;
   lastActive: string;
+  ban: boolean;
+  qq: {
+    uuid: string;
+    name: string;
+  } | null;
 }
 
 export default function ProfilePage() {
@@ -159,10 +166,18 @@ export default function ProfilePage() {
                   {userInfo.name.charAt(0).toUpperCase()}
                 </div>
                 <h2 className="text-xl font-bold text-slate-800 dark:text-white">{userInfo.name}</h2>
-                <span className="inline-flex items-center gap-1 mt-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300">
-                  <ShieldIcon className="w-3 h-3" />
-                  普通用户
-                </span>
+                <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300">
+                    <ShieldIcon className="w-3 h-3" />
+                    普通用户
+                  </span>
+                  {userInfo.ban && (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300">
+                      <BanIcon className="w-3 h-3" />
+                      已封禁
+                    </span>
+                  )}
+                </div>
 
                 <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
                   <div className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400">
@@ -227,7 +242,7 @@ export default function ProfilePage() {
                     </span>
                     <span className="text-slate-800 dark:text-slate-200 font-medium text-sm">{formatTime(userInfo.createdAt)}</span>
                   </div>
-                  <div className="flex items-center justify-between py-3">
+                  <div className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700/50">
                     <span className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1.5">
                       <ActivityIcon className="w-3.5 h-3.5" />
                       最后登录
@@ -237,9 +252,50 @@ export default function ProfilePage() {
                       <p className="text-xs text-slate-400 dark:text-slate-500">{formatTime(userInfo.lastActive)}</p>
                     </div>
                   </div>
+                  {/* === 新增：QQ 绑定信息 === */}
+                  {userInfo.qq ? (
+                    <div className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700/50">
+                      <span className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1.5">
+                        <QrCodeIcon className="w-3.5 h-3.5" />
+                        QQ 绑定
+                      </span>
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={`https://q.qlogo.cn/g?b=qq&nk=${userInfo.qq.uuid}&s=640`}
+                          alt="QQ头像"
+                          className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-600"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                        <div className="text-right">
+                          <span className="text-slate-800 dark:text-slate-200 font-medium text-sm">
+                            {userInfo.qq.name || userInfo.qq.uuid}
+                          </span>
+                          <p className="text-xs text-slate-400 dark:text-slate-500">QQ号: {userInfo.qq.uuid}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between py-3">
+                      <span className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1.5">
+                        <QrCodeIcon className="w-3.5 h-3.5" />
+                        QQ 绑定
+                      </span>
+                      <span className="text-slate-400 dark:text-slate-500 text-sm">未绑定</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between py-3">
+                    <span className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1.5">
+                      <BanIcon className="w-3.5 h-3.5" />
+                      封禁状态
+                    </span>
+                    <span className={`text-sm font-medium ${userInfo.ban ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+                      {userInfo.ban ? '已封禁' : '正常'}
+                    </span>
+                  </div>
                 </div>
               </div>
-
             </div>
           </div>
         )}
