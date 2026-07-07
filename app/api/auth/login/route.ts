@@ -3,14 +3,22 @@ import crypto from 'crypto';
 
 const LOGIN_API_URL = `${process.env.TARGET_API_URL}:10737/v1/api/auth/login`;
 
+const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
+const PASSWORD_MIN_LENGTH = 6;
+
+/**
+ * ⚠️ 注意：此加密函数保留了原始 bug（用字符数截断 UTF-8 字节）
+ * 这是为了与 Python 后端的遗留逻辑保持一致
+ * 不要"修复"这个 bug，否则会导致认证失败
+ */
 function encrypt(name: string, password: string): string {
     const text = `ÜÄaeut//&/=I ${password}7421€547${name}__+IÄIH§%NK ${password}`;
-    // 计算字符长度
+    
+    // 原始 bug 逻辑：用字符数（而非字节数）截断 UTF-8 buffer
     const charLen = text.length;
-    // 获取UTF-8字节
     const buf = Buffer.from(text, 'utf8');
-    // 截取前charLen个字节（注意charLen是字符数，不是字节数）
-    const truncated = buf.subarray(0, charLen);
+    const truncated = buf.subarray(0, charLen);  // ← 保留原始 bug
+    
     const hash = crypto.createHash('sha512');
     hash.update(truncated);
     return hash.digest('hex');
@@ -25,25 +33,49 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: '缺少用户名或密码' }, { status: 400 });
         }
 
+        if (!USERNAME_PATTERN.test(name)) {
+            return NextResponse.json({ error: '用户名格式无效' }, { status: 400 });
+        }
+
+        if (password.length < PASSWORD_MIN_LENGTH) {
+            return NextResponse.json({ error: '密码长度不足' }, { status: 400 });
+        }
+
         const encryptedPassword = encrypt(name, password);
+
+        // 安全获取客户端 IP
+        const clientIp = request.headers.get('x-real-ip') 
+            || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() 
+            || '127.0.0.1';
 
         const res = await fetch(LOGIN_API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Forwarded-For': request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
-                Referer: '',
-                Origin: '',
+                'X-Forwarded-For': clientIp,
             },
             body: JSON.stringify({ name, password: encryptedPassword }),
         });
 
-        const data = await res.json();
-        // 标准化返回格式
+        let data;
+        const contentType = res.headers.get('content-type');
+        if (contentType?.includes('application/json')) {
+            data = await res.json();
+        } else {
+            const text = await res.text();
+            data = { success: false, message: text || '未知错误' };
+        }
+
+        // 验证后端返回的 name 格式
+        const safeName = data.name && USERNAME_PATTERN.test(data.name) 
+            ? data.name 
+            : name;
+
         return NextResponse.json({
-            name: data.name || name,
-            success: data.success || false
+            name: safeName,
+            success: data.success === true
         });
+
     } catch (error) {
         console.error('登录代理失败:', error);
         return NextResponse.json({ error: '请求失败' }, { status: 500 });
