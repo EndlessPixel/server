@@ -1,6 +1,6 @@
 // components/login.tsx
 "use client";
-import { LogOutIcon, UserIcon, LogInIcon } from "lucide-react";
+import { LogOutIcon, LogInIcon } from "lucide-react";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
@@ -94,19 +94,32 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     transition-all duration-300
   `;
 
-  const userInfoClasses = `
-    inline-flex items-center gap-2
-    ${sizeClasses[size]}
-    text-slate-700 dark:text-slate-300
-  `;
 
+  // components/login.tsx — 登录状态部分改造
   if (isLoggedIn) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        <span className={userInfoClasses}>
-          <UserIcon className="w-4 h-4" />
-          {username}
-        </span>
+        {/* 👇 用户名/头像区域 — 点击进入个人中心 */}
+        <Link
+          href="/profile"
+          className={`
+          inline-flex items-center gap-2 rounded-lg
+          ${sizeClasses[size]}
+          bg-slate-100 dark:bg-slate-800
+          hover:bg-slate-200 dark:hover:bg-slate-700
+          text-slate-800 dark:text-slate-200
+          transition-all duration-200
+          cursor-pointer
+        `}
+          title="进入个人中心"
+        >
+          <div className="w-6 h-6 rounded-full bg-linear-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+            {username.charAt(0).toUpperCase()}
+          </div>
+          <span className="max-w-25 truncate">{username}</span>
+        </Link>
+
+        {/* 退出按钮保留 */}
         <button
           onClick={handleLogout}
           className={`${logoutBtnClasses} ${sizeClasses[size]}`}
