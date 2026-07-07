@@ -1,11 +1,14 @@
-'use client';
+import { Suspense } from 'react';
 import { Navigation } from '@/components/navigation';
 import Footer from '@/components/footer';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
+// ============================================================
+// 客户端组件：所有交互逻辑，使用 useSearchParams
+// ============================================================
+function LoginContent() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -14,7 +17,7 @@ export default function LoginPage() {
     const [agreeTerms, setAgreeTerms] = useState(false);
     const [modalType, setModalType] = useState<'terms' | 'privacy' | null>(null);
     const router = useRouter();
-    const searchParams = useSearchParams(); // 修复：使用 Next.js 提供的 hook
+    const searchParams = useSearchParams();
 
     const validUsernamePattern = /^[a-zA-Z0-9_]{3,16}$/;
 
@@ -23,7 +26,7 @@ export default function LoginPage() {
         return () => clearTimeout(timer);
     }, []);
 
-    // 修复：使用 useCallback 优化，使用 searchParams hook 替代 window.location
+    // 检查是否已登录，若已登录则重定向
     useEffect(() => {
         const redirect = searchParams.get('redirect');
         if (getCookie('mc_user')) {
@@ -31,23 +34,19 @@ export default function LoginPage() {
         }
     }, [router, searchParams]);
 
-    // 修复：增强 Cookie 安全性
+    // Cookie 工具函数（仅客户端执行）
     function setCookie(name: string, value: string, days = 7) {
+        if (typeof window === 'undefined') return; // 构建时安全保护
         const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
         const expires = `expires=${date.toUTCString()}`;
-
-        // 修复：对 value 进行编码，防止特殊字符破坏 cookie 格式
         const encodedValue = encodeURIComponent(value);
-
-        // 修复：添加 Secure 和 HttpOnly 建议（注意：HttpOnly 需要服务端设置）
-        // 这里至少添加 __Host- 前缀保护（如果支持）
         const secure = window.location.protocol === 'https:' ? 'Secure;' : '';
-
         document.cookie = `${name}=${encodedValue}; ${expires}; path=/; SameSite=Lax; ${secure}`;
     }
 
     function getCookie(name: string): string | null {
+        if (typeof window === 'undefined') return null;
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) {
@@ -57,13 +56,10 @@ export default function LoginPage() {
         return null;
     }
 
-    // 修复：添加防抖，防止快速重复提交
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (loading) return;
 
-        if (loading) return; // 防止重复提交
-
-        // 前端验证
         if (!username.trim()) {
             setError('请输入用户名');
             return;
@@ -91,7 +87,6 @@ export default function LoginPage() {
                 body: JSON.stringify({ name: username.trim(), password }),
             });
 
-            // 修复：处理 HTTP 错误状态
             let data;
             const contentType = res.headers.get('content-type');
             if (contentType?.includes('application/json')) {
@@ -101,19 +96,14 @@ export default function LoginPage() {
             }
 
             if (res.ok && data.success === true) {
-                // 修复：验证返回的 name 格式
                 const userName = data.name && validUsernamePattern.test(data.name)
                     ? data.name
                     : username;
-
                 setCookie('mc_user', userName);
-
-                // 修复：使用 searchParams 获取 redirect
                 const redirect = searchParams.get('redirect') || '/';
                 router.push(redirect);
                 router.refresh();
             } else {
-                // 修复：统一错误处理，防止信息泄露
                 setError(data.message || data.error || '登录失败，请检查用户名和密码');
             }
         } catch (err) {
@@ -126,9 +116,10 @@ export default function LoginPage() {
 
     const closeModal = () => setModalType(null);
 
+    // ---------- UI 渲染 ----------
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col relative overflow-hidden">
-            {/* ... 背景装饰保持不变 ... */}
+            {/* 背景装饰 */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-3xl opacity-70"></div>
                 <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-300/20 dark:bg-purple-600/10 rounded-full blur-3xl opacity-70"></div>
@@ -277,14 +268,14 @@ export default function LoginPage() {
                             <>
                                 <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">用户协议</h2>
                                 <div className="text-sm text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
-                                    {/* 内容保持不变 */}
+                                    {/* 这里放置用户协议内容，你原来有就保留 */}
                                 </div>
                             </>
                         ) : (
                             <>
                                 <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">隐私政策</h2>
                                 <div className="text-sm text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
-                                    {/* 内容保持不变 */}
+                                    {/* 这里放置隐私政策内容，你原来有就保留 */}
                                 </div>
                             </>
                         )}
@@ -301,5 +292,16 @@ export default function LoginPage() {
 
             <Footer />
         </div>
+    );
+}
+
+// ============================================================
+// 页面组件：使用 Suspense 包裹客户端组件
+// ============================================================
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">加载中...</div>}>
+            <LoginContent />
+        </Suspense>
     );
 }
