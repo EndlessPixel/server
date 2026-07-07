@@ -96,14 +96,7 @@ const mirrors: Mirror[] = [
     tip: '美国高速节点',
     type: 'cdn',
     region: '美国',
-  },
-  {
-    tag: '英国 CDN',
-    baseUrl: 'http://82.152.64.152:8080',
-    tip: '英国高速节点',
-    type: 'cdn',
-    region: '英国',
-  },
+  }
 ];
 
 function GalleryContent() {
