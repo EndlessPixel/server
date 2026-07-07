@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
@@ -14,8 +15,7 @@ export default function LoginPage() {
     const [modalType, setModalType] = useState<'terms' | 'privacy' | null>(null);
     const router = useRouter();
 
-    // SQL 注入检测正则（最常见危险字符）
-    const sqlInjectionPattern = /['";<>#*=\/\\\-\(\)]/i;
+    const validUsernamePattern = /^[a-zA-Z0-9_]{3,16}$/;
 
     useEffect(() => {
         const timer = setTimeout(() => setShowForm(true), 300);
@@ -44,21 +44,21 @@ export default function LoginPage() {
         return '';
     }
 
-    // 登录提交
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
+
         if (!username.trim()) {
             setError('请输入用户名');
             return;
         }
-
-        // 👇 SQL 注入检测
-        if (sqlInjectionPattern.test(username)) {
-            setError('请不要在用户名输入某些特殊字符，别以为我不知道你要干什么。');
+        if (!validUsernamePattern.test(username)) {
+            setError('用户名只能包含字母、数字和下划线，长度 3-16 位');
             return;
         }
-
+        if (!password.trim() || password.length < 6) {
+            setError('密码长度不能少于 6 位');
+            return;
+        }
         if (!agreeTerms) {
             setError('请阅读并同意用户协议与隐私政策');
             return;
@@ -67,14 +67,31 @@ export default function LoginPage() {
         setError('');
         setLoading(true);
 
-        setTimeout(() => {
-            setCookie('mc_user', username);
-            const urlParams = new URLSearchParams(window.location.search);
-            const redirect = urlParams.get('redirect') || '/';
-            router.push(redirect);
-            router.refresh();
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: username, password }),
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                // 使用后端返回的 name，若不存在则回退到用户输入
+                const userName = data.name || username;
+                setCookie('mc_user', userName);
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect') || '/';
+                router.push(redirect);
+                router.refresh();
+            } else {
+                // 后端可能返回 message 或 error，若无则显示通用提示
+                setError(data.message || data.error || '登录失败，请检查用户名和密码');
+            }
+        } catch (err) {
+            setError('网络请求失败，请稍后重试');
+        } finally {
             setLoading(false);
-        }, 900);
+        }
     };
 
     const closeModal = () => setModalType(null);
@@ -90,9 +107,8 @@ export default function LoginPage() {
 
             <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative z-10">
                 <div
-                    className={`w-full max-w-md bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-xl p-6 sm:p-8  border-slate-200 dark:border-slate-700 transition-all duration-700 ${
-                        showForm ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                    }`}
+                    className={`w-full max-w-md bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-xl p-6 sm:p-8 border-slate-200 dark:border-slate-700 transition-all duration-700 ${showForm ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                        }`}
                 >
                     <div className="text-center mb-8">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
@@ -101,7 +117,7 @@ export default function LoginPage() {
                             </svg>
                         </div>
                         <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">欢迎回来</h1>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">请输入用户名继续你的旅程</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">请输入用户名和密码继续你的旅程</p>
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-4">
@@ -120,9 +136,25 @@ export default function LoginPage() {
                                 id="username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="w-full px-4 py-2.5 bg-slate-100/70 dark:bg-slate-700/70  border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-slate-800 dark:text-white transition-all duration-300 placeholder:text-slate-400"
-                                placeholder="输入任意用户名即可"
-                                autoComplete="off"
+                                className="w-full px-4 py-2.5 bg-slate-100/70 dark:bg-slate-700/70 border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-slate-800 dark:text-white transition-all duration-300 placeholder:text-slate-400"
+                                placeholder="输入你的用户名"
+                                autoComplete="username"
+                                disabled={loading}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                                密码
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full px-4 py-2.5 bg-slate-100/70 dark:bg-slate-700/70 border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-slate-800 dark:text-white transition-all duration-300 placeholder:text-slate-400"
+                                placeholder="输入密码（至少6位）"
+                                autoComplete="current-password"
                                 disabled={loading}
                             />
                         </div>
@@ -182,10 +214,11 @@ export default function LoginPage() {
                 </div>
             </main>
 
+            {/* 协议弹窗 */}
             {modalType && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={closeModal} />
-                    <div className="relative w-full max-w-lg max-h-[80vh] overflow-auto bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6  border-slate-200 dark:border-slate-700 z-10">
+                    <div className="relative w-full max-w-lg max-h-[80vh] overflow-auto bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6 border-slate-200 dark:border-slate-700 z-10">
                         <button onClick={closeModal} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
 
                         {modalType === 'terms' ? (
