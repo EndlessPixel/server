@@ -16,7 +16,26 @@ import {
   CalendarIcon,
   BanIcon,
   QrCodeIcon,
+  PackageIcon,
 } from 'lucide-react';
+// 导入附魔翻译表
+import { enchantments } from '../../lib/enchantments';
+import { getItemDisplayName } from '../../lib/items';
+
+// ---------- 类型定义 ----------
+interface Enchantment {
+  id: string;
+  level: number;
+}
+
+interface InventoryItem {
+  id: string;             // 物品 ID，如 "minecraft:netherite_axe"
+  count: number;
+  slot: number;
+  enchantments?: Enchantment[];  // 附魔列表
+  damage?: number;               // 耐久度损耗
+  custom_name?: string;          // 自定义名称
+}
 
 interface UserInfo {
   name: string;
@@ -30,8 +49,62 @@ interface UserInfo {
     uuid: string;
     name: string;
   } | null;
+  inventory: InventoryItem[];   // 新增
 }
 
+// ---------- 辅助函数（放在组件外部） ----------
+const formatTime = (timeStr: string) => {
+  try {
+    const date = new Date(timeStr);
+    return date.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    return timeStr;
+  }
+};
+
+const getRelativeTime = (timeStr: string) => {
+  try {
+    const date = new Date(timeStr);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 1) return '刚刚';
+    if (minutes < 60) return `${minutes} 分钟前`;
+    if (hours < 24) return `${hours} 小时前`;
+    if (days < 30) return `${days} 天前`;
+    if (days < 365) return `${Math.floor(days / 30)} 个月前`;
+    return `${Math.floor(days / 365)} 年前`;
+  } catch {
+    return timeStr;
+  }
+};
+
+const getDaysSince = (timeStr: string) => {
+  try {
+    const date = new Date(timeStr);
+    const now = new Date();
+    return Math.floor((now.getTime() - date.getTime()) / 86400000);
+  } catch {
+    return 0;
+  }
+};
+
+// 获取附魔中文名 + 等级
+const getEnchantDisplay = (ench: Enchantment) => {
+  const name = enchantments[ench.id as keyof typeof enchantments] || ench.id;
+  return `${name} ${ench.level}`;
+};
+
+// ---------- 组件 ----------
 export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,6 +124,8 @@ export default function ProfilePage() {
           throw new Error(errData.detail || '获取失败');
         }
         const data = await res.json();
+        // 确保 inventory 字段存在，若没有则设为 []
+        if (!data.inventory) data.inventory = [];
         setUserInfo(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : '加载用户信息失败');
@@ -66,54 +141,6 @@ export default function ProfilePage() {
     document.cookie = 'mc_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     router.push('/');
     router.refresh();
-  };
-
-  // 格式化时间
-  const formatTime = (timeStr: string) => {
-    try {
-      const date = new Date(timeStr);
-      return date.toLocaleString('zh-CN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    } catch {
-      return timeStr;
-    }
-  };
-
-  // 获取相对时间
-  const getRelativeTime = (timeStr: string) => {
-    try {
-      const date = new Date(timeStr);
-      const now = new Date();
-      const diff = now.getTime() - date.getTime();
-      const minutes = Math.floor(diff / 60000);
-      const hours = Math.floor(diff / 3600000);
-      const days = Math.floor(diff / 86400000);
-
-      if (minutes < 1) return '刚刚';
-      if (minutes < 60) return `${minutes} 分钟前`;
-      if (hours < 24) return `${hours} 小时前`;
-      if (days < 30) return `${days} 天前`;
-      if (days < 365) return `${Math.floor(days / 30)} 个月前`;
-      return `${Math.floor(days / 365)} 年前`;
-    } catch {
-      return timeStr;
-    }
-  };
-
-  // 计算注册天数
-  const getDaysSince = (timeStr: string) => {
-    try {
-      const date = new Date(timeStr);
-      const now = new Date();
-      return Math.floor((now.getTime() - date.getTime()) / 86400000);
-    } catch {
-      return 0;
-    }
   };
 
   if (loading) {
@@ -200,7 +227,9 @@ export default function ProfilePage() {
               </div>
             </div>
 
+            {/* 右侧：详细信息 */}
             <div className="lg:col-span-2 space-y-6">
+              {/* 基本信息卡片 */}
               <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
@@ -252,7 +281,7 @@ export default function ProfilePage() {
                       <p className="text-xs text-slate-400 dark:text-slate-500">{formatTime(userInfo.lastActive)}</p>
                     </div>
                   </div>
-                  {/* === 新增：QQ 绑定信息 === */}
+                  {/* QQ 绑定 */}
                   {userInfo.qq ? (
                     <div className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700/50">
                       <span className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1.5">
@@ -277,7 +306,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between py-3">
+                    <div className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700/50">
                       <span className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1.5">
                         <QrCodeIcon className="w-3.5 h-3.5" />
                         QQ 绑定
@@ -285,6 +314,7 @@ export default function ProfilePage() {
                       <span className="text-slate-400 dark:text-slate-500 text-sm">未绑定</span>
                     </div>
                   )}
+                  {/* 封禁状态 */}
                   <div className="flex items-center justify-between py-3">
                     <span className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1.5">
                       <BanIcon className="w-3.5 h-3.5" />
@@ -295,6 +325,70 @@ export default function ProfilePage() {
                     </span>
                   </div>
                 </div>
+              </div>
+
+              {/* ===== 新增：背包物品卡片 ===== */}
+              <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                    <PackageIcon className="w-5 h-5 text-indigo-500" />
+                    背包物品
+                    <span className="text-sm font-normal text-slate-400 ml-2">({userInfo.inventory?.length || 0})</span>
+                  </h3>
+                </div>
+
+                {userInfo.inventory && userInfo.inventory.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
+                    {userInfo.inventory.map((item, index) => {
+                      // 使用导入的 getItemDisplayName 函数
+                      const displayName = item.custom_name || getItemDisplayName(item.id);
+                      const hasEnchants = item.enchantments && item.enchantments.length > 0;
+                      const damage = item.damage;
+                      return (
+                        <div
+                          key={index}
+                          className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 border border-slate-200 dark:border-slate-600 flex flex-col"
+                        >
+                          <div className="flex items-start justify-between">
+                            <span className="font-medium text-slate-800 dark:text-white text-sm">
+                              {displayName}
+                            </span>
+                            <span className="text-xs text-slate-500 dark:text-slate-400">
+                              ×{item.count}
+                            </span>
+                          </div>
+                          {/* 显示物品 ID（小字） */}
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
+                            {item.id}
+                          </span>
+                          {/* 附魔列表 */}
+                          {hasEnchants && (
+                            <div className="mt-1.5 flex flex-wrap gap-1">
+                              {item.enchantments!.map((ench, i) => (
+                                <span
+                                  key={i}
+                                  className="text-[10px] bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-1.5 py-0.5 rounded"
+                                >
+                                  {getEnchantDisplay(ench)}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          {/* 耐久度 */}
+                          {damage !== undefined && (
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                              耐久损耗: {damage}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-slate-400 dark:text-slate-500 text-sm">
+                    背包为空
+                  </div>
+                )}
               </div>
             </div>
           </div>
