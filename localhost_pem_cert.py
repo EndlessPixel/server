@@ -1,10 +1,12 @@
 import os, sys, shutil, platform, time, urllib.request, tempfile, subprocess, socket, ssl
 from pathlib import Path
+
 MKCERT_VERSION = "v1.4.4"
 DOWNLOAD_BASE = f"https://github.com/FiloSottile/mkcert/releases/download/{MKCERT_VERSION}"
 PROXY_LIST = ["https://gh-proxy.org/https://","https://hk.gh-proxy.org/https://","https://cdn.gh-proxy.org/https://"]
 DOWNLOAD_TIMEOUT = 120
 PROGRESS_BAR_LENGTH: int = 50
+
 class DownloadProgress:
     def __init__(self):
         self.start_time: float = 0.0
@@ -57,6 +59,7 @@ class DownloadProgress:
         sys.stdout.flush()
         if self.downloaded >= self.total and self.total > 0:
             print()
+
 def print_info(msg):
     print(f"\033[34m[INFO]\033[0m {msg}")
 
@@ -66,8 +69,10 @@ def print_success(msg):
 def print_error(msg):
     print(f"\033[31m[ERROR]\033[0m {msg}")
     sys.exit(1)
+
 def print_warning(msg):
     print(f"\033[33m[WARNING]\033[0m {msg}")
+
 def get_system_info():
     system = platform.system()
     arch = platform.machine().lower()
@@ -76,6 +81,8 @@ def get_system_info():
             return "windows", "amd64", "exe"
         elif arch == "arm64":
             return "windows", "arm64", "exe"
+        elif arch in ["x86", "i386", "i686"]:   # 新增 32 位支持
+            return "windows", "386", "exe"
         else:
             print_error(f"不支持的 Windows 架构: {arch}")
     elif system == "Linux":
@@ -85,10 +92,13 @@ def get_system_info():
             return "linux", "arm", ""
         elif arch in ["aarch64", "arm64"]:
             return "linux", "arm64", ""
+        elif arch in ["x86", "i386", "i686"]:   # 新增 32 位支持
+            return "linux", "386", ""
         else:
             print_error(f"不支持的 Linux 架构: {arch}")
     else:
         print_error(f"不支持的操作系统: {system} (仅支持 Windows/Linux)")
+
 def download_with_retry(url, save_path):
     print_info(f"尝试直接下载: {url}")
     if download_file(url, save_path):
@@ -118,8 +128,10 @@ def download_with_retry(url, save_path):
         return True
     else:
         print_error("所有下载方式均失败，请检查网络或稍后重试")
+
 def download_file(url: str, save_path: Path) -> bool:
     try:
+        # 禁用 SSL 证书验证（仅用于绕过网络限制，请确保安全）
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
@@ -140,6 +152,7 @@ def download_file(url: str, save_path: Path) -> bool:
     except Exception as e:
         print_warning(f"\n下载出错: {str(e)[:100]}")
         return False
+
 def run_command(cmd, description):
     print_info(f"{description}: {' '.join(cmd)}")
     try:
@@ -155,6 +168,7 @@ def run_command(cmd, description):
         print_error(f"{description}失败: {e.stderr[:200]}")
     except Exception as e:
         print_error(f"{description}出错: {str(e)[:200]}")
+
 def main():
     BORDER_CHAR = "="
     TITLE_PADDING = 12
@@ -168,7 +182,7 @@ def main():
     print(f"{TITLE_COLOR}{' ' * TITLE_PADDING}mkcert 自动安装 & 证书生成工具 {RESET_COLOR}")
     print(f"{TITLE_COLOR}{border_line}{RESET_COLOR}")
     print(f"\n{INFO_COLOR}工具说明：{RESET_COLOR}")
-    print(f"{TEXT_COLOR}   1. 自动检测系统架构（Windows/Linux amd64/arm64/arm）")
+    print(f"{TEXT_COLOR}   1. 自动检测系统架构（Windows/Linux amd64/arm64/arm/386）")
     print(f"   2. 自动下载对应版本的 mkcert 二进制文件")
     print(f"   3. 支持 GitHub 代理下载（解决网络访问问题）")
     print(f"   4. 自动初始化根证书并生成 localhost HTTPS 证书")
@@ -179,19 +193,25 @@ def main():
     print("5s后开始执行...\n按下 Ctrl+C / Command+C 可中止操作。")
     time.sleep(5)
     print(f"\n{TEXT_COLOR}开始执行...{RESET_COLOR}\n")
+
     system, arch, ext = get_system_info()
     print_info(f"检测到系统: {system} ({arch})")
+
     filename = f"mkcert-{MKCERT_VERSION}-{system}-{arch}"
     if ext:
         filename += f".{ext}"
     download_url = f"{DOWNLOAD_BASE}/{filename}"
+
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_file = Path(temp_dir) / filename
         if not download_with_retry(download_url, temp_file):
             sys.exit(1)
+
         if system == "Linux":
             temp_file.chmod(0o755)
+
         mkcert_path = str(temp_file)
+
         if system == "Windows":
             system_dir = Path(os.environ["SystemRoot"]) / "System32"
             target_path = system_dir / "mkcert.exe"
@@ -201,18 +221,30 @@ def main():
                 print_success(f"mkcert 已安装到: {target_path}")
             except PermissionError:
                 print_warning("无管理员权限，使用临时路径运行 mkcert")
-        else:
+                # mkcert_path 保持为临时文件路径
+        else:  # Linux
             target_path = Path("/usr/local/bin/mkcert")
             try:
-                run_command(["sudo", "cp", str(temp_file), str(target_path)], "安装 mkcert 到系统目录")
+                # 直接使用 subprocess.run 并捕获异常，避免 run_command 直接退出
+                subprocess.run(
+                    ["sudo", "cp", str(temp_file), str(target_path)],
+                    check=True,
+                    capture_output=True,
+                    text=True
+                )
                 mkcert_path = "mkcert"
-            except:
-                print_warning("无 sudo 权限，使用临时路径运行 mkcert")
+                print_success(f"mkcert 已安装到: {target_path}")
+            except subprocess.CalledProcessError as e:
+                print_warning(f"安装到系统目录失败: {e.stderr[:200]}，使用临时路径运行 mkcert")
+                # mkcert_path 保持为临时文件路径
+
+        # 以下命令如果失败则退出（符合预期）
         run_command([mkcert_path, "-install"], "初始化根证书")
         run_command(
             [mkcert_path, "localhost", "127.0.0.1", "::1"],
             "生成本地证书"
         )
+
         cert_dir = Path("cert")
         cert_dir.mkdir(exist_ok=True)
         for cert_file in ["localhost.pem", "localhost-key.pem"]:
@@ -221,18 +253,22 @@ def main():
                 dest_path = cert_dir / cert_file
                 shutil.move(file_path, dest_path)
                 print_info(f"证书已移动到: {dest_path}")
+
     print("\n" + "=" * 50)
     print_success("证书生成完成！")
     print_info(f"证书目录: {Path.cwd() / 'cert'}")
     print_info("下一步可执行: npm run dev-https")
     print("=" * 50)
+
 if __name__ == "__main__":
     if sys.version_info < (3, 6):
         print_error("需要 Python 3.6 及以上版本，请升级 Python 后重试")
     try:
         main()
     except KeyboardInterrupt:
-        print("\n" + print_warning("用户中断操作"))
+        # 修复：正确调用 warning，不再拼接 None
+        print("\n")
+        print_warning("用户中断操作")
         sys.exit(0)
     except Exception as e:
         print_error(f"程序异常退出: {str(e)}")
