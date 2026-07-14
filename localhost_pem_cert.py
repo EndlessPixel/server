@@ -1,5 +1,6 @@
-import os, sys, shutil, platform, time, urllib.request, tempfile, subprocess, socket, ssl
+import os, sys, shutil, platform, time, urllib.request, tempfile, subprocess, socket, ssl, glob
 from pathlib import Path
+from typing import Optional, Tuple, List
 
 MKCERT_VERSION = "v1.4.4"
 DOWNLOAD_BASE = f"https://github.com/FiloSottile/mkcert/releases/download/{MKCERT_VERSION}"
@@ -81,7 +82,7 @@ def get_system_info():
             return "windows", "amd64", "exe"
         elif arch == "arm64":
             return "windows", "arm64", "exe"
-        elif arch in ["x86", "i386", "i686"]:   # 新增 32 位支持
+        elif arch in ["x86", "i386", "i686"]:
             return "windows", "386", "exe"
         else:
             print_error(f"不支持的 Windows 架构: {arch}")
@@ -92,7 +93,7 @@ def get_system_info():
             return "linux", "arm", ""
         elif arch in ["aarch64", "arm64"]:
             return "linux", "arm64", ""
-        elif arch in ["x86", "i386", "i686"]:   # 新增 32 位支持
+        elif arch in ["x86", "i386", "i686"]:
             return "linux", "386", ""
         else:
             print_error(f"不支持的 Linux 架构: {arch}")
@@ -131,7 +132,6 @@ def download_with_retry(url, save_path):
 
 def download_file(url: str, save_path: Path) -> bool:
     try:
-        # 禁用 SSL 证书验证（仅用于绕过网络限制，请确保安全）
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
@@ -153,7 +153,8 @@ def download_file(url: str, save_path: Path) -> bool:
         print_warning(f"\n下载出错: {str(e)[:100]}")
         return False
 
-def run_command(cmd, description):
+def run_command(cmd, description, check=True):
+    """运行命令并返回结果，check=False 时不会退出"""
     print_info(f"{description}: {' '.join(cmd)}")
     try:
         result = subprocess.run(
@@ -165,9 +166,159 @@ def run_command(cmd, description):
         )
         return result
     except subprocess.CalledProcessError as e:
-        print_error(f"{description}失败: {e.stderr[:200]}")
+        if check:
+            print_error(f"{description}失败: {e.stderr[:200]}")
+        else:
+            print_warning(f"{description}失败: {e.stderr[:200]}")
+            return None
     except Exception as e:
-        print_error(f"{description}出错: {str(e)[:200]}")
+        if check:
+            print_error(f"{description}出错: {str(e)[:200]}")
+        else:
+            print_warning(f"{description}出错: {str(e)[:200]}")
+            return None
+
+def install_mkcert_system(temp_file: Path, system: str) -> Tuple[str, bool]:
+    """安装 mkcert 到系统路径，返回 (可执行路径, 是否成功)"""
+    if system == "Windows":
+        system_dir = Path(os.environ["SystemRoot"]) / "System32"
+        target_path = system_dir / "mkcert.exe"
+        try:
+            shutil.copy2(temp_file, target_path)
+            print_success(f"mkcert 已安装到: {target_path}")
+            return "mkcert.exe", True
+        except PermissionError:
+            print_warning("无管理员权限，使用临时路径运行 mkcert")
+            return str(temp_file), False
+        except Exception as e:
+            print_warning(f"安装失败: {e}，使用临时路径运行")
+            return str(temp_file), False
+    else:  # Linux
+        target_path = Path("/usr/local/bin/mkcert")
+        try:
+            shutil.copy2(temp_file, target_path)
+            target_path.chmod(0o755)
+            print_success(f"mkcert 已安装到: {target_path}")
+            return "mkcert", True
+        except PermissionError:
+            print_info("需要管理员权限来安装 mkcert 到系统目录")
+            try:
+                subprocess.run(
+                    ["sudo", "cp", str(temp_file), str(target_path)],
+                    check=True,
+                    capture_output=True,
+                    text=True
+                )
+                subprocess.run(
+                    ["sudo", "chmod", "755", str(target_path)],
+                    check=True,
+                    capture_output=True,
+                    text=True
+                )
+                print_success(f"mkcert 已安装到: {target_path}")
+                return "mkcert", True
+            except subprocess.CalledProcessError as e:
+                print_warning(f"安装到系统目录失败: {e.stderr[:200]}，使用临时路径运行")
+                return str(temp_file), False
+            except Exception as e:
+                print_warning(f"安装到系统目录失败: {e}，使用临时路径运行")
+                return str(temp_file), False
+        except Exception as e:
+            print_warning(f"安装失败: {e}，使用临时路径运行")
+            return str(temp_file), False
+
+def organize_certificates():
+    """整理证书文件到 cert 目录"""
+    cert_dir = Path("cert")
+    cert_dir.mkdir(exist_ok=True)
+    
+    # 查找所有可能的证书文件
+    cert_patterns = [
+        "localhost.pem",
+        "localhost-key.pem",
+        "localhost+*.pem",
+        "localhost+*-key.pem",
+        "*.pem"  # 兜底
+    ]
+    
+    cert_files: List[Path] = []
+    for pattern in cert_patterns:
+        cert_files.extend(Path(".").glob(pattern))
+    
+    # 去重并排序
+    cert_files = list(set(cert_files))
+    
+    if not cert_files:
+        print_warning("没有找到证书文件")
+        return False
+    
+    # 分类证书和密钥
+    cert_pem = None
+    key_pem = None
+    
+    for file in cert_files:
+        name = file.name
+        if name.endswith("-key.pem"):
+            if key_pem is None or len(name) < len(key_pem.name):
+                key_pem = file
+        elif name.endswith(".pem") and not name.endswith("-key.pem"):
+            if cert_pem is None or len(name) < len(cert_pem.name):
+                cert_pem = file
+    
+    # 如果没找到标准的，尝试找任何 .pem 和 -key.pem 配对
+    if not cert_pem or not key_pem:
+        pem_files = [f for f in cert_files if f.suffix == ".pem" and "-key" not in f.name]
+        key_files = [f for f in cert_files if "-key.pem" in f.name]
+        
+        if pem_files:
+            cert_pem = pem_files[0]
+        if key_files:
+            key_pem = key_files[0]
+    
+    # 移动文件
+    moved = False
+    if cert_pem:
+        dest = cert_dir / "localhost.pem"
+        if cert_pem != dest:
+            # 备份已存在的文件
+            if dest.exists():
+                backup = cert_dir / f"localhost.pem.bak.{int(time.time())}"
+                shutil.move(dest, backup)
+                print_info(f"已备份原证书: {backup}")
+            shutil.move(cert_pem, dest)
+            print_success(f"证书已移动到: {dest}")
+            moved = True
+        else:
+            print_info(f"证书已在正确位置: {dest}")
+    
+    if key_pem:
+        dest = cert_dir / "localhost-key.pem"
+        if key_pem != dest:
+            if dest.exists():
+                backup = cert_dir / f"localhost-key.pem.bak.{int(time.time())}"
+                shutil.move(dest, backup)
+                print_info(f"已备份原密钥: {backup}")
+            shutil.move(key_pem, dest)
+            print_success(f"密钥已移动到: {dest}")
+            moved = True
+        else:
+            print_info(f"密钥已在正确位置: {dest}")
+    
+    # 清理其他证书文件
+    for file in cert_files:
+        if file != cert_pem and file != key_pem:
+            try:
+                # 检查是否在 cert 目录下
+                if not str(file).startswith("cert/"):
+                    # 移动到 cert 目录下的 backup 子目录
+                    backup_dir = cert_dir / "backup"
+                    backup_dir.mkdir(exist_ok=True)
+                    shutil.move(file, backup_dir / file.name)
+                    print_info(f"已移动到备份目录: {backup_dir / file.name}")
+            except Exception as e:
+                print_warning(f"清理证书文件失败 {file}: {e}")
+    
+    return moved
 
 def main():
     BORDER_CHAR = "="
@@ -186,7 +337,7 @@ def main():
     print(f"   2. 自动下载对应版本的 mkcert 二进制文件")
     print(f"   3. 支持 GitHub 代理下载（解决网络访问问题）")
     print(f"   4. 自动初始化根证书并生成 localhost HTTPS 证书")
-    print(f"   5. 自动整理证书文件到 cert 目录{RESET_COLOR}")
+    print(f"   5. 自动整理证书文件到 cert 目录（支持 localhost+2.pem 等变体）{RESET_COLOR}")
     copyright_text = "© 2024–2026 EndlessPixel Studio. Created by system_mini."
     copyright_padding = (border_length - len(copyright_text)) // 2
     print(f"\n{INFO_COLOR}{' ' * copyright_padding}{copyright_text}{RESET_COLOR}")
@@ -204,59 +355,118 @@ def main():
 
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_file = Path(temp_dir) / filename
+        
+        # 下载 mkcert
         if not download_with_retry(download_url, temp_file):
             sys.exit(1)
 
+        # 设置可执行权限
         if system == "Linux":
             temp_file.chmod(0o755)
 
-        mkcert_path = str(temp_file)
+        # 安装 mkcert 到系统
+        mkcert_path, installed = install_mkcert_system(temp_file, system)
+        
+        # 如果安装失败，使用临时文件路径
+        if not installed:
+            print_info("使用临时路径运行 mkcert")
+            temp_file.chmod(0o755)
+            mkcert_path = str(temp_file)
+        
+        print_info(f"mkcert 路径: {mkcert_path}")
 
-        if system == "Windows":
-            system_dir = Path(os.environ["SystemRoot"]) / "System32"
-            target_path = system_dir / "mkcert.exe"
-            try:
-                shutil.copy2(temp_file, target_path)
-                mkcert_path = "mkcert.exe"
-                print_success(f"mkcert 已安装到: {target_path}")
-            except PermissionError:
-                print_warning("无管理员权限，使用临时路径运行 mkcert")
-                # mkcert_path 保持为临时文件路径
-        else:  # Linux
-            target_path = Path("/usr/local/bin/mkcert")
-            try:
-                # 直接使用 subprocess.run 并捕获异常，避免 run_command 直接退出
-                subprocess.run(
-                    ["sudo", "cp", str(temp_file), str(target_path)],
-                    check=True,
-                    capture_output=True,
-                    text=True
-                )
-                mkcert_path = "mkcert"
-                print_success(f"mkcert 已安装到: {target_path}")
-            except subprocess.CalledProcessError as e:
-                print_warning(f"安装到系统目录失败: {e.stderr[:200]}，使用临时路径运行 mkcert")
-                # mkcert_path 保持为临时文件路径
+        # 初始化根证书
+        print_info("初始化根证书...")
+        is_root = hasattr(os, 'geteuid') and os.geteuid() == 0
+        
+        if is_root and system == "Linux":
+            original_user = os.environ.get('SUDO_USER') or os.environ.get('USER')
+            if original_user and original_user != 'root':
+                cmd = ["su", "-", original_user, "-c", f"{mkcert_path} -install"]
+                print_info(f"以用户 {original_user} 身份运行")
+                try:
+                    result = subprocess.run(cmd, check=False, capture_output=True, text=True)
+                    if result.returncode == 0:
+                        print_success("根证书初始化完成")
+                    else:
+                        print_warning(f"以普通用户身份运行失败: {result.stderr[:200]}")
+                        if run_command([mkcert_path, "-install"], "初始化根证书", check=False):
+                            print_success("根证书初始化完成")
+                except Exception as e:
+                    print_warning(f"切换用户运行失败: {e}")
+                    if run_command([mkcert_path, "-install"], "初始化根证书", check=False):
+                        print_success("根证书初始化完成")
+            else:
+                if run_command([mkcert_path, "-install"], "初始化根证书", check=False):
+                    print_success("根证书初始化完成")
+        else:
+            if run_command([mkcert_path, "-install"], "初始化根证书", check=False):
+                print_success("根证书初始化完成")
 
-        # 以下命令如果失败则退出（符合预期）
-        run_command([mkcert_path, "-install"], "初始化根证书")
-        run_command(
-            [mkcert_path, "localhost", "127.0.0.1", "::1"],
-            "生成本地证书"
-        )
+        # 生成证书
+        print_info("生成本地证书...")
+        cert_args = ["localhost", "127.0.0.1", "::1"]
+        
+        if is_root and system == "Linux":
+            original_user = os.environ.get('SUDO_USER') or os.environ.get('USER')
+            if original_user and original_user != 'root':
+                cmd_str = f"{mkcert_path} {' '.join(cert_args)}"
+                cmd = ["su", "-", original_user, "-c", cmd_str]
+                print_info(f"以用户 {original_user} 身份运行")
+                try:
+                    result = subprocess.run(cmd, check=False, capture_output=True, text=True)
+                    if result.returncode == 0:
+                        print_success("证书生成完成")
+                    else:
+                        print_warning(f"以普通用户身份运行失败: {result.stderr[:200]}")
+                        if run_command([mkcert_path] + cert_args, "生成本地证书", check=False):
+                            print_success("证书生成完成")
+                except Exception as e:
+                    print_warning(f"切换用户运行失败: {e}")
+                    if run_command([mkcert_path] + cert_args, "生成本地证书", check=False):
+                        print_success("证书生成完成")
+            else:
+                if run_command([mkcert_path] + cert_args, "生成本地证书", check=False):
+                    print_success("证书生成完成")
+        else:
+            if run_command([mkcert_path] + cert_args, "生成本地证书", check=False):
+                print_success("证书生成完成")
 
-        cert_dir = Path("cert")
-        cert_dir.mkdir(exist_ok=True)
-        for cert_file in ["localhost.pem", "localhost-key.pem"]:
-            file_path = Path(cert_file)
-            if file_path.exists():
-                dest_path = cert_dir / cert_file
-                shutil.move(file_path, dest_path)
-                print_info(f"证书已移动到: {dest_path}")
+    # 整理证书文件到 cert 目录
+    print_info("整理证书文件...")
+    organize_certificates()
 
     print("\n" + "=" * 50)
     print_success("证书生成完成！")
-    print_info(f"证书目录: {Path.cwd() / 'cert'}")
+    
+    cert_dir = Path("cert")
+    if cert_dir.exists():
+        print_info(f"证书目录: {cert_dir.absolute()}")
+        # 列出证书文件
+        cert_files = list(cert_dir.glob("*.pem"))
+        if cert_files:
+            print_info("生成的证书文件:")
+            for f in cert_files:
+                size = f.stat().st_size
+                print(f"  - {f.name} ({size:,} bytes)")
+        else:
+            print_warning("证书目录为空，请检查生成过程")
+    else:
+        print_warning("证书目录不存在")
+    
+    # 检查 Next.js 配置所需的文件
+    required_files = ["localhost.pem", "localhost-key.pem"]
+    missing = []
+    for req in required_files:
+        if not (cert_dir / req).exists():
+            missing.append(req)
+    
+    if missing:
+        print_warning(f"缺少必要文件: {', '.join(missing)}")
+        print_info("请检查 cert 目录，或手动重命名证书文件")
+    else:
+        print_success("所有必要的证书文件已就绪！")
+    
     print_info("下一步可执行: npm run dev-https")
     print("=" * 50)
 
@@ -266,7 +476,6 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        # 修复：正确调用 warning，不再拼接 None
         print("\n")
         print_warning("用户中断操作")
         sys.exit(0)
