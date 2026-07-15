@@ -90,13 +90,6 @@ const mirrors: Mirror[] = [
     tip: '全球备用',
     type: 'cdn',
   },
-  {
-    tag: '美国 CDN',
-    baseUrl: 'http://45.205.31.33:8080',
-    tip: '美国高速节点',
-    type: 'cdn',
-    region: '美国',
-  }
 ];
 
 function GalleryContent() {
