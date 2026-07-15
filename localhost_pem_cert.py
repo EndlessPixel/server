@@ -1,6 +1,6 @@
 import os, sys, shutil, platform, time, urllib.request, tempfile, subprocess, socket, ssl, glob
 from pathlib import Path
-from typing import Optional, Tuple, List
+from typing import Tuple, List
 
 MKCERT_VERSION = "v1.4.4"
 DOWNLOAD_BASE = f"https://github.com/FiloSottile/mkcert/releases/download/{MKCERT_VERSION}"
