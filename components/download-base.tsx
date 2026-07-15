@@ -235,25 +235,6 @@ export function FileBlock({
   getMirrorUrl = (host, url) => `${host}${url}`,
   showOfficial = true,
 }: FileBlockProps) {
-  // 根据文件扩展名判断文件类型
-  const getFileType = (name: string) => {
-    if (name.endsWith(".mrpack") || name.endsWith(".zip")) return "modpack";
-    if (name.endsWith(".exe") || name.endsWith(".msi")) return "installer";
-    if (name.endsWith(".jar")) return "jar";
-    if (name.endsWith(".deb") || name.endsWith(".rpm")) return "linux";
-    if (name.endsWith(".dmg") || name.endsWith(".app")) return "mac";
-    return "other";
-  };
-
-  const fileType = getFileType(file.name);
-  const fileTypeColors: Record<string, string> = {
-    modpack: "text-blue-600",
-    installer: "text-green-600",
-    jar: "text-purple-600",
-    linux: "text-orange-600",
-    mac: "text-pink-600",
-    other: "text-slate-600",
-  };
 
   return (
     <motion.div
@@ -263,10 +244,6 @@ export function FileBlock({
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2 min-w-0">
-          <Download
-            className={`w-4 h-4 ${fileTypeColors[fileType]} shrink-0`}
-            aria-hidden="true"
-          />
           <span
             className="font-medium text-sm truncate text-slate-900 dark:text-white"
             title={file.name}
