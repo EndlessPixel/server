@@ -332,12 +332,6 @@ def main():
     print(f"\n{TITLE_COLOR}{border_line}{RESET_COLOR}")
     print(f"{TITLE_COLOR}{' ' * TITLE_PADDING}mkcert 自动安装 & 证书生成工具 {RESET_COLOR}")
     print(f"{TITLE_COLOR}{border_line}{RESET_COLOR}")
-    print(f"\n{INFO_COLOR}工具说明：{RESET_COLOR}")
-    print(f"{TEXT_COLOR}   1. 自动检测系统架构（Windows/Linux amd64/arm64/arm/386）")
-    print(f"   2. 自动下载对应版本的 mkcert 二进制文件")
-    print(f"   3. 支持 GitHub 代理下载（解决网络访问问题）")
-    print(f"   4. 自动初始化根证书并生成 localhost HTTPS 证书")
-    print(f"   5. 自动整理证书文件到 cert 目录（支持 localhost+2.pem 等变体）{RESET_COLOR}")
     copyright_text = "© 2024–2026 EndlessPixel Studio. Created by system_mini."
     copyright_padding = (border_length - len(copyright_text)) // 2
     print(f"\n{INFO_COLOR}{' ' * copyright_padding}{copyright_text}{RESET_COLOR}")
