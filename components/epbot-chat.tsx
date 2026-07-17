@@ -93,15 +93,29 @@ const MODEL_CATEGORIES = {
 
 // 推荐模型关键词（优先级高到低）
 const RECOMMENDED_PATTERNS = [
-  /qwen.*?(instruct|chat|next)/i,
-  /deepseek.*?(chat|reasoner|v4)/i,
-  /gemini.*?(pro|flash)/i,
-  /gpt-oss/i,
-  /llama.*?instruct/i,
-  /mistral.*?(large|small)/i,
+  // Grok - 推荐高版本
+  /grok-(4\.[3-9]|4\.20|4\.5)(?:-.*(?:high|fast|multi-agent-high))?/i,
+  // Qwen
+  /qwen(?:3?\.?5?)?(?:-next)?.*?(?:instruct|chat)/i,
+  // DeepSeek
+  /deepseek(?:-ai)?\/?(?:reasoner|chat|v4-(?:flash|pro))/i,
+  // Meta Llama - 推荐70B+版本
+  /llama-[34]\..*?(?:70b|90b|405b).*?instruct/i,
+  // Mistral - 推荐large版本
+  /mistral(?:-large|-(?:large-\d+|large-3))/i,
+  // Kimi
   /kimi/i,
+  // GLM
   /glm/i,
-  /yi-large/i,
+  // Gemini - 最新版本
+  /gemini-2\.0-flash/i,
+  // NVIDIA Nemotron - 高质量
+  /nemotron-(?:4-340b|3-ultra|llama-3\.1-nemotron-70b)/i,
+  // StepFun
+  /step-3\.[57]-flash/i,
+  // 其他高质量模型
+  /phi-3\.5-moe/i,
+  /jamba-1\.5-large/i,
 ];
 
 // 模型分类关键词
