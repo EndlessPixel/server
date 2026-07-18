@@ -195,14 +195,26 @@ export function Footer() {
     {
       icon: () => (
         <img
-          src="https://cdn.simpleicons.org/facebook/white"
+          src="https://cdn.simpleicons.org/x/white"
           width="18"
           height="18"
-          alt="Facebook"
+          alt="X"
         />
       ),
-      href: "https://www.facebook.com/system_mini",
-      label: "Facebook",
+      href: "https://x.com/system_mini",
+      label: "X",
+    },
+    {
+      icon: () => (
+        <img
+          src="https://cdn.simpleicons.org/youtube/white"
+          width="18"
+          height="18"
+          alt="YouTube"
+        />
+      ),
+      href: "https://www.youtube.com/channel/UCMhwQrCnysEi0z0PTB655Eg",
+      label: "YouTube",
     },
   ];
 
