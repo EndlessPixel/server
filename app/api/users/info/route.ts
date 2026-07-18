@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
 
-const USER_INFO_API_URL = `${process.env.TARGET_API_URL}:10737/v1/api/users/info`;
+const USER_INFO_API_URL = `http://202.60.232.156:16000/v1/api/users/info`;
 
 // 用户名验证（与登录保持一致）
 const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
