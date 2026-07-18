@@ -15,6 +15,7 @@ export async function GET() {
       "arctic-embed",    // Snowflake embedding
       "content-safety",  // 内容安全模型
       "nemoguard",       // 内容安全模型
+      "guard",           // 内容安全模型
       "safety-guard",    // 安全模型
       "topic-control",   // 主题控制模型
       "console",         // 控制台调试版本
@@ -27,6 +28,7 @@ export async function GET() {
       "parse",           // 解析器
       'diffusion',       // 命中文生图模型
       'imagine',         // 图像模型
+      "nemotron",        // Nvidia的多模态模型
       'vila',            // 视觉语言模型
       'clip',            // 图像分类/搜索模型
       'deplot',          // 读图专家模型
