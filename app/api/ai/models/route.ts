@@ -8,23 +8,31 @@ export async function GET() {
 
     // 过滤列表 - id 包含这些字符串的模型将被移除
     const filterList: string[] = [
-      "embed",          // embedding模型
-      "retriever",      // 检索模型
-      "nv-embedqa",     // Nvidia的QA embedding
-      "bge-m3",         // BAAI embedding
-      "arctic-embed",   // Snowflake embedding
-      "content-safety",
-      "nemoguard",
-      "safety-guard",
-      "topic-control",
-      "console",     // 控制台调试版本
-      "code",        // 代码专用（除非你需要）
-      "translate",   // 翻译专用
-      "vision",      // 视觉模型（除非你需要）
-      "reward",      // 奖励模型
-      "pii",         // PII识别
-      "detector",    // 检测器
-      "parse",       // 解析器
+      "embed",           // embedding模型
+      "retriever",       // 检索模型
+      "nv-embedqa",      // Nvidia的QA embedding
+      "bge-m3",          // BAAI embedding
+      "arctic-embed",    // Snowflake embedding
+      "content-safety",  // 内容安全模型
+      "nemoguard",       // 内容安全模型
+      "safety-guard",    // 安全模型
+      "topic-control",   // 主题控制模型
+      "console",         // 控制台调试版本
+      "code",            // 代码专用（除非你需要）
+      "translate",       // 翻译专用
+      "vision",          // 视觉模型（除非你需要）
+      "reward",          // 奖励模型
+      "pii",             // PII识别
+      "detector",        // 检测器
+      "parse",           // 解析器
+      'diffusion',       // 命中文生图模型
+      'imagine',         // 图像模型
+      'vila',            // 视觉语言模型
+      'clip',            // 图像分类/搜索模型
+      'deplot',          // 读图专家模型
+      'fuyu',            // 数字代理模型
+      'kosmos',          // 多模态输入模型
+      'neva',            // 视觉语言助手模型
     ];
 
     if (!apiKey) {
