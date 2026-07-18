@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -12,7 +12,6 @@ import {
   Check,
   X as XIcon,
   Settings,
-  Zap,
   Search,
   AlertCircle,
   Star,
@@ -50,11 +49,6 @@ type Message = {
   content: string;
   timestamp: number;
   senderName: string;
-  tokenUsage?: {
-    promptTokens?: number;
-    completionTokens?: number;
-    totalTokens?: number;
-  };
 };
 
 interface Session {
@@ -80,77 +74,14 @@ const CURRENT_SESSION_KEY = "epbot_current_session_id";
 const SELECTED_MODEL_KEY = "epbot_selected_model";
 const MAX_STORAGE_PERCENT = 0.9;
 const MAX_CONTEXT_MESSAGES = 25;
-
-// 模型分类配置
-const MODEL_CATEGORIES = {
-  general: { name: "通用对话", icon: "💬", color: "blue" },
-  code: { name: "代码模型", icon: "💻", color: "green" },
-  vision: { name: "视觉模型", icon: "👁️", color: "purple" },
-  embedding: { name: "嵌入模型", icon: "🔗", color: "gray" },
-  safety: { name: "安全模型", icon: "🛡️", color: "red" },
-  other: { name: "其他", icon: "📦", color: "slate" },
-};
-
-// 推荐模型关键词（优先级高到低）
 const RECOMMENDED_PATTERNS = [
-  // Grok - 推荐高版本
   /grok-(4\.[3-9]|4\.20|4\.5)(?:-.*(?:high|fast|multi-agent-high))?/i,
-  // Qwen
   /qwen(?:3?\.?5?)?(?:-next)?.*?(?:instruct|chat)/i,
-  // DeepSeek
   /deepseek(?:-ai)?\/?(?:reasoner|chat|v4-(?:flash|pro))/i,
-  // Meta Llama - 推荐70B+版本
   /llama-[34]\..*?(?:70b|90b|405b).*?instruct/i,
-  // Mistral - 推荐large版本
-  /mistral(?:-large|-(?:large-\d+|large-3))/i,
-  // Kimi
   /kimi/i,
-  // GLM
-  /glm/i,
-  // Gemini - 最新版本
   /gemini-2\.0-flash/i,
-  // NVIDIA Nemotron - 高质量
-  /nemotron-(?:4-340b|3-ultra|llama-3\.1-nemotron-70b)/i,
-  // StepFun
-  /step-3\.[57]-flash/i,
-  // 其他高质量模型
-  /phi-3\.5-moe/i,
-  /jamba-1\.5-large/i,
 ];
-
-// 模型分类关键词
-const getModelCategory = (id: string): Model["category"] => {
-  const lowerId = id.toLowerCase();
-  if (
-    lowerId.includes("code") ||
-    lowerId.includes("coder") ||
-    lowerId.includes("codestral")
-  )
-    return "code";
-  if (
-    lowerId.includes("vision") ||
-    lowerId.includes("vl") ||
-    lowerId.includes("vlm")
-  )
-    return "vision";
-  if (lowerId.includes("embed") || lowerId.includes("retriever"))
-    return "embedding";
-  if (
-    lowerId.includes("safety") ||
-    lowerId.includes("guard") ||
-    lowerId.includes("content")
-  )
-    return "safety";
-  if (
-    lowerId.includes("instruct") ||
-    lowerId.includes("chat") ||
-    lowerId.includes("general")
-  )
-    return "general";
-  return "other";
-};
-
-// 提取模型大小
 const extractModelSize = (id: string): string => {
   const matches = id.match(/(\d+)b/i);
   if (matches) return `${matches[1]}B`;
@@ -182,12 +113,6 @@ const generateTitle = (messages: Message[]): string => {
   );
 };
 
-const formatTokens = (tokens?: number): string => {
-  if (!tokens) return "0";
-  if (tokens < 1000) return `${tokens}`;
-  return `${(tokens / 1000).toFixed(1)}k`;
-};
-
 export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string>("");
@@ -198,8 +123,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [editId, setEditId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const [toast, setToast] = useState("");
-
-  // 模型相关状态
   const [models, setModels] = useState<Model[]>([]);
   const [filteredModels, setFilteredModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>("");
@@ -207,13 +130,9 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [loadingModels, setLoadingModels] = useState(false);
   const [showModelPanel, setShowModelPanel] = useState(false);
   const [modelSearchQuery, setModelSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory] = useState<string>("all");
   const [showRecommendedOnly, setShowRecommendedOnly] = useState(true);
-  const [totalTokens, setTotalTokens] = useState(0);
-  const [modelSortBy, setModelSortBy] = useState<
-    "recommended" | "name" | "size"
-  >("recommended");
-
+  const [modelSortBy, setModelSortBy] = useState<"recommended" | "name" | "size">("recommended");
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -222,44 +141,20 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const messagesRef = useRef(messages);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const modelPanelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    currentSessionIdRef.current = currentSessionId;
-  }, [currentSessionId]);
-  useEffect(() => {
-    loadingRef.current = loading;
-  }, [loading]);
-  useEffect(() => {
-    messagesRef.current = messages;
-  }, [messages]);
-
-  const getSenderName = () => {
-    const user = getCookie("mc_user");
-    return user || "用户";
-  };
-
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2800);
-  };
-
-  // 判断是否为推荐模型
-  const isRecommendedModel = (modelId: string): boolean => {
-    return RECOMMENDED_PATTERNS.some((pattern) => pattern.test(modelId));
-  };
-
-  // 加载模型列表
+  useEffect(() => { currentSessionIdRef.current = currentSessionId; }, [currentSessionId]);
+  useEffect(() => { loadingRef.current = loading; }, [loading]);
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
+  const getSenderName = () => { const user = getCookie("mc_user"); return user || "用户"; };
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 2800); };
+  const isRecommendedModel = (modelId: string): boolean => { return RECOMMENDED_PATTERNS.some((pattern) => pattern.test(modelId)); };
   const loadModels = async () => {
     if (modelsLoaded || loadingModels) return;
-
     setLoadingModels(true);
     try {
       const response = await fetch("/api/ai/models");
       if (!response.ok) throw new Error("Failed to load models");
-
       const data = await response.json();
       const modelList = data.data || [];
-
       if (Array.isArray(modelList)) {
         const processedModels: Model[] = modelList.map((model) => ({
           id: model.id,
@@ -268,18 +163,13 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
           object: model.object,
           created: model.created,
           recommended: isRecommendedModel(model.id),
-          category: getModelCategory(model.id),
           size: extractModelSize(model.id),
         }));
-
         setModels(processedModels);
-
-        // 从 localStorage 加载保存的模型选择
         const savedModel = localStorage.getItem(SELECTED_MODEL_KEY);
         if (savedModel && processedModels.some((m) => m.id === savedModel)) {
           setSelectedModel(savedModel);
         } else {
-          // 优先选择推荐模型
           const recommendedModel = processedModels.find((m) => m.recommended);
           if (recommendedModel) {
             setSelectedModel(recommendedModel.id);
@@ -296,14 +186,9 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       setLoadingModels(false);
     }
   };
-
-  // 搜索、过滤和排序模型
   useEffect(() => {
     if (!models.length) return;
-
     let filtered = [...models];
-
-    // 搜索过滤
     if (modelSearchQuery.trim()) {
       const query = modelSearchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -313,20 +198,14 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
           model.owned_by.toLowerCase().includes(query),
       );
     }
-
-    // 分类过滤
     if (selectedCategory !== "all") {
       filtered = filtered.filter(
         (model) => model.category === selectedCategory,
       );
     }
-
-    // 推荐模型过滤
     if (showRecommendedOnly) {
       filtered = filtered.filter((model) => model.recommended);
     }
-
-    // 排序
     if (modelSortBy === "recommended") {
       filtered.sort((a, b) => {
         if (a.recommended && !b.recommended) return -1;
@@ -342,7 +221,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         return sizeB - sizeA;
       });
     }
-
     setFilteredModels(filtered);
   }, [
     models,
@@ -445,12 +323,9 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     updateCurrentMessages(withPlaceholder);
     setInput("");
     setLoading(true);
-
     const controller = new AbortController();
     abortControllerRef.current = controller;
     let reply = "";
-    let tokenUsage: any = null;
-
     try {
       await fetchEventSource("/api/ai/chat", {
         method: "POST",
@@ -502,8 +377,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               return;
             }
 
-            if (j.usage) tokenUsage = j.usage;
-
             let content = "";
             if (j.type === "text-delta" && j.delta) content = j.delta;
             else if (j.content) content = j.content;
@@ -521,7 +394,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                     msgs[msgs.length - 1] = {
                       ...last,
                       content: reply,
-                      tokenUsage,
                     };
                   }
                   return { ...s, messages: msgs };
@@ -534,7 +406,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                   newMsgs[newMsgs.length - 1] = {
                     ...last,
                     content: reply,
-                    tokenUsage,
                   };
                 }
                 return newMsgs;
@@ -563,10 +434,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         abortControllerRef.current = null;
       }
       if (reply === "") removeEmptyAssistantPlaceholder();
-
-      if (tokenUsage?.totalTokens) {
-        setTotalTokens((prev) => prev + tokenUsage.totalTokens);
-      }
     }
   };
 
@@ -665,7 +532,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     if (savedSessions) {
       try {
         parsedSessions = JSON.parse(savedSessions);
-      } catch {}
+      } catch { }
     }
     if (parsedSessions.length === 0) {
       const defaultSession: Session = {
@@ -745,16 +612,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
 
   const currentSession = sessions.find((s) => s.id === currentSessionId);
   const currentModel = models.find((m) => m.id === selectedModel);
-
-  // 统计各类模型数量
-  const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: models.length };
-    Object.keys(MODEL_CATEGORIES).forEach((cat) => {
-      counts[cat] = models.filter((m) => m.category === cat).length;
-    });
-    return counts;
-  }, [models]);
-
   if (!isOpen) return null;
 
   return (
@@ -858,7 +715,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             {!sidebarCollapsed ? (
               <>
                 <div>存储用量：{Math.round(getStorageUsagePercent() * 100)}%</div>
-                <div className="mt-1">总Token：{formatTokens(totalTokens)}</div>
               </>
             ) : (
               <div className="text-xs">
@@ -915,7 +771,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                           <div className="flex items-start gap-2">
                             <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
                             <div className="text-xs text-amber-800 dark:text-amber-300">
-                              温馨提示：并非所有模型都适合用于对话回复，建议优先选择推荐模型（带⭐标记）。随意选择可能影响回复质量。
+                              并非所有模型都适合用对话，随意选择可能影响回复质量。
                             </div>
                           </div>
                         </div>
@@ -934,37 +790,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                             />
                           </div>
 
-                          {/* 分类标签 */}
-                          <div className="flex flex-wrap gap-1">
-                            <button
-                              onClick={() => setSelectedCategory("all")}
-                              className={cn(
-                                "px-2 py-1 text-xs rounded-md transition-colors shrink-0",
-                                selectedCategory === "all"
-                                  ? "bg-blue-600 text-white"
-                                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600",
-                              )}
-                            >
-                              全部 ({categoryCounts.all})
-                            </button>
-                            {Object.entries(MODEL_CATEGORIES).map(([key, config]) => (
-                              <button
-                                key={key}
-                                onClick={() => setSelectedCategory(key)}
-                                className={cn(
-                                  "px-2 py-1 text-xs rounded-md transition-colors flex items-center gap-1 shrink-0",
-                                  selectedCategory === key
-                                    ? `bg-${config.color}-600 text-white`
-                                    : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600",
-                                )}
-                              >
-                                <span>{config.icon}</span>
-                                <span>{config.name}</span>
-                                <span>({categoryCounts[key] || 0})</span>
-                              </button>
-                            ))}
-                          </div>
-
                           {/* 过滤选项 */}
                           <div className="flex items-center justify-between gap-2 flex-wrap">
                             <div className="flex items-center gap-3">
@@ -977,7 +802,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                                   }
                                   className="rounded border-slate-300"
                                 />
-                                仅显示推荐模型
+                                仅显示推荐
                               </label>
                               <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400">
                                 <Filter className="w-3 h-3" />
@@ -1045,22 +870,10 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                                         {model.size}
                                       </span>
                                     )}
-                                    <span className="text-xs text-slate-400 truncate">
-                                      {model.id}
-                                    </span>
                                   </div>
-                                  <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-xs text-slate-500">
-                                      提供方: {model.owned_by}
-                                    </span>
-                                    {model.category &&
-                                      MODEL_CATEGORIES[model.category] && (
-                                        <span className="text-xs text-slate-400">
-                                          {MODEL_CATEGORIES[model.category].icon}{" "}
-                                          {MODEL_CATEGORIES[model.category].name}
-                                        </span>
-                                      )}
-                                  </div>
+                                  <span className="text-xs text-slate-400 truncate">
+                                    {model.id}
+                                  </span>
                                 </div>
                                 {selectedModel === model.id && (
                                   <Check className="w-4 h-4 text-blue-600 dark:text-blue-400 ml-2 shrink-0" />
@@ -1144,12 +957,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                     <div className="flex items-center gap-2 text-xs text-slate-500">
                       <span>{m.senderName}</span>
                       <span>{formatTime(m.timestamp)}</span>
-                      {m.tokenUsage && (
-                        <span className="flex items-center gap-1">
-                          <Zap className="w-3 h-3" />
-                          {formatTokens(m.tokenUsage.totalTokens)} tokens
-                        </span>
-                      )}
                       <button
                         onClick={() => deleteMessage(i)}
                         className="p-1 hover:text-red-600 transition-colors"
