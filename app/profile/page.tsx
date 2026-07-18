@@ -311,9 +311,7 @@ const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
         ? atob(textureProperty.value)
         : Buffer.from(textureProperty.value, 'base64').toString('utf8');
     } catch (e) {
-      // 记录原始值以便定位问题
-      // eslint-disable-next-line no-console
-      console.error('[ProfilePage] texture base64 decode failed', e, textureProperty.value);
+      // 记录原始值以便定位问题（已移除生产日志）
       return undefined;
     }
 
@@ -321,8 +319,6 @@ const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
     try {
       decoded = JSON.parse(decodedStr);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('[ProfilePage] texture JSON parse failed', e, decodedStr);
       return undefined;
     }
 
@@ -336,8 +332,7 @@ const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
       }
     }
   } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error('[ProfilePage] unexpected error reading player head texture', e);
+    // unexpected error reading texture
   }
   return undefined;
 };
@@ -501,20 +496,7 @@ export default function ProfilePage() {
         }
 
         setUserInfo({ ...data, inventory });
-        // Debug info: 输出 nbt 与 newTotalExp，便于浏览器控制台排查经验条未显示问题
-        try {
-          // 在客户端环境打印（仅用于调试）
-          // eslint-disable-next-line no-console
-          console.debug('[ProfilePage] data.nbt:', data.nbt);
-          // eslint-disable-next-line no-console
-          console.debug('[ProfilePage] newTotalExp raw (direct):', data.nbt?.newTotalExp, 'typeof', typeof data.nbt?.newTotalExp);
-          // eslint-disable-next-line no-console
-          console.debug('[ProfilePage] newTotalExp extracted:', extractTotalExpFromNbt(data.nbt));
-          // eslint-disable-next-line no-console
-          console.debug('[ProfilePage] full user data (trimmed):', { nbtSummary: data.nbt ? Object.keys(data.nbt).slice(0, 10) : null });
-        } catch (e) {
-          // ignore
-        }
+        // Debug logs removed after verification
       } catch (err) {
         setError(err instanceof Error ? err.message : '加载用户信息失败');
       } finally {
