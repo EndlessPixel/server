@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "首页",
   description:
-    "EndlessPixel - 免费纯净Minecraft Java服务器。支持1.7.2-26.1.2版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验。无需正版验证，完全免费游玩。",
+    "EndlessPixel - 免费纯净Minecraft Java服务器。支持1.7.2-26.2版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验。无需正版验证，完全免费游玩。",
   keywords: [
     "首页",
     "EndlessPixel",
