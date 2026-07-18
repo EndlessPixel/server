@@ -66,8 +66,8 @@ export default function AiLinkPage() {
   const handleRedirect = () => {
     if (!url || !hasConfirmed || hasRedirected) return;
     setHasRedirected(true);
-    const newTab = window.open(url, "_blank", "noopener,noreferrer");
-    if (!newTab) window.location.href = url;
+    // 直接在当前页面跳转，不打开新标签页
+    window.location.href = url;
   };
 
   const handleCancel = () => {
