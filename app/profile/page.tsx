@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navigation } from '@/components/navigation';
 import Footer from '@/components/footer';
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { enchantments } from '../../lib/enchantments';
 import { getItemDisplayName } from '../../lib/items';
+import React from 'react';
 
 /* ---------- 类型定义 ---------- */
 interface InventoryItem {
@@ -95,6 +96,95 @@ const getDaysSince = (timeStr: string) => {
   }
 };
 
+const xpTotal = (level: number): number => {
+  if (level <= 16) {
+    return Math.round(level * level + 6 * level);
+  }
+  if (level <= 31) {
+    return Math.round(2.5 * level * level - 40.5 * level + 360);
+  }
+  return Math.round(4.5 * level * level - 162.5 * level + 2220);
+};
+
+const getLevelByTotalExp = (totalExp: number): number => {
+  // 使用二分查找以支持非常大的 totalExp，避免线性增长和固定上限
+  const maxLevel = 100000; // 安全上限，足以覆盖极大经验值
+  let low = 0;
+  let high = maxLevel;
+  while (low < high) {
+    const mid = Math.floor((low + high + 1) / 2);
+    const required = xpTotal(mid);
+    if (required <= totalExp) low = mid;
+    else high = mid - 1;
+  }
+  return low;
+};
+
+
+
+const findKeyRec = (obj: any, key: string, depth = 4): any => {
+  if (!obj || depth < 0) return undefined;
+  if (typeof obj !== 'object') return undefined;
+  if (Object.prototype.hasOwnProperty.call(obj, key)) return obj[key];
+  for (const val of Object.values(obj)) {
+    const res = findKeyRec(val, key, depth - 1);
+    if (res !== undefined) return res;
+  }
+  return undefined;
+};
+
+const extractTotalExpFromNbt = (nbt: any): number | undefined => {
+  if (!nbt) return undefined;
+  // 尝试常见路径
+  let candidate: any = findKeyRec(nbt, 'newTotalExp', 5);
+  if (candidate === undefined) {
+    // 有些服务会把 nbt 字符串化，尝试解析一次
+    if (typeof nbt === 'string') {
+      try {
+        const parsed = JSON.parse(nbt);
+        candidate = findKeyRec(parsed, 'newTotalExp', 5);
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  if (candidate === undefined || candidate === null) return undefined;
+
+  if (typeof candidate === 'number') return candidate;
+  if (typeof candidate === 'string') {
+    // 尝试直接转换数字或 JSON 字符串
+    const trimmed = candidate.trim();
+    if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) return Number(trimmed);
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (typeof parsed === 'number') return parsed;
+      const nested = findKeyRec(parsed, 'newTotalExp', 3);
+      if (typeof nested === 'number') return nested;
+      if (typeof nested === 'string' && /^-?\d+$/.test(nested)) return Number(nested);
+    } catch {
+      // ignore
+    }
+    return undefined;
+  }
+
+  // 其他结构（例如 {value: '123'}）
+  if (typeof candidate === 'object') {
+    const v = candidate.value ?? candidate.Value ?? candidate.v;
+    if (typeof v === 'number') return v;
+    if (typeof v === 'string' && /^-?\d+$/.test(v.trim())) return Number(v.trim());
+  }
+  return undefined;
+};
+
+const formatNumber = (n: number): string => {
+  try {
+    return new Intl.NumberFormat('zh-CN').format(n);
+  } catch {
+    return String(n);
+  }
+};
+
 const parseMinecraftText = (text: any): string => {
   const normalizeTextObject = (obj: any): string => {
     if (!obj || typeof obj !== 'object') return '';
@@ -124,6 +214,78 @@ const parseMinecraftText = (text: any): string => {
   return String(text);
 };
 
+const getColorFromMinecraft = (color: string | undefined): string | undefined => {
+  if (!color) return undefined;
+  const normalized = color.replace('-', '_').toLowerCase();
+  const colors: Record<string, string> = {
+    black: '#000000',
+    dark_blue: '#0000AA',
+    dark_green: '#00AA00',
+    dark_aqua: '#00AAAA',
+    dark_red: '#AA0000',
+    dark_purple: '#AA00AA',
+    gold: '#FFAA00',
+    gray: '#AAAAAA',
+    dark_gray: '#555555',
+    blue: '#5555FF',
+    green: '#55FF55',
+    aqua: '#55FFFF',
+    red: '#FF5555',
+    light_purple: '#FF55FF',
+    yellow: '#FFFF55',
+    white: '#FFFFFF',
+    orange: '#FFAA00',
+  };
+  return colors[normalized] ?? color;
+};
+
+const getMinecraftStyle = (obj: any): React.CSSProperties => {
+  const style: React.CSSProperties = {};
+  if (!obj || typeof obj !== 'object') return style;
+  if (obj.bold) style.fontWeight = 'bold';
+  if (obj.italic) style.fontStyle = 'italic';
+  const decorations: string[] = [];
+  if (obj.underlined) decorations.push('underline');
+  if (obj.strikethrough) decorations.push('line-through');
+  if (decorations.length) style.textDecoration = decorations.join(' ');
+  if (obj.color) style.color = getColorFromMinecraft(obj.color);
+  if (obj.obfuscated) style.letterSpacing = '0.05em';
+  return style;
+};
+
+const renderMinecraftText = (text: any): ReactNode => {
+  if (text === null || text === undefined) return '';
+  if (typeof text === 'string') {
+    return text.replace(/§./g, '');
+  }
+  if (Array.isArray(text)) {
+    return text.map((item, index) => (
+      <React.Fragment key={`mc-array-${index}`}>{renderMinecraftText(item)}</React.Fragment>
+    ));
+  }
+  if (typeof text === 'object') {
+    if (Object.keys(text).length === 1 && text[''] === '') return '';
+    const children: ReactNode[] = [];
+    if (typeof text.text === 'string') {
+      children.push(text.text.replace(/§./g, ''));
+    }
+    if (Array.isArray(text.extra)) {
+      text.extra.forEach((extra: any, index: number) => {
+        children.push(
+          <React.Fragment key={`mc-extra-${index}`}>
+            {renderMinecraftText(extra)}
+          </React.Fragment>
+        );
+      });
+    }
+    const content = children.length === 1 ? children[0] : children;
+    const style = getMinecraftStyle(text);
+    if (Object.keys(style).length === 0) return content;
+    return <span style={style}>{content}</span>;
+  }
+  return String(text);
+};
+
 const getDisplayItemName = (item: InventoryItem): string => {
   const rawName = item.tag?.display?.Name ?? item.components?.['minecraft:custom_name'];
   if (rawName) return parseMinecraftText(rawName).replace(/§./g, '');
@@ -141,9 +303,29 @@ const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
 
   const textureProperty = profile.properties.find((prop: any) => prop.name === 'textures');
   if (!textureProperty || typeof textureProperty.value !== 'string') return undefined;
-
   try {
-    const decoded = JSON.parse(atob(textureProperty.value));
+    // 安全解码 base64，客户端使用 atob，防止无效数据抛出
+    let decodedStr = '';
+    try {
+      decodedStr = typeof window !== 'undefined' && typeof atob === 'function'
+        ? atob(textureProperty.value)
+        : Buffer.from(textureProperty.value, 'base64').toString('utf8');
+    } catch (e) {
+      // 记录原始值以便定位问题
+      // eslint-disable-next-line no-console
+      console.error('[ProfilePage] texture base64 decode failed', e, textureProperty.value);
+      return undefined;
+    }
+
+    let decoded: any;
+    try {
+      decoded = JSON.parse(decodedStr);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('[ProfilePage] texture JSON parse failed', e, decodedStr);
+      return undefined;
+    }
+
     const textures = decoded?.textures;
     if (!textures || typeof textures !== 'object') return undefined;
     const skin = (textures as any).SKIN;
@@ -153,8 +335,9 @@ const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
         return texture.url.replace(/^http:/, 'https:');
       }
     }
-  } catch {
-    return undefined;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('[ProfilePage] unexpected error reading player head texture', e);
   }
   return undefined;
 };
@@ -218,7 +401,7 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   const lore = item.tag?.display?.Lore;
 
   // 解析 Lore（如果存在）
-  const loreLines = lore?.map(l => parseMinecraftText(l).replace(/§./g, '')).filter(Boolean) || [];
+  const loreLines = lore?.map((l) => renderMinecraftText(l)) || [];
 
   const handleImageError = () => {
     const fallback = item.id === 'minecraft:player_head' ? getDefaultItemImageUrl(item.id).replace('.png', '_00.png') : getDefaultItemImageUrl(item.id).replace('.png', '_00.png');
@@ -318,6 +501,20 @@ export default function ProfilePage() {
         }
 
         setUserInfo({ ...data, inventory });
+        // Debug info: 输出 nbt 与 newTotalExp，便于浏览器控制台排查经验条未显示问题
+        try {
+          // 在客户端环境打印（仅用于调试）
+          // eslint-disable-next-line no-console
+          console.debug('[ProfilePage] data.nbt:', data.nbt);
+          // eslint-disable-next-line no-console
+          console.debug('[ProfilePage] newTotalExp raw (direct):', data.nbt?.newTotalExp, 'typeof', typeof data.nbt?.newTotalExp);
+          // eslint-disable-next-line no-console
+          console.debug('[ProfilePage] newTotalExp extracted:', extractTotalExpFromNbt(data.nbt));
+          // eslint-disable-next-line no-console
+          console.debug('[ProfilePage] full user data (trimmed):', { nbtSummary: data.nbt ? Object.keys(data.nbt).slice(0, 10) : null });
+        } catch (e) {
+          // ignore
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : '加载用户信息失败');
       } finally {
@@ -407,7 +604,7 @@ export default function ProfilePage() {
 
                 <button
                   onClick={handleLogout}
-                  className="mt-6 w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-sm font-medium"
+                  className="mt-4 inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-slate-50 dark:bg-slate-700/60 text-slate-700 dark:text-slate-200 hover:bg-slate-100"
                 >
                   <LogOutIcon className="w-4 h-4" />退出登录
                 </button>
@@ -444,6 +641,34 @@ export default function ProfilePage() {
                       <span className="text-slate-800 dark:text-slate-200 font-medium text-sm">{value}</span>
                     </div>
                   ))}
+                {(() => {
+                  const extracted = extractTotalExpFromNbt(userInfo.nbt);
+                  if (extracted === undefined) {
+                    return (
+                      <div className="pt-3 text-sm text-slate-500 dark:text-slate-400">
+                        无经验数据
+                      </div>
+                    );
+                  }
+                  const totalExp = Number(extracted);
+                  if (Number.isNaN(totalExp)) {
+                    return (
+                      <div className="pt-3 text-sm text-slate-500 dark:text-slate-400">无经验数据</div>
+                    );
+                  }
+                  const level = getLevelByTotalExp(totalExp);
+                  return (
+                    <div className="border-b border-slate-100 dark:border-slate-700/50">
+                      <div className="flex items-center justify-between py-3 text-sm text-slate-500 dark:text-slate-400">
+                        <span>经验等级：</span>
+                        <span className="text-slate-800 dark:text-slate-200 font-medium">{level}</span>
+                        <span>总经验：</span>
+                        <span className="text-slate-800 dark:text-slate-200 font-medium">{formatNumber(totalExp)}</span>
+                      </div>
+                    </div>
+                  );
+                })()}
+                
 
                   {/* QQ */}
                   <div className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700/50">
