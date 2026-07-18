@@ -641,34 +641,34 @@ export default function ProfilePage() {
                       <span className="text-slate-800 dark:text-slate-200 font-medium text-sm">{value}</span>
                     </div>
                   ))}
-                {(() => {
-                  const extracted = extractTotalExpFromNbt(userInfo.nbt);
-                  if (extracted === undefined) {
+                  {(() => {
+                    const extracted = extractTotalExpFromNbt(userInfo.nbt);
+                    if (extracted === undefined) {
+                      return (
+                        <div className="pt-3 text-sm text-slate-500 dark:text-slate-400">
+                          无经验数据
+                        </div>
+                      );
+                    }
+                    const totalExp = Number(extracted);
+                    if (Number.isNaN(totalExp)) {
+                      return (
+                        <div className="pt-3 text-sm text-slate-500 dark:text-slate-400">无经验数据</div>
+                      );
+                    }
+                    const level = getLevelByTotalExp(totalExp);
                     return (
-                      <div className="pt-3 text-sm text-slate-500 dark:text-slate-400">
-                        无经验数据
+                      <div className="border-b border-slate-100 dark:border-slate-700/50">
+                        <div className="flex items-center justify-between py-3 text-sm text-slate-500 dark:text-slate-400">
+                          <span>经验等级：</span>
+                          <span className="text-slate-800 dark:text-slate-200 font-medium">{level}</span>
+                          <span>总经验：</span>
+                          <span className="text-slate-800 dark:text-slate-200 font-medium">{formatNumber(totalExp)}</span>
+                        </div>
                       </div>
                     );
-                  }
-                  const totalExp = Number(extracted);
-                  if (Number.isNaN(totalExp)) {
-                    return (
-                      <div className="pt-3 text-sm text-slate-500 dark:text-slate-400">无经验数据</div>
-                    );
-                  }
-                  const level = getLevelByTotalExp(totalExp);
-                  return (
-                    <div className="border-b border-slate-100 dark:border-slate-700/50">
-                      <div className="flex items-center justify-between py-3 text-sm text-slate-500 dark:text-slate-400">
-                        <span>经验等级：</span>
-                        <span className="text-slate-800 dark:text-slate-200 font-medium">{level}</span>
-                        <span>总经验：</span>
-                        <span className="text-slate-800 dark:text-slate-200 font-medium">{formatNumber(totalExp)}</span>
-                      </div>
-                    </div>
-                  );
-                })()}
-                
+                  })()}
+
 
                   {/* QQ */}
                   <div className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700/50">
@@ -697,9 +697,8 @@ export default function ProfilePage() {
                   <div className="flex items-center justify-between py-3">
                     <span className="text-slate-500 dark:text-slate-400 text-sm">封禁状态</span>
                     <span
-                      className={`text-sm font-medium ${
-                        userInfo.ban ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'
-                      }`}
+                      className={`text-sm font-medium ${userInfo.ban ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'
+                        }`}
                     >
                       {userInfo.ban ? '已封禁' : '正常'}
                     </span>
