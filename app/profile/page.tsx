@@ -33,8 +33,11 @@ interface InventoryItem {
   components?: {
     'minecraft:damage'?: number;
     'minecraft:enchantments'?: Record<string, number>;
-    'minecraft:lore'?: string[];
-    'minecraft:custom_name'?: string;
+    'minecraft:lore'?: any[];
+    'minecraft:custom_name'?: string | Record<string, any>;
+    'minecraft:profile'?: any;
+    'minecraft:custom_data'?: any;
+    [key: string]: any;
   };
 }
 
@@ -93,21 +96,30 @@ const getDaysSince = (timeStr: string) => {
 };
 
 const parseMinecraftText = (text: any): string => {
+  const normalizeTextObject = (obj: any): string => {
+    if (!obj || typeof obj !== 'object') return '';
+    if (Array.isArray(obj)) return obj.map(normalizeTextObject).join('');
+    const keys = Object.keys(obj);
+    if (keys.length === 0) return '';
+    if (keys.length === 1 && keys[0] === '' && obj[''] === '') return '';
+    let result = '';
+    if (typeof obj.text === 'string') result += obj.text;
+    if (Array.isArray(obj.extra)) result += obj.extra.map(normalizeTextObject).join('');
+    return result;
+  };
+
   if (typeof text === 'string') {
     try {
       const parsed = JSON.parse(text);
       if (typeof parsed === 'string') return parsed;
-      if (parsed.text) return parsed.text;
-      if (parsed.extra) return parsed.extra.map((p: any) => p.text ?? '').join('');
+      return normalizeTextObject(parsed) || text.replace(/§./g, '');
     } catch {
       // not json
     }
     return text.replace(/§./g, '');
   }
   if (typeof text === 'object' && text !== null) {
-    if (text.text) return text.text;
-    if (text.extra) return text.extra.map((p: any) => p.text ?? '').join('');
-    return JSON.stringify(text);
+    return normalizeTextObject(text);
   }
   return String(text);
 };
@@ -118,9 +130,41 @@ const getDisplayItemName = (item: InventoryItem): string => {
   return getItemDisplayName(item.id);
 };
 
-const getItemImageUrl = (itemId: string): string => {
+const getDefaultItemImageUrl = (itemId: string): string => {
   const id = itemId.replace('minecraft:', '');
   return `https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/${id}.png`;
+};
+
+const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
+  const profile = item.components?.['minecraft:profile'];
+  if (!profile || typeof profile !== 'object' || !Array.isArray(profile.properties)) return undefined;
+
+  const textureProperty = profile.properties.find((prop: any) => prop.name === 'textures');
+  if (!textureProperty || typeof textureProperty.value !== 'string') return undefined;
+
+  try {
+    const decoded = JSON.parse(atob(textureProperty.value));
+    const textures = decoded?.textures;
+    if (!textures || typeof textures !== 'object') return undefined;
+    const skin = (textures as any).SKIN;
+    const candidates = skin ? [skin] : Object.values(textures);
+    for (const texture of candidates) {
+      if (texture && typeof texture === 'object' && typeof texture.url === 'string') {
+        return texture.url.replace(/^http:/, 'https:');
+      }
+    }
+  } catch {
+    return undefined;
+  }
+  return undefined;
+};
+
+const getItemImageUrl = (item: InventoryItem): string => {
+  if (item.id === 'minecraft:player_head') {
+    const customUrl = getPlayerHeadTextureUrl(item);
+    if (customUrl) return customUrl;
+  }
+  return getDefaultItemImageUrl(item.id);
 };
 
 /* ---------- 数据标准化 ---------- */
@@ -144,6 +188,7 @@ const normalizeInventory = (rawItems: any[]): InventoryItem[] => {
         id: item.id,
         Count: item.count ?? item.Count ?? 1,
         Slot: item.Slot,
+        components: Object.keys(comps).length ? comps : undefined,
         tag: {
           Damage: comps['minecraft:damage'],
           Enchantments: enchantments.length ? enchantments : undefined,
@@ -158,7 +203,7 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (item) setImgSrc(getItemImageUrl(item.id));
+    if (item) setImgSrc(getItemImageUrl(item));
     else setImgSrc(undefined);
   }, [item]);
 
@@ -176,7 +221,8 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   const loreLines = lore?.map(l => parseMinecraftText(l).replace(/§./g, '')).filter(Boolean) || [];
 
   const handleImageError = () => {
-    setImgSrc(getItemImageUrl(item.id).replace('.png', '_00.png'));
+    const fallback = item.id === 'minecraft:player_head' ? getDefaultItemImageUrl(item.id).replace('.png', '_00.png') : getDefaultItemImageUrl(item.id).replace('.png', '_00.png');
+    setImgSrc(fallback);
   };
 
   return (
