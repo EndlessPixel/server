@@ -294,7 +294,7 @@ const getDisplayItemName = (item: InventoryItem): string => {
 
 const getDefaultItemImageUrl = (itemId: string): string => {
   const id = itemId.replace('minecraft:', '');
-  return `https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/${id}.png`;
+  return `https://assets.mcasset.cloud/1.21.11/assets/minecraft/textures/item/${id}.png`;
 };
 
 const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
