@@ -26,7 +26,7 @@ const SERVICES: ServiceItem[] = [
   },
   {
     name: "服务器性能监控",
-    path: "http://sys.epmc.qzz.io:18000",
+    path: "http://sys.epmc.qzz.io",
     icon: Activity,
     status: "online",
     description: "服务器性能监控",

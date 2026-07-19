@@ -238,7 +238,7 @@ export function Footer() {
     },
     {
       icon: Server,
-      href: "http://sys.epmc.qzz.io:18000",
+      href: "http://sys.epmc.qzz.io",
       label: "状态监控",
       external: true,
     },
