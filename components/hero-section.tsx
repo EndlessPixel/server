@@ -448,7 +448,7 @@ export function HeroSection() {
             </span>
             。 想验证？链接就在下面，欢迎随时来对线。
             <Link
-              href="http://sys.epmc.qzz.io:18000"
+              href="http://sys.epmc.qzz.io"
               className="ml-1 underline underline-offset-2 hover:text-cyan-400"
               target="_blank"
             >
