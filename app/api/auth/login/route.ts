@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import crypto from 'crypto';
 
-const LOGIN_API_URL = `http://202.60.232.156:16000/v1/api/auth/login`;
+const LOGIN_API_URL = `http://154.44.26.51:8080/v1/api/auth/login`;
 const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
 const PASSWORD_MIN_LENGTH = 6;
 
