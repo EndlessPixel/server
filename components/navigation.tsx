@@ -35,6 +35,7 @@ const formatLabel = (s: string) =>
   s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 const MotionLink = motion.create(Link);
+
 function ExplorerBar() {
   const router = useRouter();
   const pathname = usePathname();
@@ -42,18 +43,16 @@ function ExplorerBar() {
   const [editMode, setEditMode] = useState(false);
   const [inputValue, setInputValue] = useState(pathname);
   const [saying, setSaying] = useState("");
-  const [displaySaying, setDisplaySaying] = useState(""); // 用于打字机效果的显示文本
+  const [displaySaying, setDisplaySaying] = useState("");
   const [isSayingLoading, setIsSayingLoading] = useState(true);
-  const [isFlickering, setIsFlickering] = useState(false); // 闪烁状态
-  const clickTimer = useRef<NodeJS.Timeout | null>(null); // 防抖计时器
-  const typingTimer = useRef<NodeJS.Timeout | null>(null); // 打字机计时器
+  const [isFlickering, setIsFlickering] = useState(false);
+  const clickTimer = useRef<NodeJS.Timeout | null>(null);
+  const typingTimer = useRef<NodeJS.Timeout | null>(null);
   const { settings } = useAppearance();
 
-  // 修复后的 fetchSaying 核心函数
   const fetchSaying = () => {
     setIsSayingLoading(true);
     setIsFlickering(true);
-    // 第一步：请求开始时立即清空显示文本，而不是等异步回调
     setDisplaySaying("");
 
     fetch("https://uapis.cn/api/v1/saying")
@@ -63,28 +62,21 @@ function ExplorerBar() {
         setSaying(newSaying);
       })
       .catch(() => {
-        const errorSaying = "无法加载";
-        setSaying(errorSaying);
+        setSaying("无法加载");
       })
       .finally(() => {
         setIsSayingLoading(false);
-        // 第二步：闪烁0.3秒后，先停止闪烁，再启动打字机（用最新的saying值）
         setTimeout(() => {
           setIsFlickering(false);
-          // 这里用最新的saying，而不是回调里的临时变量，避免状态不一致
           startTypingEffect(saying);
         }, 300);
       });
   };
 
-  // 优化打字机函数：确保每次启动前完全清空
   const startTypingEffect = (text: string) => {
-    // 清除旧计时器
     if (typingTimer.current) clearTimeout(typingTimer.current);
-    // 强制清空，确保无残留
     setDisplaySaying("");
     let index = 0;
-
     const typeChar = () => {
       if (index < text.length) {
         setDisplaySaying((prev) => prev + text.charAt(index));
@@ -92,31 +84,21 @@ function ExplorerBar() {
         typingTimer.current = setTimeout(typeChar, 50 + Math.random() * 50);
       }
     };
-
-    // 加一个极短的延迟，确保清空操作先完成，再开始打字
     setTimeout(typeChar, 10);
   };
 
-  // 初始加载一言
   useEffect(() => {
     fetchSaying();
-
-    // 清理计时器
     return () => {
       if (clickTimer.current) clearTimeout(clickTimer.current);
       if (typingTimer.current) clearTimeout(typingTimer.current);
     };
   }, []);
 
-  // 点击切换一言（带防抖）
   const handleSayingClick = () => {
-    // 防抖控制：120RPM = 2次/秒，所以防抖间隔设为500ms
     if (clickTimer.current) clearTimeout(clickTimer.current);
-
     clickTimer.current = setTimeout(() => {
-      if (!isSayingLoading) {
-        fetchSaying();
-      }
+      if (!isSayingLoading) fetchSaying();
     }, 500);
   };
 
@@ -168,9 +150,9 @@ function ExplorerBar() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="h-14 flex items-center gap-4">
+      <div className="h-12 flex items-center gap-4">
         {settings.showBreadcrumb && !editMode && (
-          <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
             {crumbs.map((c, i) => (
               <motion.div
                 key={c.href}
@@ -178,14 +160,14 @@ function ExplorerBar() {
                 className={cn(
                   "flex items-center gap-1.5 transition-colors",
                   i === crumbs.length - 1
-                    ? "font-medium text-slate-900 dark:text-white"
-                    : "cursor-pointer hover:text-blue-600 dark:hover:text-blue-400",
+                    ? "font-medium text-foreground"
+                    : "cursor-pointer hover:text-foreground",
                 )}
                 whileHover={{ scale: 1.03 }}
               >
                 <span className="truncate max-w-48">{c.label}</span>
                 {i !== crumbs.length - 1 && (
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" />
                 )}
               </motion.div>
             ))}
@@ -196,14 +178,14 @@ function ExplorerBar() {
           <div className="flex-1 max-w-2xl relative">
             {editMode ? (
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 <input
                   ref={inputRef}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={onKeyDown}
                   onBlur={exitEdit}
-                  className="w-full pl-10 pr-4 py-2 rounded-xl bg-white/80 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 shadow-sm"
+                  className="w-full h-9 pl-10 pr-4 rounded-lg bg-secondary text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring/30 shadow-sm transition-colors duration-200"
                   autoFocus
                   placeholder="请输入内容"
                   type="text"
@@ -211,10 +193,10 @@ function ExplorerBar() {
               </div>
             ) : (
               <div
-                className="relative h-10 w-full rounded-xl bg-slate-100/80 dark:bg-slate-800/80 flex items-center cursor-pointer"
+                className="relative h-9 w-full rounded-lg bg-secondary flex items-center cursor-pointer transition-colors duration-200 hover:bg-secondary/70"
                 onClick={enterEdit}
               >
-                <div className="absolute left-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                <div className="absolute left-4 flex items-center gap-2 text-sm text-muted-foreground">
                   <Search className="w-4 h-4" />
                   <span>单击地址栏或按 Ctrl+L 输入路径</span>
                 </div>
@@ -226,7 +208,7 @@ function ExplorerBar() {
         {settings.showSaying && (
           <div
             onClick={handleSayingClick}
-            className={`text-xs text-slate-400 dark:text-slate-500 truncate max-w-[40%] mx-auto py-2 text-center cursor-pointer transition-all hover:text-slate-600 dark:hover:text-slate-300 whitespace-normal
+            className={`text-xs text-muted-foreground truncate max-w-[40%] mx-auto py-2 text-center cursor-pointer transition-all hover:text-foreground whitespace-normal
               ${isFlickering ? "animate-pulse opacity-50" : ""}
             `}
           >
@@ -266,7 +248,7 @@ export function Navigation() {
   return (
     <>
       <nav
-        className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 sticky top-0 z-40 shadow-md transition-shadow"
+        className="glass-nav sticky top-0 z-40"
         role="navigation"
         aria-label="主导航"
       >
@@ -274,14 +256,14 @@ export function Navigation() {
           <div className="flex justify-between items-center h-16">
             <MotionLink
               href="/"
-              className="flex items-center space-x-2 py-2 px-3 rounded-xl hover:bg-slate-100/70 dark:hover:bg-slate-800/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="flex items-center space-x-2 py-2 px-3 rounded-xl hover:bg-secondary/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
               whileHover={{ scale: 1.03 }}
               aria-label="返回首页"
             >
               <img
                 src="/EndlessPixel.png"
                 alt="EndlessPixel Logo"
-                className="w-64 h-8 object-contain" // 40px，推荐
+                className="w-64 h-8 object-contain"
               />
             </MotionLink>
 
@@ -299,10 +281,10 @@ export function Navigation() {
                     role="menuitem"
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "flex flex-col items-center space-y-1 px-4 py-3 rounded-xl min-w-20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+                      "flex flex-col items-center space-y-1 px-4 py-3 rounded-xl min-w-20 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
                       isActive
-                        ? "text-blue-600 dark:text-blue-400 bg-blue-50/70 dark:bg-blue-900/20"
-                        : "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/50",
+                        ? "text-foreground bg-secondary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary/60",
                     )}
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
@@ -314,7 +296,7 @@ export function Navigation() {
                     <span className="text-sm font-medium">{item.label}</span>
                     {isActive && (
                       <motion.div
-                        className="w-5 h-1 rounded-full bg-blue-500"
+                        className="w-5 h-1 rounded-full bg-foreground/30 dark:bg-foreground/20"
                         layoutId="underline"
                         aria-hidden="true"
                       />
@@ -323,17 +305,17 @@ export function Navigation() {
                 );
               })}
               <div
-                className="w-px h-8 bg-slate-200/70 dark:bg-slate-700/70 mx-2"
+                className="w-px h-8 bg-foreground/8 mx-2"
                 aria-hidden="true"
               />
               <button
                 onClick={openSettings}
-                className="w-11 h-11 px-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="w-11 h-11 px-0 rounded-xl hover:bg-secondary/60 flex items-center justify-center transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
                 aria-label="打开外观设置"
                 aria-haspopup="dialog"
               >
                 <Settings
-                  className="h-5 w-5 text-slate-700 dark:text-slate-300"
+                  className="h-5 w-5 text-muted-foreground"
                   aria-hidden="true"
                 />
               </button>
@@ -343,12 +325,12 @@ export function Navigation() {
             <div className="md:hidden flex items-center space-x-2">
               <button
                 onClick={openSettings}
-                className="w-11 h-11 px-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="w-11 h-11 px-0 rounded-xl hover:bg-secondary/60 flex items-center justify-center transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
                 aria-label="打开外观设置"
                 aria-haspopup="dialog"
               >
                 <Settings
-                  className="h-5 w-5 text-slate-700 dark:text-slate-300"
+                  className="h-5 w-5 text-muted-foreground"
                   aria-hidden="true"
                 />
               </button>
@@ -356,19 +338,19 @@ export function Navigation() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMenuOpen((o) => !o)}
-                className="h-11 w-11 p-0 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="h-11 w-11 p-0 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
                 aria-label={isMenuOpen ? "关闭菜单" : "打开菜单"}
                 aria-expanded={isMenuOpen}
                 aria-controls="mobile-menu"
               >
                 {isMenuOpen ? (
                   <X
-                    className="w-5 h-5 text-slate-700 dark:text-slate-300"
+                    className="w-5 h-5 text-foreground"
                     aria-hidden="true"
                   />
                 ) : (
                   <Menu
-                    className="w-5 h-5 text-slate-700 dark:text-slate-300"
+                    className="w-5 h-5 text-foreground"
                     aria-hidden="true"
                   />
                 )}
@@ -376,7 +358,7 @@ export function Navigation() {
             </div>
           </div>
         </div>
-        <div className="hidden md:block border-t border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/50">
+        <div className="hidden md:block bg-secondary/50 dark:bg-secondary/30">
           <ExplorerBar />
         </div>
       </nav>
@@ -384,7 +366,7 @@ export function Navigation() {
         {isMenuOpen && (
           <>
             <motion.div
-              className="fixed inset-0 bg-black/40 z-40 md:hidden"
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden"
               onClick={() => setIsMenuOpen(false)}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -393,7 +375,7 @@ export function Navigation() {
             />
             <motion.div
               id="mobile-menu"
-              className="fixed top-0 left-0 right-0 bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 z-50 md:hidden"
+              className="fixed top-0 left-0 right-0 bg-background/90 backdrop-blur-xl z-50 md:hidden rounded-b-2xl shadow-lg"
               initial={{ y: "-100%" }}
               animate={{ y: 0 }}
               exit={{ y: "-100%" }}
@@ -413,10 +395,10 @@ export function Navigation() {
                       aria-current={isActive ? "page" : undefined}
                       onClick={() => setIsMenuOpen(false)}
                       className={cn(
-                        "flex items-center space-x-4 px-4 py-3 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+                        "flex items-center space-x-4 px-4 py-3 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 transition-colors duration-200",
                         isActive
-                          ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
-                          : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800",
+                          ? "text-foreground bg-secondary"
+                          : "text-muted-foreground hover:bg-secondary/60",
                       )}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}

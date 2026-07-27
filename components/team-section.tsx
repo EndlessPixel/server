@@ -16,9 +16,9 @@ export function TeamSection() {
       name: "system_mini",
       description:
         "团队创始人，全面负责服务器运维、网站更新、域名管理及对外宣传推广。",
-      iconColor: "text-yellow-600 dark:text-yellow-400",
-      bgColor: "bg-red-50 dark:bg-red-950/20",
-      borderColor: "border-l-4 border-l-red-500 dark:border-l-red-600",
+      iconColor: "text-foreground/60",
+      bgColor: "bg-secondary",
+      borderColor: "border-l-2 border-l-foreground/20",
       departments: ["创始人", "服务器部", "维护部", "宣传部", "网络部"],
       responsibilities: ["服务器维护", "网站维护", "域名管理", "宣传推广"],
       qq: ["2267848501", "3319182533", "1343352337"],
@@ -26,9 +26,9 @@ export function TeamSection() {
     {
       name: "MCL",
       description: "团队副创始人，协助管理团队事务，负责日常协调与监督。",
-      iconColor: "text-purple-600 dark:text-purple-400",
-      bgColor: "bg-purple-50 dark:bg-purple-950/20",
-      borderColor: "border-l-4 border-l-purple-500 dark:border-l-purple-600",
+      iconColor: "text-foreground/60",
+      bgColor: "bg-secondary",
+      borderColor: "border-l-2 border-l-foreground/15",
       departments: ["副创始人"],
       responsibilities: ["团队管理", "日常协调"],
       qq: ["3785267350"],
@@ -36,9 +36,9 @@ export function TeamSection() {
     {
       name: "LANt",
       description: "团队成员，负责提供域名服务。",
-      iconColor: "text-blue-600 dark:text-blue-400",
-      bgColor: "bg-blue-50 dark:bg-blue-950/20",
-      borderColor: "border-l-4 border-l-blue-500 dark:border-l-blue-600",
+      iconColor: "text-foreground/60",
+      bgColor: "bg-secondary",
+      borderColor: "border-l-2 border-l-foreground/10",
       departments: ["网络部"],
       responsibilities: ["域名管理"],
       qq: ["2384269718"],
@@ -58,11 +58,11 @@ export function TeamSection() {
   };
 
   return (
-    <Card className="border-l-4 border-blue-500 dark:border-blue-600 bg-card/95 dark:bg-card/95">
+    <Card className="bg-card shadow-sm">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2">
-          <div className="inline-flex items-center justify-center w-9 h-9 bg-blue-50 dark:bg-blue-950/40 rounded-lg">
-            <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <div className="inline-flex items-center justify-center w-9 h-9 bg-secondary rounded-lg">
+            <Users className="w-5 h-5 text-foreground/60" />
           </div>
           团队介绍
         </CardTitle>
@@ -72,9 +72,9 @@ export function TeamSection() {
           {teamMembers.map((member) => (
             <div
               key={member.name}
-              className={`rounded-lg p-6 transition-all duration-300 hover:shadow-md hover:scale-102 ${member.bgColor} ${member.borderColor} group`}
+              className={`rounded-lg p-6 transition-all duration-300 hover:shadow-md hover-lift bg-secondary border-l-2 border-l-foreground/10 group`}
             >
-              <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground/80 transition-colors">
+              <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground transition-colors">
                 {member.name}
               </h3>
 

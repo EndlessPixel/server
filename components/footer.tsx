@@ -34,10 +34,10 @@ const SocialLinks = ({ links }: { links: SocialLink[] }) => (
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 bg-slate-800/50 hover:bg-slate-700 rounded-lg transition-all hover:scale-110  border-slate-700/50 hover:border-emerald-500/50"
+          className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 hover:scale-110"
           title={social.label}
         >
-          <Icon className="w-5 h-5 text-slate-300 hover:text-emerald-400" />
+          <Icon className="w-5 h-5 text-white/60 hover:text-white" />
         </a>
       );
     })}
@@ -45,7 +45,7 @@ const SocialLinks = ({ links }: { links: SocialLink[] }) => (
 );
 
 const NavLinks = ({ links }: { links: NavLink[] }) => (
-  <ul className="space-y-1">
+  <ul className="space-y-0.5">
     {links.map((link) => {
       const Icon = link.icon;
       return (
@@ -55,24 +55,24 @@ const NavLinks = ({ links }: { links: NavLink[] }) => (
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between py-2 px-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/50"
+              className="flex items-center justify-between py-2 px-3 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors duration-200"
             >
               <div className="flex items-center gap-2">
-                <Icon className="w-4 h-4 text-slate-400" />
+                <Icon className="w-4 h-4 text-white/30" />
                 <span>{link.label}</span>
               </div>
-              <ExternalLink className="w-3 h-3 text-slate-500" />
+              <ExternalLink className="w-3 h-3 text-white/20" />
             </a>
           ) : (
             <Link
               href={link.href}
-              className="flex items-center justify-between py-2 px-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/50"
+              className="flex items-center justify-between py-2 px-3 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors duration-200 group"
             >
               <div className="flex items-center gap-2">
-                <Icon className="w-4 h-4 text-slate-400" />
+                <Icon className="w-4 h-4 text-white/30" />
                 <span>{link.label}</span>
               </div>
-              <ChevronRight className="w-3 h-3 text-slate-500 opacity-0 group-hover:opacity-100" />
+              <ChevronRight className="w-3 h-3 text-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
             </Link>
           )}
         </li>
@@ -91,7 +91,7 @@ const BrandLogo = () => {
         height={48}
         className="rounded-xl"
       />
-      <h2 className="font-bold text-3xl bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+      <h2 className="font-bold text-3xl text-white tracking-tight">
         EndlessPixel
       </h2>
     </div>
@@ -101,17 +101,17 @@ const BrandLogo = () => {
 const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
   const currentYear = new Date().getFullYear();
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-400 text-sm pt-6 border-t border-slate-800/50 mt-6">
+    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-white/30 text-sm pt-6 mt-6 border-t border-white/[0.06]">
       <span>
         &copy; {startYear}
         {currentYear > startYear ? `–${currentYear}` : ""} EndlessPixel Studio
-        <span className="text-[0px] text-red-400">
+        <span className="text-[0px] text-white/30">
           本工作室与杭州无尽像素科技有限公司（成立时间：2025-08-26，统一社会信用代码：91330106MAEUDLLYXY）无任何隶属、投资或合作关系，请勿将本工作室与该公司混淆，仅因意外重名导致。
         </span>
       </span>
       <div className="flex items-center gap-2">
         <span>Made with</span>
-        <Heart className="w-4 h-4 text-red-400 fill-current animate-pulse" />
+        <Heart className="w-4 h-4 text-white/30" />
         <span>by community</span>
       </div>
     </div>
@@ -245,31 +245,31 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-slate-900 text-white border-t border-slate-800/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <footer className="bg-black text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* 左侧品牌区 */}
           <div className="space-y-4">
             <BrandLogo />
-            <p className="text-slate-400 text-sm leading-relaxed max-w-md">
+            <p className="text-white/40 text-sm leading-relaxed max-w-md">
               EndlessPixel 是一个由热爱 Minecraft
               的玩家组成的社区，致力于提供有趣、自由、开放、和平的游戏世界。
             </p>
             <SocialLinks links={socialLinks} />
-            <p className="text-sm text-slate-400">服务器创立至今：</p>
+            <p className="text-sm text-white/30">服务器创立至今：</p>
             <RunningDuration />
           </div>
 
           {/* 右侧：2列导航 */}
           <div className="grid grid-cols-2 gap-8">
             <div>
-              <h3 className="font-semibold text-lg mb-4 text-slate-100">
+              <h3 className="font-semibold text-base mb-4 text-white/60 tracking-tight">
                 快速导航
               </h3>
               <NavLinks links={navLinks.slice(0, 4)} />
             </div>
             <div>
-              <h3 className="font-semibold text-lg mb-4 text-slate-100">
+              <h3 className="font-semibold text-base mb-4 text-white/60 tracking-tight">
                 &nbsp;
               </h3>
               <NavLinks links={navLinks.slice(4)} />

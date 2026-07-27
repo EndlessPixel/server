@@ -17,9 +17,8 @@ const LoginButton: React.FC<LoginButtonProps> = ({
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
-  const [redirectUrl, setRedirectUrl] = useState("/"); // 👈 关键修复
+  const [redirectUrl, setRedirectUrl] = useState("/");
 
-  // Cookie 操作
   const getCookie = (name: string) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -31,14 +30,12 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   };
 
-  // 👇 关键修复：只在客户端获取真实跳转地址
   useEffect(() => {
     setRedirectUrl(
       encodeURIComponent(window.location.pathname + window.location.search),
     );
   }, []);
 
-  // 检测登录状态
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -58,7 +55,6 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     return () => clearInterval(interval);
   }, []);
 
-  // 退出登录
   const handleLogout = () => {
     deleteCookie("mc_user");
     setIsLoggedIn(false);
@@ -66,60 +62,54 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     window.location.reload();
   };
 
-  // 样式
   const sizeClasses = React.useMemo(
     () => ({
       sm: "px-3 py-1.5 text-sm",
-      md: "px-4 py-2 text-base",
-      lg: "px-6 py-2.5 text-lg",
+      md: "px-4 py-2 text-sm",
+      lg: "px-6 py-2.5 text-base",
     }),
     [],
   );
 
   const loginBtnClasses = `
     inline-flex items-center justify-center gap-2
-    font-medium rounded-lg
-    bg-gradient-to-r from-indigo-600 to-purple-600
-    text-white shadow-lg shadow-indigo-500/20
-    hover:from-indigo-700 hover:to-purple-700
-    transition-all duration-300 ease-in-out
+    font-medium rounded-xl
+    bg-foreground text-background
+    hover:bg-foreground/90 shadow-sm
+    transition-all duration-200 ease-out
+    hover-lift
   `;
 
   const logoutBtnClasses = `
     inline-flex items-center justify-center gap-2
-    font-medium rounded-lg
-    bg-slate-200 dark:bg-slate-700
-    text-slate-800 dark:text-slate-200
-    hover:bg-slate-300 dark:hover:bg-slate-600
-    transition-all duration-300
+    font-medium rounded-xl
+    bg-secondary text-secondary-foreground
+    hover:bg-secondary/70
+    transition-colors duration-200
   `;
 
-
-  // components/login.tsx — 登录状态部分改造
   if (isLoggedIn) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        {/* 👇 用户名/头像区域 — 点击进入个人中心 */}
         <Link
           href="/profile"
           className={`
-          inline-flex items-center gap-2 rounded-lg
+          inline-flex items-center gap-2 rounded-xl
           ${sizeClasses[size]}
-          bg-slate-100 dark:bg-slate-800
-          hover:bg-slate-200 dark:hover:bg-slate-700
-          text-slate-800 dark:text-slate-200
-          transition-all duration-200
+          bg-secondary
+          hover:bg-secondary/70
+          text-secondary-foreground
+          transition-colors duration-200
           cursor-pointer
         `}
           title="进入个人中心"
         >
-          <div className="w-6 h-6 rounded-full bg-linear-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+          <div className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center text-background text-xs font-semibold shrink-0">
             {username.charAt(0).toUpperCase()}
           </div>
           <span className="max-w-25 truncate">{username}</span>
         </Link>
 
-        {/* 退出按钮保留 */}
         <button
           onClick={handleLogout}
           className={`${logoutBtnClasses} ${sizeClasses[size]}`}
@@ -135,7 +125,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
 
   return (
     <Link
-      href={`/login?redirect=${redirectUrl}`} // 👈 关键修复
+      href={`/login?redirect=${redirectUrl}`}
       className={`${loginBtnClasses} ${sizeClasses[size]} ${className}`}
       aria-label="前往登录页面"
     >

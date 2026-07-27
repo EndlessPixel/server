@@ -173,7 +173,7 @@ export function Pagination({
         onClick={() => onPage(Math.max(1, current - 1))}
         disabled={current === 1}
         aria-label="上一页"
-        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
       >
         <ChevronLeft className="w-4 h-4" aria-hidden="true" />
       </Button>
@@ -187,7 +187,7 @@ export function Pagination({
             onClick={() => onPage(p)}
             aria-label={`第 ${p} 页`}
             aria-current={p === current ? "page" : undefined}
-            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
           >
             {p}
           </Button>
@@ -208,7 +208,7 @@ export function Pagination({
         onClick={() => onPage(Math.min(total, current + 1))}
         disabled={current === total}
         aria-label="下一页"
-        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
       >
         <ChevronRight className="w-4 h-4" aria-hidden="true" />
       </Button>
@@ -240,12 +240,12 @@ export function FileBlock({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 hover:shadow-md transition-all duration-300"
+      className="p-4 rounded-xl bg-secondary/50 hover:shadow-sm transition-all duration-300"
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2 min-w-0">
           <span
-            className="font-medium text-sm truncate text-slate-900 dark:text-white"
+            className="font-medium text-sm truncate text-foreground"
             title={file.name}
           >
             {file.name}
@@ -261,7 +261,7 @@ export function FileBlock({
           <Button
             size="sm"
             asChild
-            className="bg-blue-600 hover:bg-blue-700 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="bg-foreground hover:bg-foreground/85 text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
           >
             <a
               href={file.downloadUrl}
@@ -283,8 +283,8 @@ export function FileBlock({
             asChild
             title={m.tip}
             className={cn(
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
-              m.recommended && "border-green-300 dark:border-green-700",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
+              m.recommended && "bg-foreground/5",
             )}
           >
             <a
@@ -296,7 +296,7 @@ export function FileBlock({
               <ExternalLink className="w-3 h-3 mr-1" aria-hidden="true" />
               {m.tag}
               {m.recommended && (
-                <span className="ml-1 text-green-500 text-xs">★</span>
+                <span className="ml-1 text-foreground/50 text-xs">★</span>
               )}
             </a>
           </Button>
@@ -343,15 +343,15 @@ export function ReleaseCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        "relative overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg",
+        "relative overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-md",
         release.isLatest
-          ? "border-2 border-green-300 dark:border-green-700 bg-green-50/80 dark:bg-green-900/10"
-          : "bg-white/90 dark:bg-slate-800/60 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80",
+          ? "bg-foreground/5"
+          : "bg-card",
       )}
     >
       {release.isLatest && (
         <Badge
-          className="absolute top-4 right-4 bg-green-600 text-white px-4 py-1.5 shadow-md flex items-center gap-1.5 rounded-lg"
+          className="absolute top-4 right-4 bg-foreground text-background px-4 py-1.5 shadow-sm flex items-center gap-1.5 rounded-lg"
           aria-label="最新版本"
         >
           <Zap className="w-3.5 h-3.5" aria-hidden="true" />
@@ -364,8 +364,8 @@ export function ReleaseCard({
         <header className="flex items-start gap-4 mb-4">
           <div
             className={cn(
-              "p-3 rounded-xl text-white shrink-0",
-              isMain ? "bg-blue-600" : "bg-purple-600",
+              "p-3 rounded-xl text-background shrink-0",
+              isMain ? "bg-foreground" : "bg-foreground/80",
             )}
             aria-hidden="true"
           >
@@ -375,20 +375,12 @@ export function ReleaseCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-2">
               <h3
-                className="text-lg font-bold truncate text-slate-900 dark:text-white"
+                className="text-lg font-bold truncate text-foreground"
                 title={release.name}
               >
                 {release.name}
               </h3>
-              <Badge
-                className={cn(
-                  release.isPrerelease
-                    ? "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-300"
-                    : isMain
-                      ? "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300"
-                      : "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900/30 dark:text-purple-300",
-                )}
-              >
+              <Badge variant="secondary">
                 {typeLabel}
               </Badge>
               {showBranchBadge && (
@@ -399,22 +391,22 @@ export function ReleaseCard({
             </div>
 
             {/* 元信息 */}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600 dark:text-slate-400">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Rocket className="w-3.5 h-3.5" aria-hidden="true" />
                 MC版本:{" "}
-                <strong className="text-slate-900 dark:text-white">
+                <strong className="text-foreground">
                   {release.mcVersion}
                 </strong>
               </span>
-              <span className="text-slate-400" aria-hidden="true">
+              <span className="text-foreground/20" aria-hidden="true">
                 •
               </span>
               <span className="flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
                 {release.releaseDate}
               </span>
-              <span className="text-slate-400" aria-hidden="true">
+              <span className="text-foreground/20" aria-hidden="true">
                 •
               </span>
               <span className="flex items-center gap-1">
@@ -452,7 +444,7 @@ export function ReleaseCard({
               variant="ghost"
               size="sm"
               onClick={() => setFilesExpanded((v) => !v)}
-              className="w-full gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="w-full gap-2 text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
               aria-expanded={filesExpanded}
               aria-label={filesExpanded ? "收起更多文件" : "展开更多文件"}
             >
@@ -477,7 +469,7 @@ export function ReleaseCard({
             variant="ghost"
             size="sm"
             onClick={() => setOpen((v) => !v)}
-            className="w-full gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="w-full gap-2 text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
             aria-expanded={open}
             aria-controls={`changelog-${release.version}`}
           >
@@ -505,7 +497,7 @@ export function ReleaseCard({
                 className="mt-3 overflow-hidden"
               >
                 <div
-                  className="rounded-xl bg-slate-100/80 dark:bg-slate-900/40 p-4 prose prose-sm dark:prose-invert max-w-none overflow-auto max-h-60 border border-slate-200/50 dark:border-slate-700/50"
+                  className="rounded-xl bg-secondary/50 p-4 prose prose-sm dark:prose-invert max-w-none overflow-auto max-h-60"
                   role="region"
                   aria-label="更新日志内容"
                 >
@@ -538,11 +530,11 @@ export function MirrorFooter({
 }: MirrorFooterProps) {
   return (
     <footer
-      className={`text-center text-sm text-slate-600 dark:text-slate-400 p-6 rounded-xl bg-slate-100/50 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/50 ${className}`}
+      className={`text-center text-sm text-muted-foreground p-6 rounded-xl bg-secondary/30 ${className}`}
       role="contentinfo"
       aria-label="镜像服务说明"
     >
-      <p className="mb-3 font-medium">加速下载由以下服务提供：</p>
+      <p className="mb-3 font-medium text-foreground/80">加速下载由以下服务提供：</p>
       <div className="flex flex-wrap justify-center gap-3">
         {mirrors.map((d) => (
           <a
@@ -550,14 +542,14 @@ export function MirrorFooter({
             href={`https://${d}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="px-4 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/85 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
             aria-label={`访问 ${d}`}
           >
             {d}
           </a>
         ))}
       </div>
-      <p className="mt-3 text-xs text-slate-500 dark:text-slate-500">
+      <p className="mt-3 text-xs text-muted-foreground/70">
         镜像服务可加速 GitHub 文件下载，推荐中国大陆用户使用
       </p>
     </footer>
@@ -606,11 +598,11 @@ export function Toolbar({
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={placeholder}
-            className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white placeholder:text-slate-400"
+            className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary focus:outline-none focus:ring-2 focus:ring-ring/30 focus:bg-background text-foreground placeholder:text-muted-foreground"
             aria-label="搜索版本"
           />
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -630,13 +622,13 @@ export function Toolbar({
             variant="outline"
             onClick={onRefresh}
             disabled={loading}
-            className="lg:w-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="lg:w-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
             aria-label="刷新数据"
           >
             {loading ? (
               <>
                 <span
-                  className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin mr-2"
+                  className="w-4 h-4 border-2 border-foreground/30 border-t-transparent rounded-full animate-spin mr-2"
                   aria-hidden="true"
                 />
                 加载中...
@@ -665,7 +657,7 @@ export function Toolbar({
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        <span className="text-sm font-medium text-foreground/70">
           排序：
         </span>
         {sortOptions.map((opt) => {
@@ -684,7 +676,7 @@ export function Toolbar({
                   onSortOrderChange("desc");
                 }
               }}
-              className="gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
               aria-label={`按${opt.label}排序`}
               aria-pressed={isActive}
             >
@@ -715,11 +707,9 @@ export function EmptyState({
   className = "",
 }: EmptyStateProps) {
   return (
-    <Card
-      className={`border-dashed border-slate-300 dark:border-slate-600 ${className}`}
-    >
+    <Card className={cn("border-foreground/8 border-dashed", className)}>
       <CardContent className="py-16 text-center">
-        <div className="text-slate-400 dark:text-slate-500 mb-2">
+        <div className="text-muted-foreground mb-2">
           <svg
             className="w-12 h-12 mx-auto"
             fill="none"
@@ -735,7 +725,7 @@ export function EmptyState({
             />
           </svg>
         </div>
-        <p className="text-slate-600 dark:text-slate-400">{message}</p>
+        <p className="text-muted-foreground">{message}</p>
       </CardContent>
     </Card>
   );
@@ -759,10 +749,10 @@ export function LoadingState({
       aria-live="polite"
     >
       <div
-        className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"
+        className="w-12 h-12 border-4 border-foreground/20 border-t-foreground/50 rounded-full animate-spin"
         aria-hidden="true"
       />
-      <p className="text-slate-600 dark:text-slate-400">{message}</p>
+      <p className="text-muted-foreground">{message}</p>
     </div>
   );
 }
@@ -838,7 +828,6 @@ export function InfiniteReleaseGrid({
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  // 设置无限滚动观察器
   useEffect(() => {
     if (!hasMore || !onLoadMore) return;
 
@@ -890,13 +879,13 @@ export function InfiniteReleaseGrid({
         <div ref={loadMoreRef} className="py-8 text-center">
           {isLoadingMore ? (
             <div className="flex items-center justify-center gap-3">
-              <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              <span className="text-slate-500">加载更多版本...</span>
+              <div className="w-6 h-6 border-2 border-foreground/30 border-t-transparent rounded-full animate-spin" />
+              <span className="text-muted-foreground">加载更多版本...</span>
             </div>
           ) : (
             <button
               onClick={onLoadMore}
-              className="px-6 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-400 transition-colors"
+              className="px-6 py-3 bg-secondary hover:bg-secondary/70 rounded-xl text-foreground/70 transition-colors cursor-pointer"
             >
               加载更多版本
             </button>
@@ -906,7 +895,7 @@ export function InfiniteReleaseGrid({
 
       {/* 已加载全部提示 */}
       {!hasMore && list.length > 0 && (
-        <div className="py-8 text-center text-sm text-slate-500 dark:text-slate-500">
+        <div className="py-8 text-center text-sm text-muted-foreground">
           已加载全部 {list.length} 个版本
         </div>
       )}

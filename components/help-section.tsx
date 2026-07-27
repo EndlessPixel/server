@@ -11,7 +11,7 @@ interface HelpSectionProps {
   wikiUrl?: string;
 }
 
-// 帮助支持部分组件 - 统一"需要帮助"区域
+// 帮助支持部分组件 - 极简灰阶版
 export function HelpSection({
   className = "",
   showGithubIssue = true,
@@ -20,19 +20,17 @@ export function HelpSection({
   wikiUrl = "https://wiki.endlesspixel.cn",
 }: HelpSectionProps) {
   return (
-    <Card
-      className={`bg-white/80 dark:bg-slate-800/50 rounded-xl backdrop-blur-sm border-slate-200 dark:border-slate-700 ${className}`}
-    >
+    <Card className={`shadow-sm ${className}`}>
       <CardContent className="p-6">
-        <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4 flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-blue-500" aria-hidden="true" />
+        <h3 className="font-medium text-foreground text-lg mb-4 flex items-center gap-2">
+          <MessageCircle className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
           需要帮助？
         </h3>
-        <div className="space-y-4 text-slate-600 dark:text-slate-400">
+        <div className="space-y-4 text-muted-foreground">
           <p>如果您在下载或安装过程中遇到任何问题：</p>
           <div className="flex flex-wrap gap-3">
             {showGithubIssue && (
-              <Button asChild variant="outline" size="sm">
+              <Button asChild variant="secondary" size="sm">
                 <Link
                   href={githubIssueUrl}
                   target="_blank"
@@ -44,7 +42,7 @@ export function HelpSection({
                 </Link>
               </Button>
             )}
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="secondary" size="sm">
               <Link
                 href="https://qm.qq.com/q/sFrax2Ilxe"
                 target="_blank"
@@ -55,7 +53,7 @@ export function HelpSection({
               </Link>
             </Button>
             {showWiki && (
-              <Button asChild variant="outline" size="sm">
+              <Button asChild variant="secondary" size="sm">
                 <Link
                   href={wikiUrl}
                   target="_blank"
@@ -74,7 +72,7 @@ export function HelpSection({
   );
 }
 
-// 返回按钮组件
+// 返回按钮组件（极简灰阶版）
 interface BackButtonProps {
   href: string;
   label?: string;
@@ -89,7 +87,7 @@ export function BackButton({
   return (
     <Link
       href={href}
-      className={`inline-block bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 px-4 py-2 rounded-md text-gray-800 dark:text-slate-200 no-underline transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${className}`}
+      className={`inline-block bg-secondary hover:bg-secondary/70 px-4 py-2 rounded-lg text-secondary-foreground no-underline transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 ${className}`}
       aria-label={label}
     >
       {label}

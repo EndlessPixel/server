@@ -1,358 +1,228 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { LauncherDownloadPage } from "@/components/launcher-download-page";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { AlertCircle, ArrowRight, Download, Sparkles, Share2, Rocket, Globe, Clock, CheckCircle2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
-import { motion } from "framer-motion";
-
-const parseGithubUrl = (url: string): { isValid: boolean; owner?: string; repo?: string } => {
-    try {
-        let cleanUrl = url.trim();
-        if (!cleanUrl) return { isValid: false };
-
-        if (!/^https?:\/\//i.test(cleanUrl)) {
-            cleanUrl = "https://" + cleanUrl;
-        }
-
-        const parsed = new URL(cleanUrl);
-
-        if (!["github.com", "www.github.com"].includes(parsed.hostname.toLowerCase())) {
-            return { isValid: false };
-        }
-
-        const pathParts = parsed.pathname.split("/").filter(Boolean);
-        if (pathParts.length < 2) return { isValid: false };
-
-        const [owner, repo] = pathParts;
-        if (!owner || !repo) return { isValid: false };
-
-        if (!/^[a-z0-9._-]+$/i.test(owner) || !/^[a-z0-9._-]+$/i.test(repo)) {
-            return { isValid: false };
-        }
-
-        return { isValid: true, owner, repo };
-    } catch {
-        return { isValid: false };
-    }
-};
+import { DownloadSection } from "@/components/download-section-launcher";
+import { ArrowLeft, Search, Settings } from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export default function CustomDownloadsPage() {
-    const searchParams = useSearchParams();
-    const router = useRouter();
-    const [, startTransition] = useTransition();
-    const [inputUrl, setInputUrl] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [copied, setCopied] = useState(false);
-    const [isFocused, setIsFocused] = useState(false);
-    const githubUrl = searchParams.get("url");
-    const repoInfo = githubUrl ? parseGithubUrl(githubUrl) : { isValid: false };
+  const [repoUrl, setRepoUrl] = useState("");
+  const [submittedUrl, setSubmittedUrl] = useState("");
+  const [inputFocused, setInputFocused] = useState(false);
+  const [recentRepos, setRecentRepos] = useState<
+    { owner: string; repo: string; url: string }[]
+  >([]);
 
-    if (githubUrl && repoInfo.isValid && repoInfo.owner && repoInfo.repo) {
-        return (
-            <LauncherDownloadPage
-                owner={repoInfo.owner}
-                repo={repoInfo.repo}
-                repoOwner={repoInfo.owner}
-                repoName={repoInfo.repo}
-                issuesHref={`/downloads/custom_downloads/issues?url=${encodeURIComponent(githubUrl)}`}
-                backHref="/downloads/custom_downloads"
-            />
-        );
-    }
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("custom-downloads-recent");
+      if (stored) {
+        setRecentRepos(JSON.parse(stored));
+      }
+    } catch {}
+  }, []);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const trimmed = inputUrl.trim();
-        if (!trimmed) return;
-        setIsLoading(true);
-        const info = parseGithubUrl(trimmed);
-        if (!info.isValid || !info.owner || !info.repo) {
-            alert("请输入有效的 GitHub 仓库地址，例如：github.com/owner/repo");
-            setIsLoading(false);
-            return;
-        }
-        try {
-            const apiUrl = `https://api.github.com/repos/${info.owner}/${info.repo}/releases?per_page=1`;
-            const res = await fetch(apiUrl, {
-                method: "GET",
-                headers: {
-                    Accept: "application/vnd.github.v3+json",
-                    "User-Agent": "CustomDownloadsPage",
-                },
-            });
-            if (res.ok) {
-                const releases = await res.json();
-                if (Array.isArray(releases) && releases.length > 0) {
+  const saveRecent = (owner: string, repo: string, url: string) => {
+    const updated = [
+      { owner, repo, url },
+      ...recentRepos.filter((r) => r.url !== url),
+    ].slice(0, 5);
+    setRecentRepos(updated);
+    localStorage.setItem("custom-downloads-recent", JSON.stringify(updated));
+  };
 
-                    startTransition(() => {
-                        router.push(`/downloads/custom_downloads?url=${encodeURIComponent(trimmed)}&platform=github&api_limit=60&verify=true&use_mirror=true`);
-                    });
-                    return;
-                }
-            }
-            alert(
-                "❌ 该仓库暂无公开的 Release 版本，无法生成下载页。\n\n请确认：\n1. 仓库是公开的\n2. 已在 GitHub 上创建至少一个 Release（非 tag）"
-            );
-        } catch (error) {
-            console.warn("GitHub API 调用失败（可能因速率限制），尝试直接跳转...", error);
-            startTransition(() => {
-                router.push(`/downloads/custom_downloads?url=${encodeURIComponent(trimmed)}`);
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    const handleShare = async () => {
-        if (typeof window === "undefined") return;
-        const url = window.location.href;
-        try {
-            if (navigator.share) {
-                await navigator.share({ title: document.title, url });
-            } else if (navigator.clipboard?.writeText) {
-                await navigator.clipboard.writeText(url);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            } else {
-                const textArea = document.createElement("textarea");
-                textArea.value = url;
-                textArea.style.position = "fixed";
-                textArea.style.opacity = "0";
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand("copy");
-                document.body.removeChild(textArea);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            }
-        } catch (err) {
-            console.error("分享失败:", err);
-        }
-    };
-
-    return (
-        <>
-            <Navigation />
-            <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 dark:from-slate-900 dark:via-blue-950/20 dark:to-cyan-900/10 relative overflow-hidden">
-                {/* 静态背景装饰 */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-linear-to-r from-blue-200 to-cyan-200 dark:from-blue-800/20 dark:to-cyan-800/20 rounded-full blur-3xl opacity-30"></div>
-                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-linear-to-r from-purple-200 to-pink-200 dark:from-purple-800/20 dark:to-pink-800/20 rounded-full blur-3xl opacity-30"></div>
-                </div>
-
-                <div className="container mx-auto px-4 sm:px-6 py-12 relative z-10">
-                    {/* 标题区 */}
-                    <motion.div
-                        className="text-center mb-12"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <Badge className="bg-linear-to-r from-blue-500/10 to-cyan-500/10 text-blue-600 dark:text-blue-400  border-blue-200/50 dark:border-blue-700/50 px-5 py-2 text-sm font-medium backdrop-blur-sm mb-6">
-                            <Sparkles className="w-4 h-4 mr-1.5" />
-                            自定义 GitHub 下载页
-                        </Badge>
-                        <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-800 to-cyan-700 dark:from-white dark:via-blue-300 dark:to-cyan-400 bg-clip-text text-transparent mb-4">
-                            生成专属下载页面
-                        </h1>
-                        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                            输入任意 GitHub 仓库地址，一键生成专业、美观、支持镜像加速的下载页面。
-                        </p>
-                    </motion.div>
-                    {/* 主卡片 */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1, duration: 0.5 }}
-                        className="max-w-4xl mx-auto"
-                    >
-                        <Card className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl  border-slate-200/60 dark:border-slate-700/60 shadow-xl rounded-2xl overflow-hidden">
-                            <CardHeader className="text-center pb-6 pt-10 relative">
-                                <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-emerald-500"></div>
-                                <div className="w-16 h-16 bg-linear-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-5 shadow-lg">
-                                    <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" className="w-8 h-8 text-white" />
-                                </div>
-                                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">
-                                    输入 GitHub 仓库地址
-                                </CardTitle>
-                                <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
-                                    支持任何公开仓库
-                                </CardDescription>
-                            </CardHeader>
-
-                            <CardContent className="space-y-8 pb-10">
-                                {/* 表单 */}
-                                <form onSubmit={handleSubmit} className="space-y-5">
-                                    <div>
-                                        <label htmlFor="github-url" className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-2">
-                                            GitHub 仓库地址
-                                        </label>
-                                        <div className="flex flex-col sm:flex-row gap-3">
-                                            <Input
-                                                id="github-url"
-                                                type="url"
-                                                placeholder="例如：github.com/owner/repo"
-                                                value={inputUrl}
-                                                onChange={(e) => setInputUrl(e.target.value)}
-                                                onFocus={() => setIsFocused(true)}
-                                                onBlur={() => setIsFocused(false)}
-                                                className={`w-full text-base py-3 px-4  transition-colors rounded-xl ${isFocused
-                                                    ? "border-blue-500 ring-2 ring-blue-500/20 dark:ring-blue-500/10"
-                                                    : "border-slate-300 dark:border-slate-600"
-                                                    } bg-white/60 dark:bg-slate-800/60`}
-                                                required
-                                            />
-                                            <Button
-                                                type="submit"
-                                                disabled={isLoading || !inputUrl.trim()}
-                                                size="lg"
-                                                className="sm:w-auto whitespace-nowrap bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-medium"
-                                            >
-                                                {isLoading ? (
-                                                    <>
-                                                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                                                        检查中...
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Rocket className="w-4 h-4 mr-2" />
-                                                        立即生成
-                                                    </>
-                                                )}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </form>
-
-                                {/* 支持格式说明 */}
-                                <div className="bg-linear-to-r from-slate-50/80 to-blue-50/50 dark:from-slate-800/40 dark:to-blue-900/20 rounded-xl p-5  border-slate-200/50 dark:border-slate-700/50">
-                                    <h3 className="font-medium text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                                        <AlertCircle className="w-5 h-5 text-blue-500" />
-                                        支持的格式示例
-                                    </h3>
-                                    <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
-                                        <li>github.com/owner/repo</li>
-                                        <li>https://github.com/owner/repo/releases</li>
-                                        <li>github.com/owner/repo/tree/main</li>
-                                        <li>www.github.com/owner/repo</li>
-                                    </ul>
-                                </div>
-
-                                {/* 核心特性 */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    {[
-                                        { icon: Download, title: "智能解析", desc: "自动提取仓库信息" },
-                                        { icon: Globe, title: "镜像加速", desc: "全球 CDN 加速下载" },
-                                        { icon: Clock, title: "实时更新", desc: "同步 GitHub 最新 Release" },
-                                    ].map((item, i) => (
-                                        <div
-                                            key={i}
-                                            className="text-center p-4 bg-white/50 dark:bg-slate-800/40 rounded-xl  border-slate-200/50 dark:border-slate-700/50"
-                                        >
-                                            <div className="w-10 h-10 bg-linear-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center mx-auto mb-3">
-                                                <item.icon className="w-5 h-5 text-white" />
-                                            </div>
-                                            <h4 className="font-semibold text-slate-900 dark:text-white text-sm">{item.title}</h4>
-                                            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{item.desc}</p>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* 分享按钮 */}
-                                <div className="flex justify-center pt-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={handleShare}
-                                        className="rounded-lg px-4 py-2 border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400"
-                                    >
-                                        {copied ? (
-                                            <>
-                                                <CheckCircle2 className="w-4 h-4 mr-1.5 text-green-500" />
-                                                已复制链接
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Share2 className="w-4 h-4 mr-1.5" />
-                                                分享此页面
-                                            </>
-                                        )}
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-
-                    {/* 快捷入口 */}
-                    <motion.div
-                        className="mt-16"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
-                    >
-                        <h2 className="text-2xl font-bold text-center text-slate-900 dark:text-white mb-8">
-                            热门项目快捷入口
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
-                            {[
-                                {
-                                    name: "EndlessPixel Modpack",
-                                    url: "https://github.com/EndlessPixel/EndlessPixel-Modpack/releases",
-                                    desc: "官方优化整合包",
-                                },
-                                {
-                                    name: "Fabric Example Mod",
-                                    url: "https://github.com/FabricMC/fabric-example-mod/releases",
-                                    desc: "模组开发模板",
-                                },
-                                {
-                                    name: "Minecraft Forge",
-                                    url: "https://github.com/MinecraftForge/MinecraftForge/releases",
-                                    desc: "Forge 官方仓库",
-                                },
-                            ].map((proj, i) => (
-                                <Card
-                                    key={i}
-                                    className="bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm  border-slate-200/60 dark:border-slate-700/60 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-                                    onClick={() => {
-                                        setInputUrl(proj.url);
-
-                                        startTransition(() =>
-                                            router.push(`/downloads/custom_downloads?url=${encodeURIComponent(proj.url)}`)
-                                        );
-                                    }}
-                                >
-                                    <CardContent className="p-5">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-linear-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shrink-0">
-                                                <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" className="w-5 h-5 text-white" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h4 className="font-semibold text-slate-900 dark:text-white truncate">
-                                                        {proj.name}
-                                                    </h4>
-                                                </div>
-                                                <p className="text-sm text-slate-600 dark:text-slate-400 truncate">
-                                                    {proj.desc}
-                                                </p>
-                                            </div>
-                                            <ArrowRight className="w-4 h-4 text-slate-400" />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    </motion.div>
-                </div>
-            </div>
-            <Footer />
-        </>
+  const parseRepo = (
+    input: string,
+  ): { owner: string; repo: string } | null => {
+    const trimmed = input.trim();
+    // owner/repo
+    const shortMatch = trimmed.match(
+      /^([a-zA-Z0-9._-]+)\/([a-zA-Z0-9._-]+)$/,
     );
+    if (shortMatch) return { owner: shortMatch[1], repo: shortMatch[2] };
+    // full GitHub URL
+    const urlMatch = trimmed.match(
+      /github\.com\/([a-zA-Z0-9._-]+)\/([a-zA-Z0-9._-]+)/,
+    );
+    if (urlMatch) return { owner: urlMatch[1], repo: urlMatch[2] };
+    return null;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = parseRepo(repoUrl);
+    if (parsed) {
+      saveRecent(parsed.owner, parsed.repo, repoUrl);
+      setSubmittedUrl(
+        `https://api.github.com/repos/${parsed.owner}/${parsed.repo}/releases`,
+      );
+    }
+  };
+
+  const parsed = parseRepo(repoUrl);
+  const isValid = parsed !== null;
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <main className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="flex items-center gap-4 mb-8">
+            <Link
+              href="/downloads"
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="返回下载页面"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span className="text-sm font-medium">返回</span>
+            </Link>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-10"
+          >
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 tracking-tight">
+              自定义 GitHub 下载
+            </h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              输入 GitHub 仓库地址，获取 Release 文件并选择合适的镜像下载
+            </p>
+          </motion.div>
+
+          {/* URL Input */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="max-w-2xl mx-auto mb-12"
+          >
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="relative">
+                <label htmlFor="repo-input" className="sr-only">
+                  输入 GitHub 仓库地址
+                </label>
+                <div
+                  className={cn(
+                    "absolute left-4 top-1/2 -translate-y-1/2 transition-colors",
+                    inputFocused
+                      ? "text-foreground"
+                      : "text-muted-foreground",
+                  )}
+                  aria-hidden="true"
+                >
+                  <Search className="w-5 h-5" />
+                </div>
+                <input
+                  id="repo-input"
+                  type="text"
+                  value={repoUrl}
+                  onChange={(e) => setRepoUrl(e.target.value)}
+                  onFocus={() => setInputFocused(true)}
+                  onBlur={() => setInputFocused(false)}
+                  placeholder="输入 GitHub 仓库地址或 owner/repo..."
+                  className="w-full pl-12 pr-4 py-4 bg-secondary rounded-2xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 focus:bg-background transition-all text-base"
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  例如：<code className="px-2 py-1 bg-secondary rounded-lg text-foreground/70 text-xs">EndlessPixel/EndlessLauncher</code>
+                </div>
+                <button
+                  type="submit"
+                  disabled={!isValid}
+                  className={cn(
+                    "px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
+                    isValid
+                      ? "bg-foreground text-background hover:bg-foreground/85 hover:shadow-md"
+                      : "bg-secondary text-muted-foreground cursor-not-allowed",
+                  )}
+                >
+                  <svg className="w-4 h-4 inline mr-2" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                  获取 Releases
+                </button>
+              </div>
+            </form>
+
+            {/* Recent repos */}
+            {recentRepos.length > 0 && !submittedUrl && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-8"
+              >
+                <h3 className="text-sm font-semibold text-foreground/70 mb-3">
+                  最近使用
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {recentRepos.map((r) => (
+                    <button
+                      key={r.url}
+                      onClick={() => {
+                        setRepoUrl(r.url);
+                        setSubmittedUrl(
+                          `https://api.github.com/repos/${r.owner}/${r.repo}/releases`,
+                        );
+                      }}
+                      className="flex items-center gap-2 px-3 py-2 bg-card rounded-xl text-sm text-foreground/70 hover:text-foreground hover:bg-secondary/70 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                      {r.owner}/{r.repo}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+
+          {/* Results */}
+          <AnimatePresence mode="wait">
+            {submittedUrl ? (
+              <motion.div
+                key="results"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <DownloadSection
+                  githubApiUrl={submittedUrl}
+                  requestTimeout={15000}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="placeholder"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="max-w-2xl mx-auto text-center py-16"
+              >
+                <div className="w-20 h-20 bg-secondary rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Settings className="w-10 h-10 text-muted-foreground" aria-hidden="true" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-3">
+                  输入仓库地址开始
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  支持 <code className="px-1.5 py-0.5 bg-secondary rounded text-foreground/70 text-sm">owner/repo</code> 格式或完整的 GitHub 链接。
+                  <br />
+                  我们会列出该仓库所有 Release 并提供多种镜像下载选项。
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
 }

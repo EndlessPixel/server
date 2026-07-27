@@ -59,13 +59,13 @@ function RepoInfoCardSkeleton() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="max-w-6xl mx-auto bg-white/80 dark:bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm p-6"
+      className="max-w-6xl mx-auto bg-card backdrop-blur-md rounded-2xl shadow-sm p-6"
     >
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl"
+            className="flex items-center gap-3 p-3 bg-secondary rounded-xl"
           >
             <Skeleton className="w-10 h-10 rounded-full" />
             <div className="space-y-1">
@@ -94,68 +94,60 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-6xl mx-auto bg-white/80 dark:bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm"
+      className="max-w-6xl mx-auto bg-card rounded-2xl shadow-sm"
       aria-label="仓库信息"
     >
       <CardContent className="p-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
-            <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
-              <Star className="w-5 h-5 text-yellow-500" aria-hidden="true" />
+          <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
+            <div className="p-2 bg-background rounded-full">
+              <Star className="w-5 h-5 text-foreground/60" aria-hidden="true" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-900 dark:text-white">
+              <div className="text-xl font-bold text-foreground">
                 {repoInfo.stargazers_count.toLocaleString()}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">
-                Stars
-              </div>
+              <div className="text-xs text-muted-foreground">Stars</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-              <GitBranch className="w-5 h-5 text-blue-500" aria-hidden="true" />
+          <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
+            <div className="p-2 bg-background rounded-full">
+              <GitBranch className="w-5 h-5 text-foreground/60" aria-hidden="true" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-900 dark:text-white">
+              <div className="text-xl font-bold text-foreground">
                 {repoInfo.forks_count.toLocaleString()}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">
-                Forks
-              </div>
+              <div className="text-xs text-muted-foreground">Forks</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
-            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
-              <Eye className="w-5 h-5 text-green-500" aria-hidden="true" />
+          <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
+            <div className="p-2 bg-background rounded-full">
+              <Eye className="w-5 h-5 text-foreground/60" aria-hidden="true" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-900 dark:text-white">
+              <div className="text-xl font-bold text-foreground">
                 {repoInfo.watchers_count.toLocaleString()}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">
-                Watchers
-              </div>
+              <div className="text-xs text-muted-foreground">Watchers</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-              <Clock className="w-5 h-5 text-purple-500" aria-hidden="true" />
+          <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
+            <div className="p-2 bg-background rounded-full">
+              <Clock className="w-5 h-5 text-foreground/60" aria-hidden="true" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-slate-900 dark:text-white">
+              <div className="text-sm font-semibold text-foreground">
                 {new Date(repoInfo.updated_at).toLocaleDateString("zh-CN")}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">
-                最后更新
-              </div>
+              <div className="text-xs text-muted-foreground">最后更新</div>
             </div>
           </div>
         </div>
 
         {repoInfo.archived && (
-          <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200/50 dark:border-amber-800/30">
-            <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+          <div className="mt-6 p-4 bg-secondary rounded-xl">
+            <div className="flex items-center gap-2 text-foreground/70">
               <Archive className="w-5 h-5" aria-hidden="true" />
               <span className="font-medium">此仓库已归档，可能不再维护</span>
             </div>
@@ -165,18 +157,14 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
         {repoInfo.topics.length > 0 && (
           <div className="mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <Tag className="w-4 h-4 text-slate-500" aria-hidden="true" />
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              <Tag className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+              <span className="text-sm font-medium text-foreground/70">
                 主题标签：
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
               {repoInfo.topics.map((topic) => (
-                <Badge
-                  key={topic}
-                  variant="secondary"
-                  className="px-3 py-1 text-xs bg-slate-100 dark:bg-slate-700"
-                >
+                <Badge key={topic} variant="secondary">
                   {topic}
                 </Badge>
               ))}
@@ -223,20 +211,20 @@ function ErrorState({
   const { icon: Icon, title, message } = getErrorInfo();
 
   return (
-    <Card className="border-red-200 dark:border-red-800 bg-red-50/80 dark:bg-red-900/10">
+    <Card className="bg-destructive/5">
       <CardContent className="py-16 text-center">
         <Icon
-          className="w-12 h-12 mx-auto text-red-500 dark:text-red-400 mb-4"
+          className="w-12 h-12 mx-auto text-destructive/60 mb-4"
           aria-hidden="true"
         />
-        <h3 className="text-lg font-semibold text-red-700 dark:text-red-300 mb-2">
+        <h3 className="text-lg font-semibold text-foreground mb-2">
           {title}
         </h3>
-        <p className="text-red-600 dark:text-red-400 mb-4">{message}</p>
+        <p className="text-muted-foreground mb-4">{message}</p>
         <Button
           variant="outline"
           onClick={onRetry}
-          className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
         >
           <svg
             className="w-4 h-4 mr-2"
@@ -322,7 +310,6 @@ export function DownloadSectionLauncher({
 
   const fetchReleasesData = async (page: number = 1) => {
     try {
-      // GitHub API 默认只返回30条数据，需要添加 per_page 参数
       const apiUrl = githubApiUrl.includes("?")
         ? `${githubApiUrl}&per_page=100&page=${page}`
         : `${githubApiUrl}?per_page=100&page=${page}`;
@@ -352,7 +339,6 @@ export function DownloadSectionLauncher({
         };
       });
 
-      // 如果是第一页，标记最新版本
       if (page === 1 && parsed.length > 0) {
         const stableReleases = parsed.filter((r) => !r.isPrerelease);
         if (stableReleases.length > 0) {
@@ -366,7 +352,6 @@ export function DownloadSectionLauncher({
         }
       }
 
-      // 更新数据
       if (page === 1) {
         setAllReleases(parsed);
         setReleases(parsed);
@@ -375,7 +360,6 @@ export function DownloadSectionLauncher({
         setReleases((prev) => [...prev, ...parsed]);
       }
 
-      // 判断是否还有更多数据
       setHasMore(parsed.length === 100);
 
       return parsed;
@@ -384,7 +368,6 @@ export function DownloadSectionLauncher({
     }
   };
 
-  // 加载更多数据
   const handleLoadMore = async () => {
     if (isLoadingMore || !hasMore) return;
 
@@ -410,17 +393,11 @@ export function DownloadSectionLauncher({
   if (loading) {
     return (
       <section className="space-y-6" aria-label="下载资源区域">
-        {/* 标题区域 */}
         <header className="text-center space-y-3">
-          <h2 className="text-3xl font-bold bg-linear-to-r from-slate-800 to-blue-800 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
-            {title}
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            {description}
-          </p>
+          <h2 className="text-3xl font-bold text-foreground">{title}</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">{description}</p>
         </header>
 
-        {/* 仓库信息骨架屏 */}
         <AnimatePresence mode="wait">
           <motion.div
             key="repo-skeleton"
@@ -432,12 +409,11 @@ export function DownloadSectionLauncher({
           </motion.div>
         </AnimatePresence>
 
-        {/* 工具栏骨架屏 */}
-        <Card className="p-4 bg-white/80 dark:bg-slate-800/60 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80">
+        <Card className="p-4 bg-card">
           <div className="space-y-4">
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="relative flex-1">
-                <Skeleton className="w-full h-12 rounded-lg" />
+                <Skeleton className="w-full h-12 rounded-xl" />
               </div>
               <Button variant="outline" disabled className="lg:w-auto">
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -445,7 +421,7 @@ export function DownloadSectionLauncher({
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              <span className="text-sm font-medium text-foreground/70">
                 排序：
               </span>
               {["版本号", "发布日期", "下载量"].map((label) => (
@@ -455,7 +431,6 @@ export function DownloadSectionLauncher({
           </div>
         </Card>
 
-        {/* 版本列表骨架屏 */}
         <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
             <motion.div
@@ -464,7 +439,7 @@ export function DownloadSectionLauncher({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
             >
-              <Card className="border-slate-200/80 dark:border-slate-700/80">
+              <Card>
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4 mb-4">
                     <Skeleton className="w-16 h-16 rounded-xl" />
@@ -491,28 +466,20 @@ export function DownloadSectionLauncher({
     );
   }
 
-  // 错误状态
   if (repoStatus === "error" && releases.length === 0) {
     return <ErrorState status={repoStatus} onRetry={fetchReleases} />;
   }
 
   return (
     <section className="space-y-6" aria-label="下载资源区域">
-      {/* 标题区域 */}
       <header className="text-center space-y-3">
-        <h2 className="text-3xl font-bold bg-linear-to-r from-slate-800 to-blue-800 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
-          {title}
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-          {description}
-        </p>
+        <h2 className="text-3xl font-bold text-foreground">{title}</h2>
+        <p className="text-muted-foreground max-w-2xl mx-auto">{description}</p>
       </header>
 
-      {/* 仓库信息卡片 */}
       {repoInfo && <RepoInfoCard repoInfo={repoInfo} />}
 
-      {/* 工具栏 */}
-      <Card className="p-4 bg-white/80 dark:bg-slate-800/60 backdrop-blur-md border-slate-200/80 dark:border-slate-700/80">
+      <Card className="p-4 bg-card">
         <Toolbar
           search={search}
           onSearchChange={setSearch}
@@ -526,7 +493,6 @@ export function DownloadSectionLauncher({
         />
       </Card>
 
-      {/* 版本列表 */}
       <div className="space-y-4">
         <InfiniteReleaseGrid
           list={filtered.slice(0, displayedCount)}
@@ -537,11 +503,9 @@ export function DownloadSectionLauncher({
         />
       </div>
 
-      {/* 镜像说明 */}
       <MirrorFooter />
     </section>
   );
 }
 
-// 保持原有导出名称兼容
 export { DownloadSectionLauncher as DownloadSection };

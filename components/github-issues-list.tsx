@@ -87,7 +87,7 @@ function StatsCard({
     <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400">
+          <div className="p-3 bg-secondary rounded-xl text-foreground/60">
             {icon}
           </div>
           <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
@@ -118,13 +118,13 @@ function IssueCard({
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             {isPR ? (
-              <GitPullRequest className="w-4 h-4 text-purple-500" />
+              <GitPullRequest className="w-4 h-4 text-foreground/60" />
             ) : (
               <AlertCircle
-                className={`w-4 h-4 ${issue.state === "open" ? "text-green-500" : "text-purple-500"}`}
+                className={`w-4 h-4 ${issue.state === "open" ? "text-foreground/60" : "text-foreground/60"}`}
               />
             )}
-            <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-foreground dark:group-hover:text-blue-400 transition-colors">
               {issue.title}
             </h3>
           </div>
@@ -307,8 +307,8 @@ export default function GitHubIssuesList({
     return (
       <>
         <Navigation />
-        <div className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 flex items-center justify-center">
-          <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <Loader2 className="w-12 h-12 animate-spin text-foreground/40" />
         </div>
         <Footer />
       </>
@@ -332,7 +332,7 @@ export default function GitHubIssuesList({
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 p-6">
+      <main className="min-h-screen bg-background p-6">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div className="space-y-2">
@@ -350,12 +350,12 @@ export default function GitHubIssuesList({
                 </Button>
                 <Badge
                   variant="secondary"
-                  className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                  className="bg-secondary text-foreground/70"
                 >
                   {owner}/{repo}
                 </Badge>
               </div>
-              <h1 className="text-3xl font-bold bg-linear-to-r from-slate-900 to-blue-700 dark:from-slate-100 dark:to-blue-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold text-foreground">
                 问题与反馈
               </h1>
               <p className="text-slate-600 dark:text-slate-400">
@@ -411,8 +411,8 @@ export default function GitHubIssuesList({
           <section>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <MessageSquare className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <div className="p-2 bg-secondary rounded-lg">
+                  <MessageSquare className="w-5 h-5 text-foreground/60" />
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
