@@ -1,7 +1,11 @@
-import itemNamesData from './item-names.json';
+import itemsData from './item-names.json';
+import blocksData from './block-names.json';
 
-/** Minecraft 物品翻译表（从语言文件导入） */
-export const itemNames: Record<string, string> = itemNamesData;
+/** Minecraft 物品/方块翻译表（items + blocks 合并） */
+export const itemNames: Record<string, string> = {
+  ...blocksData,
+  ...itemsData,
+};
 
 /**
  * 将物品 ID（如 "minecraft:exposed_copper_golem_statue"）转换为语言文件键名
