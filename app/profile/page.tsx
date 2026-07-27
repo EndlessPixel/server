@@ -386,7 +386,7 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   }, [item]);
 
   if (!item) {
-    return <div className="w-12 h-12 bg-slate-200 dark:bg-slate-700/50 rounded border border-slate-300 dark:border-slate-600" />;
+    return <div className="w-12 h-12 bg-secondary rounded border border-foreground/10" />;
   }
 
   const displayName = getDisplayItemName(item);
@@ -404,7 +404,7 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   };
 
   return (
-    <div className="relative group w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-600 flex items-center justify-center">
+    <div className="relative group w-12 h-12 bg-secondary rounded border border-foreground/10 flex items-center justify-center">
       {imgSrc && <img src={imgSrc} alt={displayName} className="w-8 h-8 object-contain" onError={handleImageError} />}
       {count > 1 && <span className="absolute bottom-0 right-0 text-[10px] text-white bg-black/60 px-1 rounded leading-none">{count}</span>}
 
@@ -514,16 +514,16 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col relative overflow-hidden">
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-3xl opacity-70" />
+          <div className="absolute -top-40 -left-40 w-96 h-96 bg-foreground/3 rounded-full blur-3xl opacity-70" />
           <div className="absolute bottom-20 right-10 w-80 h-80 bg-foreground/3 rounded-full blur-3xl opacity-70" />
         </div>
         <Navigation />
         <main className="flex-1 flex items-center justify-center relative z-10">
           <div className="flex flex-col items-center gap-4">
-            <Loader2Icon className="w-8 h-8 text-indigo-500 animate-spin" />
-            <p className="text-slate-500 dark:text-slate-400 text-sm">加载中...</p>
+            <Loader2Icon className="w-8 h-8 text-foreground/60 animate-spin" />
+            <p className="text-muted-foreground text-sm">加载中...</p>
           </div>
         </main>
         <Footer />
@@ -534,9 +534,9 @@ export default function ProfilePage() {
   const getItemBySlot = (slot: number) => userInfo?.inventory.find((item) => item.Slot === slot);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-3xl opacity-70" />
+        <div className="absolute -top-40 -left-40 w-96 h-96 bg-foreground/3 rounded-full blur-3xl opacity-70" />
         <div className="absolute bottom-20 right-10 w-80 h-80 bg-foreground/3 rounded-full blur-3xl opacity-70" />
       </div>
 
@@ -544,8 +544,8 @@ export default function ProfilePage() {
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl relative z-10">
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white">个人中心</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">查看你的账号信息</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">个人中心</h1>
+          <p className="text-muted-foreground mt-1 text-sm">查看你的账号信息</p>
         </div>
 
         {error && (
@@ -558,13 +558,13 @@ export default function ProfilePage() {
           <div className="grid gap-6 lg:grid-cols-3">
             {/* 左侧：用户概览 */}
             <div className="lg:col-span-1 space-y-6">
-              <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-6 text-center">
+              <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6 text-center">
                 <div className="w-24 h-24 mx-auto rounded-full bg-foreground flex items-center justify-center text-background text-3xl font-bold mb-4 shadow-sm">
                   {userInfo.name.charAt(0).toUpperCase()}
                 </div>
-                <h2 className="text-xl font-bold text-slate-800 dark:text-white">{userInfo.name}</h2>
+                <h2 className="text-xl font-bold text-foreground">{userInfo.name}</h2>
                 <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-secondary text-foreground/70">
                     <ShieldIcon className="w-3 h-3" />普通用户
                   </span>
                   {userInfo.ban && (
@@ -574,19 +574,19 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
-                  <div className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                <div className="mt-6 pt-6 border-t border-foreground/5">
+                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                     <CalendarIcon className="w-4 h-4" />注册天数
                   </div>
-                  <p className="mt-1 text-2xl font-bold text-slate-800 dark:text-white">
+                  <p className="mt-1 text-2xl font-bold text-foreground">
                     {getDaysSince(userInfo.createdAt)}
-                    <span className="text-sm font-normal text-slate-500 dark:text-slate-400 ml-1">天</span>
+                    <span className="text-sm font-normal text-muted-foreground ml-1">天</span>
                   </p>
                 </div>
 
                 <button
                   onClick={handleLogout}
-                  className="mt-4 inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-slate-50 dark:bg-slate-700/60 text-slate-700 dark:text-slate-200 hover:bg-slate-100"
+                  className="mt-4 inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70"
                 >
                   <LogOutIcon className="w-4 h-4" />退出登录
                 </button>
@@ -596,10 +596,10 @@ export default function ProfilePage() {
             {/* 右侧：详细信息 */}
             <div className="lg:col-span-2 space-y-6">
               {/* 基本信息 */}
-              <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-6">
+              <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                    <UserIcon className="w-5 h-5 text-indigo-500" />基本信息
+                  <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <UserIcon className="w-5 h-5 text-foreground/60" />基本信息
                   </h3>
                 </div>
 
@@ -614,20 +614,20 @@ export default function ProfilePage() {
                       '最后登录',
                       <>
                         <span>{getRelativeTime(userInfo.lastActive)}</span>
-                        <p className="text-xs text-slate-400 dark:text-slate-500">{formatTime(userInfo.lastActive)}</p>
+                        <p className="text-xs text-muted-foreground/70">{formatTime(userInfo.lastActive)}</p>
                       </>,
                     ],
                   ].map(([label, value], idx) => (
-                    <div key={idx} className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700/50">
-                      <span className="text-slate-500 dark:text-slate-400 text-sm">{label}</span>
-                      <span className="text-slate-800 dark:text-slate-200 font-medium text-sm">{value}</span>
+                    <div key={idx} className="flex items-center justify-between py-3 border-b border-foreground/5">
+                      <span className="text-muted-foreground text-sm">{label}</span>
+                      <span className="text-foreground/80 font-medium text-sm">{value}</span>
                     </div>
                   ))}
                   {(() => {
                     const extracted = extractTotalExpFromNbt(userInfo.nbt);
                     if (extracted === undefined) {
                       return (
-                        <div className="pt-3 text-sm text-slate-500 dark:text-slate-400">
+                        <div className="pt-3 text-sm text-muted-foreground">
                           无经验数据
                         </div>
                       );
@@ -635,17 +635,17 @@ export default function ProfilePage() {
                     const totalExp = Number(extracted);
                     if (Number.isNaN(totalExp)) {
                       return (
-                        <div className="pt-3 text-sm text-slate-500 dark:text-slate-400">无经验数据</div>
+                        <div className="pt-3 text-sm text-muted-foreground">无经验数据</div>
                       );
                     }
                     const level = getLevelByTotalExp(totalExp);
                     return (
-                      <div className="border-b border-slate-100 dark:border-slate-700/50">
-                        <div className="flex items-center justify-between py-3 text-sm text-slate-500 dark:text-slate-400">
+                      <div className="border-b border-foreground/5">
+                        <div className="flex items-center justify-between py-3 text-sm text-muted-foreground">
                           <span>经验等级：</span>
-                          <span className="text-slate-800 dark:text-slate-200 font-medium">{level}</span>
+                          <span className="text-foreground/80 font-medium">{level}</span>
                           <span>总经验：</span>
-                          <span className="text-slate-800 dark:text-slate-200 font-medium">{formatNumber(totalExp)}</span>
+                          <span className="text-foreground/80 font-medium">{formatNumber(totalExp)}</span>
                         </div>
                       </div>
                     );
@@ -653,31 +653,31 @@ export default function ProfilePage() {
 
 
                   {/* QQ */}
-                  <div className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700/50">
-                    <span className="text-slate-500 dark:text-slate-400 text-sm">QQ 绑定</span>
+                  <div className="flex items-center justify-between py-3 border-b border-foreground/5">
+                    <span className="text-muted-foreground text-sm">QQ 绑定</span>
                     {userInfo.qq ? (
                       <div className="flex items-center gap-3">
                         <img
                           src={`https://q.qlogo.cn/g?b=qq&nk=${userInfo.qq.uuid}&s=640`}
                           alt="QQ头像"
-                          className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-600"
+                          className="w-8 h-8 rounded-full border border-foreground/10"
                           onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')}
                         />
                         <div className="text-right">
-                          <span className="text-slate-800 dark:text-slate-200 font-medium text-sm">
+                          <span className="text-foreground/80 font-medium text-sm">
                             {userInfo.qq.name || userInfo.qq.uuid}
                           </span>
-                          <p className="text-xs text-slate-400 dark:text-slate-500">QQ号: {userInfo.qq.uuid}</p>
+                          <p className="text-xs text-muted-foreground/70">QQ号: {userInfo.qq.uuid}</p>
                         </div>
                       </div>
                     ) : (
-                      <span className="text-slate-400 dark:text-slate-500 text-sm">未绑定</span>
+                      <span className="text-muted-foreground text-sm">未绑定</span>
                     )}
                   </div>
 
                   {/* 封禁状态 */}
                   <div className="flex items-center justify-between py-3">
-                    <span className="text-slate-500 dark:text-slate-400 text-sm">封禁状态</span>
+                    <span className="text-muted-foreground text-sm">封禁状态</span>
                     <span
                       className={`text-sm font-medium ${userInfo.ban ? 'text-destructive' : 'text-foreground/60'
                                 }`}
@@ -689,12 +689,12 @@ export default function ProfilePage() {
               </div>
 
               {/* ===== 背包 ===== */}
-              <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-6">
+              <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                    <PackageIcon className="w-5 h-5 text-indigo-500" />
+                  <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <PackageIcon className="w-5 h-5 text-foreground/60" />
                     背包物品
-                    <span className="text-sm font-normal text-slate-400 ml-2">({userInfo.inventory.length})</span>
+                    <span className="text-sm font-normal text-muted-foreground ml-2">({userInfo.inventory.length})</span>
                   </h3>
                 </div>
 
