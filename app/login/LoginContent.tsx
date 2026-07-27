@@ -24,7 +24,6 @@ export default function LoginContent() {
         return () => clearTimeout(timer);
     }, []);
 
-    // 检查是否已登录，若已登录则重定向
     useEffect(() => {
         const redirect = searchParams.get('redirect');
         if (getCookie('mc_user')) {
@@ -32,7 +31,6 @@ export default function LoginContent() {
         }
     }, [router, searchParams]);
 
-    // Cookie 工具函数（仅客户端执行）
     function setCookie(name: string, value: string, days = 7) {
         if (typeof window === 'undefined') return;
         const date = new Date();
@@ -114,36 +112,29 @@ export default function LoginContent() {
 
     const closeModal = () => setModalType(null);
 
-    // ---------- UI 渲染 ----------
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col relative overflow-hidden">
-            {/* 背景装饰 */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-3xl opacity-70"></div>
-                <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-300/20 dark:bg-purple-600/10 rounded-full blur-3xl opacity-70"></div>
-            </div>
-
+        <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
             <Navigation />
 
             <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative z-10">
                 <div
-                    className={`w-full max-w-md bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-xl p-6 sm:p-8 border-slate-200 dark:border-slate-700 transition-all duration-700 ${showForm ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                    className={`w-full max-w-md bg-card backdrop-blur-md rounded-2xl shadow-lg p-6 sm:p-8 transition-all duration-700 ${showForm ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                         }`}
                 >
                     <div className="text-center mb-8">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                            <svg className="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-secondary flex items-center justify-center">
+                            <svg className="w-8 h-8 text-foreground/60" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
-                        <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">欢迎回来</h1>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">请输入用户名和密码继续你的旅程</p>
+                        <h1 className="text-2xl font-bold text-foreground mb-2">欢迎回来</h1>
+                        <p className="text-sm text-muted-foreground">请输入用户名和密码继续你的旅程</p>
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-4" noValidate>
                         {error && (
                             <div
-                                className="bg-red-50/80 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-4 py-2.5 rounded-lg text-sm shadow-sm"
+                                className="bg-destructive/10 text-destructive/90 px-4 py-2.5 rounded-lg text-sm shadow-sm"
                                 role="alert"
                             >
                                 {error}
@@ -151,7 +142,7 @@ export default function LoginContent() {
                         )}
 
                         <div className="space-y-2">
-                            <label htmlFor="username" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                            <label htmlFor="username" className="block text-sm font-medium text-foreground">
                                 用户名
                             </label>
                             <input
@@ -159,7 +150,7 @@ export default function LoginContent() {
                                 id="username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="w-full px-4 py-2.5 bg-slate-100/70 dark:bg-slate-700/70 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-slate-800 dark:text-white transition-all duration-300 placeholder:text-slate-400"
+                                className="w-full px-4 py-2.5 bg-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/30 focus:bg-background text-foreground transition-all duration-200 placeholder:text-muted-foreground/50"
                                 placeholder="输入你的用户名"
                                 autoComplete="username"
                                 disabled={loading}
@@ -169,7 +160,7 @@ export default function LoginContent() {
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                            <label htmlFor="password" className="block text-sm font-medium text-foreground">
                                 密码
                             </label>
                             <input
@@ -177,7 +168,7 @@ export default function LoginContent() {
                                 id="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-2.5 bg-slate-100/70 dark:bg-slate-700/70 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-slate-800 dark:text-white transition-all duration-300 placeholder:text-slate-400"
+                                className="w-full px-4 py-2.5 bg-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/30 focus:bg-background text-foreground transition-all duration-200 placeholder:text-muted-foreground/50"
                                 placeholder="输入密码（至少6位）"
                                 autoComplete="current-password"
                                 disabled={loading}
@@ -191,15 +182,15 @@ export default function LoginContent() {
                                 id="agreeTerms"
                                 checked={agreeTerms}
                                 onChange={(e) => setAgreeTerms(e.target.checked)}
-                                className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500"
+                                className="w-4 h-4 mt-0.5 rounded accent-foreground focus:ring-2 focus:ring-ring/30"
                                 disabled={loading}
                             />
-                            <label htmlFor="agreeTerms" className="text-sm text-slate-600 dark:text-slate-400 select-none">
+                            <label htmlFor="agreeTerms" className="text-sm text-muted-foreground select-none">
                                 我已阅读并同意
                                 <button
                                     type="button"
                                     onClick={() => setModalType('terms')}
-                                    className="text-indigo-600 dark:text-indigo-400 hover:underline mx-1"
+                                    className="text-foreground hover:underline mx-1 font-medium"
                                 >
                                     《用户协议》
                                 </button>
@@ -207,21 +198,21 @@ export default function LoginContent() {
                                 <button
                                     type="button"
                                     onClick={() => setModalType('privacy')}
-                                    className="text-indigo-600 dark:text-indigo-400 hover:underline mx-1"
+                                    className="text-foreground hover:underline mx-1 font-medium"
                                 >
                                     《隐私政策》
                                 </button>
                             </label>
                         </div>
 
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <p className="text-sm text-muted-foreground">
                             为保障账号与数据安全，暂不支持网页直接注册。请先加入服务器，再使用注册指令完成创建。
                         </p>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 disabled:opacity-70 shadow-md hover:shadow-indigo-600/20"
+                            className="w-full bg-foreground hover:bg-foreground/90 active:scale-[0.98] text-background font-medium py-2.5 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-2 disabled:opacity-70 shadow-sm"
                             aria-busy={loading}
                         >
                             {loading ? (
@@ -237,8 +228,8 @@ export default function LoginContent() {
                         </button>
                     </form>
 
-                    <div className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
-                        <Link href="/" className="text-indigo-600 dark:text-indigo-400 hover:underline transition-all">
+                    <div className="mt-6 text-center text-sm text-muted-foreground">
+                        <Link href="/" className="text-foreground hover:underline transition-all font-medium">
                             ← 返回首页
                         </Link>
                     </div>
@@ -253,10 +244,10 @@ export default function LoginContent() {
                     aria-modal="true"
                 >
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={closeModal} />
-                    <div className="relative w-full max-w-lg max-h-[80vh] overflow-auto bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6 border border-slate-200 dark:border-slate-700 z-10">
+                    <div className="relative w-full max-w-lg max-h-[80vh] overflow-auto bg-card rounded-2xl shadow-2xl p-6 ring-1 ring-foreground/5 z-10">
                         <button
                             onClick={closeModal}
-                            className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground p-1 transition-colors"
                             aria-label="关闭弹窗"
                         >
                             ✕
@@ -264,15 +255,15 @@ export default function LoginContent() {
 
                         {modalType === 'terms' ? (
                             <>
-                                <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">用户协议</h2>
-                                <div className="text-sm text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
+                                <h2 className="text-lg font-bold text-foreground mb-4">用户协议</h2>
+                                <div className="text-sm text-muted-foreground space-y-3 leading-relaxed">
                                     {/* 用户协议内容，可按需填充 */}
                                 </div>
                             </>
                         ) : (
                             <>
-                                <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">隐私政策</h2>
-                                <div className="text-sm text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
+                                <h2 className="text-lg font-bold text-foreground mb-4">隐私政策</h2>
+                                <div className="text-sm text-muted-foreground space-y-3 leading-relaxed">
                                     {/* 隐私政策内容，可按需填充 */}
                                 </div>
                             </>
@@ -280,7 +271,7 @@ export default function LoginContent() {
 
                         <button
                             onClick={closeModal}
-                            className="mt-6 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm transition-colors"
+                            className="mt-6 w-full py-2 bg-foreground hover:bg-foreground/90 text-background rounded-lg text-sm transition-colors duration-200"
                         >
                             我已阅读并了解
                         </button>

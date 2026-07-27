@@ -418,7 +418,7 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
 
         {/* 附魔 */}
         {enchants && enchants.length > 0 && (
-          <div className="text-purple-300 italic space-y-0.5 mb-1">
+          <div className="text-muted-foreground italic space-y-0.5 mb-1">
             {enchants.map(e => (
               <div key={e.id} className="text-[11px]">
                 {enchantments[e.id as keyof typeof enchantments] ?? e.id} {e.lvl}
@@ -517,7 +517,7 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-3xl opacity-70" />
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-300/20 dark:bg-purple-600/10 rounded-full blur-3xl opacity-70" />
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-foreground/3 rounded-full blur-3xl opacity-70" />
         </div>
         <Navigation />
         <main className="flex-1 flex items-center justify-center relative z-10">
@@ -537,7 +537,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-3xl opacity-70" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-300/20 dark:bg-purple-600/10 rounded-full blur-3xl opacity-70" />
+        <div className="absolute bottom-20 right-10 w-80 h-80 bg-foreground/3 rounded-full blur-3xl opacity-70" />
       </div>
 
       <Navigation />
@@ -549,7 +549,7 @@ export default function ProfilePage() {
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50/80 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm shadow-sm">
+          <div className="mb-6 bg-destructive/5 text-destructive/80 px-4 py-3 rounded-lg text-sm shadow-sm">
             {error}
           </div>
         )}
@@ -559,7 +559,7 @@ export default function ProfilePage() {
             {/* 左侧：用户概览 */}
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-6 text-center">
-                <div className="w-24 h-24 mx-auto rounded-full bg-linear-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg shadow-indigo-500/20">
+                <div className="w-24 h-24 mx-auto rounded-full bg-foreground flex items-center justify-center text-background text-3xl font-bold mb-4 shadow-sm">
                   {userInfo.name.charAt(0).toUpperCase()}
                 </div>
                 <h2 className="text-xl font-bold text-slate-800 dark:text-white">{userInfo.name}</h2>
@@ -568,7 +568,7 @@ export default function ProfilePage() {
                     <ShieldIcon className="w-3 h-3" />普通用户
                   </span>
                   {userInfo.ban && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
                       <BanIcon className="w-3 h-3" />已封禁
                     </span>
                   )}
@@ -679,8 +679,8 @@ export default function ProfilePage() {
                   <div className="flex items-center justify-between py-3">
                     <span className="text-slate-500 dark:text-slate-400 text-sm">封禁状态</span>
                     <span
-                      className={`text-sm font-medium ${userInfo.ban ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'
-                        }`}
+                      className={`text-sm font-medium ${userInfo.ban ? 'text-destructive' : 'text-foreground/60'
+                                }`}
                     >
                       {userInfo.ban ? '已封禁' : '正常'}
                     </span>

@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import { DownloadCardSkeleton } from "@/components/ui/skeleton-templates";
+
 export interface LauncherDownloadPageProps {
   owner: string;
   repo: string;
@@ -20,6 +21,7 @@ export interface LauncherDownloadPageProps {
   archivedDate?: string;
   backHref?: string;
 }
+
 export function LauncherDownloadPage({
   description,
   repoOwner,
@@ -30,42 +32,35 @@ export function LauncherDownloadPage({
   const router = useRouter();
   const repoUrl = `https://github.com/${repoOwner}/${repoName}`;
   return (
-    <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-cyan-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-cyan-950/20">
+    <div className="min-h-screen bg-background">
       <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-cyan-600 dark:from-slate-100 dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
               资源下载 {repoOwner}/{repoName}
             </h1>
-            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               {description}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {introCards.map((card, i) => (
-              <div
-                key={i}
-                className="text-center p-6 bg-white/80 dark:bg-slate-800/50 rounded-xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm"
-              >
-                <div className="w-14 h-14 bg-linear-to-r from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 rounded-full flex items-center justify-center mx-auto mb-5 shadow-md shadow-purple-200/50 dark:shadow-purple-900/30 transition-shadow">
+              <div key={i} className="text-center p-6 bg-card rounded-2xl shadow-sm">
+                <div className="w-14 h-14 bg-secondary rounded-2xl flex items-center justify-center mx-auto mb-5 transition-shadow">
                   {card.icon}
                 </div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
-                  {card.title}
-                </h3>
-                <p className="text-slate-600 dark:text-slate-400 text-sm whitespace-pre-line">
-                  {card.desc}
-                </p>
+                <h3 className="font-semibold text-foreground mb-2">{card.title}</h3>
+                <p className="text-muted-foreground text-sm whitespace-pre-line">{card.desc}</p>
               </div>
             ))}
           </div>
 
-          <div className="bg-white dark:bg-slate-800/30 rounded-2xl  border-slate-200 dark:border-slate-700 backdrop-blur-sm p-1">
+          <div className="bg-card rounded-2xl shadow-sm p-1">
             <button
               onClick={() => router.push("/downloads")}
-              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 dark:bg-black/20 text-slate-700 dark:text-slate-200  border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400"
+              className="group inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-foreground hover-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
               aria-label="返回下载页面"
             >
               <span className="text-sm font-medium">返回</span>
@@ -74,61 +69,30 @@ export function LauncherDownloadPage({
               fallback={
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <DownloadCardSkeleton key={i} />
-                    ))}
+                    {Array.from({ length: 6 }).map((_, i) => (<DownloadCardSkeleton key={i} />))}
                   </div>
                 </div>
               }
             >
-              <DownloadSection
-                githubApiUrl={`https://api.github.com/repos/${repoOwner}/${repoName}/releases`}
-                itemsPerPage={20}
-              />
+              <DownloadSection githubApiUrl={`https://api.github.com/repos/${repoOwner}/${repoName}/releases`} itemsPerPage={20} />
             </Suspense>
           </div>
           <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white/80 dark:bg-slate-800/50 rounded-xl p-6  border-slate-200 dark:border-slate-700 backdrop-blur-sm">
-              <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">
-                需要帮助？
-              </h3>
-              <div className="space-y-4 text-slate-600 dark:text-slate-400">
+            <div className="bg-card rounded-xl p-6 shadow-sm">
+              <h3 className="font-semibold text-foreground text-lg mb-4">需要帮助？</h3>
+              <div className="space-y-4 text-muted-foreground">
                 <p>如果您在下载/安装过程中遇到任何问题：</p>
                 <div className="flex flex-wrap gap-3">
-                  <a
-                    href={repoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 rounded-lg text-sm font-medium text-blue-700 dark:text-blue-300 transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    直达仓库
+                  <a href={repoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/70 rounded-lg text-sm font-medium transition-colors duration-200">
+                    <ExternalLink className="w-4 h-4" /> 直达仓库
                   </a>
-                  <a
-                    href={`https://github.com/${repoOwner}/${repoName}/issues`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors"
-                  >
-                    <img
-                      src="https://cdn.simpleicons.org/github/white"
-                      width="18"
-                      height="18"
-                      alt="GitHub"
-                      className="w-4 h-4"
-                    />
-                    提交 Issue
+                  <a href={`https://github.com/${repoOwner}/${repoName}/issues`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/70 rounded-lg text-sm font-medium transition-colors duration-200">
+                    <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" className="w-4 h-4" /> 提交 Issue
                   </a>
-                  <a
-                    href={issuesHref}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 rounded-lg text-sm font-medium text-purple-700 dark:text-purple-300 transition-colors"
-                  >
-                    <ArrowUpRight className="w-4 h-4" />
-                    Issue 列表
+                  <a href={issuesHref} className="inline-flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/70 rounded-lg text-sm font-medium transition-colors duration-200">
+                    <ArrowUpRight className="w-4 h-4" /> Issue 列表
                   </a>
-                  <p>
-                    外部资源的问题请不要联系我们，我们不对此部分负责，我们只提供下载服务，请联系对应的作者
-                  </p>
+                  <p>外部资源的问题请不要联系我们，我们不对此部分负责，我们只提供下载服务，请联系对应的作者</p>
                 </div>
               </div>
             </div>

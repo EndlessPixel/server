@@ -22,7 +22,7 @@ const SERVICES: ServiceItem[] = [
     icon: Server,
     status: "online",
     description: "游戏服务器实时状态",
-    color: "from-green-500 to-emerald-600"
+    color: "from-foreground/90 to-foreground/70"
   },
   {
     name: "服务器性能监控",
@@ -30,14 +30,14 @@ const SERVICES: ServiceItem[] = [
     icon: Activity,
     status: "online",
     description: "服务器性能监控",
-    color: "from-blue-500 to-cyan-600",
+    color: "from-foreground/90 to-foreground/70",
     external: true
   }
 ];
 const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service }) => {
   const Icon = service.icon;
   return (
-    <Card className="group bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600">
+    <Card className="group bg-card border-foreground/8 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-foreground/12">
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -46,15 +46,15 @@ const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service })
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-slate-900 dark:text-white text-lg">{service.name}</h3>
+                <h3 className="font-semibold text-foreground text-lg">{service.name}</h3>
               </div>
-              <p className="text-slate-600 dark:text-slate-400 text-sm">{service.description}</p>
+              <p className="text-muted-foreground text-sm">{service.description}</p>
             </div>
           </div>
         </div>
         
         <div className="flex items-center justify-between mt-6">
-          <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             {service.external && (
               <span className="flex items-center gap-1" aria-label="外部服务">
                 <Globe className="w-4 h-4" aria-hidden="true" />
@@ -65,7 +65,7 @@ const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service })
           <Button 
             asChild 
             size="sm" 
-            className="bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 transition-all group-hover:scale-105"
+            className="bg-foreground text-background hover:bg-foreground/85 transition-all group-hover:scale-105"
           >
             <Link 
               href={service.path}
@@ -89,28 +89,28 @@ const SectionHeader: React.FC<{
 }> = React.memo(({ title, description, icon }) => {
   return (
     <div className="flex items-center gap-3 mb-8">
-      <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+      <div className="p-2 bg-secondary rounded-lg text-foreground/60">
         {icon}
       </div>
       <div>
-        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{title}</h2>
-        <p className="text-slate-600 dark:text-slate-400">{description}</p>
+        <h2 className="text-2xl font-semibold text-foreground">{title}</h2>
+        <p className="text-muted-foreground">{description}</p>
       </div>
     </div>
   );
 });
 export default function StatusIndexPage() {
   return (
-    <div className="min-h-screen bg-linear-to-r from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-purple-950/20">
+    <div className="min-h-screen bg-background">
       <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-slate-900 via-blue-700 to-purple-600 dark:from-slate-100 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               服务状态监控
             </h1>
-            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               实时监控 EndlessPixel 所有服务的运行状态、性能指标和在线状态
             </p>
           </div>
@@ -118,7 +118,7 @@ export default function StatusIndexPage() {
             <SectionHeader 
               title="核心服务" 
               description="关键服务状态概览"
-              icon={<Server className="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" />}
+              icon={<Server className="w-5 h-5 text-foreground/60" aria-hidden="true" />}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -128,13 +128,13 @@ export default function StatusIndexPage() {
             </div>
           </section>
           <section className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-2xl backdrop-blur-sm">
+            <Card className="bg-card border-foreground/8 rounded-2xl backdrop-blur-sm">
               <CardContent className="p-6">
-                <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4 flex items-center gap-2">
-                  <Users className="w-5 h-5 text-green-500" aria-hidden="true" />
+                <h3 className="font-semibold text-foreground text-lg mb-4 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-foreground/60" aria-hidden="true" />
                   技术支持
                 </h3>
-                <div className="space-y-4 text-slate-600 dark:text-slate-400">
+                <div className="space-y-4 text-muted-foreground">
                   <p>如果您发现服务异常或需要技术支持：</p>
                   <div className="flex flex-wrap gap-3">
                     <Button asChild variant="outline" size="sm">

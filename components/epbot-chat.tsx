@@ -442,7 +442,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   };
 
   const deleteMessage = (index: number) => {
-    // 如果正在加载，先取消当前请求
     if (loadingRef.current) {
       cancelCurrentRequest();
     }
@@ -595,7 +594,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     }
   }, [showModelPanel]);
 
-  // 点击模型面板外部关闭
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -622,27 +620,25 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       )}
     >
       {toast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-60 px-5 py-2 rounded-lg bg-slate-800 text-white text-sm shadow-lg whitespace-nowrap">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-60 px-5 py-2 rounded-lg bg-foreground/90 backdrop-blur-lg text-background text-sm shadow-lg whitespace-nowrap">
           {toast}
         </div>
       )}
 
-      {/* 聊天窗口 */}
-      <div className="flex h-full w-full bg-white dark:bg-slate-900 overflow-hidden relative shadow-2xl md:h-[90vh] md:w-[80%] md:max-w-300ounded-2xl md:min-w-100">
+      <div className="flex h-full w-full bg-background overflow-hidden relative shadow-2xl md:h-[90vh] md:w-[80%] md:max-w-300 md:rounded-2xl md:min-w-100">
         {/* 左侧边栏 */}
         <div
           className={cn(
-            "h-full bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-white/10 flex flex-col transition-all duration-300 ease-in-out shrink-0",
+            "h-full bg-card flex flex-col shrink-0",
             sidebarCollapsed ? "w-12" : "w-72",
           )}
         >
-          {/* 侧边栏头部 */}
           <div className={cn(
-            "p-3 border-b border-slate-200 dark:border-white/10 flex items-center shrink-0",
+            "p-3 flex items-center shrink-0",
             sidebarCollapsed ? "justify-center" : "justify-between"
           )}>
             {!sidebarCollapsed && (
-              <h4 className="text-slate-900 dark:text-white font-medium text-sm">
+              <h4 className="text-foreground font-medium text-sm">
                 对话历史
               </h4>
             )}
@@ -650,7 +646,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               {!sidebarCollapsed && (
                 <button
                   onClick={createNewSession}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-secondary transition-colors duration-200"
                   title="新建对话"
                 >
                   <Plus className="w-4 h-4" />
@@ -658,7 +654,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               )}
               <button
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-secondary transition-colors duration-200"
                 title={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
               >
                 {sidebarCollapsed ? <Menu className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -666,7 +662,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             </div>
           </div>
 
-          {/* 会话列表 */}
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
             {sessions
               .sort((a, b) => b.createdAt - a.createdAt)
@@ -674,22 +669,22 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                 <div
                   key={session.id}
                   className={cn(
-                    "group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors",
+                    "group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-200",
                     session.id === currentSessionId
-                      ? "bg-blue-100 dark:bg-blue-600/20 border border-blue-200 dark:border-blue-500/30"
-                      : "hover:bg-slate-100 dark:hover:bg-slate-800/50",
+                      ? "bg-secondary font-medium"
+                      : "hover:bg-secondary/60",
                     sidebarCollapsed && "justify-center px-2"
                   )}
                   onClick={() => switchSession(session.id)}
                   title={sidebarCollapsed ? session.title : undefined}
                 >
                   {sidebarCollapsed ? (
-                    <div className="w-5 h-5 flex items-center justify-center text-xs font-medium bg-slate-200 dark:bg-slate-700 rounded">
+                    <div className="w-5 h-5 flex items-center justify-center text-xs font-medium bg-foreground/10 rounded text-foreground/60">
                       {session.title.charAt(0)}
                     </div>
                   ) : (
                     <>
-                      <div className="flex-1 truncate text-sm text-slate-900 dark:text-slate-300">
+                      <div className="flex-1 truncate text-sm text-foreground">
                         {session.title}
                       </div>
                       <button
@@ -697,9 +692,9 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                           e.stopPropagation();
                           deleteSession(session.id);
                         }}
-                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-100 dark:hover:bg-red-600/20 transition-opacity"
+                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/10 transition-opacity duration-200"
                       >
-                        <Trash2 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 hover:text-red-600" />
+                        <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
                       </button>
                     </>
                   )}
@@ -707,9 +702,8 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               ))}
           </div>
 
-          {/* 底部信息 */}
           <div className={cn(
-            "p-3 border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 shrink-0",
+            "p-3 text-xs text-muted-foreground shrink-0",
             sidebarCollapsed && "text-center"
           )}>
             {!sidebarCollapsed ? (
@@ -725,17 +719,16 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         </div>
 
         {/* 右侧主内容区 */}
-        <div className="flex-1 flex flex-col min-w-0 h-full relative bg-white dark:bg-slate-900">
-          {/* 顶部栏 */}
-          <div className="px-4 py-3 border-b border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 shrink-0">
+        <div className="flex-1 flex flex-col min-w-0 h-full relative bg-background">
+          <div className="px-4 py-3 bg-background shrink-0">
             <div className="flex items-center justify-between gap-2">
-              <h3 className="text-slate-900 dark:text-white font-semibold truncate">
+              <h3 className="text-foreground font-semibold truncate">
                 {currentSession?.title || "EPBot 客服助手"}
               </h3>
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <button
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/80 text-sm transition-colors"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-secondary text-sm transition-colors duration-200"
                     onClick={() => {
                       if (!modelsLoaded) loadModels();
                       setShowModelPanel(!showModelPanel);
@@ -747,69 +740,60 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                     <Settings className="w-4 h-4" />
                   </button>
 
-                  {/* 模型选择面板 */}
                   {showModelPanel && (
                     <div
                       ref={modelPanelRef}
-                      className="absolute top-full right-0 mt-2 z-20 w-120 max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+                      className="absolute top-full right-0 mt-2 z-20 w-120 max-w-[calc(100vw-2rem)] bg-popover/98 backdrop-blur-xl rounded-2xl shadow-xl ring-1 ring-foreground/5 overflow-hidden"
                     >
-                      <div className="p-3 border-b border-slate-200 dark:border-slate-700">
+                      <div className="p-3">
                         <div className="flex justify-between items-center mb-3">
-                          <h4 className="font-medium text-slate-900 dark:text-white">
-                            选择模型
-                          </h4>
+                          <h4 className="font-medium text-foreground">选择模型</h4>
                           <button
                             onClick={() => setShowModelPanel(false)}
-                            className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                            className="p-1 hover:bg-secondary rounded-lg transition-colors duration-200"
                           >
                             <X className="w-4 h-4" />
                           </button>
                         </div>
 
-                        {/* 声明提示 */}
-                        <div className="mb-3 p-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                        <div className="mb-3 p-2 bg-muted rounded-xl">
                           <div className="flex items-start gap-2">
-                            <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
-                            <div className="text-xs text-amber-800 dark:text-amber-300">
+                            <AlertCircle className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                            <div className="text-xs text-muted-foreground">
                               并非所有模型都适合用对话，随意选择可能影响回复质量。
                             </div>
                           </div>
                         </div>
 
-                        {/* 搜索和过滤 */}
                         <div className="space-y-2">
                           <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                               ref={searchInputRef}
                               type="text"
-                              placeholder="搜索模型名称、ID或提供商..."
+                              placeholder="搜索模型名称、ID 或提供商..."
                               value={modelSearchQuery}
                               onChange={(e) => setModelSearchQuery(e.target.value)}
-                              className="w-full pl-9 pr-3 py-2 text-sm bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full pl-9 pr-3 py-2 text-sm bg-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/30 transition-colors duration-200 placeholder:text-muted-foreground/50"
                             />
                           </div>
-
-                          {/* 过滤选项 */}
                           <div className="flex items-center justify-between gap-2 flex-wrap">
                             <div className="flex items-center gap-3">
-                              <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                              <label className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <input
                                   type="checkbox"
                                   checked={showRecommendedOnly}
-                                  onChange={(e) =>
-                                    setShowRecommendedOnly(e.target.checked)
-                                  }
-                                  className="rounded border-slate-300"
+                                  onChange={(e) => setShowRecommendedOnly(e.target.checked)}
+                                  className="rounded"
                                 />
                                 仅显示推荐
                               </label>
-                              <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400">
+                              <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                 <Filter className="w-3 h-3" />
                                 <select
                                   value={modelSortBy}
                                   onChange={(e) => setModelSortBy(e.target.value as any)}
-                                  className="bg-transparent border-none text-sm focus:outline-none"
+                                  className="bg-transparent text-sm focus:outline-none"
                                 >
                                   <option value="recommended">推荐优先</option>
                                   <option value="name">按名称</option>
@@ -817,26 +801,25 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                                 </select>
                               </div>
                             </div>
-                            <div className="text-xs text-slate-500">
+                            <div className="text-xs text-muted-foreground">
                               共 {filteredModels.length} 个模型
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      {/* 模型列表 */}
                       <div className="max-h-100 overflow-y-auto p-2">
                         {loadingModels ? (
-                          <div className="text-center py-8 text-slate-500">
+                          <div className="text-center py-8 text-muted-foreground">
                             加载模型中...
                           </div>
                         ) : filteredModels.length === 0 ? (
                           <div className="text-center py-8">
-                            <p className="text-slate-500 text-sm">未找到匹配的模型</p>
+                            <p className="text-muted-foreground text-sm">未找到匹配的模型</p>
                             {modelSearchQuery && (
                               <button
                                 onClick={() => setModelSearchQuery("")}
-                                className="mt-2 px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
+                                className="mt-2 px-3 py-1 text-sm text-foreground/70 hover:text-foreground transition-colors duration-200"
                               >
                                 清除搜索
                               </button>
@@ -847,36 +830,36 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                             <div
                               key={model.id}
                               className={cn(
-                                "p-3 rounded-lg cursor-pointer transition-colors mb-1",
+                                "p-3 rounded-xl cursor-pointer transition-colors duration-200 mb-1",
                                 selectedModel === model.id
-                                  ? "bg-blue-50 dark:bg-blue-600/20 border border-blue-200 dark:border-blue-500/30"
-                                  : "hover:bg-slate-100 dark:hover:bg-slate-700/50",
+                                  ? "bg-secondary"
+                                  : "hover:bg-secondary/60",
                               )}
                               onClick={() => handleModelChange(model.id)}
                             >
                               <div className="flex items-start justify-between">
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2 flex-wrap">
-                                    <div className="font-medium text-sm text-slate-900 dark:text-white truncate">
+                                    <div className="font-medium text-sm text-foreground truncate">
                                       {model.name}
                                     </div>
                                     {model.recommended && (
-                                      <span className="text-xs px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded flex items-center gap-1">
+                                      <span className="text-xs px-1.5 py-0.5 bg-foreground/10 text-foreground/70 rounded-md flex items-center gap-1">
                                         <Star className="w-3 h-3" /> 推荐
                                       </span>
                                     )}
                                     {model.size && (
-                                      <span className="text-xs px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded">
+                                      <span className="text-xs px-1.5 py-0.5 bg-foreground/5 text-muted-foreground rounded-md">
                                         {model.size}
                                       </span>
                                     )}
                                   </div>
-                                  <span className="text-xs text-slate-400 truncate">
+                                  <span className="text-xs text-muted-foreground/60 truncate">
                                     {model.id}
                                   </span>
                                 </div>
                                 {selectedModel === model.id && (
-                                  <Check className="w-4 h-4 text-blue-600 dark:text-blue-400 ml-2 shrink-0" />
+                                  <Check className="w-4 h-4 text-foreground ml-2 shrink-0" />
                                 )}
                               </div>
                             </div>
@@ -888,7 +871,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-secondary transition-colors duration-200"
                   title="关闭"
                 >
                   <Minimize2 className="w-5 h-5" />
@@ -897,11 +880,10 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             </div>
           </div>
 
-          {/* 消息区域 */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center text-slate-400">
-                <MessageCircle className="w-16 h-16 mb-4 opacity-50" />
+              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <MessageCircle className="w-16 h-16 mb-4 opacity-30" />
                 <p className="text-lg font-medium">EPBot 客服助手</p>
                 <p className="text-sm mt-2">有什么我可以帮助你的吗？</p>
               </div>
@@ -909,62 +891,62 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               messages.map((m, i) =>
                 m.role === "user" ? (
                   <div key={i} className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
                       <span>{m.senderName}</span>
                       <span>{formatTime(m.timestamp)}</span>
                       <button
                         onClick={() => startEdit(i, m.content)}
-                        className="p-1 hover:text-blue-600 transition-colors"
+                        className="p-1 hover:text-foreground/70 transition-colors duration-200"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => deleteMessage(i)}
-                        className="p-1 hover:text-red-600 transition-colors"
+                        className="p-1 hover:text-destructive transition-colors duration-200"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                     {editId === i ? (
-                      <div className="flex gap-2 items-center max-w-[80%] bg-slate-100 dark:bg-slate-800 rounded-2xl px-3 py-2">
+                      <div className="flex gap-2 items-center max-w-[80%] bg-secondary rounded-2xl px-3 py-2">
                         <textarea
                           autoFocus
                           value={editContent}
                           onChange={(e) => setEditContent(e.target.value)}
-                          className="flex-1 bg-transparent text-slate-900 dark:text-white text-sm outline-none w-full resize-none min-h-10"
+                          className="flex-1 bg-transparent text-foreground text-sm outline-none w-full resize-none min-h-10"
                         />
                         <button
                           onClick={() => saveEdit(i)}
-                          className="text-green-600 p-1"
+                          className="text-foreground/70 p-1 hover:text-foreground transition-colors duration-200"
                         >
                           <Check className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setEditId(null)}
-                          className="text-slate-500 p-1"
+                          className="text-muted-foreground p-1 hover:text-foreground transition-colors duration-200"
                         >
                           <XIcon className="w-4 h-4" />
                         </button>
                       </div>
                     ) : (
-                      <div className="max-w-[80%] bg-blue-100 dark:bg-blue-600/30 border border-blue-400 dark:border-blue-400/40 rounded-2xl px-4 py-3 text-blue-950 dark:text-blue-100 text-sm wrap-break-word">
+                      <div className="max-w-[80%] bg-foreground/10 rounded-2xl px-4 py-3 text-foreground text-sm wrap-break-word">
                         {m.content}
                       </div>
                     )}
                   </div>
                 ) : (
                   <div key={i} className="flex flex-col items-start gap-1">
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
                       <span>{m.senderName}</span>
                       <span>{formatTime(m.timestamp)}</span>
                       <button
                         onClick={() => deleteMessage(i)}
-                        className="p-1 hover:text-red-600 transition-colors"
+                        className="p-1 hover:text-destructive transition-colors duration-200"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                    <div className="max-w-[85%] bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/10 rounded-2xl px-4 py-3 text-slate-900 dark:text-slate-100 prose prose-sm wrap-break-word">
+                    <div className="max-w-[85%] bg-secondary rounded-2xl px-4 py-3 text-foreground prose prose-sm wrap-break-word">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -992,11 +974,10 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             <div ref={bottomRef} />
           </div>
 
-          {/* 输入区域 */}
-          <div className="p-4 border-t border-slate-200 dark:border-white/10 flex gap-3 items-end bg-white dark:bg-slate-900 shrink-0">
+          <div className="p-4 flex gap-3 items-end bg-background shrink-0">
             <textarea
               ref={textareaRef}
-              className="flex-1 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/15 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none max-h-36 overflow-y-auto text-sm min-h-10.5"
+              className="flex-1 bg-secondary rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:bg-background resize-none max-h-36 overflow-y-auto text-sm min-h-10.5 transition-colors duration-200"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -1007,17 +988,16 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             <button
               onClick={send}
               disabled={loading}
-              className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white p-3 rounded-xl flex items-center justify-center disabled:opacity-50 shadow-md transition-all"
+              className="bg-foreground text-background p-3 rounded-xl flex items-center justify-center disabled:opacity-40 shadow-sm hover:bg-foreground/90 active:scale-[0.97] transition-all duration-200"
             >
               <Send className="w-5 h-5" />
             </button>
           </div>
 
-          {/* 底部提示 */}
-          <div className="px-4 py-2 border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 bg-white dark:bg-slate-900 shrink-0">
+          <div className="px-4 py-2 text-xs text-muted-foreground/50 bg-background shrink-0">
             <div className="flex justify-between">
               <span>
-                注意：AI模型回复可能包含错误信息，请注意辨别，不要过度依赖AI模型的回复内容。
+                注意：AI 模型回复可能包含错误信息，请注意辨别，不要过度依赖 AI 模型的回复内容。
               </span>
               {currentModel && (
                 <span className="hidden sm:inline truncate max-w-64">
