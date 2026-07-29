@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
       { role: 'system', content: systemPrompt },
       ...messages.slice(-20),
     ];
-    const defaultModel = "grok-4.20-0309-non-reasoning";
+    const defaultModel = "stepfun-ai/step-3.7-flash";
     const selectedModel = (model && typeof model === 'string' && model.trim())
       ? model.trim()
       : defaultModel;
