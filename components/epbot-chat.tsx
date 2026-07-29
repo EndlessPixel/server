@@ -20,6 +20,8 @@ import {
   Minimize2,
   MessageCircle,
   RotateCw,
+  Brain,
+  ChevronDown,
 } from "lucide-react";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { cn } from "@/lib/utils";
@@ -114,6 +116,93 @@ const generateTitle = (messages: Message[]): string => {
   return (
     firstUserMsg.slice(0, 20) + (firstUserMsg.length > 20 ? "…" : "") ||
     "新对话"
+  );
+};
+
+// ---- <thinking> tag parsing -------------------------------------------
+// The model is instructed to optionally start its reply with a single
+// <thinking>...</thinking> block. We parse it out so the UI can render the
+// reasoning as a collapsible section, including the streaming middle state
+// where the closing tag has not arrived yet.
+const THINKING_OPEN = "<thinking>";
+const THINKING_CLOSE = "</thinking>";
+
+type ParsedThinking = {
+  thinking: string;
+  answer: string;
+  /** false while streaming inside an unclosed <thinking> block */
+  thinkingDone: boolean;
+};
+
+const parseThinking = (content: string): ParsedThinking => {
+  const trimmed = content.trimStart();
+  const lower = trimmed.toLowerCase();
+  // Streaming edge case: we only received a partial opening tag (e.g. "<think").
+  // Hide it instead of flashing raw tag text.
+  if (
+    trimmed.length > 0 &&
+    trimmed.length < THINKING_OPEN.length &&
+    THINKING_OPEN.startsWith(lower)
+  ) {
+    return { thinking: "", answer: "", thinkingDone: false };
+  }
+  if (!lower.startsWith(THINKING_OPEN)) {
+    return { thinking: "", answer: content, thinkingDone: true };
+  }
+  const rest = trimmed.slice(THINKING_OPEN.length);
+  const closeIdx = rest.toLowerCase().indexOf(THINKING_CLOSE);
+  if (closeIdx === -1) {
+    // Opening tag seen, closing tag not yet streamed in.
+    return { thinking: rest.trim(), answer: "", thinkingDone: false };
+  }
+  return {
+    thinking: rest.slice(0, closeIdx).trim(),
+    answer: rest.slice(closeIdx + THINKING_CLOSE.length).replace(/^\s+/, ""),
+    thinkingDone: true,
+  };
+};
+
+// Remove thinking blocks before sending history back to the model, so the
+// context window is not wasted on old reasoning traces.
+const stripThinking = (content: string): string => {
+  const stripped = content
+    .replace(/<thinking>[\s\S]*?<\/thinking>\s*/gi, "")
+    .trim();
+  return stripped || content;
+};
+
+// Collapsible reasoning section rendered above the assistant answer.
+const ThinkingBlock = ({
+  thinking,
+  streaming,
+}: {
+  thinking: string;
+  streaming: boolean;
+}) => {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div className="mb-2 rounded-xl bg-foreground/5 text-xs overflow-hidden not-prose">
+      <button
+        onClick={() => setExpanded((v) => !v)}
+        className="w-full flex items-center gap-1.5 px-3 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
+      >
+        <Brain
+          className={cn("w-3.5 h-3.5 shrink-0", streaming && "animate-pulse")}
+        />
+        <span>{streaming ? "思考中…" : "已完成思考"}</span>
+        <ChevronDown
+          className={cn(
+            "w-3.5 h-3.5 ml-auto shrink-0 transition-transform duration-200",
+            expanded && "rotate-180",
+          )}
+        />
+      </button>
+      {(expanded || streaming) && thinking && (
+        <div className="px-3 pb-2.5 text-muted-foreground/80 whitespace-pre-wrap leading-relaxed">
+          {thinking}
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -368,7 +457,12 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: newHistory,
+          // Strip old <thinking> blocks from assistant turns to save context.
+          messages: newHistory.map((msg) =>
+            msg.role === "assistant"
+              ? { ...msg, content: stripThinking(msg.content) }
+              : msg,
+          ),
           model: selectedModel || undefined,
         }),
         signal: controller.signal,
@@ -1087,29 +1181,50 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                       </button>
                     </div>
                     <div className="max-w-[85%] bg-secondary rounded-2xl px-4 py-3 text-foreground prose prose-sm wrap-break-word">
-                      {m.content === "" && loading && i === messages.length - 1 ? (
-                        <TypingIndicator />
-                      ) : (
-                        <ReactMarkdown
-                          remarkPlugins={[remarkGfm]}
-                          components={{
-                            a: ({ href, ...props }) => {
-                              if (!href) return <a {...props} />;
-                              const encodedUrl = encodeURIComponent(href);
-                              return (
-                                <a
-                                  href={`/ai_link?url=${encodedUrl}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  {...props}
-                                />
-                              );
-                            },
-                          }}
-                        >
-                          {m.content}
-                        </ReactMarkdown>
-                      )}
+                      {(() => {
+                        const isStreamingLast =
+                          loading && i === messages.length - 1;
+                        if (m.content === "" && isStreamingLast) {
+                          return <TypingIndicator />;
+                        }
+                        const parsed = parseThinking(m.content);
+                        return (
+                          <>
+                            {(parsed.thinking || !parsed.thinkingDone) && (
+                              <ThinkingBlock
+                                thinking={parsed.thinking}
+                                streaming={
+                                  !parsed.thinkingDone && isStreamingLast
+                                }
+                              />
+                            )}
+                            {parsed.answer ? (
+                              <ReactMarkdown
+                                remarkPlugins={[remarkGfm]}
+                                components={{
+                                  a: ({ href, ...props }) => {
+                                    if (!href) return <a {...props} />;
+                                    const encodedUrl =
+                                      encodeURIComponent(href);
+                                    return (
+                                      <a
+                                        href={`/ai_link?url=${encodedUrl}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        {...props}
+                                      />
+                                    );
+                                  },
+                                }}
+                              >
+                                {parsed.answer}
+                              </ReactMarkdown>
+                            ) : isStreamingLast ? (
+                              <TypingIndicator />
+                            ) : null}
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
                 ),
