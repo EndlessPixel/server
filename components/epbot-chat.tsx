@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   Minimize2,
   MessageCircle,
+  RotateCw,
 } from "lucide-react";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,7 @@ type Message = {
   content: string;
   timestamp: number;
   senderName: string;
+  failed?: boolean;
 };
 
 interface Session {
@@ -74,6 +76,7 @@ const CURRENT_SESSION_KEY = "epbot_current_session_id";
 const SELECTED_MODEL_KEY = "epbot_selected_model";
 const MAX_STORAGE_PERCENT = 0.9;
 const MAX_CONTEXT_MESSAGES = 25;
+const DEFAULT_MODEL_ID = "stepfun-ai/step-3.7-flash";
 const RECOMMENDED_PATTERNS = [
   /grok-(4\.[3-9]|4\.20|4\.5)(?:-.*(?:high|fast|multi-agent-high))?/i,
   /qwen(?:3?\.?5?)?(?:-next)?.*?(?:instruct|chat)/i,
@@ -81,6 +84,7 @@ const RECOMMENDED_PATTERNS = [
   /llama-[34]\..*?(?:70b|90b|405b).*?instruct/i,
   /kimi/i,
   /gemini-2\.0-flash/i,
+  /stepfun-ai\/step-3\.7-flash/i,
 ];
 const extractModelSize = (id: string): string => {
   const matches = id.match(/(\d+)b/i);
@@ -113,6 +117,20 @@ const generateTitle = (messages: Message[]): string => {
   );
 };
 
+// Animated "EPBot is typing" indicator shown in the empty assistant bubble
+// while a response is being generated (waiting for the first token).
+const TypingIndicator = () => (
+  <div className="flex items-center gap-1 py-1.5" aria-label="EPBot 正在输入">
+    {[0, 1, 2].map((i) => (
+      <span
+        key={i}
+        className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 animate-bounce"
+        style={{ animationDelay: `${i * 0.15}s` }}
+      />
+    ))}
+  </div>
+);
+
 export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string>("");
@@ -141,11 +159,23 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const messagesRef = useRef(messages);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const modelPanelRef = useRef<HTMLDivElement>(null);
+  const mountedRef = useRef(true);
+  const sendingRef = useRef(false);
+  const composingRef = useRef(false);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const userScrolledUpRef = useRef(false);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => { currentSessionIdRef.current = currentSessionId; }, [currentSessionId]);
-  useEffect(() => { loadingRef.current = loading; }, [loading]);
+  useEffect(() => { loadingRef.current = loading; sendingRef.current = loading; }, [loading]);
   useEffect(() => { messagesRef.current = messages; }, [messages]);
   const getSenderName = () => { const user = getCookie("mc_user"); return user || "用户"; };
-  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 2800); };
+  const showToast = (msg: string) => {
+    setToast(msg);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => {
+      if (mountedRef.current) setToast("");
+    }, 2800);
+  };
   const isRecommendedModel = (modelId: string): boolean => { return RECOMMENDED_PATTERNS.some((pattern) => pattern.test(modelId)); };
   const loadModels = async () => {
     if (modelsLoaded || loadingModels) return;
@@ -170,12 +200,14 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         if (savedModel && processedModels.some((m) => m.id === savedModel)) {
           setSelectedModel(savedModel);
         } else {
+          // Prefer the configured DEFAULT_MODEL_ID, then any recommended
+          // model, then fall back to the first available model.
+          const defaultModel = processedModels.find(
+            (m) => m.id === DEFAULT_MODEL_ID,
+          );
           const recommendedModel = processedModels.find((m) => m.recommended);
-          if (recommendedModel) {
-            setSelectedModel(recommendedModel.id);
-          } else if (processedModels.length > 0) {
-            setSelectedModel(processedModels[0].id);
-          }
+          const fallback = defaultModel || recommendedModel || processedModels[0];
+          if (fallback) setSelectedModel(fallback.id);
         }
         setModelsLoaded(true);
       }
@@ -267,12 +299,13 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   };
 
   const cancelCurrentRequest = () => {
-    if (!loadingRef.current) return;
+    if (!loadingRef.current && !sendingRef.current) return;
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
     setLoading(false);
+    sendingRef.current = false;
     removeEmptyAssistantPlaceholder();
   };
 
@@ -290,13 +323,16 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     );
   };
 
-  const sendMessage = async (text: string) => {
-    if (!text.trim() || loadingRef.current) return;
+  const sendMessage = async (text: string, historyOverride?: Message[]) => {
+    if (!text.trim() || sendingRef.current) return;
 
+    sendingRef.current = true;
     setEditId(null);
 
-    if (abortControllerRef.current && loadingRef.current) {
-      cancelCurrentRequest();
+    // Abort previous request if any
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
     }
 
     const userMsg: Message = {
@@ -307,7 +343,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     };
 
     const newHistory = [
-      ...messagesRef.current.slice(-MAX_CONTEXT_MESSAGES),
+      ...(historyOverride ?? messagesRef.current).slice(-MAX_CONTEXT_MESSAGES),
       userMsg,
     ];
 
@@ -326,6 +362,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     const controller = new AbortController();
     abortControllerRef.current = controller;
     let reply = "";
+    let receivedContent = false;
     try {
       await fetchEventSource("/api/ai/chat", {
         method: "POST",
@@ -349,14 +386,19 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               const errorMsg = j.message || j.errorText || "未知错误";
               const fullErrorMsg = `错误：${errorMsg}`;
               reply = fullErrorMsg;
+              receivedContent = true;
 
               setSessions((prev) =>
                 prev.map((s) => {
                   if (s.id !== currentSessionIdRef.current) return s;
                   const msgs = [...s.messages];
                   const last = msgs[msgs.length - 1];
-                  if (last.role === "assistant") {
-                    msgs[msgs.length - 1] = { ...last, content: fullErrorMsg };
+                  if (last?.role === "assistant") {
+                    msgs[msgs.length - 1] = {
+                      ...last,
+                      content: fullErrorMsg,
+                      failed: true,
+                    };
                   }
                   return { ...s, messages: msgs };
                 }),
@@ -364,10 +406,11 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               setMessages((prev) => {
                 const newMsgs = [...prev];
                 const last = newMsgs[newMsgs.length - 1];
-                if (last.role === "assistant") {
+                if (last?.role === "assistant") {
                   newMsgs[newMsgs.length - 1] = {
                     ...last,
                     content: fullErrorMsg,
+                    failed: true,
                   };
                 }
                 return newMsgs;
@@ -385,12 +428,13 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
 
             if (content) {
               reply += content;
+              receivedContent = true;
               setSessions((prev) =>
                 prev.map((s) => {
                   if (s.id !== currentSessionIdRef.current) return s;
                   const msgs = [...s.messages];
                   const last = msgs[msgs.length - 1];
-                  if (last.role === "assistant") {
+                  if (last?.role === "assistant") {
                     msgs[msgs.length - 1] = {
                       ...last,
                       content: reply,
@@ -402,7 +446,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               setMessages((prev) => {
                 const newMsgs = [...prev];
                 const last = newMsgs[newMsgs.length - 1];
-                if (last.role === "assistant") {
+                if (last?.role === "assistant") {
                   newMsgs[newMsgs.length - 1] = {
                     ...last,
                     content: reply,
@@ -415,34 +459,91 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             console.warn("SSE parse error:", ev.data);
           }
         },
-        onerror() {
+        onerror(err) {
           if (!controller.signal.aborted) {
-            showToast("❌ 连接中断");
+            showToast("❌ 连接中断，请重试");
           }
-          removeEmptyAssistantPlaceholder();
+          // Do NOT remove the placeholder here. Let finally() replace the
+          // empty placeholder with a clear fallback message so the bubble
+          // never silently disappears.
+          throw err; // Prevent fetchEventSource from retrying
         },
       });
     } catch (err) {
-      const isAborted = controller.signal.aborted;
-      if (!isAborted) {
-        showToast("❌ 服务异常");
-      }
-      removeEmptyAssistantPlaceholder();
+      // Connection/open errors are already surfaced via onerror.
+      // Aborted (user-initiated) requests need no extra handling.
     } finally {
       setLoading(false);
+      sendingRef.current = false;
       if (abortControllerRef.current === controller) {
         abortControllerRef.current = null;
       }
-      if (reply === "") removeEmptyAssistantPlaceholder();
+      // Replace the empty assistant placeholder with a fallback message.
+      // Skip when the request was aborted by the user (delete/edit/switch),
+      // because the user's action already replaced the message list.
+      if (!controller.signal.aborted && (reply === "" || !receivedContent)) {
+        const fallbackMsg: Message = {
+          role: "assistant",
+          content: "抱歉，模型未返回有效回复，请重试或切换模型。",
+          timestamp: Date.now(),
+          senderName: "EPBot",
+          failed: true,
+        };
+        setSessions((prev) =>
+          prev.map((s) => {
+            if (s.id !== currentSessionIdRef.current) return s;
+            const msgs = [...s.messages];
+            if (
+              msgs.length > 0 &&
+              msgs[msgs.length - 1].role === "assistant" &&
+              msgs[msgs.length - 1].content === ""
+            ) {
+              msgs[msgs.length - 1] = fallbackMsg;
+            }
+            return { ...s, messages: msgs };
+          }),
+        );
+        setMessages((prev) => {
+          const newMsgs = [...prev];
+          if (
+            newMsgs.length > 0 &&
+            newMsgs[newMsgs.length - 1].role === "assistant" &&
+            newMsgs[newMsgs.length - 1].content === ""
+          ) {
+            newMsgs[newMsgs.length - 1] = fallbackMsg;
+          }
+          return newMsgs;
+        });
+      }
     }
   };
 
   const send = () => {
-    if (input.trim() && !loading) sendMessage(input.trim());
+    if (input.trim() && !sendingRef.current) sendMessage(input.trim());
+  };
+
+  // Retry the last request: drop the trailing failed assistant message and
+  // re-send the last user message. Uses the same historyOverride pattern as
+  // saveEdit to avoid reintroducing stale messages.
+  const retryLast = () => {
+    if (sendingRef.current || loadingRef.current) return;
+    const msgs = messagesRef.current;
+    let lastUserIndex = -1;
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      if (msgs[i].role === "user") {
+        lastUserIndex = i;
+        break;
+      }
+    }
+    if (lastUserIndex === -1) return;
+    const userMsg = msgs[lastUserIndex];
+    const truncated = msgs.slice(0, lastUserIndex);
+    updateCurrentMessages(truncated);
+    sendMessage(userMsg.content, truncated);
   };
 
   const deleteMessage = (index: number) => {
-    if (loadingRef.current) {
+    if (loadingRef.current || sendingRef.current) {
       cancelCurrentRequest();
     }
     updateCurrentMessages(messages.slice(0, index));
@@ -464,11 +565,14 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     const truncated = messages.slice(0, index);
     updateCurrentMessages(truncated);
     setEditId(null);
-    sendMessage(trimmed);
+    // Pass the truncated history explicitly: messagesRef.current is only
+    // synced after render, so it would otherwise still contain the old
+    // (edited + assistant) messages, leaving stale entries behind.
+    sendMessage(trimmed, truncated);
   };
 
   const createNewSession = () => {
-    if (loading) cancelCurrentRequest();
+    if (loadingRef.current || sendingRef.current) cancelCurrentRequest();
     setEditId(null);
     setEditContent("");
     const newSession: Session = {
@@ -483,7 +587,9 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   };
 
   const deleteSession = (id: string) => {
-    if (loading && id === currentSessionId) cancelCurrentRequest();
+    if ((loadingRef.current || sendingRef.current) && id === currentSessionIdRef.current) {
+      cancelCurrentRequest();
+    }
     setSessions((prev) => {
       const filtered = prev.filter((s) => s.id !== id);
       if (filtered.length === 0) {
@@ -498,7 +604,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         showToast("✅ 会话已删除");
         return [newSession];
       }
-      if (id === currentSessionId) {
+      if (id === currentSessionIdRef.current) {
         const nextSession = filtered[0];
         setCurrentSessionId(nextSession.id);
         setMessages(nextSession.messages);
@@ -509,7 +615,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   };
 
   const switchSession = (id: string) => {
-    if (loading) cancelCurrentRequest();
+    if (loadingRef.current || sendingRef.current) cancelCurrentRequest();
     setCurrentSessionId(id);
     const session = sessions.find((s) => s.id === id);
     if (session) setMessages(session.messages);
@@ -517,7 +623,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey && !composingRef.current) {
       e.preventDefault();
       send();
     }
@@ -554,11 +660,18 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     if (savedModel) setSelectedModel(savedModel);
   }, []);
 
+  // Cleanup on unmount: abort requests and clear timers
   useEffect(() => {
+    mountedRef.current = true;
     return () => {
+      mountedRef.current = false;
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
+      }
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
+        toastTimerRef.current = null;
       }
     };
   }, []);
@@ -577,9 +690,22 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       localStorage.setItem(CURRENT_SESSION_KEY, currentSessionId);
   }, [currentSessionId]);
 
+  // Auto-scroll on new messages, but only if user hasn't scrolled up
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!userScrolledUpRef.current && bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
+
+  const handleChatScroll = () => {
+    const container = chatContainerRef.current;
+    if (!container) return;
+    const threshold = 60;
+    const isAtBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight <
+      threshold;
+    userScrolledUpRef.current = !isAtBottom;
+  };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -880,7 +1006,11 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
+          <div
+            ref={chatContainerRef}
+            onScroll={handleChatScroll}
+            className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
+          >
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
                 <MessageCircle className="w-16 h-16 mb-4 opacity-30" />
@@ -939,6 +1069,16 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                     <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
                       <span>{m.senderName}</span>
                       <span>{formatTime(m.timestamp)}</span>
+                      {m.failed && i === messages.length - 1 && (
+                        <button
+                          onClick={retryLast}
+                          className="flex items-center gap-1 p-1 hover:text-foreground transition-colors duration-200"
+                          title="重试"
+                        >
+                          <RotateCw className="w-3.5 h-3.5" />
+                          <span>重试</span>
+                        </button>
+                      )}
                       <button
                         onClick={() => deleteMessage(i)}
                         className="p-1 hover:text-destructive transition-colors duration-200"
@@ -947,25 +1087,29 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                       </button>
                     </div>
                     <div className="max-w-[85%] bg-secondary rounded-2xl px-4 py-3 text-foreground prose prose-sm wrap-break-word">
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                          a: ({ href, ...props }) => {
-                            if (!href) return <a {...props} />;
-                            const encodedUrl = encodeURIComponent(href);
-                            return (
-                              <a
-                                href={`/ai_link?url=${encodedUrl}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                {...props}
-                              />
-                            );
-                          },
-                        }}
-                      >
-                        {m.content}
-                      </ReactMarkdown>
+                      {m.content === "" && loading && i === messages.length - 1 ? (
+                        <TypingIndicator />
+                      ) : (
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            a: ({ href, ...props }) => {
+                              if (!href) return <a {...props} />;
+                              const encodedUrl = encodeURIComponent(href);
+                              return (
+                                <a
+                                  href={`/ai_link?url=${encodedUrl}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  {...props}
+                                />
+                              );
+                            },
+                          }}
+                        >
+                          {m.content}
+                        </ReactMarkdown>
+                      )}
                     </div>
                   </div>
                 ),
@@ -981,6 +1125,8 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
+              onCompositionStart={() => { composingRef.current = true; }}
+              onCompositionEnd={() => { composingRef.current = false; }}
               placeholder="输入消息... (Shift+Enter 换行)"
               disabled={loading}
               rows={1}
