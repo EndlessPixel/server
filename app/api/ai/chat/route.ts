@@ -36,6 +36,22 @@ async function getSystemPrompt(): Promise<string> {
     throw new Error('系统提示词加载失败');
   }
 }
+// Dynamic timestamp injected at the top of the system prompt on every
+// request, e.g. "Now it is: 2026/07/29-15:26:01" (Asia/Shanghai).
+function getNowLine(): string {
+  const parts = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).formatToParts(new Date());
+  const get = (type: string) => parts.find(p => p.type === type)?.value ?? '';
+  return `Now it is: ${get('year')}/${get('month')}/${get('day')}-${get('hour')}:${get('minute')}:${get('second')}`;
+}
 function getClientIP(req: NextRequest): string | null {
   const forwarded = req.headers.get('x-forwarded-for');
   if (forwarded) {
@@ -74,7 +90,7 @@ export async function POST(req: NextRequest) {
       return sseError('服务初始化失败，请联系管理员');
     }
     const fullMessages = [
-      { role: 'system', content: systemPrompt },
+      { role: 'system', content: `${getNowLine()}\n\n${systemPrompt}` },
       ...messages.slice(-20),
     ];
     const defaultModel = "stepfun-ai/step-3.7-flash";
