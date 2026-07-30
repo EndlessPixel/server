@@ -6,7 +6,6 @@ import { ContactSection } from "@/components/contact-section"
 import { Card, CardContent } from "@/components/ui/card"
 import { Heart, Users, Globe } from "lucide-react"
 import type { Metadata } from "next"
-import { RunningDuration } from "@/components/running-duration"
 
 
 export const metadata: Metadata = {
@@ -83,16 +82,6 @@ export default function AboutPage() {
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <TeamSection />
-              <br /><br />
-              <section className="flex justify-center">
-                <Card>
-                  <CardContent className="p-6 text-center">
-                    <h2 className="text-xl font-semibold text-foreground mb-2">EndlessPixel服务器创立至今</h2>
-                    <RunningDuration />
-                  </CardContent>
-                </Card>
-              </section>
-              <br /><br />
               <section className="text-center">
                 <Card>
                   <CardContent className="p-8">

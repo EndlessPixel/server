@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { Mail, MessageCircle, Users, Clock, Star, ExternalLink, Sparkles, Gift, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { RunningDuration } from "./running-duration";
 
 const MotionCard = motion(Card);
 const MotionButton = motion(Button);
@@ -197,6 +198,16 @@ export function ContactSection() {
             </MotionButton>
           </motion.div>
         </CardContent>
+      </MotionCard>
+      <MotionCard>
+        <section className="flex justify-center">
+          <Card>
+            <CardContent className="p-6 text-center">
+              <h2 className="text-xl font-semibold text-foreground mb-2">EndlessPixel服务器创立至今</h2>
+              <RunningDuration />
+            </CardContent>
+          </Card>
+        </section>
       </MotionCard>
     </div>
   );
