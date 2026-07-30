@@ -28,9 +28,6 @@
   font-display: swap;
 }
 
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
-@tailwind utilities;
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
@@ -284,6 +281,180 @@ a, button, [role="button"] {
 }
 .hover-lift:active {
   transform: scale(0.98);
+}
+
+/* ============================================================
+   Markdown 排版（.prose）
+   项目未安装 @tailwindcss/typography，此处手写轻量替代，
+   统一治理所有 Markdown 渲染区域的上下边距。
+   放入 components 层：可覆盖 preflight，又可被工具类覆盖。
+   ============================================================ */
+@layer components {
+.prose {
+  line-height: 1.65;
+}
+.prose p {
+  margin-top: 0.625em;
+  margin-bottom: 0.625em;
+}
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+.prose h1 { font-size: 1.5em; }
+.prose h2 { font-size: 1.3em; }
+.prose h3 { font-size: 1.15em; }
+.prose h4 { font-size: 1.05em; }
+.prose ul,
+.prose ol {
+  margin-top: 0.625em;
+  margin-bottom: 0.625em;
+  padding-left: 1.5em;
+}
+.prose ul { list-style-type: disc; }
+.prose ol { list-style-type: decimal; }
+.prose li {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+.prose li > ul,
+.prose li > ol {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+.prose blockquote {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  padding-left: 1em;
+  border-left: 3px solid oklch(0 0 0 / 0.15);
+  color: var(--muted-foreground);
+}
+.dark .prose blockquote {
+  border-left-color: oklch(1 0 0 / 0.2);
+}
+.prose pre {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  padding: 0.75em 1em;
+  border-radius: 0.5rem;
+  background: oklch(0 0 0 / 0.05);
+  overflow-x: auto;
+  font-size: 0.875em;
+}
+.dark .prose pre {
+  background: oklch(1 0 0 / 0.08);
+}
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: oklch(0 0 0 / 0.06);
+  padding: 0.125em 0.375em;
+  border-radius: 0.25rem;
+}
+.dark .prose code {
+  background: oklch(1 0 0 / 0.1);
+}
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+.prose table {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+.prose th,
+.prose td {
+  padding: 0.375em 0.75em;
+  border: 1px solid oklch(0 0 0 / 0.12);
+  text-align: left;
+}
+.dark .prose th,
+.dark .prose td {
+  border-color: oklch(1 0 0 / 0.15);
+}
+.prose th {
+  font-weight: 600;
+  background: oklch(0 0 0 / 0.04);
+}
+.dark .prose th {
+  background: oklch(1 0 0 / 0.06);
+}
+.prose hr {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border: none;
+  border-top: 1px solid oklch(0 0 0 / 0.12);
+}
+.dark .prose hr {
+  border-top-color: oklch(1 0 0 / 0.15);
+}
+.prose img {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  border-radius: 0.5rem;
+  max-width: 100%;
+}
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose strong { font-weight: 600; }
+
+/* 容器内首尾元素不额外撑开内边距 */
+.prose > :first-child,
+.prose > div > :first-child {
+  margin-top: 0 !important;
+}
+.prose > :last-child,
+.prose > div > :last-child {
+  margin-bottom: 0 !important;
+}
+
+/* 紧凑变体：聊天气泡等小尺寸场景 */
+.prose-sm {
+  font-size: 0.875rem;
+}
+.prose-sm p,
+.prose-sm ul,
+.prose-sm ol {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+.prose-sm h1,
+.prose-sm h2,
+.prose-sm h3,
+.prose-sm h4,
+.prose-sm h5,
+.prose-sm h6 {
+  margin-top: 1em;
+  margin-bottom: 0.375em;
+}
+
+/* not-prose 区域豁免：清掉 prose 强加的排版属性 */
+.prose :where(.not-prose, .not-prose *) {
+  margin-top: revert;
+  margin-bottom: revert;
+  padding-left: revert;
+  font-size: revert;
+  font-weight: revert;
+  line-height: revert;
+  background: revert;
+  border: revert;
+  border-radius: revert;
+  list-style-type: revert;
+  text-decoration: revert;
+}
 }
 
 /* 字体类 — 保留 */
