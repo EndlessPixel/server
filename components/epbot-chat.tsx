@@ -1180,7 +1180,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                    <div className="max-w-[85%] bg-secondary rounded-2xl px-4 py-3 text-foreground prose prose-sm wrap-break-word">
+                    <div className="max-w-[85%] bg-secondary rounded-2xl px-4 py-3 text-foreground prose prose-sm wrap-break-word prose-p:my-1.5 prose-headings:mt-3 prose-headings:mb-1.5 prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-pre:my-2 prose-blockquote:my-2 prose-table:my-2 prose-hr:my-3 [&>:first-child]:mt-0 [&>:last-child]:mb-0">
                       {(() => {
                         const isStreamingLast =
                           loading && i === messages.length - 1;
