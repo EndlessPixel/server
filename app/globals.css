@@ -190,6 +190,44 @@ body {
   line-height: 1.55;
 }
 
+/* ============================================================
+   流式排版的垂直节奏
+   Tailwind preflight 会清空 h1-h6 / p 的默认 margin，而项目中大量
+   「<div><h2>标题</h2><p>说明</p></div>」结构并未显式写间距类，
+   导致标题与正文贴死、上下边距缺失。此处统一补回。
+
+   放在 @layer base：utilities 层在其之后，因此任何 margin 类
+   （mt-4、mb-8、my-2 等）都能正常覆盖，不影响页面的显式间距设置。
+   ============================================================ */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-block: 1em 0.4em;
+  }
+  p {
+    margin-block-end: 0.7em;
+  }
+
+  /* 首尾元素不额外撑开容器的内边距 */
+  :is(h1, h2, h3, h4, h5, h6, p):first-child {
+    margin-block-start: 0;
+  }
+  :is(h1, h2, h3, h4, h5, h6, p):last-child {
+    margin-block-end: 0;
+  }
+
+  /* 已由 gap / space-y-* 统一管理间距的容器，避免二次叠加 */
+  :is(.flex, .inline-flex, .grid, .inline-grid)
+    > :is(h1, h2, h3, h4, h5, h6, p),
+  [class*="space-y-"] > :is(h1, h2, h3, h4, h5, h6, p) {
+    margin-block: 0;
+  }
+}
+
 /* Apple 风格的缓动函数 (Cubic Bezier) */
 :root {
   --ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
