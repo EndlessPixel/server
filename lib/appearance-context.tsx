@@ -138,15 +138,15 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
           body.classList.add("font-chill-reunion");
           break;
         case "fz-cuyuan":
-          // 方正粗圆简体
+          // 黑糖话梅 Black Sugar Plum Candy
           body.style.fontFamily =
-            "'FZCuYuan-M03S', '方正粗圆简体', 'FZCuYuan', sans-serif";
+            "'Black Sugar Plum Candy', '黑糖话梅', sans-serif";
           body.classList.add("font-fz-cuyuan");
           break;
         case "hy-tangmeiren":
-          // HYTangMeiRen 55W
+          // 小赖字体 SC Xiaolai SC
           body.style.fontFamily =
-            "'HYTangMeiRen-55W', 'HYTangMeiRen', sans-serif";
+            "'Xiaolai SC', '小赖字体 SC', sans-serif";
           body.classList.add("font-hy-tangmeiren");
           break;
         default:
