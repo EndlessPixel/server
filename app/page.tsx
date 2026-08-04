@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "首页",
   description:
-    "EndlessPixel - 免费纯净Minecraft Java服务器。支持1.7.2-26.2版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验。无需正版验证，完全免费游玩。",
+    "EndlessPixel - 免费纯净Minecraft Java服务器。支持1.7.2-26.2版本，用Purpur核心，不用正版也能玩，完全免费。",
   keywords: [
     "首页",
     "EndlessPixel",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "EndlessPixel - 免费纯净Minecraft Java服务器",
     description:
-      "一个充满活力与创意的 Minecraft 社区！支持无需正版，让所有玩家都能轻松加入冒险之旅。",
+      "EndlessPixel 是玩家自发的 Minecraft 社区服务器，不用正版验证也能进服，全免费。",
     url: "https://www.endlesspixel.cn/",
     type: "website",
     images: [
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "EndlessPixel - 免费纯净Minecraft Java服务器",
-    description: "一个充满活力与创意的 Minecraft 社区！",
+    description: "EndlessPixel - 免费纯净Minecraft Java服务器",
     images: ["/banner.jpg"],
   },
   robots: {

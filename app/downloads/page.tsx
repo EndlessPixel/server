@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     keywords: ["Minecraft下载", "模组包下载", "Fabric", "客户端下载", "1.21.11", "1.21.9", "1.21.8", "EndlessPixel", "整合包"],
     openGraph: {
         title: "资源下载 | EndlessPixel Minecraft 服务器",
-        description: "下载超多种类的资源，从Minecraft Launcher到EndlessPixel Modpack，应有尽有。",
+        description: "下载 EndlessPixel 的客户端、模组包和下载工具，挑你需要的就行。",
         url: "https://www.endlesspixel.cn/downloads",
         images: [
             {
@@ -38,28 +38,28 @@ export default function DownloadsPage() {
             description: "GitHub第三方启动器合集，适配多版本MC",
             href: "/downloads/launcher",
             icon: <Grid className="w-6 h-6" />,
-            color: "from-foreground/90 to-foreground/70"
+            color: "from-primary to-accent"
         },
         {
             title: "EndlessPixel Modpack",
             description: "由服主开发的模组包，包含大量优化和功能模组",
             href: "/downloads/modpack",
             icon: <Package className="w-6 h-6" />,
-            color: "from-foreground/90 to-foreground/70"
+            color: "from-primary to-accent"
         },
         {
             title: "EndlessPixel Modpack APP",
             description: "模组包下载工具",
             href: "/downloads/modpack_app",
             icon: <Smartphone className="w-6 h-6" />,
-            color: "from-foreground/90 to-foreground/70"
+            color: "from-primary to-accent"
         },
         {
             title: '自定义下载',
             description: '输入任意 GitHub Releases 地址，一键生成下载页',
             href: '/downloads/custom_downloads',
             icon: <Link2 className="w-6 h-6" />,
-            color: "from-foreground/90 to-foreground/70"
+            color: "from-primary to-accent"
         },
     ];
     return (
@@ -67,7 +67,7 @@ export default function DownloadsPage() {
             <ContentContainer>
                 <PageHeader 
                     title="资源下载" 
-                    description="下载超多种类的资源，从 Minecraft Launcher 到 EndlessPixel Modpack和APP，应有尽有。"
+                    description="客户端、模组包、下载工具都在这里，挑你需要的下载。"
                 />
                 <div className="grid gap-6 md:grid-cols-2 mb-16">
                     {downloadItems.map((item, index) => (

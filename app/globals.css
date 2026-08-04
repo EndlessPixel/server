@@ -99,27 +99,27 @@
 }
 
 .dark {
-  /* 苦力怕主题：极深黑绿背景 + 森林绿品牌色 */
-  --background: oklch(0.13 0.025 150);
+  /* 苦力怕主题：深墨绿夜间森林 + 森林绿品牌色（不再接近纯黑） */
+  --background: oklch(0.20 0.03 150);
   --foreground: oklch(0.95 0.02 145);
-  --card: oklch(0.19 0.03 150);
+  --card: oklch(0.28 0.035 150);
   --card-foreground: oklch(0.95 0.02 145);
-  --popover: oklch(0.19 0.03 150);
+  --popover: oklch(0.28 0.035 150);
   --popover-foreground: oklch(0.95 0.02 145);
   --primary: oklch(0.567 0.15 110);
   --primary-foreground: oklch(0.99 0 0);
   --primary-hover: oklch(0.58 0.13 118);
-  --secondary: oklch(0.24 0.03 150);
+  --secondary: oklch(0.33 0.035 150);
   --secondary-foreground: oklch(0.95 0.02 145);
-  --muted: oklch(0.24 0.03 150);
-  --muted-foreground: oklch(0.78 0.06 80);
+  --muted: oklch(0.33 0.035 150);
+  --muted-foreground: oklch(0.82 0.05 80);
   --accent: oklch(0.675 0.186 95);
-  --accent-foreground: oklch(0.13 0.025 150);
+  --accent-foreground: oklch(0.16 0.03 150);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.95 0 0);
-  --input: oklch(0.28 0.03 150);
+  --input: oklch(0.30 0.035 150);
   --ring: oklch(0.675 0.186 95);
-  --border: oklch(0.32 0.04 110);
+  --border: oklch(0.38 0.04 110);
 
   --chart-1: oklch(0.675 0.186 95);
   --chart-2: oklch(0.567 0.15 110);
@@ -127,13 +127,13 @@
   --chart-4: oklch(0.78 0.06 80);
   --chart-5: oklch(0.45 0.1 130);
 
-  --sidebar: oklch(0.16 0.03 150);
+  --sidebar: oklch(0.24 0.035 150);
   --sidebar-foreground: oklch(0.95 0.02 145);
   --sidebar-primary: oklch(0.567 0.15 110);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.24 0.03 150);
+  --sidebar-accent: oklch(0.33 0.035 150);
   --sidebar-accent-foreground: oklch(0.95 0.02 145);
-  --sidebar-input: oklch(0.28 0.03 150);
+  --sidebar-input: oklch(0.30 0.035 150);
   --sidebar-ring: oklch(0.675 0.186 95);
 }
 
@@ -514,4 +514,34 @@ a, button, [role="button"] {
 }
 .font-hy-tangmeiren {
   font-family: 'Xiaolai SC', '小赖字体 SC', sans-serif !important;
+}
+
+/* ============================================================
+   暗色模式页面背景 — 一道品牌绿对角渐变
+   打破纯色死板，营造夜间森林的层次深度。
+   渐变极淡（在 --background 与稍亮绿之间），不喧宾夺主。
+   ============================================================ */
+.dark body {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(
+      135deg,
+      color-mix(in oklch, var(--background) 88%, var(--primary) 12%) 0%,
+      var(--background) 45%,
+      color-mix(in oklch, var(--background) 90%, var(--accent) 10%) 100%
+    );
+  background-attachment: fixed;
+}
+
+/* 亮色模式也加一道更隐约的绿调渐变（近白底 + 极淡绿） */
+body {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(
+      135deg,
+      color-mix(in oklch, var(--background) 96%, var(--primary) 4%) 0%,
+      var(--background) 55%,
+      color-mix(in oklch, var(--background) 97%, var(--accent) 3%) 100%
+    );
+  background-attachment: fixed;
 }

@@ -105,7 +105,7 @@ export function LauncherListPage() {
             选择您的启动器
           </motion.h1>
           <motion.p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
-            精选优质启动器，为您的游戏体验提供最佳支持
+            下面这些启动器我们自己也用过，挑顺手的就行
           </motion.p>
         </motion.div>
 

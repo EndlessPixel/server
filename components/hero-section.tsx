@@ -226,8 +226,7 @@ export function HeroSection() {
             animate={isInView ? { opacity: 1 } : { opacity: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
           >
-            一个充满活力与创意的 Minecraft
-            社区！支持无需正版，让所有玩家都能轻松加入冒险之旅，体验愉快、多样、有趣的游戏玩法。
+            一个玩家自发组织的 Minecraft 社区。不用正版也能进服，想来随时加，怎么玩都行。
           </motion.p>
 
           {/* 特色标签 */}
@@ -386,7 +385,7 @@ export function HeroSection() {
             服务器特色功能
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            精心设计的游戏功能，全面提升你的 Minecraft 体验
+            下面这些功能，都是我们自己玩的时候一点点加上去的
           </p>
         </motion.div>
 
@@ -464,11 +463,10 @@ export function HeroSection() {
           <div className="bg-card rounded-[2rem] p-6 md:p-12 max-w-4xl mx-auto shadow-sm">
             <Award className="w-12 h-12 md:w-16 md:h-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              准备好开始冒险了吗？
+              来试试看吧
             </h3>
             <p className="text-base md:text-xl text-muted-foreground mb-6 leading-relaxed">
-              加入我们的服务器，体验这些丰富的特色功能，开启你的 Minecraft
-              新篇章
+              服务器一直开着，下载客户端就能进，想认识人也欢迎加群
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link

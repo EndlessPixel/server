@@ -22,7 +22,7 @@ const SERVICES: ServiceItem[] = [
     icon: Server,
     status: "online",
     description: "游戏服务器实时状态",
-    color: "from-foreground/90 to-foreground/70"
+    color: "from-primary to-accent"
   },
   {
     name: "服务器性能监控",
@@ -30,7 +30,7 @@ const SERVICES: ServiceItem[] = [
     icon: Activity,
     status: "online",
     description: "服务器性能监控",
-    color: "from-foreground/90 to-foreground/70",
+    color: "from-primary to-accent",
     external: true
   }
 ];
@@ -111,7 +111,7 @@ export default function StatusIndexPage() {
               服务状态监控
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              实时监控 EndlessPixel 所有服务的运行状态、性能指标和在线状态
+              这里能实时看到 EndlessPixel 各个服务是不是开着、跑得怎么样
             </p>
           </div>
           <section className="mb-12" aria-labelledby="services-heading">
