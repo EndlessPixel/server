@@ -21,7 +21,9 @@ export async function GET(request: NextRequest) {
 
         // IP 来源只信由本机反代写入的 x-real-ip（外部不可伪造）
         const clientIp =
-            request.headers.get('x-real-ip') || request.ip || '127.0.0.1';
+            request.headers.get('x-real-ip') ||
+            request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+            '127.0.0.1';
 
         const res = await fetch(url.toString(), {
             headers: {
