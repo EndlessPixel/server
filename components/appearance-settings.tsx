@@ -25,8 +25,8 @@ const FONT_OPTIONS = [
   { value: "noto-sans", label: "Noto Sans SC", example: "Noto Sans SC 示例", fontFamily: "'Noto Sans SC', sans-serif" },
   { value: "dengxian", label: "等线", example: "等线示例文字", fontFamily: "'DengXian', 'Microsoft YaHei', sans-serif" },
   { value: "chill-reunion", label: "ChillReunion", example: "ChillReunion 示例", fontFamily: "'ChillReunion Round', sans-serif" },
-  { value: "fz-cuyuan", label: "方正粗圆简体", example: "方正粗圆简体示例文字", fontFamily: "'FZCuYuan-M03S', '方正粗圆简体', 'FZCuYuan', sans-serif" },
-  { value: "hy-tangmeiren", label: "HYTangMeiRen 55W", example: "HYTangMeiRen 55W 示例文字", fontFamily: "'HYTangMeiRen-55W', 'HYTangMeiRen', sans-serif" }
+  { value: "fz-cuyuan", label: "黑糖话梅", example: "黑糖话梅示例文字", fontFamily: "'Black Sugar Plum Candy', '黑糖话梅', sans-serif" },
+  { value: "hy-tangmeiren", label: "小赖字体 SC", example: "小赖字体 SC 示例文字", fontFamily: "'Xiaolai SC', '小赖字体 SC', sans-serif" }
 ] as const;
 
 export const AppearanceSettingsButton = memo(function AppearanceSettingsButton({ onClick }: { onClick: () => void }) {
