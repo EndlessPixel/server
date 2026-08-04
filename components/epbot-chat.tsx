@@ -181,7 +181,7 @@ const ThinkingBlock = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   return (
-    <div className="mb-2 rounded-xl bg-foreground/5 text-xs overflow-hidden not-prose">
+    <div className="mb-2 rounded-xl bg-background border border-border text-xs overflow-hidden not-prose">
       <button
         onClick={() => setExpanded((v) => !v)}
         className="w-full flex items-center gap-1.5 px-3 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
@@ -1153,7 +1153,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                         </button>
                       </div>
                     ) : (
-                      <div className="max-w-[80%] bg-foreground/10 rounded-2xl px-4 py-3 text-foreground text-sm wrap-break-word">
+                      <div className="max-w-[80%] bg-muted rounded-2xl px-4 py-3 text-foreground text-sm wrap-break-word">
                         {m.content}
                       </div>
                     )}
