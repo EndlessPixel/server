@@ -1,42 +1,31 @@
 import { NextResponse, NextRequest } from 'next/server';
+import { SESSION_COOKIE, verifySessionToken } from '@/lib/session';
 
 const USER_INFO_API_URL = `http://154.44.26.51:8080/v1/api/users/info`;
 
-// 用户名验证（与登录保持一致）
-const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
-
 export async function GET(request: NextRequest) {
     try {
-        // 修复：严格只从 Cookie 获取用户名，拒绝 URL 参数传入
-        const cookie = request.cookies.get('mc_user');
-        const name = cookie?.value;
+        // 鉴权只认服务端签名的会话 cookie；明文 mc_user 仅前端显示用，不可作为凭证
+        const token = request.cookies.get(SESSION_COOKIE)?.value;
+        const name = verifySessionToken(token);
 
         if (!name) {
             return NextResponse.json(
-                { error: '未登录' }, 
+                { error: '未登录或登录已失效' },
                 { status: 401 }
-            );
-        }
-
-        // 修复：验证 Cookie 中的用户名格式，防止伪造/注入
-        if (!USERNAME_PATTERN.test(name)) {
-            return NextResponse.json(
-                { error: '无效的登录状态' }, 
-                { status: 400 }
             );
         }
 
         const url = new URL(USER_INFO_API_URL);
         url.searchParams.append('name', name);
 
-        // 修复：优先使用 x-real-ip（更难伪造），x-forwarded-for 取第一个值
-        const clientIp = request.headers.get('x-real-ip') 
-            || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() 
-            || '127.0.0.1';
+        // IP 来源只信由本机反代写入的 x-real-ip（外部不可伪造）
+        const clientIp =
+            request.headers.get('x-real-ip') || request.ip || '127.0.0.1';
 
         const res = await fetch(url.toString(), {
             headers: {
-                'X-Forwarded-For': clientIp,
+                'X-Real-IP': clientIp,
             },
         });
 
