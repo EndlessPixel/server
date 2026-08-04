@@ -124,7 +124,7 @@ function IssueCard({
                 className={`w-4 h-4 ${issue.state === "open" ? "text-foreground/60" : "text-foreground/60"}`}
               />
             )}
-            <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-foreground dark:group-hover:text-blue-400 transition-colors">
+            <h3 className="font-semibold text-foreground truncate group-hover:text-foreground/80 transition-colors">
               {issue.title}
             </h3>
           </div>
@@ -317,11 +317,11 @@ export default function GitHubIssuesList({
     return (
       <>
         <Navigation />
-        <div className="min-h-screen bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950/30 flex items-center justify-center">
+        <div className="min-h-screen bg-background flex items-center justify-center">
           <Card>
             <CardContent className="p-8 text-center space-y-4">
               <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
-              <p className="text-slate-700 dark:text-slate-300">{error}</p>
+              <p className="text-muted-foreground">{error}</p>
               <Button onClick={() => location.reload()}>重新加载</Button>
             </CardContent>
           </Card>

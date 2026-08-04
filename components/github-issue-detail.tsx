@@ -214,7 +214,7 @@ export default function GitHubIssueDetail({
             <Card className="bg-red-50 dark:bg-red-900/20  border-red-200 dark:border-red-800">
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+                <h3 className="text-xl font-semibold text-foreground mb-2">
                   加载失败
                 </h3>
                 <p className="text-slate-600 dark:text-slate-400 mb-6">
@@ -514,7 +514,7 @@ export default function GitHubIssueDetail({
                   <MessageSquare className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+                  <h2 className="text-xl font-semibold text-foreground">
                     讨论评论
                   </h2>
                   <p className="text-slate-600 dark:text-slate-400 text-sm">
