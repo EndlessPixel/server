@@ -55,10 +55,17 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     return () => clearInterval(interval);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // 清除前端显示态
     deleteCookie("mc_user");
     setIsLoggedIn(false);
     setUsername("");
+    // 清除服务端 HttpOnly 签名会话 cookie
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // 忽略网络错误，前端态已清理
+    }
     window.location.reload();
   };
 

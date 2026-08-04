@@ -1,5 +1,11 @@
 import { NextResponse, NextRequest } from 'next/server';
 import crypto from 'crypto';
+import { cookies } from 'next/headers';
+import {
+  SESSION_COOKIE,
+  createSessionToken,
+  SESSION_MAX_AGE,
+} from '@/lib/session';
 
 const LOGIN_API_URL = `http://154.44.26.51:8080/v1/api/auth/login`;
 const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
@@ -19,6 +25,18 @@ function encrypt(name: string, password: string): string {
     return hash.digest('hex');
 }
 
+/**
+ * 取可信客户端 IP：只信由本机反代写入的 x-real-ip（外部不可伪造），
+ * 不再信任可被调用方自由伪造的 x-forwarded-for。
+ */
+function getClientIp(request: NextRequest): string {
+  return (
+    request.headers.get('x-real-ip') ||
+    request.ip ||
+    '127.0.0.1'
+  );
+}
+
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
@@ -33,12 +51,12 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: '密码长度不足' }, { status: 400 });
         }
         const encryptedPassword = encrypt(name, password);
-        const clientIp = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
+        const clientIp = getClientIp(request);
         const res = await fetch(LOGIN_API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Forwarded-For': clientIp,
+                'X-Real-IP': clientIp,
             },
             body: JSON.stringify({ name, password: encryptedPassword }),
         });
@@ -53,6 +71,20 @@ export async function POST(request: NextRequest) {
         const safeName = data.name && USERNAME_PATTERN.test(data.name) 
             ? data.name 
             : name;
+
+        if (data.success === true) {
+            // 下发签名会话 cookie（HttpOnly，前端无法伪造/读取）
+            const sessionToken = createSessionToken(safeName);
+            const cookieStore = await cookies();
+            cookieStore.set(SESSION_COOKIE, sessionToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+                maxAge: SESSION_MAX_AGE,
+            });
+        }
+
         return NextResponse.json({
             name: safeName,
             success: data.success === true

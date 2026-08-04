@@ -13,7 +13,6 @@ export default function LoginContent() {
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [agreeTerms, setAgreeTerms] = useState(false);
-    const [modalType, setModalType] = useState<'terms' | 'privacy' | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -110,8 +109,6 @@ export default function LoginContent() {
         }
     };
 
-    const closeModal = () => setModalType(null);
-
     return (
         <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
             <Navigation />
@@ -187,21 +184,21 @@ export default function LoginContent() {
                             />
                             <label htmlFor="agreeTerms" className="text-sm text-muted-foreground select-none">
                                 我已阅读并同意
-                                <button
-                                    type="button"
-                                    onClick={() => setModalType('terms')}
+                                <Link
+                                    href="/terms"
+                                    target="_blank"
                                     className="text-foreground hover:underline mx-1 font-medium"
                                 >
                                     《用户协议》
-                                </button>
+                                </Link>
                                 与
-                                <button
-                                    type="button"
-                                    onClick={() => setModalType('privacy')}
+                                <Link
+                                    href="/privacy"
+                                    target="_blank"
                                     className="text-foreground hover:underline mx-1 font-medium"
                                 >
                                     《隐私政策》
-                                </button>
+                                </Link>
                             </label>
                         </div>
 
@@ -235,49 +232,6 @@ export default function LoginContent() {
                     </div>
                 </div>
             </main>
-
-            {/* 协议弹窗 */}
-            {modalType && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
-                    role="dialog"
-                    aria-modal="true"
-                >
-                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={closeModal} />
-                    <div className="relative w-full max-w-lg max-h-[80vh] overflow-auto bg-card rounded-2xl shadow-2xl p-6 ring-1 ring-foreground/5 z-10">
-                        <button
-                            onClick={closeModal}
-                            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground p-1 transition-colors"
-                            aria-label="关闭弹窗"
-                        >
-                            ✕
-                        </button>
-
-                        {modalType === 'terms' ? (
-                            <>
-                                <h2 className="text-lg font-bold text-foreground mb-4">用户协议</h2>
-                                <div className="text-sm text-muted-foreground space-y-3 leading-relaxed">
-                                    {/* 用户协议内容，可按需填充 */}
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <h2 className="text-lg font-bold text-foreground mb-4">隐私政策</h2>
-                                <div className="text-sm text-muted-foreground space-y-3 leading-relaxed">
-                                    {/* 隐私政策内容，可按需填充 */}
-                                </div>
-                            </>
-                        )}
-
-                        <button
-                            onClick={closeModal}
-                            className="mt-6 w-full py-2 bg-foreground hover:bg-foreground/90 text-background rounded-lg text-sm transition-colors duration-200"
-                        >
-                            我已阅读并了解
-                        </button>
-                    </div>
-                </div>
-            )}
 
             <Footer />
         </div>

@@ -506,8 +506,15 @@ export default function ProfilePage() {
     fetchUserInfo();
   }, [router]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // 清除前端显示态
     document.cookie = 'mc_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    // 清除服务端 HttpOnly 签名会话 cookie
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // 忽略网络错误，前端态已清理
+    }
     router.push('/');
     router.refresh();
   };

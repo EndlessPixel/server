@@ -277,6 +277,15 @@ export function Footer() {
           </div>
         </div>
 
+        <div className="flex flex-wrap gap-x-6 gap-y-2 pt-6 mt-6 border-t border-white/[0.06] text-sm text-white/30">
+          <Link href="/terms" className="hover:text-white transition-colors duration-200">
+            用户协议
+          </Link>
+          <Link href="/privacy" className="hover:text-white transition-colors duration-200">
+            隐私政策
+          </Link>
+        </div>
+
         <Copyright startYear={2024} />
       </div>
     </footer>
