@@ -41,26 +41,27 @@
    ============================================================ */
 
 :root {
-  /* 基础色 — 纯中性灰度，无蓝/紫倾向 */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(0.965 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  /* 基础色 — 苦力怕（Creeper）主题：明亮的浅绿白底 + 深绿品牌色 */
+  --background: oklch(0.98 0.01 145);
+  --foreground: oklch(0.13 0.025 150);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.13 0.025 150);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.145 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.95 0 0);
-  --secondary-foreground: oklch(0.145 0 0);
-  --muted: oklch(0.95 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.94 0 0);
-  --accent-foreground: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.13 0.025 150);
+  --primary: oklch(0.567 0.15 110);
+  --primary-foreground: oklch(0.99 0 0);
+  --primary-hover: oklch(0.58 0.13 118);
+  --secondary: oklch(0.94 0.02 145);
+  --secondary-foreground: oklch(0.13 0.025 150);
+  --muted: oklch(0.94 0.02 145);
+  --muted-foreground: oklch(0.5 0.04 100);
+  --accent: oklch(0.675 0.186 95);
+  --accent-foreground: oklch(0.13 0.025 150);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --input: oklch(0.88 0 0);
-  --ring: oklch(0.5 0 0);
-  --border: oklch(0.88 0 0);
+  --input: oklch(0.88 0.02 145);
+  --ring: oklch(0.567 0.15 110);
+  --border: oklch(0.85 0.03 110);
 
   /* 图表色 — 给 chart 保留灰度系 */
   --chart-1: oklch(0.45 0 0);
@@ -77,14 +78,14 @@
   --radius-xl: calc(var(--radius) + 8px);
 
   /* Sidebar */
-  --sidebar: oklch(0.98 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.145 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.94 0 0);
-  --sidebar-accent-foreground: oklch(0.145 0 0);
-  --sidebar-input: oklch(0.88 0 0);
-  --sidebar-ring: oklch(0.5 0 0);
+  --sidebar: oklch(0.96 0.015 145);
+  --sidebar-foreground: oklch(0.13 0.025 150);
+  --sidebar-primary: oklch(0.567 0.15 110);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.92 0.03 145);
+  --sidebar-accent-foreground: oklch(0.13 0.025 150);
+  --sidebar-input: oklch(0.88 0.02 145);
+  --sidebar-ring: oklch(0.567 0.15 110);
 
   /* Apple 字号系统 */
   --text-xs: 0.75rem;
@@ -98,40 +99,42 @@
 }
 
 .dark {
-  --background: oklch(0.129 0 0);
-  --foreground: oklch(0.95 0 0);
-  --card: oklch(0.18 0 0);
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.18 0 0);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.95 0 0);
-  --primary-foreground: oklch(0.145 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.95 0 0);
-  --muted: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.25 0 0);
-  --accent-foreground: oklch(0.95 0 0);
+  /* 苦力怕主题：极深黑绿背景 + 森林绿品牌色 */
+  --background: oklch(0.13 0.025 150);
+  --foreground: oklch(0.95 0.02 145);
+  --card: oklch(0.19 0.03 150);
+  --card-foreground: oklch(0.95 0.02 145);
+  --popover: oklch(0.19 0.03 150);
+  --popover-foreground: oklch(0.95 0.02 145);
+  --primary: oklch(0.567 0.15 110);
+  --primary-foreground: oklch(0.99 0 0);
+  --primary-hover: oklch(0.58 0.13 118);
+  --secondary: oklch(0.24 0.03 150);
+  --secondary-foreground: oklch(0.95 0.02 145);
+  --muted: oklch(0.24 0.03 150);
+  --muted-foreground: oklch(0.78 0.06 80);
+  --accent: oklch(0.675 0.186 95);
+  --accent-foreground: oklch(0.13 0.025 150);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.95 0 0);
-  --input: oklch(0.26 0 0);
-  --ring: oklch(0.5 0 0);
-  --border: oklch(0.26 0 0);
+  --input: oklch(0.28 0.03 150);
+  --ring: oklch(0.675 0.186 95);
+  --border: oklch(0.32 0.04 110);
 
-  --chart-1: oklch(0.7 0 0);
-  --chart-2: oklch(0.65 0 0);
-  --chart-3: oklch(0.6 0 0);
-  --chart-4: oklch(0.55 0 0);
-  --chart-5: oklch(0.5 0 0);
+  --chart-1: oklch(0.675 0.186 95);
+  --chart-2: oklch(0.567 0.15 110);
+  --chart-3: oklch(0.58 0.13 118);
+  --chart-4: oklch(0.78 0.06 80);
+  --chart-5: oklch(0.45 0.1 130);
 
-  --sidebar: oklch(0.16 0 0);
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.95 0 0);
-  --sidebar-primary-foreground: oklch(0.145 0 0);
-  --sidebar-accent: oklch(0.22 0 0);
-  --sidebar-accent-foreground: oklch(0.95 0 0);
-  --sidebar-input: oklch(0.26 0 0);
-  --sidebar-ring: oklch(0.5 0 0);
+  --sidebar: oklch(0.16 0.03 150);
+  --sidebar-foreground: oklch(0.95 0.02 145);
+  --sidebar-primary: oklch(0.567 0.15 110);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.24 0.03 150);
+  --sidebar-accent-foreground: oklch(0.95 0.02 145);
+  --sidebar-input: oklch(0.28 0.03 150);
+  --sidebar-ring: oklch(0.675 0.186 95);
 }
 
 /* ============================================================
@@ -146,6 +149,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
