@@ -11,9 +11,7 @@ import {
 type FontOption =
   | "default"
   | "noto-sans"
-  | "songti"
   | "dengxian"
-  | "kaiti"
   | "chill-reunion"
   | "fz-cuyuan"
   | "hy-tangmeiren";
@@ -115,9 +113,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     // 移除所有字体类
     body.classList.remove(
       "font-noto-sans",
-      "font-songti",
       "font-dengxian",
-      "font-kaiti",
       "font-chill-reunion",
       "font-fz-cuyuan",
       "font-hy-tangmeiren",
@@ -131,17 +127,9 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
             "var(--font-noto-sans-sc), 'Microsoft YaHei', sans-serif";
           body.classList.add("font-noto-sans");
           break;
-        case "songti":
-          body.style.fontFamily = "'SimSun', 'STSong', '宋体', serif";
-          body.classList.add("font-songti");
-          break;
         case "dengxian":
           body.style.fontFamily = "'DengXian', 'Microsoft YaHei', sans-serif";
           body.classList.add("font-dengxian");
-          break;
-        case "kaiti":
-          body.style.fontFamily = "'KaiTi', 'STKaiti', '楷体', serif";
-          body.classList.add("font-kaiti");
           break;
         case "chill-reunion":
           // ChillReunion 回退到 Noto Sans SC

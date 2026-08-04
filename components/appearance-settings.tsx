@@ -23,9 +23,7 @@ const THEME_OPTIONS = [
 const FONT_OPTIONS = [
   { value: "default", label: "系统默认", example: "系统默认字体", fontFamily: undefined },
   { value: "noto-sans", label: "Noto Sans SC", example: "Noto Sans SC 示例", fontFamily: "'Noto Sans SC', sans-serif" },
-  { value: "songti", label: "宋体", example: "宋体示例文字", fontFamily: "'SimSun', 'STSong', serif" },
   { value: "dengxian", label: "等线", example: "等线示例文字", fontFamily: "'DengXian', 'Microsoft YaHei', sans-serif" },
-  { value: "kaiti", label: "楷体", example: "楷体示例文字", fontFamily: "'KaiTi', 'STKaiti', serif" },
   { value: "chill-reunion", label: "ChillReunion", example: "ChillReunion 示例", fontFamily: "'ChillReunion Round', sans-serif" },
   { value: "fz-cuyuan", label: "方正粗圆简体", example: "方正粗圆简体示例文字", fontFamily: "'FZCuYuan-M03S', '方正粗圆简体', 'FZCuYuan', sans-serif" },
   { value: "hy-tangmeiren", label: "HYTangMeiRen 55W", example: "HYTangMeiRen 55W 示例文字", fontFamily: "'HYTangMeiRen-55W', 'HYTangMeiRen', sans-serif" }
