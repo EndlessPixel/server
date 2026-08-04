@@ -252,8 +252,8 @@ export function Footer() {
           <div className="space-y-4">
             <BrandLogo />
             <p className="text-white/40 text-sm leading-relaxed max-w-md">
-              EndlessPixel 是一个由热爱 Minecraft
-              的玩家组成的社区，致力于提供有趣、自由、开放、和平的游戏世界。
+              EndlessPixel 是一群喜欢 Minecraft
+              的玩家凑在一起搭的服务器，不收费，想玩随时来。
             </p>
             <SocialLinks links={socialLinks} />
             <p className="text-sm text-white/30">服务器创立至今：</p>

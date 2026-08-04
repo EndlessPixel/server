@@ -11,7 +11,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "关于我们 - EndlessPixel Minecraft 服务器",
   description:
-    "了解 EndlessPixel 团队和我们的故事。EndlessPixel 是一个由热爱游戏的玩家组成的 Minecraft 社区，致力于提供有趣、自由、开放的游戏世界。",
+    "了解 EndlessPixel 团队和我们的故事。一个玩家自发组织的 Minecraft 社区服务器，不收费、不用正版。",
   keywords: ["EndlessPixel团队", "关于我们", "服务器历史", "联系方式", "Minecraft社区"],
   openGraph: {
     title: "关于我们 | EndlessPixel Minecraft 服务器",
@@ -37,7 +37,7 @@ export default function AboutPage() {
               关于 EndlessPixel
             </h1>
             <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              EndlessPixel 是一个由热爱游戏的玩家组成的社区，致力于提供一个有趣、自由、开放的游戏体验。
+              EndlessPixel 是几个爱玩游戏的玩家凑一起搭的服务器，不收费，不用正版也能进。
             </p>
           </section>
 
@@ -50,7 +50,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="font-semibold text-foreground mb-2">热爱与激情</h3>
                 <p className="text-sm text-muted-foreground">
-                  我们由真正热爱游戏的玩家组成，这份热情驱动着我们不断改进和创新。
+                  我们就是一群爱玩游戏的玩家，平时自己也在服里玩，有问题就顺手修。
                 </p>
               </CardContent>
             </Card>
@@ -62,7 +62,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="font-semibold text-foreground mb-2">社区第一</h3>
                 <p className="text-sm text-muted-foreground">
-                  玩家的声音对我们至关重要。我们始终倾听社区反馈，确保决策符合大多数玩家的利益。
+                  群里提的意见我们基本都看，改什么、加什么大多按大家说的来。
                 </p>
               </CardContent>
             </Card>
@@ -74,7 +74,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="font-semibold text-foreground mb-2">开放包容</h3>
                 <p className="text-sm text-muted-foreground">
-                  无论来自哪里、水平如何，每一位玩家都能在这里找到属于自己的乐趣。
+                  新手老人都行，想肝建筑还是随便逛逛，来了总能找到事干。
                 </p>
               </CardContent>
             </Card>
@@ -85,9 +85,9 @@ export default function AboutPage() {
               <section className="text-center">
                 <Card>
                   <CardContent className="p-8">
-                    <h2 className="text-3xl font-bold text-foreground mb-4">准备好加入我们了吗？</h2>
+                    <h2 className="text-3xl font-bold text-foreground mb-4">想来玩就来吧</h2>
                     <p className="text-muted-foreground max-w-3xl mx-auto">
-                      无论你是想体验服务器，还是对我们的项目感兴趣，都欢迎加入 EndlessPixel 社区！
+                      想进服体验、或者只是好奇我们在搞什么，都欢迎加群聊聊。
                     </p>
                   </CardContent>
                 </Card>

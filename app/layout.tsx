@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     template: "%s | EndlessPixel - 免费MC服务器",
   },
   description:
-    "EndlessPixel提供免费纯净Minecraft Java服务器，支持1.7.2-26.2版本，采用Purpur高性能核心，打造优质中文MC公益服社区体验，无付费无广告。",
+    "EndlessPixel 是免费纯净的 Minecraft Java 服务器，支持 1.7.2-26.2 版本，用 Purpur 核心运行，不收费、没广告。",
   keywords: [
     "Minecraft服务器",
     "免费MC服务器",

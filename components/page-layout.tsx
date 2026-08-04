@@ -16,7 +16,8 @@ export function PageLayout({
 }: PageLayoutProps) {
   const bgClasses = {
     default: "bg-background",
-    gradient: "bg-background",
+    gradient:
+      "bg-[linear-gradient(135deg,color-mix(in_oklch,var(--background)_88%,var(--primary)_12%)_0%,var(--background)_45%,color-mix(in_oklch,var(--background)_90%,var(--accent)_10%)_100%)] bg-background",
     solid: "bg-background",
   };
 
@@ -29,12 +30,11 @@ export function PageLayout({
   );
 }
 
-// 页面标题组件 - 极简黑白版
+// 页面标题组件
 interface PageHeaderProps {
   title: string;
   description?: string;
   className?: string;
-  gradient?: "default" | "blue" | "purple" | "cyan";
 }
 
 export function PageHeader({
