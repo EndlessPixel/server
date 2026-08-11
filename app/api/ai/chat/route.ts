@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
       { role: 'system', content: `${getNowLine()}\n\n${systemPrompt}` },
       ...messages.slice(-20),
     ];
-    const defaultModel = "stepfun-ai/step-3.7-flash";
+    const defaultModel = "gpt-5.1";
     const selectedModel = (model && typeof model === 'string' && model.trim())
       ? model.trim()
       : defaultModel;
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
       frequency_penalty: 0.3,
       max_tokens: 4096
     };
-    const apiBaseUrl = process.env.API_BASE_URL || "https://new.xinjianya.top";
+    const apiBaseUrl = process.env.API_BASE_URL || "https://api.futureppo.top";
     const upstreamUrl = `${apiBaseUrl}/v1/chat/completions`;
     const apiKey = process.env.API_KEY;
     if (!apiKey) {

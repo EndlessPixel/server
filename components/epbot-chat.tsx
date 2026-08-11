@@ -78,7 +78,7 @@ const CURRENT_SESSION_KEY = "epbot_current_session_id";
 const SELECTED_MODEL_KEY = "epbot_selected_model";
 const MAX_STORAGE_PERCENT = 0.9;
 const MAX_CONTEXT_MESSAGES = 25;
-const DEFAULT_MODEL_ID = "stepfun-ai/step-3.7-flash";
+const DEFAULT_MODEL_ID = "gpt-5.1";
 const RECOMMENDED_PATTERNS = [
   /grok-(4\.[3-9]|4\.20|4\.5)(?:-.*(?:high|fast|multi-agent-high))?/i,
   /qwen(?:3?\.?5?)?(?:-next)?.*?(?:instruct|chat)/i,
@@ -86,7 +86,7 @@ const RECOMMENDED_PATTERNS = [
   /llama-[34]\..*?(?:70b|90b|405b).*?instruct/i,
   /kimi/i,
   /gemini-2\.0-flash/i,
-  /stepfun-ai\/step-3\.7-flash/i,
+  /gpt-5\.1/i,
 ];
 const extractModelSize = (id: string): string => {
   const matches = id.match(/(\d+)b/i);
