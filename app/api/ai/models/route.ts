@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const apiBaseUrl = process.env.API_BASE_URL || "https://new.xinjianya.top";
+    const apiBaseUrl = process.env.API_BASE_URL || "https://api.futureppo.top";
     const apiKey = process.env.API_KEY;
 
     const filterList: string[] = [
