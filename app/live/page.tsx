@@ -1,8 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Navigation } from '@/components/navigation';
-import Footer from '@/components/footer';
 
 // ---------- 常量定义 ----------
 const BVID_MAP: Record<string, string> = {
@@ -227,7 +225,6 @@ function LiveContent() {
 export default function LivePage() {
   return (
     <>
-      <Navigation />
       <Suspense fallback={
         <div className="min-h-[calc(100vh-80px)] flex items-center justify-center text-muted-foreground text-lg">
           加载中...
@@ -235,7 +232,6 @@ export default function LivePage() {
       }>
         <LiveContent />
       </Suspense>
-      <Footer />
 
       {/* 自定义滚动条样式 - 灰阶 */}
       <style jsx>{`

@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import { DownloadSection } from "@/components/download-section-launcher";
 import { ArrowLeft, Search, Settings } from "lucide-react";
 import Link from "next/link";
@@ -68,7 +66,6 @@ export default function CustomDownloadsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
@@ -222,7 +219,6 @@ export default function CustomDownloadsPage() {
           </AnimatePresence>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

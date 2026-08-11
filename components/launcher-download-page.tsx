@@ -1,7 +1,5 @@
 "use client";
 
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import { DownloadSection } from "@/components/download-section-launcher";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
@@ -33,7 +31,6 @@ export function LauncherDownloadPage({
   const repoUrl = `https://github.com/${repoOwner}/${repoName}`;
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -99,7 +96,6 @@ export function LauncherDownloadPage({
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

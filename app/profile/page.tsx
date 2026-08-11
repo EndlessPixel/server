@@ -2,8 +2,6 @@
 
 import { useState, useEffect, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { Navigation } from '@/components/navigation';
-import Footer from '@/components/footer';
 import {
   UserIcon,
   ShieldIcon,
@@ -526,14 +524,12 @@ export default function ProfilePage() {
           <div className="absolute -top-40 -left-40 w-96 h-96 bg-foreground/3 rounded-full blur-3xl opacity-70" />
           <div className="absolute bottom-20 right-10 w-80 h-80 bg-foreground/3 rounded-full blur-3xl opacity-70" />
         </div>
-        <Navigation />
         <main className="flex-1 flex items-center justify-center relative z-10">
           <div className="flex flex-col items-center gap-4">
             <Loader2Icon className="w-8 h-8 text-foreground/60 animate-spin" />
             <p className="text-muted-foreground text-sm">加载中...</p>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -546,8 +542,6 @@ export default function ProfilePage() {
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-foreground/3 rounded-full blur-3xl opacity-70" />
         <div className="absolute bottom-20 right-10 w-80 h-80 bg-foreground/3 rounded-full blur-3xl opacity-70" />
       </div>
-
-      <Navigation />
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl relative z-10">
         <div className="mb-8">
@@ -734,8 +728,6 @@ export default function ProfilePage() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }

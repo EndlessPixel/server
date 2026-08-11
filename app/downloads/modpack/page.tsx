@@ -1,5 +1,3 @@
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
 import { DownloadSection } from "@/components/download-section_modpack"
 import type { Metadata } from "next"
 import { ArrowUpRight } from "lucide-react"
@@ -35,7 +33,6 @@ export const metadata: Metadata = {
 export default function DownloadsPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -93,7 +90,6 @@ export default function DownloadsPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   )
 }

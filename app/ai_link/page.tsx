@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import { ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 
 type PageStatus = "loading" | "error" | "warn";
@@ -76,8 +74,6 @@ export default function AiLinkPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-
       <main className="py-16">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -190,8 +186,6 @@ export default function AiLinkPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

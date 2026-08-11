@@ -1,6 +1,4 @@
 import { LicenseSection } from "@/components/license-section"
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
 import { TeamSection } from "@/components/team-section"
 import { ContactSection } from "@/components/contact-section"
 import { Card, CardContent } from "@/components/ui/card"
@@ -26,8 +24,6 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-
       <main className="py-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
@@ -101,8 +97,6 @@ export default function AboutPage() {
           </section>
         </div>
       </main>
-
-      <Footer />
     </div>
   )
 }

@@ -12,6 +12,8 @@ import clsx from "clsx";
 import "./globals.css";
 import FloatActions from "@/components/float-actions";
 import { MouseTrailWrapper } from "@/components/mouse-trail-wrapper";
+import { Navigation } from "@/components/navigation";
+import Footer from "@/components/footer";
 
 // 加载 Noto Sans SC 字体
 const notoSansSC = Noto_Sans_SC({
@@ -216,7 +218,10 @@ export default function RootLayout({
           <AppearanceProvider>
             {/* 全局鼠标拖影特效，根据用户设置条件渲染 */}
             <MouseTrailWrapper />
-            
+
+            {/* 全站统一外壳：导航栏 / 主内容 / 底部栏
+                各页面无需再各自引入 Navigation 与 Footer */}
+            <Navigation />
             <AppearanceSettingsManager>
               <ErrorBoundary>
                 {children}
@@ -224,6 +229,7 @@ export default function RootLayout({
               </ErrorBoundary>
               <Toaster />
             </AppearanceSettingsManager>
+            <Footer />
           </AppearanceProvider>
         </ThemeProvider>
       </body>

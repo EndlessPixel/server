@@ -2,8 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -360,7 +358,6 @@ export default function McServerStatusPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <div className="flex flex-col gap-4 mb-8">
@@ -562,7 +559,6 @@ export default function McServerStatusPage() {
           </>
         )}
       </main>
-      <Footer />
     </div>
   );
 }

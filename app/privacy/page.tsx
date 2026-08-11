@@ -1,4 +1,4 @@
-import { PageLayout, PageHeader, ContentContainer } from "@/components/page-layout";
+import { PageHeader, ContentContainer } from "@/components/page-primitives";
 
 export const metadata = {
   title: "隐私政策 - EndlessPixel",
@@ -7,12 +7,11 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <PageLayout>
-      <ContentContainer>
-        <PageHeader
-          title="隐私政策"
-          description="我们重视您的隐私。本政策说明 EndlessPixel 网站及服务器会收集哪些信息、如何使用以及您拥有的权利。"
-        />
+    <ContentContainer className="py-8">
+      <PageHeader
+        title="隐私政策"
+        description="我们重视您的隐私。本政策说明 EndlessPixel 网站及服务器会收集哪些信息、如何使用以及您拥有的权利。"
+      />
 
         <div className="space-y-6 text-sm text-muted-foreground leading-relaxed">
           <section>
@@ -57,7 +56,6 @@ export default function PrivacyPage() {
             </p>
           </section>
         </div>
-      </ContentContainer>
-    </PageLayout>
+    </ContentContainer>
   );
 }

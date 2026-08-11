@@ -1,4 +1,4 @@
-import { PageLayout, PageHeader, ContentContainer } from "@/components/page-layout"
+import { PageHeader, ContentContainer } from "@/components/page-primitives"
 import { HelpSection } from "@/components/help-section"
 import type { Metadata } from "next"
 import { Grid, Link2, Package, Smartphone } from "lucide-react";
@@ -63,13 +63,12 @@ export default function DownloadsPage() {
         },
     ];
     return (
-        <PageLayout>
-            <ContentContainer>
-                <PageHeader 
-                    title="资源下载" 
-                    description="客户端、模组包、下载工具都在这里，挑你需要的下载。"
-                />
-                <div className="grid gap-6 md:grid-cols-2 mb-16">
+        <ContentContainer className="py-8">
+            <PageHeader 
+                title="资源下载" 
+                description="客户端、模组包、下载工具都在这里，挑你需要的下载。"
+            />
+            <div className="grid gap-6 md:grid-cols-2 mb-16">
                     {downloadItems.map((item, index) => (
                         <Link
                             key={index}
@@ -98,7 +97,6 @@ export default function DownloadsPage() {
 
                 {/* Additional Info */}
                 <HelpSection />
-            </ContentContainer>
-        </PageLayout>
+        </ContentContainer>
     )
 }
