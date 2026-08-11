@@ -6,8 +6,6 @@ export interface GitHubIssueDetailProps {
 }
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -195,23 +193,17 @@ export default function GitHubIssueDetail({
   };
   if (loading)
     return (
-      <>
-        <Navigation />
-        <main className="min-h-screen bg-background p-6">
-          <div className="max-w-6xl mx-auto">
-            <SkeletonCard />
-          </div>
-        </main>
-        <Footer />
-      </>
+      <main className="min-h-screen bg-background p-6">
+        <div className="max-w-6xl mx-auto">
+          <SkeletonCard />
+        </div>
+      </main>
     );
   if (error || !issue)
     return (
-      <>
-        <Navigation />
-        <main className="min-h-screen bg-background p-6">
-          <div className="max-w-6xl mx-auto">
-            <Card className="bg-red-50 dark:bg-red-900/20  border-red-200 dark:border-red-800">
+      <main className="min-h-screen bg-background p-6">
+        <div className="max-w-6xl mx-auto">
+          <Card className="bg-red-50 dark:bg-red-900/20  border-red-200 dark:border-red-800">
               <CardContent className="p-8 text-center">
                 <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">
@@ -229,10 +221,8 @@ export default function GitHubIssueDetail({
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </main>
-        <Footer />
-      </>
+        </div>
+      </main>
     );
 
   const isPR = !!issue.pull_request;
@@ -240,7 +230,6 @@ export default function GitHubIssueDetail({
 
   return (
     <>
-      <Navigation />
       <main className="min-h-screen bg-background p-6">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* 头部 */}
@@ -599,7 +588,6 @@ export default function GitHubIssueDetail({
           </Card>
         </div>
       </main>
-      <Footer />
     </>
   );
 }

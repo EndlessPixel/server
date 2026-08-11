@@ -3,8 +3,6 @@ import { Suspense } from 'react';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
-import { Navigation } from '@/components/navigation';
-import Footer from '@/components/footer';
 import 'react-photo-view/dist/react-photo-view.css';
 import {
   DownloadIcon,
@@ -238,7 +236,6 @@ function GalleryContent() {
 
   return (
     <>
-      <Navigation />
       <main className="min-h-screen bg-background py-8 md:py-12 px-3 sm:px-4">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8 text-center">
@@ -468,8 +465,6 @@ function GalleryContent() {
           {toast.text}
         </div>
       )}
-
-      <Footer />
     </>
   );
 }

@@ -3,8 +3,6 @@ import Link from "next/link";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import { Server, Globe, Activity, ArrowRight, Users} from "lucide-react";
 interface ServiceItem {
   name: string;
@@ -102,7 +100,6 @@ const SectionHeader: React.FC<{
 export default function StatusIndexPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
@@ -164,7 +161,6 @@ export default function StatusIndexPage() {
           </section>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

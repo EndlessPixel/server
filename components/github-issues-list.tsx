@@ -19,8 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
+
 
 interface GitHubIssue {
   id: number;
@@ -305,33 +304,24 @@ export default function GitHubIssuesList({
   const totalCmt = issues.reduce((a, i) => a + i.comments, 0);
   if (loading)
     return (
-      <>
-        <Navigation />
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <Loader2 className="w-12 h-12 animate-spin text-foreground/40" />
-        </div>
-        <Footer />
-      </>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-foreground/40" />
+      </div>
     );
   if (error && !issues.length)
     return (
-      <>
-        <Navigation />
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <Card>
-            <CardContent className="p-8 text-center space-y-4">
-              <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
-              <p className="text-muted-foreground">{error}</p>
-              <Button onClick={() => location.reload()}>重新加载</Button>
-            </CardContent>
-          </Card>
-        </div>
-        <Footer />
-      </>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card>
+          <CardContent className="p-8 text-center space-y-4">
+            <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
+            <p className="text-muted-foreground">{error}</p>
+            <Button onClick={() => location.reload()}>重新加载</Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   return (
     <>
-      <Navigation />
       <main className="min-h-screen bg-background p-6">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -452,7 +442,6 @@ export default function GitHubIssuesList({
           <Pagination pagination={pagination} onChange={handlePage} />
         </div>
       </main>
-      <Footer />
     </>
   );
 }

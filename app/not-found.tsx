@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Navigation } from "@/components/navigation";
 
 export default function NotFound() {
   useEffect(() => {
@@ -23,9 +22,7 @@ export default function NotFound() {
   }, []);
 
   return (
-    <>
-      <Navigation />
-      <div className="flex flex-col items-center justify-center min-h-screen p-3 text-center bg-linear-to-b from-sky-50 to-sky-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="flex flex-col items-center justify-center min-h-screen p-3 text-center bg-linear-to-b from-sky-50 to-sky-100 dark:from-slate-900 dark:to-slate-800">
         <h1 className="text-7xl font-extrabold tracking-tight text-sky-900 dark:text-sky-300 mb-2">
           404 Not Found
         </h1>
@@ -45,7 +42,6 @@ export default function NotFound() {
             <Link href="/">返回首页</Link>
           </Button>
         </div>
-      </div>
-    </>
+    </div>
   );
 }

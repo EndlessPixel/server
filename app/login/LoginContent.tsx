@@ -1,7 +1,5 @@
 'use client';
 
-import { Navigation } from '@/components/navigation';
-import Footer from '@/components/footer';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -111,8 +109,6 @@ export default function LoginContent() {
 
     return (
         <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
-            <Navigation />
-
             <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative z-10">
                 <div
                     className={`w-full max-w-md bg-card backdrop-blur-md rounded-2xl shadow-lg p-6 sm:p-8 transition-all duration-700 ${showForm ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -232,8 +228,6 @@ export default function LoginContent() {
                     </div>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

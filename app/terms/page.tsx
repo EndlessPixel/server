@@ -1,4 +1,4 @@
-import { PageLayout, PageHeader, ContentContainer } from "@/components/page-layout";
+import { PageHeader, ContentContainer } from "@/components/page-primitives";
 
 export const metadata = {
   title: "用户协议 - EndlessPixel",
@@ -7,12 +7,11 @@ export const metadata = {
 
 export default function TermsPage() {
   return (
-    <PageLayout>
-      <ContentContainer>
-        <PageHeader
-          title="用户协议"
-          description="本协议是您与 EndlessPixel 运营团队之间就使用本服务器及相关网站服务所达成的约定。使用本服务即表示您已阅读、理解并接受本协议全部内容。"
-        />
+    <ContentContainer className="py-8">
+      <PageHeader
+        title="用户协议"
+        description="本协议是您与 EndlessPixel 运营团队之间就使用本服务器及相关网站服务所达成的约定。使用本服务即表示您已阅读、理解并接受本协议全部内容。"
+      />
 
         <div className="space-y-6 text-sm text-muted-foreground leading-relaxed">
           <section>
@@ -56,7 +55,6 @@ export default function TermsPage() {
             </p>
           </section>
         </div>
-      </ContentContainer>
-    </PageLayout>
+    </ContentContainer>
   );
 }
