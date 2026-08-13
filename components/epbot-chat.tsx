@@ -78,7 +78,7 @@ const CURRENT_SESSION_KEY = "epbot_current_session_id";
 const SELECTED_MODEL_KEY = "epbot_selected_model";
 const MAX_STORAGE_PERCENT = 0.9;
 const MAX_CONTEXT_MESSAGES = 25;
-const DEFAULT_MODEL_ID = "gpt-5.1";
+const DEFAULT_MODEL_ID = "grok-4.5";
 const RECOMMENDED_PATTERNS = [
   /grok-(4\.[3-9]|4\.20|4\.5)(?:-.*(?:high|fast|multi-agent-high))?/i,
   /qwen(?:3?\.?5?)?(?:-next)?.*?(?:instruct|chat)/i,
