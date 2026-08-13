@@ -79,14 +79,37 @@ const SELECTED_MODEL_KEY = "epbot_selected_model";
 const MAX_STORAGE_PERCENT = 0.9;
 const MAX_CONTEXT_MESSAGES = 25;
 const DEFAULT_MODEL_ID = "grok-4.5";
+// 根据 futureppo 实际可用模型，按综合实力精选推荐（覆盖各厂商旗舰/主力聊天模型）。
+// 仅匹配明确强的大模型系列，排除 lite/codex/reasoning/translate/vision 等轻量或专项变体。
 const RECOMMENDED_PATTERNS = [
-  /grok-(4\.[3-9]|4\.20|4\.5)(?:-.*(?:high|fast|multi-agent-high))?/i,
-  /qwen(?:3?\.?5?)?(?:-next)?.*?(?:instruct|chat)/i,
-  /deepseek(?:-ai)?\/?(?:reasoner|chat|v4-(?:flash|pro))/i,
-  /llama-[34]\..*?(?:70b|90b|405b).*?instruct/i,
-  /kimi/i,
-  /gemini-2\.0-flash/i,
+  /grok-4\.6/i,                       // xAI 最新旗舰
+  /grok-4\.5/i,                       // 项目默认模型
+  /grok-4\.3/i,
+  /grok-4\.20/i,                      // Grok 多智能体版
+  /grok-chat-(?:fast|expert)/i,       // Grok 聊天专用版
+  /gpt-5\.[2-9](?!-(?:codex|sol|terra|luna|chat))/i, // GPT-5.2/5.5 等主力（排除专项后缀）
   /gpt-5\.1/i,
+  /gpt-5-mini/i,
+  /gpt-4o/i,                          // GPT-4o 经典通用
+  /gpt-oss-(?:20|120)b/i,             // 开源 GPT-OSS
+  /gemini-2\.5-(?:pro|flash)$/i,      // Gemini 2.5 双档（不含 lite）
+  /gemini-3\.[0-9]-flash$/i,          // Gemini 3.x 闪速档（不含 lite/preview-tts）
+  /gemini-3-flash-preview/i,
+  /claude-(?:opus|sonnet|haiku)-/i,   // Anthropic 全系
+  /deepseek-v4-(?:pro|flash)/i,       // DeepSeek V4 主力
+  /deepseek-v3/i,                     // DeepSeek V3
+  /qwen3-(?:30b-a3b|14b|3\.5-2b)/i,   // 通义千问主力档
+  /glm-5\.2/i,                        // 智谱 GLM 旗舰
+  /zai-glm-4\.7/i,
+  /glm-4\.5-flash/i,
+  /llama-4-maverick/i,                // Meta Llama 4 旗舰
+  /llama-3\.[13]-(?:70b|8b)-instruct/i,
+  /kimi-thinking/i,                   // 月之暗面
+  /command-a-03-2025/i,               // Cohere Command 主力（排除 reasoning/translate/vision）
+  /command-r-plus-08-2024/i,
+  /mistral-nemotron/i,                // Mistral × Nemotron
+  /minimax-m3/i,                      // MiniMax
+  /nemotron-3-(?:ultra|super-120b)/i, // Nemotron 大模型
 ];
 const extractModelSize = (id: string): string => {
   const matches = id.match(/(\d+)b/i);
