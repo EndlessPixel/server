@@ -6,28 +6,22 @@ export async function GET() {
     const apiBaseUrl = process.env.API_BASE_URL || "https://api.futureppo.top";
     const apiKey = process.env.API_KEY;
 
-    const filterList: string[] = [
-      "embed",           // 向量嵌入模型 纯文本聊天无用
-      "retriever",       // 检索召回模型
-      "nv-embedqa",
-      "bge-m3",
-      "arctic-embed",
-      "content-safety",  // 内容安全审核模型
-      "nemoguard",
-      "guard",
-      "safety-guard",
-      "topic-control",
-      "reward",          // 奖励训练模型
-      "pii",             // 隐私信息检测
-      "detector",        // 各类检测器
-      "parse",           // 文档解析工具
-      "imagine",         // 生图相关
-      "vila",
-      "clip",
-      "deplot",
-      "fuyu",
-      "neva",
-      "kosmos"
+    // 只过滤明确不能用于文本聊天的类别（向量/检索/安全审核/生图/多模态视觉等）。
+    // 用边界匹配，避免误杀名称里恰好包含这些子串的正常聊天模型。
+    const filterRegex = [
+      /-embed/,          // 向量嵌入模型 纯文本聊天无用
+      /embed-?qa/i,      // nv-embedqa 之类的嵌入问答
+      /retriever/,       // 检索召回模型
+      /bge-m3/i,
+      /arctic-embed/i,
+      /content-safety/i, // 内容安全审核模型
+      /nemoguard/i,
+      /guard/,           // 各类 guard / safety-guard
+      /topic-control/i,
+      /imagine/,         // 生图相关
+      /vila/i,
+      /clip/i,
+      /deplot/i,
     ];
 
     if (!apiKey) {
@@ -51,10 +45,8 @@ export async function GET() {
 
     if (data && data.data && Array.isArray(data.data)) {
       data.data = data.data.filter((model: { id?: string }) => {
-        if (model.id) {
-          return !filterList.some((filterStr: string) => model.id!.includes(filterStr));
-        }
-        return true;
+        if (!model.id) return true;
+        return !filterRegex.some((re: RegExp) => re.test(model.id!));
       });
     }
 
