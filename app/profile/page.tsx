@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   UserIcon,
@@ -382,10 +382,12 @@ const normalizeInventory = (rawItems: any[]): InventoryItem[] => {
 /* ---------- 物品格子组件 ---------- */
 const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
+  const imgStageRef = useRef(0);
 
   useEffect(() => {
     if (item) setImgSrc(getItemImageUrl(item));
     else setImgSrc(undefined);
+    imgStageRef.current = 0;
   }, [item]);
 
   if (!item) {
@@ -402,8 +404,17 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   const loreLines = lore?.map((l) => renderMinecraftText(l)) || [];
 
   const handleImageError = () => {
-    const fallback = item.id === 'minecraft:player_head' ? getDefaultItemImageUrl(item.id).replace('.png', '_00.png') : getDefaultItemImageUrl(item.id).replace('.png', '_00.png');
-    setImgSrc(fallback);
+    // 多级回退，避免破图：
+    //  stage 0 -> 尝试基础物品贴图（enchanted_* 等变体已回退到基础图）
+    //  stage 1 -> 尝试方向帧/多帧 (_00)
+    //  stage 2 -> 资源包无此独立贴图（如 shield 等合成贴图），用 paper 占位
+    if (imgStageRef.current === 0) {
+      imgStageRef.current = 1;
+      setImgSrc(getDefaultItemImageUrl(item.id).replace('.png', '_00.png'));
+    } else {
+      imgStageRef.current = 2;
+      setImgSrc('https://assets.mcasset.cloud/1.21.11/assets/minecraft/textures/item/paper.png');
+    }
   };
 
   return (
