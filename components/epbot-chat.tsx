@@ -250,6 +250,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const [toast, setToast] = useState("");
@@ -701,6 +702,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     setSessions((prev) => [newSession, ...prev]);
     setCurrentSessionId(newSession.id);
     setMessages([]);
+    setMobileNavOpen(false);
   };
 
   const deleteSession = (id: string) => {
@@ -737,6 +739,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     const session = sessions.find((s) => s.id === id);
     if (session) setMessages(session.messages);
     else setMessages([]);
+    setMobileNavOpen(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -869,11 +872,20 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       )}
 
       <div className="flex h-full w-full bg-background overflow-hidden relative shadow-2xl md:h-[90vh] md:w-[80%] md:max-w-300 md:rounded-2xl md:min-w-100">
-        {/* 左侧边栏 */}
+        {/* 移动端侧边栏遮罩 */}
+        {mobileNavOpen && (
+          <div
+            className="absolute inset-0 z-30 bg-black/50 md:hidden"
+            onClick={() => setMobileNavOpen(false)}
+          />
+        )}
+        {/* 左侧边栏：桌面内联，移动端浮层抽屉 */}
         <div
           className={cn(
             "h-full bg-card flex flex-col shrink-0",
-            sidebarCollapsed ? "w-12" : "w-72",
+            "absolute inset-y-0 left-0 z-40 max-w-[80vw] transition-transform duration-300 md:static md:z-auto md:translate-x-0 md:max-w-none md:transition-none",
+            mobileNavOpen ? "translate-x-0" : "-translate-x-full",
+            sidebarCollapsed ? "md:w-12" : "w-72 md:w-72",
           )}
         >
           <div className={cn(
@@ -896,7 +908,13 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                 </button>
               )}
               <button
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                onClick={() => {
+                  if (window.innerWidth < 768) {
+                    setMobileNavOpen(false);
+                  } else {
+                    setSidebarCollapsed(!sidebarCollapsed);
+                  }
+                }}
                 className="p-1.5 rounded-lg hover:bg-secondary transition-colors duration-200"
                 title={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
               >
@@ -965,9 +983,18 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         <div className="flex-1 flex flex-col min-w-0 h-full relative bg-background">
           <div className="px-4 py-3 bg-background shrink-0">
             <div className="flex items-center justify-between gap-2">
-              <h3 className="text-foreground font-semibold truncate">
-                {currentSession?.title || "EPBot 客服助手"}
-              </h3>
+              <div className="flex items-center gap-2 min-w-0">
+                <button
+                  onClick={() => setMobileNavOpen(true)}
+                  className="md:hidden p-1.5 -ml-1 rounded-lg hover:bg-secondary transition-colors duration-200 shrink-0"
+                  title="打开对话列表"
+                >
+                  <Menu className="w-5 h-5" />
+                </button>
+                <h3 className="text-foreground font-semibold truncate">
+                  {currentSession?.title || "EPBot 客服助手"}
+                </h3>
+              </div>
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <button
