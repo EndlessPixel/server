@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
       { role: 'system', content: `${getNowLine()}\n\n${systemPrompt}` },
       ...messages.slice(-20),
     ];
-    const defaultModel = "gpt-5.1";
+    const defaultModel = "grok-4.5";
     const selectedModel = (model && typeof model === 'string' && model.trim())
       ? model.trim()
       : defaultModel;
