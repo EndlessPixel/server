@@ -221,15 +221,15 @@ export default function RootLayout({
 
             {/* 全站统一外壳：导航栏 / 主内容 / 底部栏
                 各页面无需再各自引入 Navigation 与 Footer */}
-            <Navigation />
             <AppearanceSettingsManager>
+              <Navigation />
               <ErrorBoundary>
                 {children}
                 <FloatActions />
               </ErrorBoundary>
               <Toaster />
+              <Footer />
             </AppearanceSettingsManager>
-            <Footer />
           </AppearanceProvider>
         </ThemeProvider>
       </body>
