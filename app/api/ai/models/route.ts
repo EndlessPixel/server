@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const apiBaseUrl = process.env.API_BASE_URL || "https://api.futureppo.top";
+    const apiBaseUrl = process.env.API_BASE_URL || "https://xn--kiv260fv3i.cn";
     const apiKey = process.env.API_KEY;
 
     // 只过滤明确不能用于文本聊天的类别（向量/检索/安全审核/生图/多模态视觉等）。

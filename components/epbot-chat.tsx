@@ -78,7 +78,7 @@ const CURRENT_SESSION_KEY = "epbot_current_session_id";
 const SELECTED_MODEL_KEY = "epbot_selected_model";
 const MAX_STORAGE_PERCENT = 0.9;
 const MAX_CONTEXT_MESSAGES = 25;
-const DEFAULT_MODEL_ID = "grok-4.5";
+const DEFAULT_MODEL_ID = "grok-4.20-multi-agent-0309";
 // 根据 futureppo 实际可用模型，按综合实力精选推荐（覆盖各厂商旗舰/主力聊天模型）。
 // 仅匹配明确强的大模型系列，排除 lite/codex/reasoning/translate/vision 等轻量或专项变体。
 const RECOMMENDED_PATTERNS = [
