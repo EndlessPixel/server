@@ -1,7 +1,24 @@
-"use client";
 import Link from "next/link";
 import React from "react";
+import type { Metadata } from "next";
 import { Card, CardContent } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "服务状态 - EndlessPixel Minecraft 服务器",
+  description:
+    "实时查看 EndlessPixel Minecraft 服务器及各项服务的运行状态、性能监控与技术支持入口。",
+  keywords: ["服务器状态", "Minecraft状态", "EndlessPixel", "服务监控", "在线状态"],
+  alternates: {
+    canonical: "https://www.endlesspixel.cn/status/",
+  },
+  openGraph: {
+    title: "服务状态 | EndlessPixel Minecraft 服务器",
+    description: "实时查看 EndlessPixel 服务器及各项服务的运行状态。",
+    url: "https://www.endlesspixel.cn/status/",
+    type: "website",
+    images: [{ url: "/banner.jpg", width: 1200, height: 630, alt: "EndlessPixel 服务状态" }],
+  },
+};
 import { Button } from "@/components/ui/button";
 import { Server, Globe, Activity, ArrowRight, Users} from "lucide-react";
 interface ServiceItem {
