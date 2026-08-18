@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Clock, Server, CalendarClock, Loader2 } from "lucide-react";
+import { Clock, Server, CalendarClock, Loader2, Star, GitFork, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RunningDuration } from "@/components/running-duration";
 
@@ -282,7 +282,142 @@ export function WidgetBlock({ widget }: { widget: WidgetDescriptor }) {
           founded={widget.attrs.founded || widget.attrs.date}
         />
       );
+    case "github_repo":
+      return <GithubRepoWidget repo={widget.attrs.repo || ""} />;
     default:
       return null;
   }
+}
+
+type GithubRepoData = {
+  full_name: string;
+  owner?: string;
+  owner_avatar?: string;
+  description?: string | null;
+  html_url?: string;
+  homepage?: string | null;
+  language?: string | null;
+  stargazers_count?: number;
+  forks_count?: number;
+  watchers_count?: number;
+  open_issues_count?: number;
+  license?: string | null;
+  topics?: string[];
+  archived?: boolean;
+  updated_at?: string;
+};
+
+/** GitHub 仓库卡片：前端只给 owner/repo，服务端预取 star 等元数据 */
+function GithubRepoWidget({ repo }: { repo: string }) {
+  const [state, setState] = useState<"loading" | "ok" | "err">("loading");
+  const [data, setData] = useState<GithubRepoData | null>(null);
+  const [errMsg, setErrMsg] = useState<string>("");
+
+  useEffect(() => {
+    if (!repo) {
+      setState("err");
+      setErrMsg("缺少仓库名（应为 owner/repo）");
+      return;
+    }
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/github/repo?repo=${encodeURIComponent(repo)}`,
+        );
+        const json = await res.json();
+        if (!alive) return;
+        if (!res.ok) {
+          setState("err");
+          setErrMsg(json?.error || "获取仓库信息失败");
+          return;
+        }
+        setData(json);
+        setState("ok");
+      } catch {
+        if (alive) {
+          setState("err");
+          setErrMsg("网络错误");
+        }
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [repo]);
+
+  const title = data?.full_name || repo || "GitHub 仓库";
+
+  if (state === "loading") {
+    return (
+      <WidgetShell icon={<Star className="w-4 h-4" />} title={title}>
+        <Loader2 className="w-4 h-4 animate-spin" />
+      </WidgetShell>
+    );
+  }
+
+  if (state === "err") {
+    return (
+      <WidgetShell icon={<Star className="w-4 h-4" />} title={title}>
+        <span className="text-destructive">{errMsg || "加载失败"}</span>
+      </WidgetShell>
+    );
+  }
+
+  const d = data!;
+  return (
+    <a
+      href={d.html_url || `https://github.com/${repo}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block transition-opacity hover:opacity-80"
+    >
+      <WidgetShell
+        icon={
+          d.owner_avatar ? (
+            // 用 img 渲染头像，lucide 无 GitHub 图标
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={d.owner_avatar}
+              alt={d.owner || ""}
+              className="h-4 w-4 rounded-full"
+            />
+          ) : (
+            <Star className="w-4 h-4" />
+          )
+        }
+        title={title}
+      >
+        {d.description && (
+          <div className="mb-1.5 text-sm text-foreground/90">
+            {d.description}
+          </div>
+        )}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          {d.language && (
+            <span className="inline-flex items-center gap-1">
+              <span className="h-2 w-2 rounded-full bg-primary/70" />
+              {d.language}
+            </span>
+          )}
+          <span className="inline-flex items-center gap-1">
+            <Star className="h-3.5 w-3.5" />
+            {d.stargazers_count?.toLocaleString("zh-CN") ?? 0}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <GitFork className="h-3.5 w-3.5" />
+            {d.forks_count?.toLocaleString("zh-CN") ?? 0}
+          </span>
+          {d.license && <span>{d.license}</span>}
+          {d.archived && (
+            <span className="text-amber-500">已归档</span>
+          )}
+          <span className="inline-flex items-center gap-0.5 text-primary">
+            在 GitHub 查看
+            <ExternalLink className="h-3 w-3" />
+          </span>
+        </div>
+      </WidgetShell>
+    </a>
+  );
 }
