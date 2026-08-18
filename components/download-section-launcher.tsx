@@ -272,14 +272,15 @@ export function DownloadSectionLauncher({
   const [hasMore, setHasMore] = useState(true);
   const [allReleases, setAllReleases] = useState<ParsedRelease[]>([]);
 
-  // 获取仓库信息
+  // 获取仓库信息（经 /api/gh_api 代理，带 GH_TOKEN 认证，避免限流）
   const fetchRepoInfo = async () => {
     const repoUrlMatch = githubApiUrl.match(/repos\/([^\/]+)\/([^\/]+)/);
     if (!repoUrlMatch) return;
 
+    const target = `https://api.github.com/repos/${repoUrlMatch[1]}/${repoUrlMatch[2]}`;
     try {
       const res = await fetch(
-        `https://api.github.com/repos/${repoUrlMatch[1]}/${repoUrlMatch[2]}`,
+        `/api/gh_api?url=${encodeURIComponent(target)}`,
         {
           signal: AbortSignal.timeout(requestTimeout),
         },
@@ -308,61 +309,91 @@ export function DownloadSectionLauncher({
     }
   };
 
-  const fetchReleasesData = async (page: number = 1) => {
-    try {
-      const apiUrl = githubApiUrl.includes("?")
-        ? `${githubApiUrl}&per_page=100&page=${page}`
-        : `${githubApiUrl}?per_page=100&page=${page}`;
+  // 经 /api/gh_api 代理单次拉取一页，带限流重试
+  const fetchReleasesPage = async (page: number): Promise<ParsedRelease[]> => {
+    const baseUrl = githubApiUrl.includes("?")
+      ? `${githubApiUrl}&per_page=100&page=${page}`
+      : `${githubApiUrl}?per_page=100&page=${page}`;
 
-      const res = await fetch(apiUrl, {
+    const target = baseUrl.startsWith("http")
+      ? baseUrl
+      : `https://api.github.com/repos/${githubApiUrl.match(/repos\/([^\/]+)\/([^\/]+)/)?.[1]}/${githubApiUrl.match(/repos\/([^\/]+)\/([^\/]+)/)?.[2]}/releases?per_page=100&page=${page}`;
+
+    const proxyUrl = `/api/gh_api?url=${encodeURIComponent(target)}`;
+
+    // 限流（403）时退避重试一次
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const res = await fetch(proxyUrl, {
         signal: AbortSignal.timeout(requestTimeout),
       });
-      if (!res.ok) throw new Error(String(res.status));
-      const data: GitHubRelease[] = await res.json();
+      if (res.ok) {
+        const data: GitHubRelease[] = await res.json();
+        return data.map((r) => {
+          const files = r.assets.map((a) => ({
+            name: a.name,
+            downloadUrl: a.browser_download_url,
+            downloadCount: a.download_count,
+          }));
+          return {
+            name: r.name || r.tag_name,
+            version: r.tag_name,
+            mcVersion:
+              r.tag_name.match(/^(\d+\.\d+(\.\d+)?)/)?.[1] ?? "Unknown",
+            releaseDate: new Date(r.published_at).toLocaleDateString("zh-CN"),
+            isPrerelease: r.prerelease,
+            isLatest: false,
+            downloadCount: files.reduce((s, f) => s + f.downloadCount, 0),
+            files,
+            changelog: r.body || "暂无更新日志。",
+          };
+        });
+      }
+      if (res.status === 403 && attempt === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        continue;
+      }
+      throw new Error(String(res.status));
+    }
+    throw new Error("Failed to fetch releases");
+  };
 
-      const parsed: ParsedRelease[] = data.map((r) => {
-        const files = r.assets.map((a) => ({
-          name: a.name,
-          downloadUrl: a.browser_download_url,
-          downloadCount: a.download_count,
-        }));
-        return {
-          name: r.name || r.tag_name,
-          version: r.tag_name,
-          mcVersion: r.tag_name.match(/^(\d+\.\d+(\.\d+)?)/)?.[1] ?? "Unknown",
-          releaseDate: new Date(r.published_at).toLocaleDateString("zh-CN"),
-          isPrerelease: r.prerelease,
-          isLatest: false,
-          downloadCount: files.reduce((s, f) => s + f.downloadCount, 0),
-          files,
-          changelog: r.body || "暂无更新日志。",
-        };
-      });
+  // 拉取发布版本：首屏自动连续翻页直到拉全（上限 10 页 / 1000 条）
+  const fetchReleasesData = async (startPage: number = 1) => {
+    try {
+      const MAX_PAGES = 10;
+      let collected: ParsedRelease[] = [];
+      let page = startPage;
+      let more = true;
 
-      if (page === 1 && parsed.length > 0) {
-        const stableReleases = parsed.filter((r) => !r.isPrerelease);
-        if (stableReleases.length > 0) {
-          stableReleases.sort((a, b) =>
-            b.releaseDate.localeCompare(a.releaseDate),
-          )[0].isLatest = true;
+      while (more && page <= MAX_PAGES) {
+        const parsed = await fetchReleasesPage(page);
+        collected = collected.concat(parsed);
+        if (parsed.length < 100) {
+          more = false;
         } else {
-          parsed.sort((a, b) =>
-            b.releaseDate.localeCompare(a.releaseDate),
-          )[0].isLatest = true;
+          page += 1;
         }
       }
 
-      if (page === 1) {
-        setAllReleases(parsed);
-        setReleases(parsed);
-      } else {
-        setAllReleases((prev) => [...prev, ...parsed]);
-        setReleases((prev) => [...prev, ...parsed]);
+      if (collected.length > 0) {
+        const stableReleases = collected.filter((r) => !r.isPrerelease);
+        const anchor = stableReleases.length > 0 ? stableReleases : collected;
+        anchor
+          .sort((a, b) => b.releaseDate.localeCompare(a.releaseDate))[0]
+          .isLatest = true;
       }
 
-      setHasMore(parsed.length === 100);
+      if (startPage === 1) {
+        setAllReleases(collected);
+        setReleases(collected);
+      } else {
+        setAllReleases((prev) => [...prev, ...collected]);
+        setReleases((prev) => [...prev, ...collected]);
+      }
 
-      return parsed;
+      setHasMore(page <= MAX_PAGES && more);
+
+      return collected;
     } catch {
       throw new Error("Failed to fetch releases");
     }
