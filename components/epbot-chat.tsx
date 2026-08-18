@@ -22,9 +22,13 @@ import {
   RotateCw,
   Brain,
   ChevronDown,
+  Copy,
+  Volume2,
+  Square,
 } from "lucide-react";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { cn } from "@/lib/utils";
+import { speech } from "@/lib/speech";
 
 const getCookie = (name: string): string | null => {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
@@ -249,6 +253,8 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
@@ -785,6 +791,8 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     mountedRef.current = true;
     return () => {
       mountedRef.current = false;
+      speech.cancel();
+      setSpeakingId(null);
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
@@ -1223,6 +1231,73 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                           <span>重试</span>
                         </button>
                       )}
+                      <button
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(m.content);
+                            setCopiedId(String(i));
+                            showToast("✅ 已复制回答");
+                            setTimeout(() => {
+                              setCopiedId((cur) =>
+                                cur === String(i) ? null : cur,
+                              );
+                            }, 1500);
+                          } catch {
+                            showToast("❌ 复制失败");
+                          }
+                        }}
+                        className="p-1 hover:text-foreground/70 transition-colors duration-200"
+                        title="复制回答"
+                      >
+                        {copiedId === String(i) ? (
+                          <Check className="w-3.5 h-3.5 text-green-500" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (speakingId === String(i)) {
+                            speech.cancel();
+                            setSpeakingId(null);
+                            return;
+                          }
+                          const text =
+                            parseThinking(m.content).answer || m.content;
+                          if (!speech.isSupported()) {
+                            showToast("❌ 当前浏览器不支持朗读");
+                            return;
+                          }
+                          speech.speak(text, {
+                            onStart: () => setSpeakingId(String(i)),
+                            onEnd: () =>
+                              setSpeakingId((cur) =>
+                                cur === String(i) ? null : cur,
+                              ),
+                            onError: () => {
+                              setSpeakingId((cur) =>
+                                cur === String(i) ? null : cur,
+                              );
+                              showToast("❌ 朗读出错");
+                            },
+                          });
+                        }}
+                        className={cn(
+                          "p-1 transition-colors duration-200",
+                          speakingId === String(i)
+                            ? "text-primary"
+                            : "hover:text-foreground/70",
+                        )}
+                        title={
+                          speakingId === String(i) ? "停止朗读" : "朗读回答"
+                        }
+                      >
+                        {speakingId === String(i) ? (
+                          <Square className="w-3.5 h-3.5" />
+                        ) : (
+                          <Volume2 className="w-3.5 h-3.5" />
+                        )}
+                      </button>
                       <button
                         onClick={() => deleteMessage(i)}
                         className="p-1 hover:text-destructive transition-colors duration-200"
