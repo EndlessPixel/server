@@ -106,19 +106,18 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: FAVICON_ICO,
+    icon: [
+      { url: "/icon.png", type: "image/png", sizes: "256x256" },
+      { url: FAVICON_ICO, type: "image/x-icon" },
+    ],
     apple: [
       {
-        url: LOGO,
+        url: "/apple-touch-icon.png",
         sizes: "180x180",
+        type: "image/png",
         rel: "apple-touch-icon",
       },
     ],
-    other: {
-      rel: "mask-icon",
-      url: LOGO,
-      color: "#0a0a0a",
-    },
   },
 
   robots: {
@@ -169,6 +168,28 @@ const jsonLd = [
       target: `${DOMAIN}/search?q={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "GameServer",
+    name: "EndlessPixel Minecraft 服务器",
+    url: DOMAIN,
+    game: {
+      "@type": "VideoGame",
+      name: "Minecraft",
+      genre: "Sandbox",
+      gamePlatform: ["PC", "Java Edition"],
+    },
+    serverStatus: "Online",
+    playersOnline: 0,
+    maximumAttendance: 200,
+    address: [
+      {
+        "@type": "ContactPoint",
+        contactType: "游戏服务器地址",
+        url: "mc.endlesspixel.cn",
+      },
+    ],
   },
 ];
 
