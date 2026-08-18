@@ -39,9 +39,25 @@ export function DownloadSectionModpack() {
   const fetchReleases = async () => {
     try {
       setLoading(true);
-      const res = await fetch("https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases?per_page=500");
-      if (!res.ok) throw new Error(String(res.status));
-      const data: GitHubRelease[] = await res.json();
+      // 经 /api/gh_api 代理（带 GH_TOKEN 认证，避免限流），连续翻页拉全所有版本
+      // GitHub 单页上限 100，per_page=500 会被截断，故分页拉取
+      const base =
+        "https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases";
+      const MAX_PAGES = 10;
+      const all: GitHubRelease[] = [];
+      let page = 1;
+      let more = true;
+      while (more && page <= MAX_PAGES) {
+        const res = await fetch(
+          `/api/gh_api?url=${encodeURIComponent(`${base}?per_page=100&page=${page}`)}`,
+        );
+        if (!res.ok) throw new Error(String(res.status));
+        const data: GitHubRelease[] = await res.json();
+        all.push(...data);
+        if (data.length < 100) more = false;
+        else page += 1;
+      }
+      const data = all;
 
       const parsed: ParsedRelease[] = data.map((r) => {
         const branch: Branch = /real/i.test(r.name + r.tag_name) ? "real" : "main";
