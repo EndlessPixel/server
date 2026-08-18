@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { cn } from "@/lib/utils";
-import { speech } from "@/lib/speech";
+import { speech, markdownToPlainText } from "@/lib/speech";
 
 const getCookie = (name: string): string | null => {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
@@ -1262,8 +1262,9 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                             setSpeakingId(null);
                             return;
                           }
-                          const text =
-                            parseThinking(m.content).answer || m.content;
+                          const text = markdownToPlainText(
+                            parseThinking(m.content).answer || m.content,
+                          );
                           if (!speech.isSupported()) {
                             showToast("❌ 当前浏览器不支持朗读");
                             return;
