@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -29,43 +29,56 @@ import {
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { cn } from "@/lib/utils";
 import { speech, markdownToPlainText } from "@/lib/speech";
-import { parseWidgets, WidgetBlock } from "@/components/epbot-widgets";
+import { stripWidgets, placeholderToIndex, WidgetBlock } from "@/components/epbot-widgets";
 
-/** 按原文顺序渲染「文本段 + widget 卡片段」 */
+/**
+ * 整段文本作为一个完整 Markdown 块渲染（不切断列表/表格/代码块等结构），
+ * 仅把 <widget> 占位符在 text 节点中替换为对应卡片。
+ */
 const WidgetsWithText = ({ text }: { text: string }) => {
-  const segments = parseWidgets(text);
+  const { text: cleaned, widgets } = stripWidgets(text);
   return (
-    <>
-      {segments.map((seg, i) => {
-        if (seg.type === "widget") {
-          return <WidgetBlock key={`w-${i}`} widget={seg.widget} />;
-        }
-        const content = seg.content.trim();
-        if (!content) return null;
-        return (
-          <ReactMarkdown
-            key={`t-${i}`}
-            remarkPlugins={[remarkGfm]}
-            components={{
-              a: ({ href, ...props }) => {
-                if (!href) return <a {...props} />;
-                const encodedUrl = encodeURIComponent(href);
-                return (
-                  <a
-                    href={`/ai_link?url=${encodedUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    {...props}
-                  />
-                );
-              },
-            }}
-          >
-            {seg.content}
-          </ReactMarkdown>
-        );
-      })}
-    </>
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      components={{
+        a: ({ href, ...props }) => {
+          if (!href) return <a {...props} />;
+          const encodedUrl = encodeURIComponent(href);
+          return (
+            <a
+              href={`/ai_link?url=${encodedUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              {...props}
+            />
+          );
+        },
+        // 在文本节点里把占位符替换成卡片，保持 Markdown 结构完整
+        text: (props: { value?: string; children?: ReactNode }) => {
+          const value =
+            props.value ??
+            (typeof props.children === "string" ? props.children : "");
+          if (typeof value !== "string" || !value.includes("")) {
+            return <>{value}</>;
+          }
+          // 按占位符切分，交替输出文本与卡片
+          const parts = value.split(/(\d+)/g);
+          return (
+            <>
+              {parts.map((part, i) => {
+                const idx = placeholderToIndex(part);
+                if (idx >= 0 && widgets[idx]) {
+                  return <WidgetBlock key={`w-${i}`} widget={widgets[idx]} />;
+                }
+                return <Fragment key={`t-${i}`}>{part}</Fragment>;
+              })}
+            </>
+          );
+        },
+      }}
+    >
+      {cleaned}
+    </ReactMarkdown>
   );
 };
 

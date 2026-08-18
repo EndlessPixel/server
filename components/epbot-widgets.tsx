@@ -20,40 +20,75 @@ export type WidgetSegment =
   | { type: "text"; content: string }
   | { type: "widget"; widget: WidgetDescriptor };
 
+const WIDGET_RE = /<widget\s+([^>]*?)\s*\/?>/gi;
+
+function parseWidgetTag(attrStr: string): WidgetDescriptor | null {
+  const attrs: Record<string, string> = {};
+  const nameMatch = attrStr.match(/name\s*=\s*["']([^"']+)["']/i);
+  if (!nameMatch) return null;
+  attrs.name = nameMatch[1];
+  const attrRe = /(\w+)\s*=\s*["']([^"']*)["']/gi;
+  let am: RegExpExecArray | null;
+  while ((am = attrRe.exec(attrStr)) !== null) {
+    if (am[1].toLowerCase() === "name") continue;
+    attrs[am[1]] = am[2];
+  }
+  return { name: attrs.name, attrs };
+}
+
 /** 解析模型输出里所有 <widget ... /> 标签，保留其在原文中的相对位置 */
 export function parseWidgets(text: string): WidgetSegment[] {
   const segments: WidgetSegment[] = [];
-  const re = /<widget\s+([^>]*?)\s*\/?>/gi;
+  const re = new RegExp(WIDGET_RE);
   let lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
     if (m.index > lastIndex) {
       segments.push({ type: "text", content: text.slice(lastIndex, m.index) });
     }
-    const attrStr = m[1];
-    const attrs: Record<string, string> = {};
-    const nameMatch = attrStr.match(/name\s*=\s*["']([^"']+)["']/i);
-    if (!nameMatch) {
-      lastIndex = re.lastIndex;
-      continue;
-    }
-    attrs.name = nameMatch[1];
-    const attrRe = /(\w+)\s*=\s*["']([^"']*)["']/gi;
-    let am: RegExpExecArray | null;
-    while ((am = attrRe.exec(attrStr)) !== null) {
-      if (am[1].toLowerCase() === "name") continue;
-      attrs[am[1]] = am[2];
-    }
-    segments.push({
-      type: "widget",
-      widget: { name: attrs.name, attrs },
-    });
+    const w = parseWidgetTag(m[1]);
+    if (w) segments.push({ type: "widget", widget: w });
     lastIndex = re.lastIndex;
   }
   if (lastIndex < text.length) {
     segments.push({ type: "text", content: text.slice(lastIndex) });
   }
   return segments;
+}
+
+// 占位符（私用区字符，不会与正常文本冲突）
+const PLACEHOLDER_START = "";
+const PLACEHOLDER_END = "";
+
+/**
+ * 把 <widget ... /> 标签从文本中剥离，替换为唯一占位符，
+ * 使整段文本仍可作为一个完整 Markdown 块渲染（不破坏列表/表格/代码块等结构）。
+ * 返回清理后的文本与按出现顺序排列的 widget 列表。
+ */
+export function stripWidgets(text: string): {
+  text: string;
+  widgets: WidgetDescriptor[];
+} {
+  const widgets: WidgetDescriptor[] = [];
+  let counter = 0;
+  const cleaned = text.replace(WIDGET_RE, (_full, attrStr: string) => {
+    const w = parseWidgetTag(attrStr);
+    if (!w) return "";
+    const idx = widgets.push(w) - 1;
+    counter++;
+    return `${PLACEHOLDER_START}${idx}${PLACEHOLDER_END}`;
+  });
+  // widgets 顺序与占位符数字一致，但上面用 push 顺序即正序，占位符用 idx 即可
+  void counter;
+  return { text: cleaned, widgets };
+}
+
+/** 根据占位符文本找到对应 widget 索引，非占位符返回 -1 */
+export function placeholderToIndex(value: string): number {
+  const m = value.match(
+    new RegExp(`${PLACEHOLDER_START}(\\d+)${PLACEHOLDER_END}`),
+  );
+  return m ? Number(m[1]) : -1;
 }
 
 function WidgetShell({
