@@ -16,29 +16,44 @@ export type WidgetDescriptor = {
   attrs: Record<string, string>;
 };
 
-/** 解析模型输出里所有 <widget ... /> 标签 */
-export function parseWidgets(
-  text: string,
-): { widgets: WidgetDescriptor[]; rest: string } {
-  const widgets: WidgetDescriptor[] = [];
-  const rest = text.replace(
-    /<widget\s+([^>]*?)\s*\/?>/gi,
-    (_full, attrStr: string) => {
-      const attrs: Record<string, string> = {};
-      const nameMatch = attrStr.match(/name\s*=\s*["']([^"']+)["']/i);
-      if (!nameMatch) return "";
-      attrs.name = nameMatch[1];
-      const re = /(\w+)\s*=\s*["']([^"']*)["']/gi;
-      let m: RegExpExecArray | null;
-      while ((m = re.exec(attrStr)) !== null) {
-        if (m[1].toLowerCase() === "name") continue;
-        attrs[m[1]] = m[2];
-      }
-      widgets.push({ name: attrs.name, attrs });
-      return "";
-    },
-  );
-  return { widgets, rest: rest.trim() };
+export type WidgetSegment =
+  | { type: "text"; content: string }
+  | { type: "widget"; widget: WidgetDescriptor };
+
+/** 解析模型输出里所有 <widget ... /> 标签，保留其在原文中的相对位置 */
+export function parseWidgets(text: string): WidgetSegment[] {
+  const segments: WidgetSegment[] = [];
+  const re = /<widget\s+([^>]*?)\s*\/?>/gi;
+  let lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > lastIndex) {
+      segments.push({ type: "text", content: text.slice(lastIndex, m.index) });
+    }
+    const attrStr = m[1];
+    const attrs: Record<string, string> = {};
+    const nameMatch = attrStr.match(/name\s*=\s*["']([^"']+)["']/i);
+    if (!nameMatch) {
+      lastIndex = re.lastIndex;
+      continue;
+    }
+    attrs.name = nameMatch[1];
+    const attrRe = /(\w+)\s*=\s*["']([^"']*)["']/gi;
+    let am: RegExpExecArray | null;
+    while ((am = attrRe.exec(attrStr)) !== null) {
+      if (am[1].toLowerCase() === "name") continue;
+      attrs[am[1]] = am[2];
+    }
+    segments.push({
+      type: "widget",
+      widget: { name: attrs.name, attrs },
+    });
+    lastIndex = re.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    segments.push({ type: "text", content: text.slice(lastIndex) });
+  }
+  return segments;
 }
 
 function WidgetShell({
