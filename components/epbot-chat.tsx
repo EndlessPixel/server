@@ -31,6 +31,44 @@ import { cn } from "@/lib/utils";
 import { speech, markdownToPlainText } from "@/lib/speech";
 import { parseWidgets, WidgetBlock } from "@/components/epbot-widgets";
 
+/** 按原文顺序渲染「文本段 + widget 卡片段」 */
+const WidgetsWithText = ({ text }: { text: string }) => {
+  const segments = parseWidgets(text);
+  return (
+    <>
+      {segments.map((seg, i) => {
+        if (seg.type === "widget") {
+          return <WidgetBlock key={`w-${i}`} widget={seg.widget} />;
+        }
+        const content = seg.content.trim();
+        if (!content) return null;
+        return (
+          <ReactMarkdown
+            key={`t-${i}`}
+            remarkPlugins={[remarkGfm]}
+            components={{
+              a: ({ href, ...props }) => {
+                if (!href) return <a {...props} />;
+                const encodedUrl = encodeURIComponent(href);
+                return (
+                  <a
+                    href={`/ai_link?url=${encodedUrl}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    {...props}
+                  />
+                );
+              },
+            }}
+          >
+            {seg.content}
+          </ReactMarkdown>
+        );
+      })}
+    </>
+  );
+};
+
 const getCookie = (name: string): string | null => {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   return match ? decodeURIComponent(match[2]) : null;
@@ -1326,41 +1364,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                               />
                             )}
                             {parsed.answer ? (
-                              <>
-                                {(() => {
-                                  const { widgets, rest } =
-                                    parseWidgets(parsed.answer);
-                                  return (
-                                    <>
-                                      {widgets.map((w, wi) => (
-                                        <WidgetBlock key={wi} widget={w} />
-                                      ))}
-                                      {rest ? (
-                                        <ReactMarkdown
-                                          remarkPlugins={[remarkGfm]}
-                                          components={{
-                                            a: ({ href, ...props }) => {
-                                              if (!href) return <a {...props} />;
-                                              const encodedUrl =
-                                                encodeURIComponent(href);
-                                              return (
-                                                <a
-                                                  href={`/ai_link?url=${encodedUrl}`}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                  {...props}
-                                                />
-                                              );
-                                            },
-                                          }}
-                                        >
-                                          {rest}
-                                        </ReactMarkdown>
-                                      ) : null}
-                                    </>
-                                  );
-                                })()}
-                              </>
+                              <WidgetsWithText text={parsed.answer} />
                             ) : isStreamingLast ? (
                               <TypingIndicator />
                             ) : null}
