@@ -37,7 +37,8 @@ async function getSystemPrompt(): Promise<string> {
   }
 }
 // Dynamic timestamp injected at the top of the system prompt on every
-// request, e.g. "Now it is: 2026/07/29-15:26:01" (Asia/Shanghai).
+// request, e.g. "Now: 2026/07/29 15:26:01" (Asia/Shanghai).
+// 强约束：模型回答时间相关问题必须以该行时间为准。
 function getNowLine(): string {
   const parts = new Intl.DateTimeFormat('zh-CN', {
     timeZone: 'Asia/Shanghai',
@@ -47,10 +48,21 @@ function getNowLine(): string {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
+    weekday: 'short',
     hour12: false,
   }).formatToParts(new Date());
   const get = (type: string) => parts.find(p => p.type === type)?.value ?? '';
-  return `Now it is: ${get('year')}/${get('month')}/${get('day')}-${get('hour')}:${get('minute')}:${get('second')}`;
+  const date = `${get('year')}/${get('month')}/${get('day')}`;
+  const time = `${get('hour')}:${get('minute')}:${get('second')}`;
+  const weekday =
+    { 周日: '日', 周一: '一', 周二: '二', 周三: '三', 周四: '四', 周五: '五', 周六: '六' }[
+      get('weekday')
+    ] ?? '';
+  return [
+    '【当前真实时间】回答一切与时间相关的问题（现在几点、今天几号、当前版本、最近等）必须以这一行时间为准，严禁使用你训练记忆里的日期。',
+    `Now: ${date} ${time} (UTC+8, 星期${weekday})`,
+    '【结束时间块】',
+  ].join('\n');
 }
 function getClientIP(req: NextRequest): string | null {
   const forwarded = req.headers.get('x-forwarded-for');
