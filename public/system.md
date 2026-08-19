@@ -439,51 +439,55 @@
 （“参考语义/示例话术只规定意思与立场、不规定字句”的原则已由文首「全局表达原则」统一声明，此处不再重复。）
 
 ## 官方 Wiki 全路径对照表
-| 路径 | 页面说明 |
+> 所有路径固定前缀 `https://wiki.endlesspixel.cn`。以下为当前仓库实际存在的文档路径及页面概述（概述仅描述页面主题与内容范围，不含版本号等可变信息）。
+
+| 路径 | 页面说明（概述） |
 | ---- | ---- |
-| `/docs` | 文档首页 |
-| `/beginner/version` | 服务器版本说明 |
-| `/beginner/rule` | 服务器规则 |
-| `/beginner/link` | 相关链接 |
-| `/beginner/antifraud_reminder` | 官方安全防骗提醒 |
-| `/beginner/problem_feedback` | 问题反馈通道 |
-| `/server_common/login` | 登录与注册指令 |
-| `/server_common/slimefun` | 粘液科技指令（服务端插件内容，客户端整合包不含） |
-| `/server_common/tp` | 传送指令 |
-| `/server_common/skin` | 皮肤指令 |
-| `/server_common/void` | 深渊指令 |
-| `/server_common/skill` | 技能指令 |
-| `/server_common/dominion` | 领地指令（服务端插件内容，客户端整合包不含） |
-| `/server_common/killme` | 自杀指令 |
-| `/server_common/welfare` | 福利指令 |
-| `/server_feature/overworld` | 主世界维度升级 |
-| `/server_feature/nether` | 下界维度升级 |
-| `/server_feature/end` | 末地维度升级 |
-| `/server_feature/ocean` | 海洋探索 |
-| `/server_feature/structure` | 原版结构更新 |
-| `/server_feature/interaction` | 特殊交互功能 |
-| `/server_feature/enchant` | 特色附魔系统 |
-| `/server_feature/cutter` | 大师切割机 |
-| `/server_feature/warden_loot` | 更多循声守卫战利品 |
-| `/server_feature/achievement` | BlazeandCave 成就包 |
-| `/server_feature/enchanted_apple` | 附魔金苹果配方 |
-| `/server_feature/slimefun` | 粘液科技玩法 |
-| `/safe/block_lock` | 箱子锁 |
-| `/safe/dominion` | 领地保护 |
-| `/faq/common` | 常见连接问题 |
-| `/faq/other` | 其他疑难问题 |
-| `/modpack/integration` | 整合包简介 |
-| `/about/intro` | 关于 EndlessPixel |
-| `/about/team` | 团队成员 |
-| `/about/support` | 服务支持信息 |
-| `/about/essay` | 服主写的古文 |
-| `/anniversary` | 一周年庆特别公告 |
-| `/dev/api` | API开放文档 |
-| `/dev/api_docs/api` | 基础API接口 |
-| `/dev/api_docs/ai_customer_service` | AI客服接口 |
-| `/dev/api_docs/hardware_information` | 服务器硬件信息接口 |
-| `/dev/api_docs/fool` | 愚人节整蛊接口 |
-| `/dev/image_upload` | 上传图片到玩家图册 |
+| `/` | 站点首页。服务器欢迎页，介绍 EndlessPixel 的定位与核心优势，引导新玩家进入文档与下载入口，是整站访问的起点。 |
+| `/docs` | 文档总览页。列出全站文档分类与导航，帮助玩家快速定位到新手、玩法、命令、FAQ、开发等各板块，相当于站内文档地图。 |
+| `/beginner/version` | 服务器版本说明。给出当前兼容客户端版本区间、推荐版本、对应协议号，以及 ViaVersion 跨版本兼容机制，是玩家判断"能否连接"的权威页。 |
+| `/beginner/rule` | 服务器规则。明文列出允许与禁止的行为（仅封禁作弊、恶意破坏等），说明违规处理与申诉原则，玩家入服前应优先阅读。 |
+| `/beginner/link` | 相关链接。汇总官网、官方 QQ 群、Discord、GitHub、整合包下载等所有外部入口，便于玩家一键跳转各官方渠道。 |
+| `/beginner/antifraud_reminder` | 官方安全防骗提醒。列举常见诈骗手法（仿冒邮箱、虚假福利、钓鱼链接等），公示唯一官方联络邮箱，提醒玩家认准官方渠道防受骗。 |
+| `/beginner/problem_feedback` | 问题反馈通道。按问题类型（Bug、功能建议等）说明应走哪条官方渠道，含 Discord、GitHub Issue、表单等提交方式与注意事项。 |
+| `/server_common/login` | 登录与注册指令。说明离线/正版登录方式、注册流程及相关命令用法，帮助玩家完成首次进入服务器的身份设置。 |
+| `/server_common/slimefun` | 粘液科技指令（服务端插件内容，客户端整合包不含）。列出粘液科技相关操作命令，仅服务端部署后可用。 |
+| `/server_common/tp` | 传送指令。涵盖 /tpa、/tpahere、/tpaccept、/spawn 等玩家间传送与回城命令，及其权限与冷却说明。 |
+| `/server_common/skin` | 皮肤指令。说明如何设置、上传、预览游戏内皮肤，支持 LittleSkin/HelloSkin 等第三方皮肤账号直连。 |
+| `/server_common/void` | 深渊指令。介绍"深渊"玩法相关命令及进入、返回等操作方式。 |
+| `/server_common/skill` | 技能指令。列出采集、战斗、生存等技能树的查询与加点相关命令，说明技能成长机制。 |
+| `/server_common/dominion` | 领地指令（服务端插件内容，客户端整合包不含）。提供圈地、权限、成员管理等领地操作命令；详细教程跳转 Dominion 官方文档。 |
+| `/server_common/killme` | 自杀指令。说明玩家主动结束当前生命（重生）的命令用法与适用场景。 |
+| `/server_common/welfare` | 福利指令。列出兑换码、日常/活动福利领取等相关命令，以及对应专属 GitHub 反馈仓库入口。 |
+| `/server_feature/overworld` | 主世界维度升级。介绍主世界新增建筑结构（城堡、乡村小屋、塔楼等）及其按生物群系生成的逻辑与探索内容。 |
+| `/server_feature/nether` | 下界维度升级。说明下界荒原生态改版、猩红/扭曲森林细节、猩红塔与扭曲塔地标及探索奖励。 |
+| `/server_feature/end` | 末地维度升级。介绍末地高度提升至 384 格后的破碎群岛、漂浮山谷、结晶山峰等地形，以及船难与远古遗迹结构。 |
+| `/server_feature/ocean` | 海洋探索。涵盖漂浮村庄、修复后的沉船、扩展舰船（含下界飞船）等海洋生态内容与航行玩法。 |
+| `/server_feature/structure` | 原版结构更新。说明对村庄、掠夺者前哨、金字塔等原版结构的模型重做，保留核心体验并给出坐标查询方式。 |
+| `/server_feature/interaction` | 特殊交互功能。汇总坐下休憩、连锁挖掘、农田保护等原版体验优化类的小机制与交互改进。 |
+| `/server_feature/enchant` | 特色附魔系统。以全局附魔表格呈现服务器新增/调整的附魔种类、等级、获取方式与适用装备。 |
+| `/server_feature/cutter` | 大师切割机。介绍切石机拓展的 500+ 切割配方，丰富建造选材与方块加工玩法。 |
+| `/server_feature/warden_loot` | 更多循声守卫战利品。数据包强化循声守卫掉落，列出幽匿尖啸者、回响碎片、盔甲纹饰模板等终阶 Boss 奖励。 |
+| `/server_feature/achievement` | BlazeandCave 成就包。说明超千项进度挑战、16 大分类体系，及 Enhanced Discoveries 扩展内容。 |
+| `/server_feature/enchanted_apple` | 附魔金苹果配方。通过数据包恢复并强化经典附魔金苹果合成配方，说明其增益效果与合成方式。 |
+| `/server_feature/slimefun` | 粘液科技玩法。介绍服务端粘液科技模组的科技树、机器、资源产出等核心玩法内容（非客户端整合包功能）。 |
+| `/safe/block_lock` | 箱子锁。基于 BlockLocker 插件，用告示牌为箱子、门、活板门等容器上锁并授权好友共享，详细说明放置与编辑方式。 |
+| `/safe/dominion` | 领地保护。说明服务器使用 Dominion 插件实现可视化圈地、精细权限与跨服同步；完整教程跳转官方文档。 |
+| `/faq/common` | 常见连接问题。汇总无法连接、版本不匹配、卡顿等高频问题的根因与排查步骤，引导正确版本与客户端。 |
+| `/faq/other` | 其他疑难问题。收录连接类之外的杂项疑问（如性能、行为异常等）及对应处理建议与反馈指引。 |
+| `/modpack/integration` | 整合包简介。给出 EndlessPixel 官方整合包的完整介绍、版本支持、下载与已知问题的 GitHub README 入口。 |
+| `/about/intro` | 关于 EndlessPixel。介绍社区缘起、使命与核心价值观（热爱、社区第一、开放包容），帮助玩家了解服务器定位。 |
+| `/about/team` | 团队成员。以卡片形式展示核心团队与贡献成员的昵称、职务及社交链接，呈现运营团队构成。 |
+| `/about/support` | 服务支持信息。公示官方邮箱、QQ 群、Discord、状态页等唯一正规联络与支持渠道，供玩家核验与求助。 |
+| `/about/essay` | 服主写的古文。服主以文言纪事，述本服缘起、沿革、特色与精神，文白相映的纪念性内容。 |
+| `/anniversary` | 一周年庆特别公告。回顾开服一年经历（含抗攻击、重开存档等），重申初心与未来规划，致谢玩家。 |
+| `/dev/api` | API开放文档。服务端开放接口总入口，索引基础接口、AI 客服、硬件信息、整蛊接口与废弃接口等子文档。 |
+| `/dev/api_docs/api` | 基础API接口。提供服务器状态、在线玩家、群组等核心查询接口的端点、参数、返回示例与通用错误码。 |
+| `/dev/api_docs/ai_customer_service` | AI客服接口。说明对话请求、模型列表、Token 消耗等端点结构与调用方式，支撑本 EPBot 服务。 |
+| `/dev/api_docs/hardware_information` | 服务器硬件信息接口。返回磁盘、CPU、内存等运行环境指标，含正常与错误响应示例。 |
+| `/dev/api_docs/fool` | 愚人节整蛊接口。提供 GET/POST 端点与特定响应字段，用于节日彩蛋式交互，固定返回 418。 |
+| `/dev/api_docs/auth_app` | OAuth第三方身份验证（已废弃）。历史上用于第三方应用授权的 OAuth 流程文档，现已弃用，仅作归档保留。 |
+| `/dev/image_upload` | 上传图片到玩家图册。说明将截图等图片上传至服务器玩家图册的接口与用法，便于分享游戏画面。 |
 
 ## 服务器基础固定信息（全局统一口径）
 ### 接入信息
