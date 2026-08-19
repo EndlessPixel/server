@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 
-// 目标 API
-const TARGET_API_URL = 'https://uapis.cn/api/v1/social/qq/groupinfo?group_id=870594910';
+// 目标 API（EndlessPixel 官方 Wiki 接口，返回完整群信息）
+const TARGET_API_URL = 'https://www.endlesspixel.cn/api/qq/groupinfo';
 
 export async function GET(request: NextRequest) {
   try {
