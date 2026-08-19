@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Clock, Server, CalendarClock, Loader2, Star, GitFork, ExternalLink, Signal, Users, MessageCircle, Package, Tag, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RunningDuration } from "@/components/running-duration";
+import { DEFAULT_MIRRORS, type MirrorConfig } from "@/lib/mirrors";
 
 /**
  * EPBot 富文本卡片组件。
@@ -779,6 +780,28 @@ function ModpackLatestWidget({ repo }: { repo: string }) {
             更新说明
             <ExternalLink className="h-3 w-3" />
           </a>
+        </div>
+      )}
+      {download.url && (
+        <div className="mt-1.5 border-t border-border/60 pt-1.5">
+          <div className="mb-1 text-xs text-muted-foreground">镜像加速下载</div>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+            {DEFAULT_MIRRORS.slice(0, 3).map((m: MirrorConfig) => (
+              <a
+                key={m.tag}
+                href={`${m.url}${download.url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-0.5 text-primary hover:underline"
+                title={m.tip}
+              >
+                {m.tag}
+                {m.recommended && (
+                  <span className="text-[10px] text-emerald-500">荐</span>
+                )}
+              </a>
+            ))}
+          </div>
         </div>
       )}
     </WidgetShell>
