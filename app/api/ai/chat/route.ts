@@ -131,9 +131,6 @@ export async function POST(req: NextRequest) {
     }
     console.log(`[ai/chat] request from ${ip} model=${selectedModel} messages=${messages.length} upstream=${upstreamUrl}`);
     timeout = setTimeout(() => controller.abort(), 120000);
-    if (req.signal) {
-      req.signal.addEventListener('abort', () => controller.abort());
-    }
     const headers = {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${apiKey}`,
