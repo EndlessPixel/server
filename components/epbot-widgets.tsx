@@ -309,12 +309,11 @@ function GithubRepoWidget({ repo }: { repo: string }) {
     let alive = true;
     (async () => {
       try {
-        const res = await fetch(
+        const { ok, json } = await fetchCached(
           `/api/github/repo?repo=${encodeURIComponent(repo)}`,
         );
-        const json = await res.json();
         if (!alive) return;
-        if (!res.ok) {
+        if (!ok) {
           setState("err");
           setErrMsg(json?.error || "获取仓库信息失败");
           return;
@@ -409,20 +408,8 @@ function GithubRepoWidget({ repo }: { repo: string }) {
   );
 }
 
-type PingData = {
-  status?: string;
-  ping?: number;
-  min?: number;
-  avg?: number;
-  max?: number;
-  host?: string;
-  location?: string;
-  ip?: string;
-  data?: { status?: string; ping?: number };
-};
-
 /** 服务器延迟卡片：调 /api/ping/epmc 获取延迟 */
-function ServerPingWidget({ host }: { host: string }) {
+function ServerPingWidget({ host }: { host?: string }) {
   const [state, setState] = useState<"loading" | "ok" | "err">("loading");
   const [ping, setPing] = useState<number | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -532,8 +519,7 @@ function QQGroupWidget({ number }: { number: string }) {
     let alive = true;
     (async () => {
       try {
-        const res = await fetch("/api/qq/groupinfo");
-        const json: QQGroupData = await res.json();
+        const { json } = await fetchCached("/api/qq/groupinfo");
         if (!alive) return;
         if (!json?.group_id && !json?.group_name) {
           setState("err");
@@ -670,10 +656,9 @@ function ModpackLatestWidget({ repo }: { repo: string }) {
     let alive = true;
     (async () => {
       try {
-        const res = await fetch(
+        const { json } = await fetchCached(
           `/api/github/release?repo=${encodeURIComponent(repo)}`,
         );
-        const json: ReleaseData = await res.json();
         if (!alive) return;
         if (!json?.tag_name) {
           setState("err");
