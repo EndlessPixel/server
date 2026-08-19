@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type HTMLAttributes } from "react";
 import { Clock, Server, CalendarClock, Loader2, Star, GitFork, ExternalLink, Signal, Users, MessageCircle, Package, Tag, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RunningDuration } from "@/components/running-duration";
@@ -8,8 +8,10 @@ import { DEFAULT_MIRRORS, type MirrorConfig } from "@/lib/mirrors";
 
 /**
  * EPBot 富文本卡片组件。
- * 模型在回复中以 <widget name="xxx" attr="yyy" /> 形式输出，
- * 前端解析后渲染为对应卡片，原始标签不显示在正文里。
+ * 模型在回复中以独立的 HTML 标签 <widget name="xxx" attr="yyy" /> 输出，
+ * 必须独占一行（前后换行），不嵌入普通句子。
+ * 前端用 react-markdown + rehype-raw 直接把 <widget> 标签渲染成卡片，
+ * 原始标签不显示在正文里，也不再使用脆弱的占位符机制。
  */
 
 export type WidgetDescriptor = {
@@ -17,80 +19,27 @@ export type WidgetDescriptor = {
   attrs: Record<string, string>;
 };
 
-export type WidgetSegment =
-  | { type: "text"; content: string }
-  | { type: "widget"; widget: WidgetDescriptor };
-
-const WIDGET_RE = /<widget\s+([^>]*?)\s*\/?>/gi;
-
-function parseWidgetTag(attrStr: string): WidgetDescriptor | null {
-  const attrs: Record<string, string> = {};
-  const nameMatch = attrStr.match(/name\s*=\s*["']([^"']+)["']/i);
-  if (!nameMatch) return null;
-  attrs.name = nameMatch[1];
-  const attrRe = /(\w+)\s*=\s*["']([^"']*)["']/gi;
-  let am: RegExpExecArray | null;
-  while ((am = attrRe.exec(attrStr)) !== null) {
-    if (am[1].toLowerCase() === "name") continue;
-    attrs[am[1]] = am[2];
-  }
-  return { name: attrs.name, attrs };
-}
-
-/** 解析模型输出里所有 <widget ... /> 标签，保留其在原文中的相对位置 */
-export function parseWidgets(text: string): WidgetSegment[] {
-  const segments: WidgetSegment[] = [];
-  const re = new RegExp(WIDGET_RE);
-  let lastIndex = 0;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(text)) !== null) {
-    if (m.index > lastIndex) {
-      segments.push({ type: "text", content: text.slice(lastIndex, m.index) });
-    }
-    const w = parseWidgetTag(m[1]);
-    if (w) segments.push({ type: "widget", widget: w });
-    lastIndex = re.lastIndex;
-  }
-  if (lastIndex < text.length) {
-    segments.push({ type: "text", content: text.slice(lastIndex) });
-  }
-  return segments;
-}
-
-// 占位符（私用区字符，不会与正常文本冲突）
-const PLACEHOLDER_START = "";
-const PLACEHOLDER_END = "";
-
 /**
- * 把 <widget ... /> 标签从文本中剥离，替换为唯一占位符，
- * 使整段文本仍可作为一个完整 Markdown 块渲染（不破坏列表/表格/代码块等结构）。
- * 返回清理后的文本与按出现顺序排列的 widget 列表。
+ * 供 react-markdown 的 components.widget 使用：把原始 <widget> HTML 标签
+ * 的属性直接映射成 WidgetDescriptor 并渲染为对应卡片。
+ * HTML 属性经 rehype-raw 传递后保留原始小写名称（name/host/repo/...）。
  */
-export function stripWidgets(text: string): {
-  text: string;
-  widgets: WidgetDescriptor[];
-} {
-  const widgets: WidgetDescriptor[] = [];
-  let counter = 0;
-  const cleaned = text.replace(WIDGET_RE, (_full, attrStr: string) => {
-    const w = parseWidgetTag(attrStr);
-    if (!w) return "";
-    const idx = widgets.push(w) - 1;
-    counter++;
-    return `${PLACEHOLDER_START}${idx}${PLACEHOLDER_END}`;
-  });
-  // widgets 顺序与占位符数字一致，但上面用 push 顺序即正序，占位符用 idx 即可
-  void counter;
-  return { text: cleaned, widgets };
+export function WidgetTag(props: HTMLAttributes<HTMLElement>) {
+  const { name, host, repo, number, founded, date, children, node, ...rest } =
+    props as Record<string, string> & { children?: React.ReactNode };
+  void children;
+  void node;
+  void rest;
+  const widgetName = name || "";
+  const attrs: Record<string, string> = {};
+  for (const [k, v] of Object.entries(props)) {
+    if (typeof v === "string" && k !== "node" && k !== "children" && k !== "ref") {
+      attrs[k] = v;
+    }
+  }
+  return <WidgetBlock widget={{ name: widgetName, attrs }} />;
 }
 
-/** 根据占位符文本找到对应 widget 索引，非占位符返回 -1 */
-export function placeholderToIndex(value: string): number {
-  const m = value.match(
-    new RegExp(`${PLACEHOLDER_START}(\\d+)${PLACEHOLDER_END}`),
-  );
-  return m ? Number(m[1]) : -1;
-}
 
 function WidgetShell({
   icon,
