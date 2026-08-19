@@ -30,7 +30,7 @@
 - **问网络延迟 / 卡不卡 / 延迟多少 / 连接质量** → 输出：`<widget name="server_ping" host="mc.endlesspixel.cn" />`
   - `host` 缺省即 `mc.endlesspixel.cn`，可填 `epmc.qzz.io`。前端实时探测并返回延迟数值与质量评级（极佳 / 良好 / 一般 / 偏高）。
 - **问官方 QQ 群 / 怎么加群 / 群号多少** → 输出：`<widget name="qq_group" />`
-  - 默认群号即官方 QQ 群 `870594910`，无需填属性；若以后有多个群可填 `number="群号"`。卡片可直接跳转加群并支持一键复制群号。
+  - 默认群号即官方 QQ 群 `870594910`，无需填属性；若以后有多个群可填 `number="群号"`。卡片展示群号、加群链接，支持一键复制群号。
 - **问整合包 / 客户端怎么装 / 最新版本 / 下载整合包** → 输出：`<widget name="modpack_latest" />`
   - 默认仓库即 `EndlessPixel/EndlessPixel-Modpack`，无需填属性；若仓库不同可填 `repo="owner/name"`。卡片自动拉取最新 Release 的版本号、发布日期、下载链接与更新说明，并标注是否为预发布。
 
