@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import {
   Send,
   Plus,
@@ -29,17 +30,17 @@ import {
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { cn } from "@/lib/utils";
 import { speech, markdownToPlainText } from "@/lib/speech";
-import { stripWidgets, placeholderToIndex, WidgetBlock } from "@/components/epbot-widgets";
+import { WidgetTag } from "@/components/epbot-widgets";
 
 /**
- * 整段文本作为一个完整 Markdown 块渲染（不切断列表/表格/代码块等结构），
- * 仅把 <widget> 占位符在 text 节点中替换为对应卡片。
+ * 直接渲染模型输出的 Markdown（含独立行的 <widget> 标签），
+ * 由 rehype-raw 把 <widget> 解析为 HTML 标签，再映射到 WidgetTag 卡片组件。
  */
 const WidgetsWithText = ({ text }: { text: string }) => {
-  const { text: cleaned, widgets } = stripWidgets(text);
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeRaw]}
       components={{
         a: ({ href, ...props }) => {
           if (!href) return <a {...props} />;
@@ -53,31 +54,10 @@ const WidgetsWithText = ({ text }: { text: string }) => {
             />
           );
         },
-        // 在文本节点里把占位符替换成卡片，保持 Markdown 结构完整
-        text: (props: { value?: string; children?: ReactNode }) => {
-          const value =
-            props.value ??
-            (typeof props.children === "string" ? props.children : "");
-          if (typeof value !== "string" || !value.includes("")) {
-            return <>{value}</>;
-          }
-          // 按占位符切分，交替输出文本与卡片
-          const parts = value.split(/(\d+)/g);
-          return (
-            <>
-              {parts.map((part, i) => {
-                const idx = placeholderToIndex(part);
-                if (idx >= 0 && widgets[idx]) {
-                  return <WidgetBlock key={`w-${i}`} widget={widgets[idx]} />;
-                }
-                return <Fragment key={`t-${i}`}>{part}</Fragment>;
-              })}
-            </>
-          );
-        },
+        widget: (props) => <WidgetTag {...props} />,
       }}
     >
-      {cleaned}
+      {text}
     </ReactMarkdown>
   );
 };
