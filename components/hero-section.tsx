@@ -193,7 +193,7 @@ export function HeroSection() {
               animate={{ scale: [1, 1.5, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
-            <span>欢迎来到 Minecraft 1.21.11 新世界</span>
+            <span>欢迎来到 Minecraft 26.2 新世界</span>
           </motion.div>
 
           {/* 主标题 */}
