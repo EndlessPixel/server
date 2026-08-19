@@ -236,6 +236,11 @@ export async function POST(req: NextRequest) {
         }
         await writer.close();
       } catch (err) {
+        // A client disconnect aborts the reader; do not log it as a server error.
+        if (err instanceof Error && err.name === 'AbortError') {
+          try { await writer.abort(err); } catch { /* ignore */ }
+          return;
+        }
         console.error('[ai/chat] Stream processing error:', err);
         try {
           await writer.write(
