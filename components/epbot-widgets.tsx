@@ -435,18 +435,22 @@ function GithubRepoWidget({ repo }: { repo: string }) {
 }
 
 type PingData = {
+  status?: string;
+  ping?: number;
   min?: number;
   avg?: number;
   max?: number;
   host?: string;
   location?: string;
   ip?: string;
+  data?: { status?: string; ping?: number };
 };
 
-/** 服务器延迟卡片：调 /api/ping/epmc 获取 min/avg/max 延迟 */
+/** 服务器延迟卡片：调 /api/ping/epmc 获取延迟 */
 function ServerPingWidget({ host }: { host: string }) {
   const [state, setState] = useState<"loading" | "ok" | "err">("loading");
-  const [data, setData] = useState<PingData | null>(null);
+  const [ping, setPing] = useState<number | null>(null);
+  const [status, setStatus] = useState<string>("");
 
   useEffect(() => {
     let alive = true;
@@ -455,11 +459,22 @@ function ServerPingWidget({ host }: { host: string }) {
         const res = await fetch("/api/ping/epmc");
         const json: PingData = await res.json();
         if (!alive) return;
-        if (typeof json?.avg !== "number" && typeof json?.min !== "number") {
+        const s =
+          json?.data?.status ?? json?.status ?? (json?.ping != null ? "up" : "");
+        const p =
+          typeof json?.data?.ping === "number"
+            ? json.data.ping
+            : typeof json?.ping === "number"
+              ? json.ping
+              : typeof json?.avg === "number"
+                ? json.avg
+                : null;
+        if (p == null && !s) {
           setState("err");
           return;
         }
-        setData(json);
+        setStatus(s);
+        setPing(p);
         setState("ok");
       } catch {
         if (alive) setState("err");
@@ -484,34 +499,39 @@ function ServerPingWidget({ host }: { host: string }) {
       </WidgetShell>
     );
 
-  const d = data!;
-  const avg = typeof d.avg === "number" ? d.avg : d.min!;
+  const up = status === "up" || status === "online" || ping !== null;
   const quality =
-    avg < 50
-      ? { label: "极佳", color: "text-green-500" }
-      : avg < 120
-        ? { label: "良好", color: "text-emerald-500" }
-        : avg < 250
-          ? { label: "一般", color: "text-amber-500" }
-          : { label: "偏高", color: "text-destructive" };
+    ping === null
+      ? null
+      : ping < 50
+        ? { label: "极佳", color: "text-green-500" }
+        : ping < 120
+          ? { label: "良好", color: "text-emerald-500" }
+          : ping < 250
+            ? { label: "一般", color: "text-amber-500" }
+            : { label: "偏高", color: "text-destructive" };
 
   return (
     <WidgetShell icon={<Signal className="w-4 h-4" />} title={`网络延迟 · ${host}`}>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-        <span className="inline-flex items-center gap-1 font-medium text-green-500">
-          <span className="h-2 w-2 rounded-full bg-green-500" />
-          可达
-        </span>
-        <span className="text-muted-foreground">
-          平均 {avg}ms
-          {typeof d.min === "number" && (
-            <span className="ml-1 opacity-70">（最低 {d.min}ms / 最高 {d.max ?? "?"}ms）</span>
+        <span
+          className={cn(
+            "inline-flex items-center gap-1 font-medium",
+            up ? "text-green-500" : "text-destructive",
           )}
+        >
+          <span
+            className={cn(
+              "h-2 w-2 rounded-full",
+              up ? "bg-green-500" : "bg-destructive",
+            )}
+          />
+          {up ? "可达" : "不可达"}
         </span>
-        <span className={quality.color}>网络{quality.label}</span>
-        {d.location && (
-          <span className="text-muted-foreground">位置 {d.location}</span>
+        {ping !== null && (
+          <span className="text-muted-foreground">{ping}ms</span>
         )}
+        {quality && <span className={quality.color}>网络{quality.label}</span>}
       </div>
     </WidgetShell>
   );
@@ -541,7 +561,7 @@ function QQGroupWidget({ number }: { number: string }) {
         const res = await fetch("/api/qq/groupinfo");
         const json: QQGroupData = await res.json();
         if (!alive) return;
-        if (!json?.group_id) {
+        if (!json?.group_id && !json?.group_name) {
           setState("err");
           return;
         }
