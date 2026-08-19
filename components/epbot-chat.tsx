@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useRef, useState, Fragment, Children, type ReactNode } from "react";
-import ReactMarkdown from "react-markdown";
+import { useEffect, useRef, useState, Children, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import {
@@ -42,7 +42,7 @@ const WidgetsWithText = ({ text }: { text: string }) => {
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw]}
       components={{
-        a: ({ href, ...props }) => {
+        a: ({ href, ...props }: ComponentPropsWithoutRef<"a">) => {
           if (!href) return <a {...props} />;
           const encodedUrl = encodeURIComponent(href);
           return (
@@ -54,13 +54,13 @@ const WidgetsWithText = ({ text }: { text: string }) => {
             />
           );
         },
-        widget: (props) => <WidgetTag {...props} />,
+        widget: (props: Record<string, string>) => <WidgetTag {...props} />,
         // A <p> cannot contain a <div> (our widget cards render as divs).
         // react-markdown wraps a <widget> in a <p> even when it sits on its own
         // line, which causes "<div> cannot be a descendant of <p>" hydration errors.
         // When a paragraph contains any non-text React node (a widget card, etc.),
         // render it as a <div> instead so no <div> ends up nested inside a <p>.
-        p: ({ children }) => {
+        p: ({ children }: { children?: ReactNode }) => {
           const hasElement = Children.toArray(children).some(
             (c) => typeof c === "object" && c !== null,
           );
@@ -69,7 +69,7 @@ const WidgetsWithText = ({ text }: { text: string }) => {
           }
           return <p>{children}</p>;
         },
-      }}
+      } as unknown as Components}
     >
       {text}
     </ReactMarkdown>
