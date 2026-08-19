@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Clock, Server, CalendarClock, Loader2, Star, GitFork, ExternalLink } from "lucide-react";
+import { Clock, Server, CalendarClock, Loader2, Star, GitFork, ExternalLink, Signal, Users, MessageCircle, Package, Tag, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RunningDuration } from "@/components/running-duration";
 
@@ -284,6 +284,18 @@ export function WidgetBlock({ widget }: { widget: WidgetDescriptor }) {
       );
     case "github_repo":
       return <GithubRepoWidget repo={widget.attrs.repo || ""} />;
+    case "server_ping":
+      return (
+        <ServerPingWidget host={widget.attrs.host || "mc.endlesspixel.cn"} />
+      );
+    case "qq_group":
+      return <QQGroupWidget number={widget.attrs.number || "870594910"} />;
+    case "modpack_latest":
+      return (
+        <ModpackLatestWidget
+          repo={widget.attrs.repo || "EndlessPixel/EndlessPixel-Modpack"}
+        />
+      );
     default:
       return null;
   }
@@ -419,5 +431,336 @@ function GithubRepoWidget({ repo }: { repo: string }) {
         </div>
       </WidgetShell>
     </a>
+  );
+}
+
+type PingData = {
+  min?: number;
+  avg?: number;
+  max?: number;
+  host?: string;
+  location?: string;
+  ip?: string;
+};
+
+/** 服务器延迟卡片：调 /api/ping/epmc 获取 min/avg/max 延迟 */
+function ServerPingWidget({ host }: { host: string }) {
+  const [state, setState] = useState<"loading" | "ok" | "err">("loading");
+  const [data, setData] = useState<PingData | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/ping/epmc");
+        const json: PingData = await res.json();
+        if (!alive) return;
+        if (typeof json?.avg !== "number" && typeof json?.min !== "number") {
+          setState("err");
+          return;
+        }
+        setData(json);
+        setState("ok");
+      } catch {
+        if (alive) setState("err");
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [host]);
+
+  if (state === "loading")
+    return (
+      <WidgetShell icon={<Signal className="w-4 h-4" />} title={`网络延迟 · ${host}`}>
+        <Loader2 className="w-4 h-4 animate-spin" />
+      </WidgetShell>
+    );
+
+  if (state === "err")
+    return (
+      <WidgetShell icon={<Signal className="w-4 h-4" />} title={`网络延迟 · ${host}`}>
+        <span className="text-destructive">获取延迟失败</span>
+      </WidgetShell>
+    );
+
+  const d = data!;
+  const avg = typeof d.avg === "number" ? d.avg : d.min!;
+  const quality =
+    avg < 50
+      ? { label: "极佳", color: "text-green-500" }
+      : avg < 120
+        ? { label: "良好", color: "text-emerald-500" }
+        : avg < 250
+          ? { label: "一般", color: "text-amber-500" }
+          : { label: "偏高", color: "text-destructive" };
+
+  return (
+    <WidgetShell icon={<Signal className="w-4 h-4" />} title={`网络延迟 · ${host}`}>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        <span className="inline-flex items-center gap-1 font-medium text-green-500">
+          <span className="h-2 w-2 rounded-full bg-green-500" />
+          可达
+        </span>
+        <span className="text-muted-foreground">
+          平均 {avg}ms
+          {typeof d.min === "number" && (
+            <span className="ml-1 opacity-70">（最低 {d.min}ms / 最高 {d.max ?? "?"}ms）</span>
+          )}
+        </span>
+        <span className={quality.color}>网络{quality.label}</span>
+        {d.location && (
+          <span className="text-muted-foreground">位置 {d.location}</span>
+        )}
+      </div>
+    </WidgetShell>
+  );
+}
+
+type QQGroupData = {
+  group_id?: string;
+  group_name?: string;
+  avatar_url?: string;
+  description?: string;
+  join_url?: string;
+  member_count?: number;
+  max_member_count?: number;
+  tag?: string;
+};
+
+/** QQ 群卡片：调 /api/qq/groupinfo 拉取官方群信息 */
+function QQGroupWidget({ number }: { number: string }) {
+  const [state, setState] = useState<"loading" | "ok" | "err">("loading");
+  const [data, setData] = useState<QQGroupData | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/qq/groupinfo");
+        const json: QQGroupData = await res.json();
+        if (!alive) return;
+        if (!json?.group_id) {
+          setState("err");
+          return;
+        }
+        setData(json);
+        setState("ok");
+      } catch {
+        if (alive) setState("err");
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [number]);
+
+  const copy = async () => {
+    const id = data?.group_id || number;
+    try {
+      await navigator.clipboard.writeText(id);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  const title = data?.group_name || `官方 QQ 群 ${data?.group_id || number}`;
+  const joinUrl =
+    data?.join_url || `https://qm.qq.com/q/${data?.group_id || number}`;
+
+  if (state === "loading")
+    return (
+      <WidgetShell icon={<MessageCircle className="w-4 h-4" />} title="官方 QQ 群">
+        <Loader2 className="w-4 h-4 animate-spin" />
+      </WidgetShell>
+    );
+
+  if (state === "err")
+    return (
+      <WidgetShell icon={<MessageCircle className="w-4 h-4" />} title="官方 QQ 群">
+        <span className="text-destructive">获取群信息失败</span>
+      </WidgetShell>
+    );
+
+  const d = data!;
+  return (
+    <WidgetShell
+      icon={
+        d.avatar_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={d.avatar_url}
+            alt={d.group_name || ""}
+            className="h-4 w-4 rounded"
+          />
+        ) : (
+          <MessageCircle className="w-4 h-4" />
+        )
+      }
+      title={title}
+    >
+      {d.description && (
+        <div className="mb-1.5 text-sm text-foreground/90">{d.description}</div>
+      )}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+        {d.group_id && (
+          <span className="inline-flex items-center gap-1">
+            <Users className="h-3.5 w-3.5" />
+            群号 {d.group_id}
+          </span>
+        )}
+        {typeof d.member_count === "number" && (
+          <span>
+            {d.member_count.toLocaleString("zh-CN")}
+            {typeof d.max_member_count === "number"
+              ? ` / ${d.max_member_count.toLocaleString("zh-CN")}`
+              : ""}{" "}
+            人
+          </span>
+        )}
+        {d.tag && <span>{d.tag}</span>}
+        <a
+          href={joinUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-0.5 text-primary hover:underline"
+        >
+          申请加入
+          <ExternalLink className="h-3 w-3" />
+        </a>
+        <button
+          type="button"
+          onClick={copy}
+          className="transition-colors hover:text-foreground"
+        >
+          {copied ? "已复制" : "复制群号"}
+        </button>
+      </div>
+    </WidgetShell>
+  );
+}
+
+type ReleaseData = {
+  tag_name?: string;
+  name?: string;
+  html_url?: string;
+  published_at?: string | null;
+  prerelease?: boolean;
+  body?: string;
+  assets?: { name: string; url: string; size: number }[];
+};
+
+function formatSize(bytes?: number) {
+  if (typeof bytes !== "number" || bytes <= 0) return "";
+  const mb = bytes / 1024 / 1024;
+  if (mb >= 1024) return `${(mb / 1024).toFixed(2)} GB`;
+  return `${mb.toFixed(0)} MB`;
+}
+
+function formatDate(iso?: string | null) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** 官方整合包最新版本卡片：调 /api/github/release 拉取最新 release */
+function ModpackLatestWidget({ repo }: { repo: string }) {
+  const [state, setState] = useState<"loading" | "ok" | "err">("loading");
+  const [data, setData] = useState<ReleaseData | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/github/release?repo=${encodeURIComponent(repo)}`,
+        );
+        const json: ReleaseData = await res.json();
+        if (!alive) return;
+        if (!json?.tag_name) {
+          setState("err");
+          return;
+        }
+        setData(json);
+        setState("ok");
+      } catch {
+        if (alive) setState("err");
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [repo]);
+
+  if (state === "loading")
+    return (
+      <WidgetShell icon={<Package className="w-4 h-4" />} title="官方整合包">
+        <Loader2 className="w-4 h-4 animate-spin" />
+      </WidgetShell>
+    );
+
+  if (state === "err")
+    return (
+      <WidgetShell icon={<Package className="w-4 h-4" />} title="官方整合包">
+        <span className="text-destructive">获取最新版本失败</span>
+      </WidgetShell>
+    );
+
+  const d = data!;
+  const download =
+    d.assets && d.assets.length > 0
+      ? d.assets[0]
+      : { name: "", url: d.html_url || "", size: 0 };
+
+  return (
+    <WidgetShell
+      icon={<Package className="w-4 h-4" />}
+      title={`官方整合包 · ${d.name || d.tag_name}`}
+    >
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        <span className="inline-flex items-center gap-1 font-medium text-primary">
+          <Tag className="h-3.5 w-3.5" />
+          最新版 {d.tag_name}
+        </span>
+        {d.published_at && (
+          <span className="text-muted-foreground">
+            发布于 {formatDate(d.published_at)}
+          </span>
+        )}
+        {d.prerelease && <span className="text-amber-500">预发布</span>}
+      </div>
+      {download.url && (
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <a
+            href={download.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-primary hover:underline"
+          >
+            <Download className="h-3.5 w-3.5" />
+            {download.name || "前往下载"}
+            {formatSize(download.size) && (
+              <span className="opacity-70">
+                （{formatSize(download.size)}）
+              </span>
+            )}
+            <ExternalLink className="h-3 w-3" />
+          </a>
+          <a
+            href={d.html_url || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-0.5 text-muted-foreground hover:text-foreground"
+          >
+            更新说明
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        </div>
+      )}
+    </WidgetShell>
   );
 }
