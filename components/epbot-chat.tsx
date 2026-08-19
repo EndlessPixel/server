@@ -56,17 +56,15 @@ const WidgetsWithText = ({ text }: { text: string }) => {
         },
         widget: (props) => <WidgetTag {...props} />,
         // A <p> cannot contain a <div> (our widget cards render as divs).
-        // When a paragraph includes a widget card, render it as a <div> instead
-        // to avoid the React hydration error "<p> cannot contain a nested <div>".
+        // react-markdown wraps a <widget> in a <p> even when it sits on its own
+        // line, which causes "<div> cannot be a descendant of <p>" hydration errors.
+        // When a paragraph contains any non-text React node (a widget card, etc.),
+        // render it as a <div> instead so no <div> ends up nested inside a <p>.
         p: ({ children }) => {
-          const hasCard = Children.toArray(children).some(
-            (c) =>
-              typeof c === "object" &&
-              c !== null &&
-              !Array.isArray(c) &&
-              (c as { props?: Record<string, unknown> }).props?.["data-widget-card"] !== undefined,
+          const hasElement = Children.toArray(children).some(
+            (c) => typeof c === "object" && c !== null,
           );
-          if (hasCard) {
+          if (hasElement) {
             return <div className="my-1">{children}</div>;
           }
           return <p>{children}</p>;
