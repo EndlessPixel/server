@@ -428,7 +428,7 @@ function ServerPingWidget({ host }: { host: string }) {
           return;
         }
         setStatus(s);
-        setPing(p);
+        setPing(typeof p === "number" ? Math.round(p) : p);
         setState("ok");
       } catch {
         if (alive) setState("err");
