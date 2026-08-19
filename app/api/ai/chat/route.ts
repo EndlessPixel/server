@@ -126,9 +126,10 @@ export async function POST(req: NextRequest) {
     const upstreamUrl = `${apiBaseUrl}/v1/chat/completions`;
     const apiKey = process.env.API_KEY;
     if (!apiKey) {
-      console.error('API_KEY not set');
+      console.error('[ai/chat] API_KEY not set');
       return sseError('服务配置错误');
     }
+    console.log(`[ai/chat] request from ${ip} model=${selectedModel} messages=${messages.length} upstream=${upstreamUrl}`);
     timeout = setTimeout(() => controller.abort(), 120000);
     if (req.signal) {
       req.signal.addEventListener('abort', () => controller.abort());
@@ -143,12 +144,22 @@ export async function POST(req: NextRequest) {
       "Sec-Fetch-Mode": "cors",
       "Sec-Fetch-Site": "cross-site"
     };
-    const upstream = await fetch(upstreamUrl, {
-      method: "POST",
-      signal: controller.signal,
-      headers: headers,
-      body: JSON.stringify(openaiBody),
-    });
+    let upstream: Response;
+    try {
+      upstream = await fetch(upstreamUrl, {
+        method: "POST",
+        signal: AbortSignal.timeout(15000),
+        headers: headers,
+        body: JSON.stringify(openaiBody),
+      });
+    } catch (fetchErr) {
+      const reason =
+        fetchErr instanceof Error && fetchErr.name === 'TimeoutError'
+          ? `连接上游超时（15s）: ${upstreamUrl}`
+          : `连接上游失败: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`;
+      console.error(`[ai/chat] ${reason}`);
+      return sseError('上游连接失败，请稍后重试');
+    }
 
     if (timeout) clearTimeout(timeout);
     timeout = null;
@@ -221,8 +232,22 @@ export async function POST(req: NextRequest) {
         }
         await writer.close();
       } catch (err) {
-        console.error('Stream processing error:', err);
-        await writer.abort(err as Error);
+        console.error('[ai/chat] Stream processing error:', err);
+        try {
+          await writer.write(
+            encoder.encode(
+              `data: ${JSON.stringify({ type: 'error', errorText: '上游流式传输中断，请重试' })}\n\n`,
+            ),
+          );
+          await writer.write(encoder.encode(`data: [DONE]\n\n`));
+          await writer.close();
+        } catch {
+          try {
+            await writer.abort(err as Error);
+          } catch {
+            /* ignore */
+          }
+        }
       }
     })();
     return new Response(readable, {
