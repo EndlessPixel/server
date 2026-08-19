@@ -37,7 +37,11 @@ export function WidgetTag(props: HTMLAttributes<HTMLElement>) {
       attrs[k] = v;
     }
   }
-  return <WidgetBlock widget={{ name: widgetName, attrs }} />;
+  return (
+    <div data-widget-card>
+      <WidgetBlock widget={{ name: widgetName, attrs }} />
+    </div>
+  );
 }
 
 
