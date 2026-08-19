@@ -431,8 +431,8 @@ function ServerPingWidget({ host }: { host: string }) {
     let alive = true;
     (async () => {
       try {
-        const res = await fetch("/api/ping/epmc");
-        const json: PingData = await res.json();
+        const { json } = await fetchCached("/api/ping/epmc");
+        const data = json as PingData;
         if (!alive) return;
         const s =
           json?.data?.status ?? json?.status ?? (json?.ping != null ? "up" : "");
