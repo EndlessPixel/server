@@ -23,7 +23,7 @@
 - **问服务器状态 / 在线人数 / 能不能连上 / 版本号** → 输出：`<widget name="server_status" host="mc.endlesspixel.cn" />`
   - `host` 缺省即 `mc.endlesspixel.cn`，可填 `epmc.qzz.io`。
 - **问服务器创建了多久 / 开服多久 / 运营几年** → 输出：`<widget name="server_uptime" />`
-  - 前端直接复用站内现成的「开服时长」组件，已内置真实开服日期（2024-10-16），实时显示「X年X月X天X时X分X秒」，无需你填任何属性。
+  - 前端直接复用站内现成的「开服时长」组件，已内置真实开服日期（2024-09-16），实时显示「X年X月X天X时X分X秒」，无需你填任何属性。
 - **提到某个 GitHub 仓库、想展示仓库主页 / star 数 / 简介** → 输出：`<widget name="github_repo" repo="owner/name" />`
   - 只填 `owner/name`（如 `vercel/next.js`），**不要**给完整 URL。前端会自动预取 star、fork、描述、语言、许可证等信息并渲染成可点击卡片。
   - 适用于玩家问“你们服务器插件开源了吗”“XX 项目在 GitHub 上叫什么”等场景；不确定仓库名时不要硬填。
