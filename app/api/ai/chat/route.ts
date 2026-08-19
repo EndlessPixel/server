@@ -270,12 +270,14 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     if (timeout) clearTimeout(timeout);
+    // Client-initiated abort (cancel / switch session / unmount): exit silently.
+    if (err instanceof Error && err.name === 'AbortError') {
+      return new Response(null, { status: 499 });
+    }
     console.error('API 内部错误:', err);
     let errorText = '服务异常，请稍后再试';
     if (err instanceof Error) {
-      if (err.name === 'AbortError') {
-        errorText = '请求被取消或超时';
-      } else if (err.message.includes('fetch failed')) {
+      if (err.message.includes('fetch failed')) {
         errorText = '网络连接失败，请检查网络';
       }
     }
