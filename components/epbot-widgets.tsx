@@ -7,6 +7,27 @@ import { RunningDuration } from "@/components/running-duration";
 import { DEFAULT_MIRRORS, type MirrorConfig } from "@/lib/mirrors";
 
 /**
+ * 轻量请求缓存：同一 URL 在 TTL 内只真正请求一次。
+ * 卡片组件（ping / github / qq 等）在父组件频繁 re-render 或重挂载时
+ * 会反复触发 useEffect，加缓存可避免重复打后端、浪费接口额度。
+ */
+const FETCH_CACHE_TTL = 60_000;
+const _fetchCache = new Map<string, { expires: number; ok: boolean; json: unknown }>();
+async function fetchCached(
+  url: string,
+): Promise<{ ok: boolean; json: any }> {
+  const now = Date.now();
+  const hit = _fetchCache.get(url);
+  if (hit && hit.expires > now) {
+    return { ok: hit.ok, json: hit.json };
+  }
+  const res = await fetch(url);
+  const json = await res.json().catch(() => ({}));
+  _fetchCache.set(url, { expires: now + FETCH_CACHE_TTL, ok: res.ok, json });
+  return { ok: res.ok, json };
+}
+
+/**
  * EPBot 富文本卡片组件。
  * 模型在回复中以独立的 HTML 标签 <widget name="xxx" attr="yyy" /> 输出，
  * 必须独占一行（前后换行），不嵌入普通句子。
