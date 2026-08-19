@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
+import { useEffect, useRef, useState, Fragment, Children, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -55,6 +55,22 @@ const WidgetsWithText = ({ text }: { text: string }) => {
           );
         },
         widget: (props) => <WidgetTag {...props} />,
+        // A <p> cannot contain a <div> (our widget cards render as divs).
+        // When a paragraph includes a widget card, render it as a <div> instead
+        // to avoid the React hydration error "<p> cannot contain a nested <div>".
+        p: ({ children }) => {
+          const hasCard = Children.toArray(children).some(
+            (c) =>
+              typeof c === "object" &&
+              c !== null &&
+              !Array.isArray(c) &&
+              (c as { props?: Record<string, unknown> }).props?.["data-widget-card"] !== undefined,
+          );
+          if (hasCard) {
+            return <div className="my-1">{children}</div>;
+          }
+          return <p>{children}</p>;
+        },
       }}
     >
       {text}
