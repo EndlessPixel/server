@@ -483,7 +483,7 @@ function ServerPingWidget({ host }: { host: string }) {
           {up ? "可达" : "不可达"}
         </span>
         {ping !== null && (
-          <span className="text-muted-foreground">{ping}ms</span>
+          <span className="text-muted-foreground">{Math.round(ping)}ms</span>
         )}
         {quality && <span className={quality.color}>网络{quality.label}</span>}
       </div>
