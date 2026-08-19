@@ -21,6 +21,11 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  MirrorConfig,
+  DEFAULT_MIRRORS,
+  DEFAULT_MIRROR_DOMAINS,
+} from "@/lib/mirrors";
 
 // ============ 类型定义 ============
 
@@ -56,37 +61,6 @@ export interface ParsedRelease {
   branch?: "main" | "real";
   tags?: string[];
 }
-
-export interface MirrorConfig {
-  tag: string;
-  url: string;
-  tip: string;
-  recommended?: boolean;
-}
-
-// 默认镜像配置
-export const DEFAULT_MIRRORS: MirrorConfig[] = [
-  {
-    tag: "Cloudflare",
-    url: "https://gh-proxy.org/",
-    tip: "推荐",
-    recommended: true,
-  },
-  {
-    tag: "Fastly",
-    url: "https://cdn.gh-proxy.org/",
-    tip: "推荐",
-    recommended: true,
-  },
-  {
-    tag: "Edgeone",
-    url: "https://edgeone.gh-proxy.org/",
-    tip: "推荐",
-    recommended: true,
-  },
-  { tag: "Jasonzeng", url: "https://gh.xmly.dev/", tip: "大文件慎用" },
-  { tag: "香港", url: "https://hk.gh-proxy.org/", tip: "香港节点" },
-];
 
 // ============ 版本比较函数 ============
 
@@ -525,7 +499,7 @@ interface MirrorFooterProps {
 }
 
 export function MirrorFooter({
-  mirrors = ["gh-proxy.org", "gh.xmly.dev"],
+  mirrors = DEFAULT_MIRROR_DOMAINS,
   className = "",
 }: MirrorFooterProps) {
   return (
