@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 
-// 在这里换成你要代理的真实API地址
-const TARGET_API_URL = 'https://www.endlesspixel.cn/api/ping/epmc';
+// 真实上游：第三方聚合服务（注意不要指向本项目自身域名，否则会自循环）
+const TARGET_API_URL = 'https://uapis.cn/api/v1/network/ping?host=mc.endlesspixel.cn';
 
 export async function GET(request: NextRequest) {
   try {
