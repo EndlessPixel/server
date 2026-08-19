@@ -145,14 +145,21 @@ export async function POST(req: NextRequest) {
     try {
       upstream = await fetch(upstreamUrl, {
         method: "POST",
-        signal: AbortSignal.timeout(15000),
+        // Merge the 120s server timeout with the client request signal so that
+        // a client disconnect (req.signal abort) cancels the upstream fetch
+        // cleanly instead of leaking an unhandled AbortError to the console.
+        signal: AbortSignal.any([controller.signal, req.signal]),
         headers: headers,
         body: JSON.stringify(openaiBody),
       });
     } catch (fetchErr) {
+      // Client aborted (switched session / cancelled / unmounted): exit silently.
+      if (fetchErr instanceof Error && fetchErr.name === 'AbortError') {
+        return new Response(null, { status: 499 });
+      }
       const reason =
         fetchErr instanceof Error && fetchErr.name === 'TimeoutError'
-          ? `连接上游超时（15s）: ${upstreamUrl}`
+          ? `连接上游超时: ${upstreamUrl}`
           : `连接上游失败: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`;
       console.error(`[ai/chat] ${reason}`);
       return sseError('上游连接失败，请稍后重试');
