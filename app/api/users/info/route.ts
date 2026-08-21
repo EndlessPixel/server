@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/session';
 
-const USER_INFO_API_URL = `http://154.44.26.51:8080/v1/api/users/info`;
+const USER_INFO_API_URL = `http://156.239.230.98:8080/v1/api/users/info`;
 
 export async function GET(request: NextRequest) {
     try {
