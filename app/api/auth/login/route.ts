@@ -7,7 +7,7 @@ import {
   SESSION_MAX_AGE,
 } from '@/lib/session';
 
-const LOGIN_API_URL = `http://154.44.26.51:8080/v1/api/auth/login`;
+const LOGIN_API_URL = `http://156.239.230.98:8080/v1/api/auth/login`;
 const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
 const PASSWORD_MIN_LENGTH = 6;
 
