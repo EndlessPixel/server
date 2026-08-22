@@ -41,7 +41,32 @@ export async function GET() {
       },
     });
 
-    const data = await response.json();
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => '');
+      console.error(`[ai/models] 上游错误 ${response.status}:`, errorBody.slice(0, 500));
+      const msg =
+        response.status >= 500
+          ? "上游服务繁忙，请稍后再试"
+          : response.status === 401 || response.status === 403
+          ? "认证失败，请联系管理员"
+          : `上游返回错误 (${response.status})`;
+      return new Response(JSON.stringify({ error: msg }), {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // 防御：上游可能返回非 JSON（如网关 502 的 HTML 页面）
+    let data: any;
+    try {
+      data = await response.json();
+    } catch {
+      console.error('[ai/models] 上游返回非 JSON 响应');
+      return new Response(
+        JSON.stringify({ error: "上游返回数据格式异常" }),
+        { status: 502, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
     if (data && data.data && Array.isArray(data.data)) {
       data.data = data.data.filter((model: { id?: string }) => {
