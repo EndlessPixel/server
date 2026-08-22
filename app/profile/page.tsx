@@ -581,45 +581,53 @@ export default function ProfilePage() {
     );
   }
 
-  const getItemBySlot = (slot: number, items: InventoryItem[] = userInfo?.inventory ?? []) =>
-    items.find((item) => item.Slot === slot);
-
   /* 背包 / 末影箱 格子区块 */
-  const InventoryPanel = ({ items, showArmor = false }: { items: InventoryItem[]; showArmor?: boolean }) => (
-    <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-          <PackageIcon className="w-5 h-5 text-foreground/60" />
-          {showArmor ? '背包物品' : '末影箱物品'}
-          <span className="text-sm font-normal text-muted-foreground ml-2">({items.length})</span>
-        </h3>
-      </div>
+  const InventoryPanel = ({ items, showArmor = false }: { items: InventoryItem[]; showArmor?: boolean }) => {
+    // 末影箱物品通常不带 Slot，按数组顺序映射到主背包区域（9 + 0..26）
+    const hasSlot = items.some((it) => typeof it.Slot === 'number');
+    const orderedItems = hasSlot
+      ? items
+      : items.map((it, i) => ({ ...it, Slot: 9 + i }));
 
-      {showArmor && (
-        <div className="flex items-center gap-2 mb-4">
-          {[39, 38, 37, 36].map((slot) => (
-            <ItemSlot key={`armor-${slot}`} item={getItemBySlot(slot, items)} />
-          ))}
-          <div className="w-4" />
-          <ItemSlot key="offhand" item={getItemBySlot(40, items)} />
+    const getItemBySlotLocal = (slot: number) =>
+      orderedItems.find((item) => item.Slot === slot);
+
+    return (
+      <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <PackageIcon className="w-5 h-5 text-foreground/60" />
+            {showArmor ? '背包物品' : '末影箱物品'}
+            <span className="text-sm font-normal text-muted-foreground ml-2">({items.length})</span>
+          </h3>
         </div>
-      )}
 
-      <div className="grid grid-cols-9 gap-1 mb-4">
-        {Array.from({ length: 27 }, (_, i) => {
-          const slot = 9 + i;
-          return <ItemSlot key={`main-${slot}`} item={getItemBySlot(slot, items)} />;
-        })}
-      </div>
+        {showArmor && (
+          <div className="flex items-center gap-2 mb-4">
+            {[39, 38, 37, 36].map((slot) => (
+              <ItemSlot key={`armor-${slot}`} item={getItemBySlotLocal(slot)} />
+            ))}
+            <div className="w-4" />
+            <ItemSlot key="offhand" item={getItemBySlotLocal(40)} />
+          </div>
+        )}
 
-      <div className="grid grid-cols-9 gap-1">
-        {Array.from({ length: 9 }, (_, i) => {
-          const slot = i;
-          return <ItemSlot key={`hotbar-${slot}`} item={getItemBySlot(slot, items)} />;
-        })}
+        <div className="grid grid-cols-9 gap-1 mb-4">
+          {Array.from({ length: 27 }, (_, i) => {
+            const slot = 9 + i;
+            return <ItemSlot key={`main-${slot}`} item={getItemBySlotLocal(slot)} />;
+          })}
+        </div>
+
+        <div className="grid grid-cols-9 gap-1">
+          {Array.from({ length: 9 }, (_, i) => {
+            const slot = i;
+            return <ItemSlot key={`hotbar-${slot}`} item={getItemBySlotLocal(slot)} />;
+          })}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   /* 开发中占位 */
   const ComingSoon = ({ title }: { title: string }) => (
