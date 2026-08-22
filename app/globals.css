@@ -538,3 +538,68 @@ body {
     );
   background-attachment: fixed;
 }
+
+/* ============================================================
+   附魔紫光 glint：仅覆盖在物品图标之上，带动态闪烁扫光动画
+   ============================================================ */
+.enchant-glint {
+  position: absolute;
+  /* 与图标同尺寸并居中（图标为 w-8 h-8，容器 w-12 h-12） */
+  width: 2rem;
+  height: 2rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 2px;
+  overflow: hidden;
+  mix-blend-mode: screen;
+  opacity: 0.75;
+}
+
+.enchant-glint::before {
+  content: "";
+  position: absolute;
+  inset: -50% -50%;
+  background:
+    repeating-linear-gradient(
+      115deg,
+      rgba(190, 110, 255, 0.0) 0%,
+      rgba(170, 90, 255, 0.55) 12%,
+      rgba(120, 40, 200, 0.15) 24%,
+      rgba(210, 130, 255, 0.55) 36%,
+      rgba(190, 110, 255, 0.0) 48%
+    );
+  background-size: 200% 200%;
+  animation: enchant-glint-move 2.4s linear infinite;
+}
+
+.enchant-glint::after {
+  /* 一层缓慢呼吸的紫调，增强附魔质感 */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(150, 70, 230, 0.35) 0%,
+    rgba(120, 40, 200, 0.0) 70%
+  );
+  animation: enchant-glint-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes enchant-glint-move {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 200%; }
+}
+
+@keyframes enchant-glint-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enchant-glint::before,
+  .enchant-glint::after {
+    animation: none;
+  }
+}

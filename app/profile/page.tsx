@@ -420,15 +420,9 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   return (
     <div className="relative group w-12 h-12 bg-secondary rounded border border-foreground/10 flex items-center justify-center">
       {imgSrc && <img src={imgSrc} alt={displayName} className="w-8 h-8 object-contain" onError={handleImageError} />}
-      {/* 附魔/特效覆盖层：enchanted_ 物品或带附魔属性的，叠加紫光 glint */}
+      {/* 附魔/特效紫光：仅覆盖在图标之上，动态扫光动画 */}
       {(item.id.replace('minecraft:', '').startsWith('enchanted_') || (enchants && enchants.length > 0)) && (
-        <div
-          className="absolute inset-0 rounded pointer-events-none opacity-60 mix-blend-screen"
-          style={{
-            background:
-              'linear-gradient(135deg, rgba(180,90,255,0.55) 0%, rgba(120,40,200,0.25) 40%, rgba(200,120,255,0.55) 100%)',
-          }}
-        />
+        <span className="enchant-glint" aria-hidden="true" />
       )}
       {count > 1 && <span className="absolute bottom-0 right-0 text-[10px] text-white bg-black/60 px-1 rounded leading-none">{count}</span>}
 
