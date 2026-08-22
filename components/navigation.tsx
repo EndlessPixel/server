@@ -240,11 +240,11 @@ export function Navigation() {
   const { settings } = useAppearance();
   useLockBody(isMenuOpen);
   const navItems = [
-    { href: "/", label: "首页", icon: Home },
-    { href: "/downloads", label: "资源", icon: Download },
-    { href: "/status", label: "状态", icon: Activity },
-    { href: "/about", label: "关于", icon: Users },
-    { href: "/ai", label: "助手", icon: Bot },
+    { href: "/", label: "网站首页", icon: Home },
+    { href: "/downloads", label: "资源下载", icon: Download },
+    { href: "/status", label: "服务状态", icon: Activity },
+    { href: "/about", label: "关于我们", icon: Users },
+    { href: "/ai", label: "AI客服", icon: Bot },
   ];
 
   return (
