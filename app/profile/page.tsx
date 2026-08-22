@@ -10,7 +10,7 @@ import {
   BanIcon,
   PackageIcon,
 } from 'lucide-react';
-import { enchantments } from '../../lib/enchantments';
+import { getEnchantmentDisplayName } from '../../lib/enchantments';
 import { getItemDisplayName, getEntityDisplayName } from '../../lib/items';
 import React from 'react';
 
@@ -461,7 +461,7 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
           <div className="text-muted-foreground italic space-y-0.5 mb-1">
             {enchants.map(e => (
               <div key={e.id} className="text-[11px]">
-                {enchantments[e.id as keyof typeof enchantments] ?? e.id} {e.lvl}
+                {getEnchantmentDisplayName(e.id)} {e.lvl}
               </div>
             ))}
           </div>
