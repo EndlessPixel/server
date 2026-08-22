@@ -785,7 +785,7 @@ export default function ProfilePage() {
                     const isCustom = currentCat === 'minecraft:custom';
                     const name = isCustom
                       ? (CUSTOM_STAT_LABELS[id] ?? shortId(id))
-                      : shortId(id);
+                      : getItemDisplayName(id);
                     return (
                       <div key={id} className="bg-secondary/40 rounded-lg p-3">
                         <p className="text-xs text-muted-foreground truncate" title={id}>{name}</p>
