@@ -1371,7 +1371,26 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                               />
                             )}
                             {parsed.answer ? (
-                              <WidgetsWithText text={parsed.answer} />
+                              // While the response is still streaming, the
+                              // <widget> tags in `answer` are often incomplete
+                              // (e.g. only `<widget name="server_` has arrived).
+                              // Rendering them via react-markdown + rehype-raw
+                              // mid-stream remounts the widget components on every
+                              // token, re-firing their fetch effects and making the
+                              // cards spin forever ("looping loading"). So during
+                              // streaming we strip <widget> tags into a neutral
+                              // placeholder, and only render the real cards once
+                              // the message is complete (loading=false).
+                              isStreamingLast ? (
+                                <div className="text-muted-foreground/70">
+                                  {parsed.answer.replace(
+                                    /<widget[\s\S]*?(?:\/>|>)|\/?>/g,
+                                    (m2) => (m2.startsWith("<widget") ? "▦ " : ""),
+                                  )}
+                                </div>
+                              ) : (
+                                <WidgetsWithText text={parsed.answer} />
+                              )
                             ) : isStreamingLast ? (
                               <TypingIndicator />
                             ) : null}
