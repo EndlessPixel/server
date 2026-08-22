@@ -42,5 +42,17 @@
     "enchantment.minecraft.thorns": "荆棘",
     "enchantment.minecraft.unbreaking": "耐久",
     "enchantment.minecraft.vanishing_curse": "消失诅咒",
-    "enchantment.minecraft.wind_burst": "风爆"
+    "enchantment.minecraft.wind_burst": "风爆",
+    "enchantments:attack_speed": "攻击速度增加",
+    "enchantments:block_reach": "方块挖掘距离增加",
+    "enchantments:entity_reach": "生物攻击距离增加",
+    "enchantments:falling_wings": "落翼缓降",
+    "enchantments:frozen": "命中生物冻结",
+    "enchantments:glow": "标记打击",
+    "enchantments:healthy": "生命值上限提升",
+    "enchantments:jump": "跳跃提升",
+    "enchantments:knockback_protection": "击退抗性",
+    "enchantments:lifesteal": "吸血",
+    "enchantments:speed": "移动速度提升",
+    "enchantments:wither": "凋零伤害附加"
 }
