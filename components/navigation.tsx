@@ -13,7 +13,8 @@ import {
   Home,
   ChevronRight,
   Search,
-  Settings
+  Settings,
+  Bot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoginButton from "@/components/login";
@@ -243,6 +244,7 @@ export function Navigation() {
     { href: "/downloads", label: "资源", icon: Download },
     { href: "/status", label: "状态", icon: Activity },
     { href: "/about", label: "关于", icon: Users },
+    { href: "/ai", label: "助手", icon: Bot },
   ];
 
   return (
