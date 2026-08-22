@@ -50,6 +50,8 @@ interface UserInfo {
   qq: { uuid: string; name: string } | null;
   inventory: InventoryItem[];
   enderItems: InventoryItem[];
+  stats?: { stats?: Record<string, Record<string, number>>; DataVersion?: number } | null;
+  advancements?: Record<string, { criteria: any; done: boolean }> | null;
   nbt?: any;
 }
 
@@ -540,7 +542,7 @@ export default function ProfilePage() {
           }
         }
 
-        setUserInfo({ ...data, inventory, enderItems });
+        setUserInfo({ ...data, inventory, enderItems, stats: data.stats ?? null, advancements: data.advancements ?? null });
         // Debug logs removed after verification
       } catch (err) {
         setError(err instanceof Error ? err.message : '加载用户信息失败');
@@ -629,18 +631,261 @@ export default function ProfilePage() {
     );
   };
 
-  /* 开发中占位 */
-  const ComingSoon = ({ title }: { title: string }) => (
-    <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-12 text-center">
-      <h3 className="text-lg font-bold text-foreground flex items-center justify-center gap-2">
-        {title}
-      </h3>
-      <div className="mt-6 inline-flex flex-col items-center gap-3 text-muted-foreground">
-        <Loader2Icon className="w-8 h-8 opacity-40" />
-        <p className="text-sm">功能正在开发中，敬请期待</p>
+  /* ---------- 统计信息：原版 statistics 格式 ---------- */
+  // 分类中文名
+  const STAT_CATEGORY_LABELS: Record<string, string> = {
+    'minecraft:custom': '综合',
+    'minecraft:mined': '挖掘方块',
+    'minecraft:crafted': '合成物品',
+    'minecraft:used': '使用物品',
+    'minecraft:broken': '损坏物品',
+    'minecraft:picked_up': '捡起物品',
+    'minecraft:dropped': '丢弃物品',
+    'minecraft:killed': '击杀生物',
+    'minecraft:killed_by': '被击杀',
+  };
+
+  // 综合指标中文名（custom 下的常用 key）
+  const CUSTOM_STAT_LABELS: Record<string, string> = {
+    'minecraft:play_time': '游戏时长',
+    'minecraft:total_world_time': '总世界时间',
+    'minecraft:time_since_death': '距上次死亡',
+    'minecraft:time_since_rest': '距上次休息',
+    'minecraft:mob_kills': '击杀生物',
+    'minecraft:player_kills': '击杀玩家',
+    'minecraft:deaths': '死亡次数',
+    'minecraft:damage_dealt': '造成伤害',
+    'minecraft:damage_taken': '承受伤害',
+    'minecraft:jump': '跳跃次数',
+    'minecraft:walk_one_cm': '行走距离',
+    'minecraft:sprint_one_cm': '疾跑距离',
+    'minecraft:crouch_one_cm': '潜行距离',
+    'minecraft:swim_one_cm': '游泳距离',
+    'minecraft:fly_one_cm': '飞行距离',
+    'minecraft:fall_one_cm': '掉落距离',
+    'minecraft:climb_one_cm': '攀爬距离',
+    'minecraft:horse_one_cm': '骑马距离',
+    'minecraft:walk_under_water_one_cm': '水下行走距离',
+    'minecraft:walk_on_water_one_cm': '水上行走距离',
+    'minecraft:leave_game': '退出游戏',
+    'minecraft:talked_to_villager': '与村民交谈',
+    'minecraft:traded_with_villager': '与村民交易',
+    'minecraft:enchant_item': '附魔物品',
+    'minecraft:interact_with_crafting_table': '使用工作台',
+    'minecraft:interact_with_furnace': '使用熔炉',
+    'minecraft:interact_with_blast_furnace': '使用高炉',
+    'minecraft:interact_with_smoker': '使用烟熏炉',
+    'minecraft:interact_with_anvil': '使用铁砧',
+    'minecraft:interact_with_grindstone': '使用砂轮',
+    'minecraft:open_chest': '打开箱子',
+    'minecraft:open_barrel': '打开木桶',
+    'minecraft:bell_ring': '敲响钟',
+    'minecraft:drop': '丢弃次数',
+    'minecraft:sneak_time': '潜行时间',
+  };
+
+  const formatCm = (cm: number): string => {
+    if (cm >= 100000) return `${(cm / 100000).toFixed(1)} km`;
+    if (cm >= 100) return `${(cm / 100).toFixed(1)} m`;
+    return `${cm} cm`;
+  };
+
+  const formatTicks = (ticks: number): string => {
+    const totalSec = Math.floor(ticks / 20);
+    const d = Math.floor(totalSec / 86400);
+    const h = Math.floor((totalSec % 86400) / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    if (d > 0) return `${d} 天 ${h} 小时`;
+    if (h > 0) return `${h} 小时 ${m} 分`;
+    return `${m} 分`;
+  };
+
+  const formatStatValue = (key: string, value: number): string => {
+    if (key.includes('_one_cm')) return formatCm(value);
+    if (key.endsWith('_time') || key.startsWith('minecraft:time_since')) return formatTicks(value);
+    return formatNumber(value);
+  };
+
+  // 取物品/实体 id 的简短中文或保留英文 id
+  const shortId = (id: string): string => id.replace(/^minecraft:/, '');
+
+  const StatsPanel = () => {
+    const rawStats = userInfo?.stats?.stats ?? {};
+    const categories = Object.entries(rawStats).filter(([, v]) => v && Object.keys(v).length > 0);
+    const STAT_PAGE_SIZE = 12;
+
+    // 每个分类独立的页码状态
+    const [catPages, setCatPages] = useState<Record<string, number>>({});
+    const goPage = (cat: string, p: number) =>
+      setCatPages((prev) => ({ ...prev, [cat]: p }));
+
+    const totalDone = (() => {
+      if (!userInfo?.stats) return null;
+      const all = Object.values(rawStats).flatMap((cat) => Object.values(cat ?? {}));
+      return all.reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
+    })();
+
+    return (
+      <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <UserIcon className="w-5 h-5 text-foreground/60" />统计信息
+          </h3>
+          {totalDone !== null && (
+            <span className="text-sm text-muted-foreground">累计统计项总计数：{formatNumber(totalDone)}</span>
+          )}
+        </div>
+
+        {categories.length === 0 ? (
+          <div className="text-sm text-muted-foreground">暂无统计数据</div>
+        ) : (
+          <div className="space-y-6">
+            {categories.map(([category, entries]) => {
+              const label = STAT_CATEGORY_LABELS[category] ?? category;
+              const sorted = Object.entries(entries ?? {}).sort((a, b) => (b[1] as number) - (a[1] as number));
+              const totalPages = Math.max(1, Math.ceil(sorted.length / STAT_PAGE_SIZE));
+              const page = Math.min(catPages[category] ?? 0, totalPages - 1);
+              const pageItems = sorted.slice(page * STAT_PAGE_SIZE, page * STAT_PAGE_SIZE + STAT_PAGE_SIZE);
+              return (
+                <div key={category}>
+                  <h4 className="text-sm font-semibold text-foreground/80 mb-3 flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded bg-secondary text-xs text-foreground/70">{label}</span>
+                    <span className="text-xs text-muted-foreground">{sorted.length} 项</span>
+                  </h4>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {pageItems.map(([id, val]) => {
+                      const isCustom = category === 'minecraft:custom';
+                      const name = isCustom
+                        ? (CUSTOM_STAT_LABELS[id] ?? shortId(id))
+                        : shortId(id);
+                      return (
+                        <div key={id} className="bg-secondary/40 rounded-lg p-3">
+                          <p className="text-xs text-muted-foreground truncate" title={id}>{name}</p>
+                          <p className="mt-1 text-lg font-bold text-foreground">{formatStatValue(id, val as number)}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {totalPages > 1 && (
+                    <div className="mt-3 flex items-center justify-center gap-3">
+                      <button
+                        onClick={() => goPage(category, Math.max(0, page - 1))}
+                        disabled={page === 0}
+                        className="px-2.5 py-1 rounded-md text-xs bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        上一页
+                      </button>
+                      <span className="text-xs text-muted-foreground">
+                        {page + 1} / {totalPages}
+                      </span>
+                      <button
+                        onClick={() => goPage(category, Math.min(totalPages - 1, page + 1))}
+                        disabled={page >= totalPages - 1}
+                        className="px-2.5 py-1 rounded-md text-xs bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        下一页
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
-    </div>
-  );
+    );
+  };
+
+  /* ---------- 成就 / 进度（advancements） ---------- */
+  const AchievementsPanel = () => {
+    const advs = userInfo?.advancements ?? {};
+    const allEntries = Object.entries(advs);
+    const doneCount = allEntries.filter(([, v]) => v?.done).length;
+    const total = allEntries.length;
+
+    const [page, setPage] = useState(0);
+    const [onlyDone, setOnlyDone] = useState(false);
+    const PAGE_SIZE = 40;
+
+    const filtered = onlyDone ? allEntries.filter(([, v]) => v?.done) : allEntries;
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    const safePage = Math.min(page, totalPages - 1);
+    const pageItems = filtered.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE);
+
+    return (
+      <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <UserIcon className="w-5 h-5 text-foreground/60" />成就 / 进度
+          </h3>
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={onlyDone}
+                onChange={(e) => {
+                  setOnlyDone(e.target.checked);
+                  setPage(0);
+                }}
+                className="accent-foreground"
+              />
+              仅看已完成
+            </label>
+            <span className="text-sm text-muted-foreground">已完成 {doneCount} / {total}</span>
+          </div>
+        </div>
+
+        {total === 0 ? (
+          <div className="text-sm text-muted-foreground">暂无成就数据</div>
+        ) : pageItems.length === 0 ? (
+          <div className="text-sm text-muted-foreground">没有符合条件的成就</div>
+        ) : (
+          <>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {pageItems.map(([id, v]) => (
+                <div
+                  key={id}
+                  className={`flex items-center gap-3 rounded-lg p-3 border ${
+                    v?.done ? 'bg-secondary/40 border-foreground/8' : 'bg-destructive/5 border-destructive/10'
+                  }`}
+                >
+                  <span
+                    className={`shrink-0 w-2.5 h-2.5 rounded-full ${
+                      v?.done ? 'bg-green-500' : 'bg-muted-foreground/30'
+                    }`}
+                  />
+                  <span className="text-sm text-foreground/80 truncate" title={id}>
+                    {shortId(id)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 flex items-center justify-center gap-4">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={safePage === 0}
+                className="px-3 py-1.5 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                上一页
+              </button>
+              <span className="text-sm text-muted-foreground">
+                {safePage + 1} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={safePage >= totalPages - 1}
+                className="px-3 py-1.5 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                下一页
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
 
   const tabs: { id: typeof activeTab; label: string }[] = [
     { id: 'info', label: '基础信息' },
@@ -819,9 +1064,9 @@ export default function ProfilePage() {
 
             {activeTab === 'ender' && <InventoryPanel items={userInfo.enderItems} />}
 
-            {activeTab === 'stats' && <ComingSoon title="统计信息" />}
+            {activeTab === 'stats' && <StatsPanel />}
 
-            {activeTab === 'achievements' && <ComingSoon title="成就" />}
+            {activeTab === 'achievements' && <AchievementsPanel />}
 
             {/* 移动端退出登录按钮 */}
             <button
