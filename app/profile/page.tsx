@@ -11,7 +11,7 @@ import {
   PackageIcon,
 } from 'lucide-react';
 import { enchantments } from '../../lib/enchantments';
-import { getItemDisplayName } from '../../lib/items';
+import { getItemDisplayName, getEntityDisplayName } from '../../lib/items';
 import React from 'react';
 
 /* ---------- 类型定义 ---------- */
@@ -783,9 +783,12 @@ export default function ProfilePage() {
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {pageItems.map(([id, val]) => {
                     const isCustom = currentCat === 'minecraft:custom';
+                    const isEntity = currentCat === 'minecraft:killed' || currentCat === 'minecraft:killed_by';
                     const name = isCustom
                       ? (CUSTOM_STAT_LABELS[id] ?? shortId(id))
-                      : getItemDisplayName(id);
+                      : isEntity
+                        ? getEntityDisplayName(id)
+                        : getItemDisplayName(id);
                     return (
                       <div key={id} className="bg-secondary/40 rounded-lg p-3">
                         <p className="text-xs text-muted-foreground truncate" title={id}>{name}</p>
