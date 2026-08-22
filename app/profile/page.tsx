@@ -714,16 +714,28 @@ export default function ProfilePage() {
     const categories = Object.entries(rawStats).filter(([, v]) => v && Object.keys(v).length > 0);
     const STAT_PAGE_SIZE = 12;
 
-    // 每个分类独立的页码状态
-    const [catPages, setCatPages] = useState<Record<string, number>>({});
-    const goPage = (cat: string, p: number) =>
-      setCatPages((prev) => ({ ...prev, [cat]: p }));
+    // 当前选中的统计子选项卡（默认第一个有数据的分类）
+    const [activeCat, setActiveCat] = useState<string | null>(null);
+    const currentCat = activeCat ?? categories[0]?.[0] ?? null;
+    const [page, setPage] = useState(0);
+
+    // 切换分类时重置页码
+    const selectCat = (cat: string) => {
+      setActiveCat(cat);
+      setPage(0);
+    };
 
     const totalDone = (() => {
       if (!userInfo?.stats) return null;
       const all = Object.values(rawStats).flatMap((cat) => Object.values(cat ?? {}));
       return all.reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
     })();
+
+    const activeEntries = currentCat ? (rawStats[currentCat] ?? {}) : {};
+    const sorted = Object.entries(activeEntries).sort((a, b) => (b[1] as number) - (a[1] as number));
+    const totalPages = Math.max(1, Math.ceil(sorted.length / STAT_PAGE_SIZE));
+    const safePage = Math.min(page, totalPages - 1);
+    const pageItems = sorted.slice(safePage * STAT_PAGE_SIZE, safePage * STAT_PAGE_SIZE + STAT_PAGE_SIZE);
 
     return (
       <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
@@ -739,59 +751,74 @@ export default function ProfilePage() {
         {categories.length === 0 ? (
           <div className="text-sm text-muted-foreground">暂无统计数据</div>
         ) : (
-          <div className="space-y-6">
-            {categories.map(([category, entries]) => {
-              const label = STAT_CATEGORY_LABELS[category] ?? category;
-              const sorted = Object.entries(entries ?? {}).sort((a, b) => (b[1] as number) - (a[1] as number));
-              const totalPages = Math.max(1, Math.ceil(sorted.length / STAT_PAGE_SIZE));
-              const page = Math.min(catPages[category] ?? 0, totalPages - 1);
-              const pageItems = sorted.slice(page * STAT_PAGE_SIZE, page * STAT_PAGE_SIZE + STAT_PAGE_SIZE);
-              return (
-                <div key={category}>
-                  <h4 className="text-sm font-semibold text-foreground/80 mb-3 flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-secondary text-xs text-foreground/70">{label}</span>
-                    <span className="text-xs text-muted-foreground">{sorted.length} 项</span>
-                  </h4>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {pageItems.map(([id, val]) => {
-                      const isCustom = category === 'minecraft:custom';
-                      const name = isCustom
-                        ? (CUSTOM_STAT_LABELS[id] ?? shortId(id))
-                        : shortId(id);
-                      return (
-                        <div key={id} className="bg-secondary/40 rounded-lg p-3">
-                          <p className="text-xs text-muted-foreground truncate" title={id}>{name}</p>
-                          <p className="mt-1 text-lg font-bold text-foreground">{formatStatValue(id, val as number)}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
+          <>
+            {/* 统计子选项卡：按分类 */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {categories.map(([category, entries]) => {
+                const label = STAT_CATEGORY_LABELS[category] ?? category;
+                const count = Object.keys(entries ?? {}).length;
+                const active = category === currentCat;
+                return (
+                  <button
+                    key={category}
+                    onClick={() => selectCat(category)}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      active
+                        ? 'bg-foreground text-background'
+                        : 'bg-secondary text-foreground/70 hover:bg-secondary/70'
+                    }`}
+                  >
+                    {label}
+                    <span className={`ml-1.5 text-xs ${active ? 'text-background/70' : 'text-muted-foreground'}`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
 
-                  {totalPages > 1 && (
-                    <div className="mt-3 flex items-center justify-center gap-3">
-                      <button
-                        onClick={() => goPage(category, Math.max(0, page - 1))}
-                        disabled={page === 0}
-                        className="px-2.5 py-1 rounded-md text-xs bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
-                      >
-                        上一页
-                      </button>
-                      <span className="text-xs text-muted-foreground">
-                        {page + 1} / {totalPages}
-                      </span>
-                      <button
-                        onClick={() => goPage(category, Math.min(totalPages - 1, page + 1))}
-                        disabled={page >= totalPages - 1}
-                        className="px-2.5 py-1 rounded-md text-xs bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
-                      >
-                        下一页
-                      </button>
-                    </div>
-                  )}
+            {/* 当前分类内容 + 分页 */}
+            {currentCat && (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {pageItems.map(([id, val]) => {
+                    const isCustom = currentCat === 'minecraft:custom';
+                    const name = isCustom
+                      ? (CUSTOM_STAT_LABELS[id] ?? shortId(id))
+                      : shortId(id);
+                    return (
+                      <div key={id} className="bg-secondary/40 rounded-lg p-3">
+                        <p className="text-xs text-muted-foreground truncate" title={id}>{name}</p>
+                        <p className="mt-1 text-lg font-bold text-foreground">{formatStatValue(id, val as number)}</p>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
+
+                {totalPages > 1 && (
+                  <div className="mt-6 flex items-center justify-center gap-4">
+                    <button
+                      onClick={() => setPage((p) => Math.max(0, p - 1))}
+                      disabled={safePage === 0}
+                      className="px-3 py-1.5 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      上一页
+                    </button>
+                    <span className="text-sm text-muted-foreground">
+                      {safePage + 1} / {totalPages}
+                    </span>
+                    <button
+                      onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                      disabled={safePage >= totalPages - 1}
+                      className="px-3 py-1.5 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      下一页
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </>
         )}
       </div>
     );
