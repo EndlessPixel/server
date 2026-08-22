@@ -7,7 +7,6 @@ import {
   ShieldIcon,
   LogOutIcon,
   Loader2Icon,
-  CalendarIcon,
   BanIcon,
   PackageIcon,
 } from 'lucide-react';
@@ -50,6 +49,7 @@ interface UserInfo {
   ban: boolean;
   qq: { uuid: string; name: string } | null;
   inventory: InventoryItem[];
+  enderItems: InventoryItem[];
   nbt?: any;
 }
 
@@ -403,18 +403,38 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   // 解析 Lore（如果存在）
   const loreLines = lore?.map((l) => renderMinecraftText(l)) || [];
 
+  // 这些物品在资源包中有多帧/方向变体（如盾牌、旗帜、床、箱子等），
+  // 其贴图需要追加 _00 帧后缀才能命中。普通物品不存在该变体，强行回退只会 404。
+  const MULTI_FRAME_ITEMS = new Set([
+    'shield', 'banner', 'standing_banner', 'wall_banner',
+    'bed', 'chest', 'trapped_chest', 'ender_chest',
+    'oak_door', 'iron_door', 'wooden_door', 'dark_oak_door',
+    'white_bed', 'red_bed', 'black_bed',
+  ]);
+
+  const getUnknownItemUrl = (): string =>
+    'https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/barrier.png';
+
   const handleImageError = () => {
-    // 多级回退，避免破图：
-    //  stage 0 -> 尝试基础物品贴图（enchanted_* 等变体已回退到基础图）
-    //  stage 1 -> 尝试方向帧/多帧 (_00)
-    //  stage 2 -> 资源包无此独立贴图（如 shield 等合成贴图），用 paper 占位
+    const baseId = stripEnchantedPrefix(item.id.replace('minecraft:', ''));
+    // stage 0 -> 1：首次失败，先重试一次基础贴图（防偶发网络抖动误判）
     if (imgStageRef.current === 0) {
       imgStageRef.current = 1;
-      setImgSrc(getDefaultItemImageUrl(item.id).replace('.png', '_00.png'));
-    } else {
-      imgStageRef.current = 2;
-      setImgSrc('https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/paper.png');
+      setImgSrc(getDefaultItemImageUrl(item.id));
+      return;
     }
+    // stage 1 -> 2：仅对已知多帧物品尝试 _00 方向帧
+    if (imgStageRef.current === 1) {
+      imgStageRef.current = 2;
+      if (MULTI_FRAME_ITEMS.has(baseId)) {
+        setImgSrc(getDefaultItemImageUrl(item.id).replace('.png', '_00.png'));
+        return;
+      }
+    }
+    // stage 2：其余物品确实无可用贴图，回退到「未知物品」图标（barrier），
+    // 不再伪装成普通书（paper）。
+    imgStageRef.current = 3;
+    setImgSrc(getUnknownItemUrl());
   };
 
   return (
@@ -468,6 +488,7 @@ export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<'info' | 'inventory' | 'ender' | 'stats' | 'achievements'>('info');
   const router = useRouter();
 
   useEffect(() => {
@@ -485,10 +506,16 @@ export default function ProfilePage() {
         const data = await res.json();
 
         let inventory: InventoryItem[] = [];
+        let enderItems: InventoryItem[] = [];
 
         // 1. 从 nbt.Inventory 获取普通物品
         if (data.nbt?.Inventory && Array.isArray(data.nbt.Inventory)) {
           inventory = normalizeInventory(data.nbt.Inventory);
+        }
+
+        // 1.5 从 nbt.EnderItems 获取末影箱物品
+        if (data.nbt?.EnderItems && Array.isArray(data.nbt.EnderItems)) {
+          enderItems = normalizeInventory(data.nbt.EnderItems);
         }
 
         // 2. 从 nbt.equipment 获取盔甲
@@ -513,7 +540,7 @@ export default function ProfilePage() {
           }
         }
 
-        setUserInfo({ ...data, inventory });
+        setUserInfo({ ...data, inventory, enderItems });
         // Debug logs removed after verification
       } catch (err) {
         setError(err instanceof Error ? err.message : '加载用户信息失败');
@@ -554,7 +581,66 @@ export default function ProfilePage() {
     );
   }
 
-  const getItemBySlot = (slot: number) => userInfo?.inventory.find((item) => item.Slot === slot);
+  const getItemBySlot = (slot: number, items: InventoryItem[] = userInfo?.inventory ?? []) =>
+    items.find((item) => item.Slot === slot);
+
+  /* 背包 / 末影箱 格子区块 */
+  const InventoryPanel = ({ items, showArmor = false }: { items: InventoryItem[]; showArmor?: boolean }) => (
+    <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <PackageIcon className="w-5 h-5 text-foreground/60" />
+          {showArmor ? '背包物品' : '末影箱物品'}
+          <span className="text-sm font-normal text-muted-foreground ml-2">({items.length})</span>
+        </h3>
+      </div>
+
+      {showArmor && (
+        <div className="flex items-center gap-2 mb-4">
+          {[39, 38, 37, 36].map((slot) => (
+            <ItemSlot key={`armor-${slot}`} item={getItemBySlot(slot, items)} />
+          ))}
+          <div className="w-4" />
+          <ItemSlot key="offhand" item={getItemBySlot(40, items)} />
+        </div>
+      )}
+
+      <div className="grid grid-cols-9 gap-1 mb-4">
+        {Array.from({ length: 27 }, (_, i) => {
+          const slot = 9 + i;
+          return <ItemSlot key={`main-${slot}`} item={getItemBySlot(slot, items)} />;
+        })}
+      </div>
+
+      <div className="grid grid-cols-9 gap-1">
+        {Array.from({ length: 9 }, (_, i) => {
+          const slot = i;
+          return <ItemSlot key={`hotbar-${slot}`} item={getItemBySlot(slot, items)} />;
+        })}
+      </div>
+    </div>
+  );
+
+  /* 开发中占位 */
+  const ComingSoon = ({ title }: { title: string }) => (
+    <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-12 text-center">
+      <h3 className="text-lg font-bold text-foreground flex items-center justify-center gap-2">
+        {title}
+      </h3>
+      <div className="mt-6 inline-flex flex-col items-center gap-3 text-muted-foreground">
+        <Loader2Icon className="w-8 h-8 opacity-40" />
+        <p className="text-sm">功能正在开发中，敬请期待</p>
+      </div>
+    </div>
+  );
+
+  const tabs: { id: typeof activeTab; label: string }[] = [
+    { id: 'info', label: '基础信息' },
+    { id: 'inventory', label: '背包' },
+    { id: 'ender', label: '末影箱' },
+    { id: 'stats', label: '统计信息' },
+    { id: 'achievements', label: '成就' },
+  ];
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
@@ -576,47 +662,58 @@ export default function ProfilePage() {
         )}
 
         {userInfo && (
-          <div className="grid gap-6 lg:grid-cols-3">
-            {/* 左侧：用户概览 */}
-            <div className="lg:col-span-1 space-y-6">
-              <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6 text-center">
-                <div className="w-24 h-24 mx-auto rounded-full bg-foreground flex items-center justify-center text-background text-3xl font-bold mb-4 shadow-sm">
+          <>
+            {/* 顶部常驻：头像 + 用户名 */}
+            <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6 mb-6">
+              <div className="flex items-center gap-5">
+                <div className="w-20 h-20 shrink-0 rounded-full bg-foreground flex items-center justify-center text-background text-3xl font-bold shadow-sm">
                   {userInfo.name.charAt(0).toUpperCase()}
                 </div>
-                <h2 className="text-xl font-bold text-foreground">{userInfo.name}</h2>
-                <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-secondary text-foreground/70">
-                    <ShieldIcon className="w-3 h-3" />普通用户
-                  </span>
-                  {userInfo.ban && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
-                      <BanIcon className="w-3 h-3" />已封禁
+                <div className="min-w-0">
+                  <h2 className="text-xl font-bold text-foreground truncate">{userInfo.name}</h2>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-secondary text-foreground/70">
+                      <ShieldIcon className="w-3 h-3" />普通用户
                     </span>
-                  )}
-                </div>
-
-                <div className="mt-6 pt-6 border-t border-foreground/5">
-                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                    <CalendarIcon className="w-4 h-4" />注册天数
+                    {userInfo.ban && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
+                        <BanIcon className="w-3 h-3" />已封禁
+                      </span>
+                    )}
+                    <span className="text-xs text-muted-foreground">
+                      注册 {getDaysSince(userInfo.createdAt)} 天
+                    </span>
                   </div>
-                  <p className="mt-1 text-2xl font-bold text-foreground">
-                    {getDaysSince(userInfo.createdAt)}
-                    <span className="text-sm font-normal text-muted-foreground ml-1">天</span>
-                  </p>
                 </div>
 
                 <button
                   onClick={handleLogout}
-                  className="mt-4 inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70"
+                  className="ml-auto hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 shrink-0"
                 >
                   <LogOutIcon className="w-4 h-4" />退出登录
                 </button>
               </div>
+
+              {/* 选项卡导航 */}
+              <div className="mt-6 flex flex-wrap gap-2 border-t border-foreground/5 pt-4">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      activeTab === tab.id
+                        ? 'bg-foreground text-background'
+                        : 'bg-secondary text-foreground/70 hover:bg-secondary/70'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* 右侧：详细信息 */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* 基本信息 */}
+            {/* 选项卡内容 */}
+            {activeTab === 'info' && (
               <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
@@ -708,44 +805,24 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </div>
+            )}
 
-              {/* ===== 背包 ===== */}
-              <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-                    <PackageIcon className="w-5 h-5 text-foreground/60" />
-                    背包物品
-                    <span className="text-sm font-normal text-muted-foreground ml-2">({userInfo.inventory.length})</span>
-                  </h3>
-                </div>
+            {activeTab === 'inventory' && <InventoryPanel items={userInfo.inventory} showArmor />}
 
-                {/* 盔甲 + 副手 */}
-                <div className="flex items-center gap-2 mb-4">
-                  {[39, 38, 37, 36].map((slot) => (
-                    <ItemSlot key={`armor-${slot}`} item={getItemBySlot(slot)} />
-                  ))}
-                  <div className="w-4" />
-                  <ItemSlot key="offhand" item={getItemBySlot(40)} />
-                </div>
+            {activeTab === 'ender' && <InventoryPanel items={userInfo.enderItems} />}
 
-                {/* 主背包：3×9 */}
-                <div className="grid grid-cols-9 gap-1 mb-4">
-                  {Array.from({ length: 27 }, (_, i) => {
-                    const slot = 9 + i;
-                    return <ItemSlot key={`main-${slot}`} item={getItemBySlot(slot)} />;
-                  })}
-                </div>
+            {activeTab === 'stats' && <ComingSoon title="统计信息" />}
 
-                {/* 快捷栏：1×9 */}
-                <div className="grid grid-cols-9 gap-1">
-                  {Array.from({ length: 9 }, (_, i) => {
-                    const slot = i;
-                    return <ItemSlot key={`hotbar-${slot}`} item={getItemBySlot(slot)} />;
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
+            {activeTab === 'achievements' && <ComingSoon title="成就" />}
+
+            {/* 移动端退出登录按钮 */}
+            <button
+              onClick={handleLogout}
+              className="mt-6 w-full sm:hidden inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70"
+            >
+              <LogOutIcon className="w-4 h-4" />退出登录
+            </button>
+          </>
         )}
       </main>
     </div>
