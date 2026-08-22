@@ -297,7 +297,7 @@ const stripEnchantedPrefix = (id: string): string =>
 
 const getDefaultItemImageUrl = (itemId: string): string => {
   const id = stripEnchantedPrefix(itemId.replace('minecraft:', ''));
-  return `https://assets.mcasset.cloud/1.21.11/assets/minecraft/textures/item/${id}.png`;
+  return `https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/${id}.png`;
 };
 
 const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
@@ -413,7 +413,7 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
       setImgSrc(getDefaultItemImageUrl(item.id).replace('.png', '_00.png'));
     } else {
       imgStageRef.current = 2;
-      setImgSrc('https://assets.mcasset.cloud/1.21.11/assets/minecraft/textures/item/paper.png');
+      setImgSrc('https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/paper.png');
     }
   };
 
