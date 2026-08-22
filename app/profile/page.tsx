@@ -718,11 +718,14 @@ export default function ProfilePage() {
     const [activeCat, setActiveCat] = useState<string | null>(null);
     const currentCat = activeCat ?? categories[0]?.[0] ?? null;
     const [page, setPage] = useState(0);
+    type SortMode = 'value_desc' | 'value_asc' | 'name_asc' | 'name_desc';
+    const [sortMode, setSortMode] = useState<SortMode>('value_desc');
 
-    // 切换分类时重置页码
+    // 切换分类时重置页码与排序
     const selectCat = (cat: string) => {
       setActiveCat(cat);
       setPage(0);
+      setSortMode('value_desc');
     };
 
     const totalDone = (() => {
@@ -732,7 +735,29 @@ export default function ProfilePage() {
     })();
 
     const activeEntries = currentCat ? (rawStats[currentCat] ?? {}) : {};
-    const sorted = Object.entries(activeEntries).sort((a, b) => (b[1] as number) - (a[1] as number));
+    const displayName = (id: string): string => {
+      const isCustom = currentCat === 'minecraft:custom';
+      const isEntity = currentCat === 'minecraft:killed' || currentCat === 'minecraft:killed_by';
+      return isCustom
+        ? (CUSTOM_STAT_LABELS[id] ?? shortId(id))
+        : isEntity
+          ? getEntityDisplayName(id)
+          : getItemDisplayName(id);
+    };
+    const sorted = (() => {
+      const entries = Object.entries(activeEntries) as [string, number][];
+      switch (sortMode) {
+        case 'value_asc':
+          return entries.sort((a, b) => a[1] - b[1]);
+        case 'name_asc':
+          return entries.sort((a, b) => displayName(a[0]).localeCompare(displayName(b[0]), 'zh-Hans-CN'));
+        case 'name_desc':
+          return entries.sort((a, b) => displayName(b[0]).localeCompare(displayName(a[0]), 'zh-Hans-CN'));
+        case 'value_desc':
+        default:
+          return entries.sort((a, b) => b[1] - a[1]);
+      }
+    })();
     const totalPages = Math.max(1, Math.ceil(sorted.length / STAT_PAGE_SIZE));
     const safePage = Math.min(page, totalPages - 1);
     const pageItems = sorted.slice(safePage * STAT_PAGE_SIZE, safePage * STAT_PAGE_SIZE + STAT_PAGE_SIZE);
@@ -777,18 +802,37 @@ export default function ProfilePage() {
               })}
             </div>
 
+            {/* 排序方式 */}
+            {currentCat && (
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className="text-xs text-muted-foreground mr-1">排序：</span>
+                {[
+                  { key: 'value_desc', label: '数值 ↓' },
+                  { key: 'value_asc', label: '数值 ↑' },
+                  { key: 'name_asc', label: '名称 A→Z' },
+                  { key: 'name_desc', label: '名称 Z→A' },
+                ].map((opt) => (
+                  <button
+                    key={opt.key}
+                    onClick={() => { setSortMode(opt.key as SortMode); setPage(0); }}
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                      sortMode === opt.key
+                        ? 'bg-foreground text-background'
+                        : 'bg-secondary text-foreground/70 hover:bg-secondary/70'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* 当前分类内容 + 分页 */}
             {currentCat && (
               <>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {pageItems.map(([id, val]) => {
-                    const isCustom = currentCat === 'minecraft:custom';
-                    const isEntity = currentCat === 'minecraft:killed' || currentCat === 'minecraft:killed_by';
-                    const name = isCustom
-                      ? (CUSTOM_STAT_LABELS[id] ?? shortId(id))
-                      : isEntity
-                        ? getEntityDisplayName(id)
-                        : getItemDisplayName(id);
+                    const name = displayName(id);
                     return (
                       <div key={id} className="bg-secondary/40 rounded-lg p-3">
                         <p className="text-xs text-muted-foreground truncate" title={id}>{name}</p>
