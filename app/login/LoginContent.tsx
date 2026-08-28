@@ -94,6 +94,11 @@ export default function LoginContent() {
                 const redirect = searchParams.get('redirect') || '/';
                 router.push(redirect);
                 router.refresh();
+            } else if (res.status === 429 || data.error === 'rate_limited') {
+                // 适配后端限流/失败锁定：提示稍后再试，并展示倒计时
+                const secs = data.retryAfter;
+                const waitText = secs ? `请 ${secs} 秒后再试` : '请稍后再试';
+                setError(`尝试过于频繁，账号已被临时锁定或限流，${waitText}`);
             } else {
                 setError(data.message || data.error || '登录失败，请检查用户名和密码');
             }
