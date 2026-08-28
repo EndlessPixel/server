@@ -23,7 +23,12 @@ export default function LoginContent() {
 
     useEffect(() => {
         const redirect = searchParams.get('redirect');
-        if (getCookie('mc_user')) {
+        // 以服务端签名会话 ep_session 作为已登录依据，避免仅凭明文 mc_user
+        // cookie 残留导致 /login 与 /profile 之间无限跳转。
+        const hasSession = document.cookie
+            .split('; ')
+            .some((c) => c.startsWith('ep_session='));
+        if (hasSession) {
             router.push(redirect || '/');
         }
         const ghErr = searchParams.get('error');
@@ -40,17 +45,6 @@ export default function LoginContent() {
         const encodedValue = encodeURIComponent(value);
         const secure = window.location.protocol === 'https:' ? 'Secure;' : '';
         document.cookie = `${name}=${encodedValue}; ${expires}; path=/; SameSite=Lax; ${secure}`;
-    }
-
-    function getCookie(name: string): string | null {
-        if (typeof window === 'undefined') return null;
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            const cookieValue = parts.pop()?.split(';').shift();
-            return cookieValue ? decodeURIComponent(cookieValue) : null;
-        }
-        return null;
     }
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
