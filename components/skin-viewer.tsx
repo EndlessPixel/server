@@ -6,14 +6,18 @@ import { Loader2 } from 'lucide-react';
 interface SkinViewerProps {
   /** Minecraft 玩家 UUID（32 位 hex，可带连字符） */
   uuid: string;
-  /** 皮肤来源服务，默认 crafatar（返回 CORS 头，支持跨域加载） */
-  skinBase?: 'mc-heads' | 'crafatar';
+  /** 皮肤来源服务，默认 proxy（同源代理，规避 CORS） */
+  skinBase?: 'mc-heads' | 'crafatar' | 'proxy';
   width?: number;
   height?: number;
 }
 
-function buildSkinUrl(uuid: string, base: 'mc-heads' | 'crafatar') {
+function buildSkinUrl(uuid: string, base: 'mc-heads' | 'crafatar' | 'proxy') {
   const clean = uuid.replace(/-/g, '');
+  // 走同源代理 /api/skin，由服务端拉取第三方皮肤，规避浏览器 CORS 限制。
+  if (base === 'proxy') {
+    return `/api/skin?uuid=${clean}`;
+  }
   return base === 'mc-heads'
     ? `https://mc-heads.net/skin/${clean}`
     : `https://crafatar.com/skins/${clean}`;
@@ -21,7 +25,7 @@ function buildSkinUrl(uuid: string, base: 'mc-heads' | 'crafatar') {
 
 export default function SkinViewer({
   uuid,
-  skinBase = 'crafatar',
+  skinBase = 'proxy',
   width = 280,
   height = 360,
 }: SkinViewerProps) {
