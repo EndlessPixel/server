@@ -3,6 +3,8 @@ import { useEffect, useRef, useState, Children, type ComponentPropsWithoutRef, t
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css";
 import {
   Send,
   Plus,
@@ -40,7 +42,7 @@ const WidgetsWithText = ({ text }: { text: string }) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeRaw]}
+      rehypePlugins={[rehypeRaw, rehypeHighlight]}
       components={{
         a: ({ href, ...props }: ComponentPropsWithoutRef<"a">) => {
           if (!href) return <a {...props} />;
@@ -1419,11 +1421,12 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               rows={1}
             />
             <button
-              onClick={send}
-              disabled={loading}
+              onClick={loading ? cancelCurrentRequest : send}
+              disabled={loading ? false : !input.trim()}
+              aria-label={loading ? "停止生成" : "发送"}
               className="bg-foreground text-background p-3 rounded-xl flex items-center justify-center disabled:opacity-40 shadow-sm hover:bg-foreground/90 active:scale-[0.97] transition-all duration-200"
             >
-              <Send className="w-5 h-5" />
+              {loading ? <Square className="w-5 h-5" /> : <Send className="w-5 h-5" />}
             </button>
           </div>
 
