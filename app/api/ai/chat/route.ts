@@ -56,7 +56,7 @@ function getNowLine(): string {
   const time = `${get('hour')}:${get('minute')}:${get('second')}`;
   const weekday =
     { 周日: '日', 周一: '一', 周二: '二', 周三: '三', 周四: '四', 周五: '五', 周六: '六' }[
-      get('weekday')
+    get('weekday')
     ] ?? '';
   return [
     '【当前真实时间】回答一切与时间相关的问题（现在几点、今天几号、当前版本、最近等）必须以这一行时间为准，严禁使用你训练记忆里的日期。',
@@ -171,13 +171,80 @@ export async function POST(req: NextRequest) {
       let errorMsg = `上游服务暂时不可用 (${upstream.status})`;
       const errorBody = await upstream.text().catch(() => '');
       console.error(`上游错误 ${upstream.status}:`, errorBody.slice(0, 500));
-      if (upstream.status === 401 || upstream.status === 403) {
-        errorMsg = '认证失败，请联系管理员';
-      } else if (upstream.status === 429) {
-        errorMsg = '上游服务限流，请稍后再试';
-      } else if (upstream.status >= 500) {
-        errorMsg = '上游服务繁忙，请稍后再试';
+
+      // 尝试解析上游返回的具体错误信息
+      let upstreamMsg = '';
+      try {
+        const parsed = JSON.parse(errorBody);
+        upstreamMsg = parsed.error || parsed.message || parsed.detail || '';
+      } catch { }
+
+      switch (upstream.status) {
+        // ---- 客户端错误 ----
+        case 400:
+          errorMsg = upstreamMsg || '请求参数错误，请检查输入后重试';
+          break;
+        case 401:
+        case 403:
+          errorMsg = '认证失败，请联系管理员';
+          break;
+        case 404:
+          errorMsg = '请求的资源不存在，请确认接口地址是否正确';
+          break;
+        case 408:
+          errorMsg = '上游服务响应超时，请稍后重试';
+          break;
+        case 413:
+          errorMsg = '请求内容过大，请减少输入长度后重试';
+          break;
+        case 429:
+          errorMsg = '请求过于频繁，请稍后再试';
+          break;
+
+        // ---- Cloudflare 错误 ----
+        case 520:
+          errorMsg = '上游服务返回了异常响应，请稍后重试';
+          break;
+        case 521:
+          errorMsg = '邮件服务暂时离线，请稍后重试';
+          break;
+        case 522:
+          errorMsg = '连接邮件服务超时，请稍后重试';
+          break;
+        case 523:
+          errorMsg = '邮件服务不可达，请稍后重试';
+          break;
+        case 524:
+          errorMsg = '邮件服务处理超时，请稍后重试';
+          break;
+        case 525:
+        case 526:
+          errorMsg = '服务安全证书异常，请联系管理员';
+          break;
+        case 530:
+          errorMsg = '服务被拦截或 DNS 异常，请联系管理员';
+          break;
+
+        // ---- 源站 5xx ----
+        case 502:
+          errorMsg = '上游网关错误，服务可能正在重启，请稍后重试';
+          break;
+        case 503:
+          errorMsg = '上游服务暂时不可用，可能正在维护中';
+          break;
+        case 504:
+          errorMsg = '上游服务网关超时，请稍后重试';
+          break;
+
+        // ---- 兜底 ----
+        default:
+          if (upstream.status >= 500) {
+            errorMsg = '上游服务繁忙，请稍后再试';
+          } else if (upstream.status >= 400) {
+            errorMsg = '请求被拒绝，请检查后重试';
+          }
       }
+
       return sseError(errorMsg);
     }
     const encoder = new TextEncoder();
