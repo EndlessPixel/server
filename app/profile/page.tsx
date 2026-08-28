@@ -13,6 +13,7 @@ import {
 import { getEnchantmentDisplayName } from '../../lib/enchantments';
 import { getItemDisplayName, getEntityDisplayName } from '../../lib/items';
 import React from 'react';
+import SkinViewer from '../../components/skin-viewer';
 
 /* ---------- 类型定义 ---------- */
 interface InventoryItem {
@@ -498,18 +499,12 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        // 必须先有服务端签名会话（ep_session）才视为已登录。
-        // 仅凭 ep_provider 明文 cookie 判断会导致未登录（会话已失效/残留）用户
-        // 误显示为 GitHub 用户卡片，这里以 ep_session 是否存在为准。
-        const hasSession = document.cookie
-          .split('; ')
-          .some((c) => c.startsWith('ep_session='));
-        if (!hasSession) {
-          router.push('/login?redirect=/profile');
-          return;
-        }
+        // 注意：ep_session 是 HttpOnly cookie，前端 document.cookie 读不到，
+        // 所以不能用它判断登录态。改由服务端鉴权接口 /api/users/info 决定：
+        // 返回 401 表示未登录（会话缺失/失效），才跳转登录页。
 
-        // GitHub 登录用户为独立身份，不查询 Minecraft 游戏资料
+        // GitHub 登录用户为独立身份，不查询 Minecraft 游戏资料。
+        // ep_provider / mc_user 是明文 cookie，前端可读。
         const provider = document.cookie
           .split('; ')
           .find((c) => c.startsWith('ep_provider='))
@@ -1113,7 +1108,10 @@ export default function ProfilePage() {
                   </h3>
                 </div>
 
-                <div className="space-y-4">
+                {/* 双栏：电脑端左信息、右皮肤；手机端单栏（信息在上、皮肤在下） */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                  {/* 左栏：基础信息 */}
+                  <div className="space-y-4">
                   {[
                     ['用户名', userInfo.name],
                     ['UUID', userInfo.uuid],
@@ -1194,6 +1192,17 @@ export default function ProfilePage() {
                     >
                       {userInfo.ban ? '已封禁' : '正常'}
                     </span>
+                  </div>
+                  </div>
+
+                  {/* 右栏：3D 皮肤预览（电脑端在右侧，手机端自动落到底部） */}
+                  <div className="flex justify-center md:justify-start md:sticky md:top-6">
+                    <div className="rounded-xl border border-foreground/8 p-4 bg-gradient-to-b from-secondary/30 to-transparent">
+                      <SkinViewer uuid={userInfo.uuid} width={280} height={360} />
+                      <p className="mt-3 text-center text-xs text-muted-foreground">
+                        你的 Minecraft 皮肤（3D 立体预览）
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
