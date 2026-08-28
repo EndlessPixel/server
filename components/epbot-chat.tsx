@@ -65,7 +65,7 @@ const WidgetsWithText = ({ text }: { text: string }) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeRaw, rehypeHighlight]}
+      rehypePlugins={[rehypeHighlight]}
       components={{
         a: ({ href, ...props }: ComponentPropsWithoutRef<"a">) => {
           if (!href) return <a {...props} />;
@@ -79,27 +79,65 @@ const WidgetsWithText = ({ text }: { text: string }) => {
             />
           );
         },
-        widget: (props: Record<string, string>) => <WidgetTag {...props} />,
         // A <p> cannot contain a <div> (our widget cards render as divs).
-        // react-markdown wraps a <widget> in a <p> even when it sits on its own
-        // line, which causes "<div> cannot be a descendant of <p>" hydration errors.
-        // When a paragraph contains any non-text React node (a widget card, etc.),
-        // render it as a <div> instead so no <div> ends up nested inside a <p>.
+        // The widget <widget> tags were replaced with unique placeholder
+        // tokens (\u0000WIDGETn\u0000) before parsing, so they survive markdown
+        // parsing intact. Here we scan each paragraph's text nodes: whenever a
+        // token appears, we split the text and inject the real WidgetTag card.
+        // This guarantees text BEFORE and AFTER the card is always preserved.
         p: ({ children }: { children?: ReactNode }) => {
-          const hasElement = Children.toArray(children).some(
-            (c) => typeof c === "object" && c !== null,
+          const nodes = Children.toArray(children);
+          const hasWidget = nodes.some(
+            (c) =>
+              typeof c === "string" &&
+              c.indexOf("\u0000WIDGET") !== -1,
           );
-          if (hasElement) {
-            return <div className="my-1">{children}</div>;
+          if (!hasWidget) {
+            return <p>{children}</p>;
           }
-          return <p>{children}</p>;
+          const out: ReactNode[] = [];
+          nodes.forEach((node, ni) => {
+            if (typeof node !== "string") {
+              out.push(<span key={ni}>{node}</span>);
+              return;
+            }
+            // split the string by placeholder tokens
+            const parts = node.split(/(\u0000WIDGET\d+\u0000)/g);
+            parts.forEach((part, pi) => {
+              if (!part) return;
+              const m = part.match(/^\u0000WIDGET(\d+)\u0000$/);
+              if (m) {
+                const tag = widgetMap.get(part);
+                if (tag) {
+                  const attrs = parseWidgetAttrs(tag);
+                  out.push(
+                    <WidgetTag key={`w-${ni}-${pi}`} {...attrs} />,
+                  );
+                }
+              } else {
+                out.push(<span key={`t-${ni}-${pi}`}>{part}</span>);
+              }
+            });
+          });
+          return <div className="my-1">{out}</div>;
         },
       } as unknown as Components}
     >
-      {normalized}
+      {widgets.replaced}
     </ReactMarkdown>
   );
 };
+
+/** Parse <widget name="x" foo="bar" /> into a props object. */
+function parseWidgetAttrs(tag: string): Record<string, string> {
+  const attrs: Record<string, string> = {};
+  const re = /(\w+)\s*=\s*"([^"]*)"/g;
+  let mm: RegExpExecArray | null;
+  while ((mm = re.exec(tag))) {
+    attrs[mm[1]] = mm[2];
+  }
+  return attrs;
+}
 
 const getCookie = (name: string): string | null => {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
