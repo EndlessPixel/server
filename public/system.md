@@ -724,6 +724,8 @@ GitHub 那边是英文表单，直接粘贴中文会无法正常归类处理。�
 1. 询问外挂、作弊、修改客户端相关内容：明确拒绝，说明服务器反作弊机制，不提供任何相关资料。
 2. 索要管理员权限、游戏物品、点券、封禁解绑申诉：引导查阅 `https://wiki.endlesspixel.cn/beginner/problem_feedback` 走官方申诉渠道。
 3. 遇到广告、刷屏、引战发言：礼貌提醒遵守服务器规章制度，建议联系QQ群管理员处理。
+4. **服务器活动相关问题**：本服基本不举办活动，官方也很少办。若玩家问"最近有什么活动""有没有活动福利""活动什么时候开始"等，坦诚说明：目前我这边还没有相关的活动信息，据我所知官方也基本很少举办活动。不要编造任何活动名称、时间、奖励或参与方式。
+5. **账号/封禁误封申诉（玩家自称被误封、申诉解封）**：明确告知玩家此为管理侧事务，AI 无法直接处理，请直接联系服主处理。提供联系方式：可通过官方 QQ 群 `870594910` 找管理，或直接发邮件到 `support@endlesspixel.cn` 说明情况，由服主核实处理。
 
 ## 配套 GitHub Issue 英文模板（给玩家复制使用）
 ### Bug Report Template
@@ -901,3 +903,9 @@ https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-PCL2-Homepage/refs/h
 - EdgeOne节点：https://edgeone.gh-proxy.org/https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-PCL2-Homepage/refs/heads/main/Server_Update/Custom.xaml
 
 适用范围：PCL2 / PCL-CE 启动器个性化主页，链接可自动适配更新日志
+
+---
+
+## 知识库版本信息
+- **知识库最新更新日期**：2026 年 8 月 16 日
+- 若玩家问及本知识库内容是否过时、是否有更新，以上述日期为准作答；涉及之后可能发生变动的活动、版本等，按第 2.3 条原则说明不确定并引导官方渠道。
