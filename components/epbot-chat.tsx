@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, Children, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, memo, Children, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -42,7 +42,7 @@ import { WidgetTag } from "@/components/epbot-widgets";
  * react-markdown 完全不碰它；渲染时再用自定义 `p` 组件把 token 还原成卡片。
  * 这样 widget 绝不会干扰周围文本，后续内容 100% 保留。
  */
-const WidgetsWithText = ({ text }: { text: string }) => {
+const WidgetsWithText = memo(function WidgetsWithText({ text }: { text: string }) {
   const widgets = useMemo(() => {
     const list: { token: string; tag: string }[] = [];
     const replaced = text.replace(
@@ -125,7 +125,7 @@ const WidgetsWithText = ({ text }: { text: string }) => {
       {widgets.replaced}
     </ReactMarkdown>
   );
-};
+});
 
 /** Parse <widget name="x" foo="bar" /> into a props object. */
 function parseWidgetAttrs(tag: string): Record<string, string> {
