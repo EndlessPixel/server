@@ -490,12 +490,30 @@ export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isGithubUser, setIsGithubUser] = useState(false);
+  const [githubName, setGithubName] = useState('');
   const [activeTab, setActiveTab] = useState<'info' | 'inventory' | 'ender' | 'stats' | 'achievements'>('info');
   const router = useRouter();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
+        // GitHub 登录用户为独立身份，不查询 Minecraft 游戏资料
+        const provider = document.cookie
+          .split('; ')
+          .find((c) => c.startsWith('ep_provider='))
+          ?.split('=')[1];
+        if (provider === 'github') {
+          const gh = document.cookie
+            .split('; ')
+            .find((c) => c.startsWith('mc_user='))
+            ?.split('=')[1];
+          setGithubName(gh ? decodeURIComponent(gh) : 'GitHub 用户');
+          setIsGithubUser(true);
+          setLoading(false);
+          return;
+        }
+
         const res = await fetch('/api/users/info');
         if (res.status === 401) {
           router.push('/login?redirect=/profile');
@@ -985,6 +1003,37 @@ export default function ProfilePage() {
         {error && (
           <div className="mb-6 bg-destructive/5 text-destructive/80 px-4 py-3 rounded-lg text-sm shadow-sm">
             {error}
+          </div>
+        )}
+
+        {isGithubUser && (
+          <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-8 mb-6">
+            <div className="flex items-center gap-5">
+              <div className="w-20 h-20 shrink-0 rounded-full bg-foreground flex items-center justify-center text-background text-3xl font-bold shadow-sm">
+                {githubName.charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-xl font-bold text-foreground truncate">{githubName}</h2>
+                <span className="inline-flex items-center gap-1 mt-2 px-3 py-1 rounded-full text-xs font-medium bg-secondary text-foreground/70">
+                  通过 GitHub 登录
+                </span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="ml-auto hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 shrink-0"
+              >
+                <LogOutIcon className="w-4 h-4" />退出登录
+              </button>
+            </div>
+            <div className="mt-6 flex items-start gap-3 rounded-lg bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+              <svg className="w-5 h-5 shrink-0 mt-0.5 text-foreground/50" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p>
+                该账号由 GitHub 登录，与 Minecraft 游戏账号体系相互独立，<span className="text-foreground/80 font-medium">无法查询游戏资料</span>
+                （如背包、统计、成就等）。如需查看游戏数据，请使用 Minecraft 用户名和密码登录。
+              </p>
+            </div>
           </div>
         )}
 

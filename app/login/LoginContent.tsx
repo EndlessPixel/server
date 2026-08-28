@@ -26,6 +26,10 @@ export default function LoginContent() {
         if (getCookie('mc_user')) {
             router.push(redirect || '/');
         }
+        const ghErr = searchParams.get('error');
+        if (ghErr?.startsWith('github_')) {
+            setError('GitHub 登录失败，请重试或使用用户名密码登录');
+        }
     }, [router, searchParams]);
 
     function setCookie(name: string, value: string, days = 7) {
@@ -220,6 +224,26 @@ export default function LoginContent() {
                             )}
                         </button>
                     </form>
+
+                    <div className="my-5 flex items-center gap-3">
+                        <div className="h-px flex-1 bg-border/60" />
+                        <span className="text-xs text-muted-foreground">或使用第三方登录</span>
+                        <div className="h-px flex-1 bg-border/60" />
+                    </div>
+
+                    <a
+                        href="/api/auth/github"
+                        className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/70 text-secondary-foreground font-medium py-2.5 px-4 rounded-lg transition-colors duration-200"
+                    >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z" />
+                        </svg>
+                        使用 GitHub 登录
+                    </a>
+
+                    <p className="mt-3 text-center text-xs text-muted-foreground">
+                        GitHub 登录为独立身份，无法查询 Minecraft 游戏资料
+                    </p>
 
                     <div className="mt-6 text-center text-sm text-muted-foreground">
                         <Link href="/" className="text-foreground hover:underline transition-all font-medium">
