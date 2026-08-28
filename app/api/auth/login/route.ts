@@ -68,6 +68,21 @@ export async function POST(request: NextRequest) {
             const text = await res.text();
             data = { success: false, message: text || '未知错误' };
         }
+
+        // 适配后端新增的限流/失败锁定：429 表示请求过于频繁或被临时锁定
+        if (res.status === 429) {
+            const retryAfter = res.headers.get('retry-after');
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: 'rate_limited',
+                    retryAfter: retryAfter ? Number(retryAfter) : undefined,
+                    message: data.message || '尝试过于频繁，请稍后再试',
+                },
+                { status: 429, headers: retryAfter ? { 'Retry-After': retryAfter } : {} }
+            );
+        }
+
         const safeName = data.name && USERNAME_PATTERN.test(data.name) 
             ? data.name 
             : name;
