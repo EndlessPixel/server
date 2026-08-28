@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type HTMLAttributes } from "react";
+import { useEffect, useState, memo, type HTMLAttributes } from "react";
 import { Clock, Server, CalendarClock, Loader2, Star, GitFork, ExternalLink, Signal, Users, MessageCircle, Package, Tag, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RunningDuration } from "@/components/running-duration";
@@ -45,7 +45,9 @@ export type WidgetDescriptor = {
  * 的属性直接映射成 WidgetDescriptor 并渲染为对应卡片。
  * HTML 属性经 rehype-raw 传递后保留原始小写名称（name/host/repo/...）。
  */
-export function WidgetTag(props: HTMLAttributes<HTMLElement>) {
+export const WidgetTag = memo(function WidgetTag(
+  props: HTMLAttributes<HTMLElement>,
+) {
   const { name, host, repo, number, founded, date, children, node, ...rest } =
     props as Record<string, string> & { children?: React.ReactNode };
   void children;
@@ -63,7 +65,7 @@ export function WidgetTag(props: HTMLAttributes<HTMLElement>) {
       <WidgetBlock widget={{ name: widgetName, attrs }} />
     </div>
   );
-}
+});
 
 
 function WidgetShell({
