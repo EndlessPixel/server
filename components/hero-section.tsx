@@ -321,7 +321,7 @@ export function HeroSection() {
 
           {/* 硬件信息 */}
           <p className="mt-2 text-xs text-muted-foreground/60">
-            硬件详情：Xeon Gold 6148 16 核 + 24GB 真实占用 + 磁盘 / 网络 / 负载全公开。
+            硬件详情：AMD Ryzen 9 9950X + 12GB 真实占用 + 磁盘 / 网络 / 负载全公开。
             <Link
               href="http://sys.epmc.qzz.io"
               className="ml-1 underline underline-offset-2 hover:text-foreground transition-colors"
