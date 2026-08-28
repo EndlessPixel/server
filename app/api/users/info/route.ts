@@ -41,6 +41,18 @@ export async function GET(request: NextRequest) {
         }
 
         if (!res.ok) {
+            // 适配后端新增的限流：429 表示请求过于频繁
+            if (res.status === 429) {
+                const retryAfter = res.headers.get('retry-after');
+                return NextResponse.json(
+                    {
+                        error: 'rate_limited',
+                        retryAfter: retryAfter ? Number(retryAfter) : undefined,
+                        message: '请求过于频繁，请稍后再试',
+                    },
+                    { status: 429, headers: retryAfter ? { 'Retry-After': retryAfter } : {} }
+                );
+            }
             // 修复：不直接透传后端错误，防止信息泄露
             return NextResponse.json(
                 { error: '获取用户信息失败' }, 
