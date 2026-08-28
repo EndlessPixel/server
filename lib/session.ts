@@ -12,6 +12,9 @@ import { createHmac, timingSafeEqual } from 'crypto';
 export const SESSION_COOKIE = 'ep_session';
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 天（秒）
 
+/** 登录来源标记 cookie：minecraft=原账号密码登录 / github=GitHub OAuth 登录 */
+export const PROVIDER_COOKIE = 'ep_provider';
+
 function getSecret(): string {
   const secret = process.env.SESSION_SECRET;
   if (secret && secret.length >= 16) return secret;
