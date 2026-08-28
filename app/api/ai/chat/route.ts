@@ -1,9 +1,11 @@
 import { NextRequest } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { SESSION_COOKIE, verifySessionToken } from '@/lib/session';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 const ipRequestMap = new Map<string, number[]>();
+const PLAYER_INFO_API_URL = `http://156.239.230.98:8080/v1/api/users/info`;
 
 function isRateLimited(ip: string | null): boolean {
   if (!ip) return false;
@@ -71,6 +73,44 @@ function getClientIP(req: NextRequest): string | null {
   }
   return req.headers.get('x-real-ip') || null;
 }
+
+// 若当前请求携带有效登录会话（ep_session），拉取该玩家的公开资料，
+// 作为「当前玩家」上下文注入系统提示，让 AI 能基于真实身份作答
+// （例如「你上次登录是…」「你的账号目前状态正常」）。
+// 任何异常都静默降级：拿不到资料就当作未登录，不影响正常对话。
+const USERNAME_PATTERN = /^[a-zA-Z0-9_]{1,32}$/;
+async function getPlayerContextBlock(req: NextRequest): Promise<string> {
+  try {
+    const token = req.cookies.get(SESSION_COOKIE)?.value;
+    const name = verifySessionToken(token);
+    if (!name) return '';
+    const upstream = await fetch(`${PLAYER_INFO_API_URL}?name=${encodeURIComponent(name)}`, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!upstream.ok) return '';
+    const data = await upstream.json();
+    if (!data || data.success !== true || !data.data) return '';
+    const u = data.data;
+    const banned = u.ban ? '已被封禁' : '正常';
+    const lines = [
+      '【当前玩家身份（仅供回答玩家本人相关问题时参考，禁止对外泄露或用于越权操作）】',
+      `- 游戏 ID：${USERNAME_PATTERN.test(u.name) ? u.name : name}`,
+      `- UUID：${u.uuid ?? '未知'}`,
+      `- 账号状态：${banned}`,
+    ];
+    if (u.lastActive) {
+      lines.push(`- 最后登录时间：${String(u.lastActive)}（服务器本地时间，非精确校准）`);
+    }
+    if (u.ipLocation) {
+      lines.push(`- 登录属地：${String(u.ipLocation)}`);
+    }
+    lines.push('【结束玩家身份块】');
+    return lines.join('\n');
+  } catch {
+    return '';
+  }
+}
 function sseError(errorText: string): Response {
   const safeError = errorText
     .replace(/API_KEY.*/i, '配置错误')
@@ -101,8 +141,12 @@ export async function POST(req: NextRequest) {
     } catch (err) {
       return sseError('服务初始化失败，请联系管理员');
     }
+    const playerCtx = await getPlayerContextBlock(req);
+    const systemContent = playerCtx
+      ? `${getNowLine()}\n\n${systemPrompt}\n\n${playerCtx}`
+      : `${getNowLine()}\n\n${systemPrompt}`;
     const fullMessages = [
-      { role: 'system', content: `${getNowLine()}\n\n${systemPrompt}` },
+      { role: 'system', content: systemContent },
       ...messages.slice(-20),
     ];
     const defaultModel = "grok-4.20-multi-agent-0309";
