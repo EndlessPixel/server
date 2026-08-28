@@ -530,6 +530,11 @@ export default function ProfilePage() {
           router.push('/login?redirect=/profile');
           return;
         }
+        if (res.status === 429) {
+          // 适配后端限流：避免抛错中断页面，给出友好提示
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.message || '请求过于频繁，请稍后再试');
+        }
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
           throw new Error(errData.detail || '获取失败');
