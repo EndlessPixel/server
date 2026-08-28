@@ -35,22 +35,33 @@ import { speech, markdownToPlainText } from "@/lib/speech";
 import { WidgetTag } from "@/components/epbot-widgets";
 
 /**
- * 直接渲染模型输出的 Markdown（含独立行的 <widget> 标签），
- * 由 rehype-raw 把 <widget> 解析为 HTML 标签，再映射到 WidgetTag 卡片组件。
+ * 直接渲染模型输出的 Markdown（含独立行的 <widget> 标签）。
+ *
+ * 关键修复：之前直接把 <widget> 交给 rehype-raw 当 HTML 解析，未知标签在
+ * 解析/映射阶段极易把标签之后的文本一起"吞掉"（表现为卡片后面的回答看不到）。
+ * 这里改用占位符法：先把每个 <widget .../> 替换成唯一占位 token，让
+ * react-markdown 完全不碰它；渲染时再用自定义 `p` 组件把 token 还原成卡片。
+ * 这样 widget 绝不会干扰周围文本，后续内容 100% 保留。
  */
 const WidgetsWithText = ({ text }: { text: string }) => {
-  // Ensure every <widget .../> is on its own line. If the model emits it
-  // inline (e.g. "查看状态 <widget name=\"server_status\" /> 如上"), rehype-raw
-  // would parse it inside a <p>, and any text after it on the same line could
-  // get swallowed. Forcing blank lines around it keeps the card isolated and
-  // preserves the surrounding prose.
-  const normalized = text.replace(
-    /(^|[\n\r])([^\n\r]*?)(<widget\b[\s\S]*?\/>)(\s*)/g,
-    (_m, lead, before, tag, after) => {
-      const prefix = before.trim() ? `${before.trim()}\n\n` : lead;
-      return `${prefix}${tag}\n\n${after.trim() ? `${after.trim()}\n\n` : ""}`;
-    },
+  const widgets = useMemo(() => {
+    const list: { token: string; tag: string }[] = [];
+    const replaced = text.replace(
+      /<widget\b[^>]*?\/>/g,
+      (tag) => {
+        const token = `\u0000WIDGET${list.length}\u0000`;
+        list.push({ token, tag });
+        return token;
+      },
+    );
+    return { replaced, list };
+  }, [text]);
+
+  const widgetMap = useMemo(
+    () => new Map(widgets.list.map((w) => [w.token, w.tag])),
+    [widgets.list],
   );
+
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
