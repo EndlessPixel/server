@@ -24,6 +24,10 @@ export default function LoginContent() {
     useEffect(() => {
         const redirect = searchParams.get('redirect');
         // GitHub 登录用户以明文 ep_provider cookie 识别（可读），直接跳走。
+        // 注意：Minecraft 登录态依赖 HttpOnly 的 ep_session，前端读不到，
+        // 故不在此探测已登录态自动跳转（否则误判会直接把未登录用户弹走，
+        // 且每次打开登录页都会徒增一次 /api/users/info 请求并占用限流额度）。
+        // 登录成功后由登录逻辑本身负责跳转。
         const provider = document.cookie
             .split('; ')
             .find((c) => c.startsWith('ep_provider='))
@@ -32,24 +36,10 @@ export default function LoginContent() {
             router.push(redirect || '/');
             return;
         }
-        // Minecraft 登录用户：ep_session 是 HttpOnly cookie，前端读不到，
-        // 改用服务端鉴权接口 /api/users/info 判断真实登录态：
-        // 200=已登录则直接跳走，401=未登录则停留登录页。
-        (async () => {
-            try {
-                const res = await fetch('/api/users/info');
-                if (res.ok) {
-                    router.push(redirect || '/');
-                    return;
-                }
-            } catch {
-                // 网络异常忽略，停留在登录页
-            }
-            const ghErr = searchParams.get('error');
-            if (ghErr?.startsWith('github_')) {
-                setError('GitHub 登录失败，请重试或使用用户名密码登录');
-            }
-        })();
+        const ghErr = searchParams.get('error');
+        if (ghErr?.startsWith('github_')) {
+            setError('GitHub 登录失败，请重试或使用用户名密码登录');
+        }
     }, [router, searchParams]);
 
     function setCookie(name: string, value: string, days = 7) {
