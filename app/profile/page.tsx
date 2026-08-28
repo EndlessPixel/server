@@ -498,6 +498,17 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
+        // 必须先有服务端签名会话（ep_session）才视为已登录。
+        // 仅凭 ep_provider 明文 cookie 判断会导致未登录（会话已失效/残留）用户
+        // 误显示为 GitHub 用户卡片，这里以 ep_session 是否存在为准。
+        const hasSession = document.cookie
+          .split('; ')
+          .some((c) => c.startsWith('ep_session='));
+        if (!hasSession) {
+          router.push('/login?redirect=/profile');
+          return;
+        }
+
         // GitHub 登录用户为独立身份，不查询 Minecraft 游戏资料
         const provider = document.cookie
           .split('; ')
