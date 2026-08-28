@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
+import { cookies } from 'next/headers';
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/session';
 
 const USER_INFO_API_URL = `http://156.239.230.98:8080/v1/api/users/info`;
@@ -10,6 +11,19 @@ export async function GET(request: NextRequest) {
         const name = verifySessionToken(token);
 
         if (!name) {
+            // 清理异常会话 cookie：用户浏览器里若残留旧版/损坏/伪造的 ep_session
+            // （例如登录系统升级前的旧 cookie），虽然校验失败会返回 401，但残留的
+            // 坏 cookie 可能让旧用户一直卡在"未登录"的怪异状态。这里在检测到
+            // 存在却无效的 ep_session 时主动清除，使其回到干净的"未登录"态，
+            // 引导用户用新系统重新登录（旧签名机制不兼容，无法无损迁移，故做清理）。
+            if (token) {
+                try {
+                    const cookieStore = await cookies();
+                    cookieStore.delete(SESSION_COOKIE);
+                } catch {
+                    // 忽略 cookie 写入失败，不影响 401 返回
+                }
+            }
             return NextResponse.json(
                 { error: '未登录或登录已失效' },
                 { status: 401 }
