@@ -39,6 +39,18 @@ import { WidgetTag } from "@/components/epbot-widgets";
  * 由 rehype-raw 把 <widget> 解析为 HTML 标签，再映射到 WidgetTag 卡片组件。
  */
 const WidgetsWithText = ({ text }: { text: string }) => {
+  // Ensure every <widget .../> is on its own line. If the model emits it
+  // inline (e.g. "查看状态 <widget name=\"server_status\" /> 如上"), rehype-raw
+  // would parse it inside a <p>, and any text after it on the same line could
+  // get swallowed. Forcing blank lines around it keeps the card isolated and
+  // preserves the surrounding prose.
+  const normalized = text.replace(
+    /(^|[\n\r])([^\n\r]*?)(<widget\b[\s\S]*?\/>)(\s*)/g,
+    (_m, lead, before, tag, after) => {
+      const prefix = before.trim() ? `${before.trim()}\n\n` : lead;
+      return `${prefix}${tag}\n\n${after.trim() ? `${after.trim()}\n\n` : ""}`;
+    },
+  );
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -73,7 +85,7 @@ const WidgetsWithText = ({ text }: { text: string }) => {
         },
       } as unknown as Components}
     >
-      {text}
+      {normalized}
     </ReactMarkdown>
   );
 };
@@ -1386,8 +1398,15 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                               isStreamingLast ? (
                                 <div className="text-muted-foreground/70">
                                   {parsed.answer.replace(
-                                    /<widget[\s\S]*?(?:\/>|>)|\/?>/g,
-                                    (m2) => (m2.startsWith("<widget") ? "▦ " : ""),
+                                    // Only strip complete/partial widget tags on their
+                                    // own line. Match `<widget` up to a `/>` or to the
+                                    // end of the line. Crucially we do NOT touch any
+                                    // other `>` (e.g. markdown quote `>`, inline `>` in
+                                    // prose, HTML entities), otherwise normal text
+                                    // containing `>` would be eaten and the AI's reply
+                                    // after the widget would disappear.
+                                    /^\s*<widget\b[\s\S]*?(?:\/>|$)/gm,
+                                    "▦ ",
                                   )}
                                 </div>
                               ) : (
