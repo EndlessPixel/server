@@ -1112,25 +1112,25 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                   {/* 左栏：基础信息 */}
                   <div className="space-y-4">
-                  {[
-                    ['用户名', userInfo.name],
-                    ['UUID', userInfo.uuid],
-                    ['最后登录 IP', userInfo.ip],
-                    ['最后登录地点', userInfo.ipLocation],
-                    ['注册时间', formatTime(userInfo.createdAt)],
-                    [
-                      '最后登录',
-                      <>
-                        <span>{getRelativeTime(userInfo.lastActive)}</span>
-                        <p className="text-xs text-muted-foreground/70">{formatTime(userInfo.lastActive)}</p>
-                      </>,
-                    ],
-                  ].map(([label, value], idx) => (
-                    <div key={idx} className="flex items-center justify-between py-3 border-b border-foreground/5">
-                      <span className="text-muted-foreground text-sm">{label}</span>
-                      <span className="text-foreground/80 font-medium text-sm">{value}</span>
-                    </div>
-                  ))}
+                    {[
+                      ['用户名', userInfo.name],
+                      ['UUID', userInfo.uuid],
+                      ['最后登录 IP', userInfo.ip],
+                      ['最后登录地点', userInfo.ipLocation],
+                      ['注册时间', formatTime(userInfo.createdAt)],
+                      [
+                        '最后登录',
+                        <>
+                          <span>{getRelativeTime(userInfo.lastActive)}</span>
+                          <p className="text-xs text-muted-foreground/70">{formatTime(userInfo.lastActive)}</p>
+                        </>,
+                      ],
+                    ].map(([label, value], idx) => (
+                      <div key={idx} className="flex items-center justify-between py-3 border-b border-foreground/5">
+                        <span className="text-muted-foreground text-sm">{label}</span>
+                        <span className="text-foreground/80 font-medium text-sm">{value}</span>
+                      </div>
+                    ))}
                   {(() => {
                     const extracted = extractTotalExpFromNbt(userInfo.nbt);
                     if (extracted === undefined) {
@@ -1198,7 +1198,7 @@ export default function ProfilePage() {
                   {/* 右栏：3D 皮肤预览（电脑端在右侧，手机端自动落到底部） */}
                   <div className="flex justify-center md:justify-start md:sticky md:top-6">
                     <div className="rounded-xl border border-foreground/8 p-4 bg-gradient-to-b from-secondary/30 to-transparent">
-                      <SkinViewer uuid={userInfo.uuid} width={280} height={360} />
+                      <SkinViewer uuid={userInfo.uuid} skinBase="proxy" width={280} height={360} />
                       <p className="mt-3 text-center text-xs text-muted-foreground">
                         你的 Minecraft 皮肤（3D 立体预览）
                       </p>
