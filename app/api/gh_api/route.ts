@@ -60,9 +60,14 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
+    // 带上真实原因：开发环境常见 UNABLE_TO_VERIFY_LEAF_SIGNATURE
+    // （本机 HTTPS 代理做 TLS 中间人，Node 自带 CA 校验失败），
+    // 仅暴露 error.message 便于排查，不回显完整堆栈。
     console.error('GitHub API proxy error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    const cause = (error as { cause?: { code?: string } })?.cause?.code;
     return NextResponse.json(
-      { error: 'Failed to fetch GitHub API' },
+      { error: 'Failed to fetch GitHub API', detail: cause ? `${message} (${cause})` : message },
       { status: 500 }
     );
   }
