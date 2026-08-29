@@ -17,3 +17,16 @@ EndlessPixel 官网围绕「玩家服务」设计，以下模块均已上线。�
 - 🧪 严格 TypeScript 类型检查，ESLint + Prettier
 - 📱 响应式布局，PWA 离线支持（Workbox 自动生成）
 - 🔐 HMAC 会话 Cookie，安全鉴权
+
+## 🚀 本地运行
+
+前置：Node.js ≥ 18、npm ≥ 9。
+
+```bash
+git clone https://github.com/EndlessPixel/server.git
+cd server
+npm install
+npm run dev        # 或 npm run dev-https
+```
+
+浏览器访问 http://localhost:3000 或 https://localhost:3000。
