@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, memo, useMemo, Children, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, memo, useMemo, type ComponentPropsWithoutRef } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -42,88 +42,66 @@ import { WidgetTag } from "@/components/epbot-widgets";
  * react-markdown 完全不碰它；渲染时再用自定义 `p` 组件把 token 还原成卡片。
  * 这样 widget 绝不会干扰周围文本，后续内容 100% 保留。
  */
+/**
+ * 分段渲染：在交给 ReactMarkdown 之前，先把文本按自闭合 `<widget .../>`
+ * 切成交替的「文本段 / widget 段」。文本段走 ReactMarkdown（卡片绝不会被
+ * markdown 解析破坏），widget 段直接渲染成真实 <WidgetTag/> 节点。
+ *
+ * 之前用 \u0000 占位 token 放进 markdown 文本节点，再靠自定义 `p` 组件还原。
+ * 但一旦标签被 markdown 解析到非 <p> 容器（代码块、列表项、或当作裸 HTML），
+ * token 就会漏成裸文字 \u0000WIDGET0\u0000。分段法彻底消除这个风险：
+ * widget 根本不进入 markdown，也就不可能漏出占位符。
+ */
 const WidgetsWithText = memo(function WidgetsWithText({ text }: { text: string }) {
-  const widgets = useMemo(() => {
-    const list: { token: string; tag: string }[] = [];
-    const replaced = text.replace(
-      /<widget\b[^>]*?\/>/g,
-      (tag) => {
-        const token = `\u0000WIDGET${list.length}\u0000`;
-        list.push({ token, tag });
-        return token;
-      },
-    );
-    return { replaced, list };
+  const segments = useMemo(() => {
+    const out: { type: "md" | "widget"; value: string }[] = [];
+    // 匹配独占一行或内联的自闭合 widget 标签（允许前后空白/换行）。
+    const re = /<widget\b[^>]*?\/>/g;
+    let last = 0;
+    let mm: RegExpExecArray | null;
+    while ((mm = re.exec(text)) !== null) {
+      if (mm.index > last) {
+        out.push({ type: "md", value: text.slice(last, mm.index) });
+      }
+      out.push({ type: "widget", value: mm[0] });
+      last = re.lastIndex;
+    }
+    if (last < text.length) {
+      out.push({ type: "md", value: text.slice(last) });
+    }
+    return out;
   }, [text]);
 
-  const widgetMap = useMemo(
-    () => new Map(widgets.list.map((w) => [w.token, w.tag])),
-    [widgets.list],
-  );
-
   return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeHighlight]}
-      components={{
-        a: ({ href, ...props }: ComponentPropsWithoutRef<"a">) => {
-          if (!href) return <a {...props} />;
-          const encodedUrl = encodeURIComponent(href);
-          return (
-            <a
-              href={`/ai_link?url=${encodedUrl}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              {...props}
-            />
-          );
-        },
-        // A <p> cannot contain a <div> (our widget cards render as divs).
-        // The widget <widget> tags were replaced with unique placeholder
-        // tokens (\u0000WIDGETn\u0000) before parsing, so they survive markdown
-        // parsing intact. Here we scan each paragraph's text nodes: whenever a
-        // token appears, we split the text and inject the real WidgetTag card.
-        // This guarantees text BEFORE and AFTER the card is always preserved.
-        p: ({ children }: { children?: ReactNode }) => {
-          const nodes = Children.toArray(children);
-          const hasWidget = nodes.some(
-            (c) =>
-              typeof c === "string" &&
-              c.indexOf("\u0000WIDGET") !== -1,
-          );
-          if (!hasWidget) {
-            return <p>{children}</p>;
-          }
-          const out: ReactNode[] = [];
-          nodes.forEach((node, ni) => {
-            if (typeof node !== "string") {
-              out.push(<span key={ni}>{node}</span>);
-              return;
-            }
-            // split the string by placeholder tokens
-            const parts = node.split(/(\u0000WIDGET\d+\u0000)/g);
-            parts.forEach((part, pi) => {
-              if (!part) return;
-              const m = part.match(/^\u0000WIDGET(\d+)\u0000$/);
-              if (m) {
-                const tag = widgetMap.get(part);
-                if (tag) {
-                  const attrs = parseWidgetAttrs(tag);
-                  out.push(
-                    <WidgetTag key={`w-${ni}-${pi}`} {...attrs} />,
-                  );
-                }
-              } else {
-                out.push(<span key={`t-${ni}-${pi}`}>{part}</span>);
-              }
-            });
-          });
-          return <div className="my-1">{out}</div>;
-        },
-      } as unknown as Components}
-    >
-      {widgets.replaced}
-    </ReactMarkdown>
+    <>
+      {segments.map((seg, i) =>
+        seg.type === "widget" ? (
+          <WidgetTag key={`w-${i}`} {...parseWidgetAttrs(seg.value)} />
+        ) : (
+          <ReactMarkdown
+            key={`md-${i}`}
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeHighlight]}
+            components={{
+              a: ({ href, ...props }: ComponentPropsWithoutRef<"a">) => {
+                if (!href) return <a {...props} />;
+                const encodedUrl = encodeURIComponent(href);
+                return (
+                  <a
+                    href={`/ai_link?url=${encodedUrl}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    {...props}
+                  />
+                );
+              },
+            } as unknown as Components}
+          >
+            {seg.value}
+          </ReactMarkdown>
+        ),
+      )}
+    </>
   );
 });
 
@@ -136,6 +114,20 @@ function parseWidgetAttrs(tag: string): Record<string, string> {
     attrs[mm[1]] = mm[2];
   }
   return attrs;
+}
+
+/**
+ * Streaming helper: hide widget tags that haven't fully arrived yet.
+ * A complete self-closing tag `<widget ... />` is left intact so it can be
+ * rendered by WidgetsWithText. An incomplete one (e.g. `<widget name="server_`)
+ * is replaced with a neutral placeholder so it doesn't show as raw text or a
+ * broken card mid-stream.
+ */
+function hideIncompleteWidget(text: string): string {
+  return text.replace(
+    /<widget\b[\s\S]*?$/m,
+    (m) => (/\/>\s*$/.test(m) ? m : "▦ "),
+  );
 }
 
 const getCookie = (name: string): string | null => {
@@ -1433,30 +1425,15 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                               />
                             )}
                             {parsed.answer ? (
-                              // While the response is still streaming, the
-                              // <widget> tags in `answer` are often incomplete
-                              // (e.g. only `<widget name="server_` has arrived).
-                              // Rendering them via react-markdown + rehype-raw
-                              // mid-stream remounts the widget components on every
-                              // token, re-firing their fetch effects and making the
-                              // cards spin forever ("looping loading"). So during
-                              // streaming we strip <widget> tags into a neutral
-                              // placeholder, and only render the real cards once
-                              // the message is complete (loading=false).
+                              // During streaming, <widget> tags are often incomplete
+                              // (only `<widget name="server_` has arrived). A complete
+                              // widget is rendered immediately (WidgetTag is memoized,
+                              // so later tokens won't remount it / re-fire fetches).
+                              // Incomplete trailing widget tags are hidden until done.
                               isStreamingLast ? (
-                                <div className="text-muted-foreground/70">
-                                  {parsed.answer.replace(
-                                    // Only strip complete/partial widget tags on their
-                                    // own line. Match `<widget` up to a `/>` or to the
-                                    // end of the line. Crucially we do NOT touch any
-                                    // other `>` (e.g. markdown quote `>`, inline `>` in
-                                    // prose, HTML entities), otherwise normal text
-                                    // containing `>` would be eaten and the AI's reply
-                                    // after the widget would disappear.
-                                    /^\s*<widget\b[\s\S]*?(?:\/>|$)/gm,
-                                    "▦ ",
-                                  )}
-                                </div>
+                                <WidgetsWithText
+                                  text={hideIncompleteWidget(parsed.answer)}
+                                />
                               ) : (
                                 <WidgetsWithText text={parsed.answer} />
                               )
