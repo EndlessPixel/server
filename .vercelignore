@@ -7,6 +7,7 @@ LICENSE
 localhost_pem_cert.py
 .gitattributes
 .gitignore
-.vscode/
-.github/
+.vscode/*
+.github/*
 .env.example
+README_docs/*
