@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
-    "dev-https": "next dev --experimental-https --experimental-https-key ./cert/localhost-key.pem --experimental-https-cert ./cert/localhost.pem",
+    "dev": "NODE_OPTIONS=--use-system-ca next dev",
+    "dev-https": "NODE_OPTIONS=--use-system-ca next dev --experimental-https --experimental-https-key ./cert/localhost-key.pem --experimental-https-cert ./cert/localhost.pem",
     "lint": "npx eslint app components --max-warnings=0",
     "lint:fix": "npx eslint app components --fix",
     "start": "next start"
