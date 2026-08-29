@@ -11,47 +11,25 @@ Official website of EndlessPixel Server, built with Next.js App Router + TypeScr
 
 ## ✨ Core Features
 
-See [README_docs/en](./README_docs/en/features.md) for details.
+See [features doc](./README_docs/en/features.md).
 
-- 🤖 **AI Assistant**: streaming Q&A + interactive cards, with server context injected
-- 🧍 **Skin Preview**: 3D skin viewer (skinview3d) + same-origin proxy with fallback
-- 📦 **Launcher Downloads**: 80+ launchers & mod-packs, high-speed with custom mirrors
-- 👤 **Profile**: two-column layout, skin display & account info
-- 📡 **Server Status**: real-time MC server status monitoring
+- 🤖 **AI Assistant** · 🧍 **Skin Preview** · 📦 **Launcher Downloads** · 👤 **Profile** · 📡 **Server Status**
 
-## 📚 Documentation
+## 📚 Docs
 
 | Doc | Link |
 |-----|------|
-| Features Overview | [README_docs/en/features.md](./README_docs/en/features.md) |
-| AI Assistant | [README_docs/en/ai-assistant.md](./README_docs/en/ai-assistant.md) |
-| Skin Preview | [README_docs/en/skin-preview.md](./README_docs/en/skin-preview.md) |
-| Launcher Downloads | [README_docs/en/downloads.md](./README_docs/en/downloads.md) |
-| Profile | [README_docs/en/profile.md](./README_docs/en/profile.md) |
-| Server Status | [README_docs/en/server-status.md](./README_docs/en/server-status.md) |
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js ≥ 18
-- npm ≥ 9
-
-### Local Development
-
-```bash
-git clone https://github.com/EndlessPixel/server.git
-cd server
-npm install
-npm run dev        # or: npm run dev-https
-```
-
-Visit [http://localhost:3000](http://localhost:3000) or [https://localhost:3000](https://localhost:3000).
+| Features Overview (stack & local run) | [README_docs/en/features.md](./README_docs/en/features.md) |
+| AI Assistant | [ai-assistant.md](./README_docs/en/ai-assistant.md) |
+| Skin Preview | [skin-preview.md](./README_docs/en/skin-preview.md) |
+| Launcher Downloads | [downloads.md](./README_docs/en/downloads.md) |
+| Profile | [profile.md](./README_docs/en/profile.md) |
+| Server Status | [server-status.md](./README_docs/en/server-status.md) |
 
 ## 🤝 Contributing & License
 
-- Contributing guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
-- License: [GNU AGPL v3.0](./LICENSE) (modified network services must be open-sourced)
+- Contributing: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- License: [GNU AGPL v3.0](./LICENSE)
 - Issues: [open an issue](https://github.com/EndlessPixel/server/issues/new/choose)
 
 ---
