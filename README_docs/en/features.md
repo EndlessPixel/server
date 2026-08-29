@@ -17,3 +17,16 @@ EndlessPixel's website is built around player services. The modules below are al
 - 🧪 Strict TypeScript checking, ESLint + Prettier
 - 📱 Responsive layout, PWA offline support (Workbox auto-generated)
 - 🔐 HMAC session cookies for secure auth
+
+## 🚀 Local Run
+
+Prerequisites: Node.js ≥ 18, npm ≥ 9.
+
+```bash
+git clone https://github.com/EndlessPixel/server.git
+cd server
+npm install
+npm run dev        # or: npm run dev-https
+```
+
+Visit http://localhost:3000 or https://localhost:3000.
