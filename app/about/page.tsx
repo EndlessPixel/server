@@ -1,8 +1,9 @@
-import { LicenseSection } from "@/components/license-section"
 import { TeamSection } from "@/components/team-section"
 import { ContactSection } from "@/components/contact-section"
 import { Card, CardContent } from "@/components/ui/card"
 import { Heart, Users, Globe } from "lucide-react"
+import { GithubIcon } from "@/components/icons"
+import Link from "next/link"
 import type { Metadata } from "next"
 
 
@@ -89,7 +90,26 @@ export default function AboutPage() {
                 </Card>
               </section>
               <br />
-              <LicenseSection />
+              {/* 许可证与仓库信息已迁移至 /about/repository */}
+              <section>
+                <Link href="/about/repository">
+                  <Card className="transition-colors hover:bg-secondary/60">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-foreground mb-2">仓库信息与开源许可证</h3>
+                          <p className="text-sm text-muted-foreground">
+                            本站源码完全开源（AGPL-3.0），可查看 Stars、语言构成、最新版本与贡献者。
+                          </p>
+                        </div>
+                        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-secondary text-foreground/60">
+                          <GithubIcon className="w-5 h-5" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </section>
             </div>
             <div className="lg:col-span-1">
               <ContactSection />
