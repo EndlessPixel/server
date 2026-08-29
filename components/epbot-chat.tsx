@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, memo, Children, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, memo, useMemo, Children, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
