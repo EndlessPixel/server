@@ -40,7 +40,7 @@ It is not a simple landing page — it is a **service portal** designed around w
 | 🧍 **3D Skin Preview** | WebGL rendering of skins & capes (skinview3d); same-origin proxy with multi-level fallback — never a blank screen | [skin-preview.md](./README_docs/en/skin-preview.md) |
 | 📦 **Launcher Downloads** | 80+ launchers and mod-packs in clear categories; built-in mirror acceleration and custom mirror support | [downloads.md](./README_docs/en/downloads.md) |
 | 👤 **Profile** | Two-column on desktop (info left / skin right), single column on mobile; HMAC session auth | [profile.md](./README_docs/en/profile.md) |
-| 📡 **Server Status** | Live online state, player count and version; graceful degradation when the API is down | [server-status.md](./README_docs/en/server-status.md) |
+| 📡 **Server Status** | Online state, player count, version and latency probe; loads on open, manual force refresh supported | [server-status.md](./README_docs/en/server-status.md) |
 
 Also included: fully responsive layout (phone / tablet / desktop), dark mode, PWA offline support, and safe in-site link redirection.
 
