@@ -7,15 +7,28 @@
 
 English | [简体中文](./README.md)
 
-Official website of EndlessPixel Server, built with Next.js App Router + TypeScript + Tailwind CSS.
+Official website of EndlessPixel Server, built with Next.js App Router + TypeScript + Tailwind CSS, centered on player services.
 
-## ✨ Features
+## ✨ Core Features
 
-- ⚡ Next.js 16 full-stack React framework, SSR/SSG/ISR ready
-- 🎨 Tailwind CSS 4 utility-first, dark-mode out of the box
-- 📦 80+ launchers & mod-packs high-speed download, custom mirror support
-- 🧪 Strict TypeScript checking, ESLint + Prettier automated
-- 📱 Responsive layout, PWA offline support (Workbox auto-generated)
+See [README_docs/en](./README_docs/en/features.md) for details.
+
+- 🤖 **AI Assistant**: streaming Q&A + interactive cards, with server context injected
+- 🧍 **Skin Preview**: 3D skin viewer (skinview3d) + same-origin proxy with fallback
+- 📦 **Launcher Downloads**: 80+ launchers & mod-packs, high-speed with custom mirrors
+- 👤 **Profile**: two-column layout, skin display & account info
+- 📡 **Server Status**: real-time MC server status monitoring
+
+## 📚 Documentation
+
+| Doc | Link |
+|-----|------|
+| Features Overview | [README_docs/en/features.md](./README_docs/en/features.md) |
+| AI Assistant | [README_docs/en/ai-assistant.md](./README_docs/en/ai-assistant.md) |
+| Skin Preview | [README_docs/en/skin-preview.md](./README_docs/en/skin-preview.md) |
+| Launcher Downloads | [README_docs/en/downloads.md](./README_docs/en/downloads.md) |
+| Profile | [README_docs/en/profile.md](./README_docs/en/profile.md) |
+| Server Status | [README_docs/en/server-status.md](./README_docs/en/server-status.md) |
 
 ## 🚀 Quick Start
 
@@ -27,43 +40,19 @@ Official website of EndlessPixel Server, built with Next.js App Router + TypeScr
 ### Local Development
 
 ```bash
-# 1. Clone repo
 git clone https://github.com/EndlessPixel/server.git
 cd server
-
-# 2. Install dependencies
 npm install
-
-# 3. Start dev server
-npm run dev
-# or npm run dev-https
+npm run dev        # or: npm run dev-https
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) or [https://localhost:3000](https://localhost:3000)in your browser.
+Visit [http://localhost:3000](http://localhost:3000) or [https://localhost:3000](https://localhost:3000).
 
-## 🤝 Contributing
+## 🤝 Contributing & License
 
-1. Fork the repository
-2. Create feature branch: `git checkout -b feat/xxx`
-3. Commit: `git commit -m "feat: add xxx"` (follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/))
-4. Push and open a Pull Request
-5. Merge after CI & code review
-
-### Code Style
-
-- TypeScript strict mode on
-- Prefer Tailwind CSS, avoid inline styles
-- Run `npm run lint && npm run type-check` before commit
-
-## 📄 License
-
-[GNU Affero General Public License v3.0](./LICENSE)  
-Commercial use, modification and redistribution are allowed, but modified network services must be open-sourced.
-
-## 💬 Get in Touch
-
-- Issues & Ideas: [open an issue](https://github.com/EndlessPixel/server/issues/new/choose)
-- Discussions: [GitHub Discussions](https://github.com/EndlessPixel/server/discussions)
+- Contributing guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- License: [GNU AGPL v3.0](./LICENSE) (modified network services must be open-sourced)
+- Issues: [open an issue](https://github.com/EndlessPixel/server/issues/new/choose)
 
 ---
 
