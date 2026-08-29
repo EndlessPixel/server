@@ -7,15 +7,28 @@
 
 简体中文 | [English](./README.en.md)
 
-EndlessPixel 服务器的官方网站，基于 Next.js App Router + TypeScript + Tailwind CSS 构建。
+EndlessPixel 服务器的官方网站，基于 Next.js App Router + TypeScript + Tailwind CSS 构建，围绕玩家服务打造。
 
-## ✨ 特性
+## ✨ 核心功能
 
-- ⚡ 全栈 React 框架 Next.js 16，支持 SSR/SSG/ISR
-- 🎨 Tailwind CSS 4 原子化样式，暗色模式开箱即用
-- 📦 80+ 启动器与整合包高速下载，支持自定义镜像
-- 🧪 严格 TypeScript 类型检查，ESLint + Prettier 自动化
-- 📱 响应式布局，PWA 离线支持（Workbox 自动生成）
+详细功能说明见 [README_docs/zh](./README_docs/zh/features.md)。
+
+- 🤖 **AI 助手**：流式问答 + 交互卡片，注入服务器上下文
+- 🧍 **皮肤预览**：3D 皮肤查看（skinview3d）+ 同源代理容错
+- 📦 **启动器下载**：80+ 启动器与整合包高速下载，自定义镜像
+- 👤 **个人中心**：双栏资料排版、皮肤展示与账户信息
+- 📡 **服务器状态**：实时 MC 服务器状态监控
+
+## 📚 文档导航
+
+| 文档 | 链接 |
+|------|------|
+| 功能总览 | [README_docs/zh/features.md](./README_docs/zh/features.md) |
+| AI 助手 | [README_docs/zh/ai-assistant.md](./README_docs/zh/ai-assistant.md) |
+| 皮肤预览 | [README_docs/zh/skin-preview.md](./README_docs/zh/skin-preview.md) |
+| 启动器下载 | [README_docs/zh/downloads.md](./README_docs/zh/downloads.md) |
+| 个人中心 | [README_docs/zh/profile.md](./README_docs/zh/profile.md) |
+| 服务器状态 | [README_docs/zh/server-status.md](./README_docs/zh/server-status.md) |
 
 ## 🚀 快速开始
 
@@ -27,43 +40,19 @@ EndlessPixel 服务器的官方网站，基于 Next.js App Router + TypeScript +
 ### 本地开发
 
 ```bash
-# 1. 克隆仓库
 git clone https://github.com/EndlessPixel/server.git
 cd server
-
-# 2. 安装依赖
 npm install
-
-# 3. 启动开发服务器
-npm run dev
-# or npm dev-https
+npm run dev        # or: npm run dev-https
 ```
 
-浏览器访问 [http://localhost:3000](http://localhost:3000)或[https://localhost:3000](https://localhost:3000) 即可实时预览。
+浏览器访问 [http://localhost:3000](http://localhost:3000) 或 [https://localhost:3000](https://localhost:3000)。
 
-## 🤝 贡献指南
+## 🤝 贡献与许可证
 
-1. Fork 本仓库
-2. 创建特性分支：`git checkout -b feat/xxx`
-3. 提交 Commit：`git commit -m "feat: 新增 xxx"`（遵循 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/v1.0.0/)）
-4. 推送分支并提交 Pull Request
-5. CI 通过 & Code Review 合并
-
-### 代码规范
-
-- 使用 TypeScript 严格模式
-- 样式优先使用 Tailwind CSS，避免行内样式
-- 提交前执行 `npm run lint && npm run type-check`
-
-## 📄 许可证
-
-[GNU Affero General Public License v3.0](./LICENSE)  
-允许商业使用、修改、再发布，但修改后的网络服务必须开源。
-
-## 💬 联系我们
-
-- 问题与建议：[新建 Issue](https://github.com/EndlessPixel/server/issues/new/choose)
-- 讨论区：[GitHub Discussions](https://github.com/EndlessPixel/server/discussions)
+- 贡献指南参见 [CONTRIBUTING.md](./CONTRIBUTING.md)
+- 许可证：[GNU AGPL v3.0](./LICENSE)（修改后的网络服务必须开源）
+- 问题反馈：[新建 Issue](https://github.com/EndlessPixel/server/issues/new/choose)
 
 ---
 
