@@ -40,7 +40,7 @@ EndlessPixel 是一个 **Java 版** Minecraft 服务器的官方网站，基于 
 | 🧍 **3D 皮肤预览** | 基于 WebGL（skinview3d）渲染皮肤与披风；同源代理 + 多重容错，绝不白屏 | [skin-preview.md](./README_docs/zh/skin-preview.md) |
 | 📦 **启动器下载** | 80+ 启动器与整合包，分栏展示；内置镜像加速，支持自定义镜像 | [downloads.md](./README_docs/zh/downloads.md) |
 | 👤 **个人中心** | 桌面双栏（左信息 / 右皮肤），移动端自动单栏；HMAC 会话鉴权 | [profile.md](./README_docs/zh/profile.md) |
-| 📡 **服务器状态** | 实时在线状态、玩家数与版本；接口异常时优雅降级 | [server-status.md](./README_docs/zh/server-status.md) |
+| 📡 **服务器状态** | 在线状态、玩家数、版本与延迟探测；打开即加载，支持手动强制刷新 | [server-status.md](./README_docs/zh/server-status.md) |
 
 此外还包括：响应式布局（手机/平板/桌面）、暗色模式、PWA 离线支持、站内安全跳转等。
 
