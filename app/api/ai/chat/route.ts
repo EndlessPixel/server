@@ -250,16 +250,16 @@ export async function POST(req: NextRequest) {
           errorMsg = '上游服务返回了异常响应，请稍后重试';
           break;
         case 521:
-          errorMsg = '邮件服务暂时离线，请稍后重试';
+          errorMsg = 'AI 服务暂时离线，请稍后重试';
           break;
         case 522:
-          errorMsg = '连接邮件服务超时，请稍后重试';
+          errorMsg = '连接AI 服务超时，请稍后重试';
           break;
         case 523:
-          errorMsg = '邮件服务不可达，请稍后重试';
+          errorMsg = 'AI 服务不可达，请稍后重试';
           break;
         case 524:
-          errorMsg = '邮件服务处理超时，请稍后重试';
+          errorMsg = 'AI 服务处理超时，请稍后重试';
           break;
         case 525:
         case 526:
