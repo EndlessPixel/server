@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, memo, type HTMLAttributes } from "react";
-import { Clock, Server, CalendarClock, Loader2, Star, GitFork, ExternalLink, Signal, Users, MessageCircle, Package, Tag, Download } from "lucide-react";
+import { Clock, Server, CalendarClock, Loader2, Star, GitFork, ExternalLink, Signal, Users, MessageCircle, Package, Tag, Download, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RunningDuration } from "@/components/running-duration";
 import { DEFAULT_MIRRORS, type MirrorConfig } from "@/lib/mirrors";
@@ -273,6 +273,8 @@ export function WidgetBlock({ widget }: { widget: WidgetDescriptor }) {
           repo={widget.attrs.repo || "EndlessPixel/EndlessPixel-Modpack"}
         />
       );
+    case "discord":
+      return <DiscordWidget />;
     default:
       return null;
   }
@@ -764,6 +766,107 @@ function ModpackLatestWidget({ repo }: { repo: string }) {
           </div>
         </div>
       )}
+    </WidgetShell>
+  );
+}
+
+type DiscordData = {
+  name?: string | null;
+  icon?: string | null;
+  description?: string | null;
+  memberCount?: number;
+  presenceCount?: number;
+  verificationLevel?: { value?: number; label?: string };
+  joinUrl?: string;
+};
+
+/** Discord 官方服务器卡片：调 /api/discord/invite 拉取服务器信息 */
+function DiscordWidget() {
+  const [state, setState] = useState<"loading" | "ok" | "err">("loading");
+  const [data, setData] = useState<DiscordData | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const { ok, json } = await fetchCached("/api/discord/invite");
+        if (!alive) return;
+        if (!ok || !json?.name) {
+          setState("err");
+          return;
+        }
+        setData(json);
+        setState("ok");
+      } catch {
+        if (alive) setState("err");
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const joinUrl = data?.joinUrl || "https://discord.gg/k63hRWt3fF";
+
+  if (state === "loading")
+    return (
+      <WidgetShell icon={<MessageCircle className="w-4 h-4" />} title="官方 Discord">
+        <Loader2 className="w-4 h-4 animate-spin" />
+      </WidgetShell>
+    );
+
+  if (state === "err")
+    return (
+      <WidgetShell icon={<MessageCircle className="w-4 h-4" />} title="官方 Discord">
+        <span className="text-destructive">获取服务器信息失败</span>
+      </WidgetShell>
+    );
+
+  const d = data!;
+  return (
+    <WidgetShell
+      icon={
+        d.icon ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={d.icon} alt={d.name || ""} className="h-4 w-4 rounded" />
+        ) : (
+          <MessageCircle className="w-4 h-4" />
+        )
+      }
+      title={d.name || "官方 Discord"}
+    >
+      {d.description && (
+        <div className="mb-1.5 text-sm text-foreground/90">{d.description}</div>
+      )}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+        {typeof d.memberCount === "number" && (
+          <span className="inline-flex items-center gap-1">
+            <Users className="h-3.5 w-3.5" />
+            {d.memberCount.toLocaleString("zh-CN")} 成员
+          </span>
+        )}
+        {typeof d.presenceCount === "number" && (
+          <span className="inline-flex items-center gap-1">
+            <Signal className="h-3.5 w-3.5" />
+            {d.presenceCount.toLocaleString("zh-CN")} 在线
+          </span>
+        )}
+        {d.verificationLevel?.label && (
+          <span className="inline-flex items-center gap-1">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            {d.verificationLevel.label}
+          </span>
+        )}
+        <a
+          href={joinUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-0.5 text-primary hover:underline"
+        >
+          加入服务器
+          <ExternalLink className="h-3 w-3" />
+        </a>
+      </div>
     </WidgetShell>
   );
 }
