@@ -1,24 +1,23 @@
 name: Vercel Deploy Notify
 
 on:
-  check_suite:
-    types: [completed]
+  repository_dispatch:
+    types: [vercel.deployment.success, vercel.deployment.failed]
   workflow_dispatch:
 
 jobs:
   notify:
-    if: github.event.check_suite.app.name == 'Vercel' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Discord Success
-        if: github.event.check_suite.conclusion == 'success' || github.event_name == 'workflow_dispatch'
+        if: github.event.action == 'vercel.deployment.success' || github.event_name == 'workflow_dispatch'
         run: |
           curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
             -H "Content-Type: application/json" \
             -d '{
               "embeds": [{
                 "title": "Vercel 部署成功",
-                "description": "**Repository:** EndlessPixel/server\n**Branch:** `${{ github.event.check_suite.head_branch }}`\n**Commit:** `${{ github.event.check_suite.head_sha }}`\n**Time:** '"$(date -u +%Y-%m-%d\ %H:%M:%S)"' UTC",
+                "description": "**Repository:** ${{ github.repository }}\n**Branch:** `${{ github.ref_name }}`\n**Commit:** `${{ github.sha }}`\n**Time:** '"$(date -u +%Y-%m-%d\ %H:%M:%S)"' UTC",
                 "color": 2087293,
                 "author": {
                   "name": "GitHub Actions",
@@ -28,14 +27,14 @@ jobs:
             }'
 
       - name: Discord Failure
-        if: github.event.check_suite.conclusion == 'failure'
+        if: github.event.action == 'vercel.deployment.failed'
         run: |
           curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
             -H "Content-Type: application/json" \
             -d '{
               "embeds": [{
                 "title": "Vercel 部署失败",
-                "description": "**Repository:** EndlessPixel/server\n**Branch:** `${{ github.event.check_suite.head_branch }}`\n**Commit:** `${{ github.event.check_suite.head_sha }}`\n**Time:** '"$(date -u +%Y-%m-%d\ %H:%M:%S)"' UTC",
+                "description": "**Repository:** ${{ github.repository }}\n**Branch:** `${{ github.ref_name }}`\n**Commit:** `${{ github.sha }}`\n**Time:** '"$(date -u +%Y-%m-%d\ %H:%M:%S)"' UTC",
                 "color": 13631406,
                 "author": {
                   "name": "GitHub Actions",
