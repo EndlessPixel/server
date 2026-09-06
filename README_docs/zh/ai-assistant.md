@@ -44,13 +44,15 @@ export const dynamic = 'force-dynamic';
 
 `messages` 必须是数组，否则返回 SSE error `请求格式错误`。
 
-SSE 事件字段兼容以下三种取法：
+服务端以下发事件的形式回传 SSE，实际只有以下格式：
 
-- `{ "type": "text-delta", "delta": "..." }`
-- `{ "content": "..." }`
-- `{ "choices": [{ "delta": { "content": "..." } }] }`
+- `{ "type": "text-delta", "delta": "..." }` —— 文本增量
+- `{ "type": "usage", "usage": { "promptTokens": N, "completionTokens": N, "totalTokens": N } }` —— 用量统计（流末发送一次）
+- `{ "type": "error", "errorText": "..." }` —— 错误（随后以 `[DONE]` 结束）
 
-错误事件 `{ "type": "error", "message": "..." }`；流结束标记 `[DONE]`。
+流结束标记 `[DONE]`。
+
+服务端读取上游 OpenAI 兼容接口的 `choices[0].delta.content` 增量，转换为上面的 `text-delta` 事件回传；上游返回的 `usage` 会转为 `usage` 事件下发。
 
 ### 上游与模型参数
 
