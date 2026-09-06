@@ -1,18 +1,16 @@
 name: Vercel Deploy Notify
 
 on:
-  check_suite:
-    types: [completed]
+  repository_dispatch:
+    types: [vercel.deployment.success, vercel.deployment.failed]
+  workflow_dispatch:
 
 jobs:
   notify:
-    if: >
-      github.event.check_suite.app.name == 'Vercel' &&
-      github.event.check_suite.head_branch == github.event.repository.default_branch
     runs-on: ubuntu-latest
     steps:
       - name: Discord Success
-        if: github.event.check_suite.conclusion == 'success'
+        if: github.event.action == 'vercel.deployment.success' || github.event_name == 'workflow_dispatch'
         run: |
           curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
             -H "Content-Type: application/json" \
@@ -27,7 +25,7 @@ jobs:
             }'
 
       - name: Discord Failure
-        if: github.event.check_suite.conclusion == 'failure'
+        if: github.event.action == 'vercel.deployment.failed'
         run: |
           curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
             -H "Content-Type: application/json" \
