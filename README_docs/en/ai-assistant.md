@@ -44,13 +44,15 @@ Request body:
 
 `messages` must be an array, otherwise an SSE error `请求格式错误` is returned.
 
-SSE payloads are read from any of these shapes:
+The server emits the following SSE event shapes:
 
-- `{ "type": "text-delta", "delta": "..." }`
-- `{ "content": "..." }`
-- `{ "choices": [{ "delta": { "content": "..." } }] }`
+- `{ "type": "text-delta", "delta": "..." }` — text delta
+- `{ "type": "usage", "usage": { "promptTokens": N, "completionTokens": N, "totalTokens": N } }` — token usage (sent once at stream end)
+- `{ "type": "error", "errorText": "..." }` — error (followed by `[DONE]`)
 
-Errors use `{ "type": "error", "message": "..." }`; the stream ends with `[DONE]`.
+The stream ends with `[DONE]`.
+
+The server reads the upstream OpenAI-compatible `choices[0].delta.content` deltas and converts them into the `text-delta` events above; the upstream `usage` is forwarded as a `usage` event.
 
 ### Upstream & Model Parameters
 
