@@ -1,44 +1,45 @@
 name: Vercel Deploy Notify
 
 on:
-  repository_dispatch:
-    types: [vercel.deployment.success, vercel.deployment.failed]
+  check_suite:
+    types: [completed]
   workflow_dispatch:
 
 jobs:
   notify:
+    if: github.event.check_suite.app.name == 'Vercel' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Discord Success
-        if: github.event.action == 'vercel.deployment.success' || github.event_name == 'workflow_dispatch'
+        if: github.event.check_suite.conclusion == 'success' || github.event_name == 'workflow_dispatch'
         run: |
           curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
             -H "Content-Type: application/json" \
             -d '{
-              "username": "Vercel",
-              "avatar_url": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/vercel.png",
               "embeds": [{
-                "title": "✅ 部署成功",
-                "description": "**${{ github.repository }}**\nVercel 部署已完成并上线",
-                "url": "https://vercel.com/${{ github.repository }}",
-                "color": 5763719,
-                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+                "title": "Vercel 部署成功",
+                "description": "**Repository:** EndlessPixel/server\n**Branch:** `${{ github.event.check_suite.head_branch }}`\n**Commit:** `${{ github.event.check_suite.head_sha }}`\n**Time:** '"$(date -u +%Y-%m-%d\ %H:%M:%S)"' UTC",
+                "color": 2087293,
+                "author": {
+                  "name": "GitHub Actions",
+                  "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                }
               }]
             }'
 
       - name: Discord Failure
-        if: github.event.action == 'vercel.deployment.failed'
+        if: github.event.check_suite.conclusion == 'failure'
         run: |
           curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
             -H "Content-Type: application/json" \
             -d '{
-              "username": "Vercel",
-              "avatar_url": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/vercel.png",
               "embeds": [{
-                "title": "❌ 部署失败",
-                "description": "**${{ github.repository }}**\nVercel 部署出错，请检查构建日志",
-                "url": "https://github.com/${{ github.repository }}/actions",
-                "color": 15548997,
-                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+                "title": "Vercel 部署失败",
+                "description": "**Repository:** EndlessPixel/server\n**Branch:** `${{ github.event.check_suite.head_branch }}`\n**Commit:** `${{ github.event.check_suite.head_sha }}`\n**Time:** '"$(date -u +%Y-%m-%d\ %H:%M:%S)"' UTC",
+                "color": 13631406,
+                "author": {
+                  "name": "GitHub Actions",
+                  "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                }
               }]
             }'
