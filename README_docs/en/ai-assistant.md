@@ -70,6 +70,8 @@ const openaiBody = {
 };
 ```
 
+> These are server-side default values; **no configuration is needed by users**. Only at deploy time do you set the env vars `API_KEY` (required) and `API_BASE_URL` (optional, default `https://xn--kiv260fv3i.cn`) to reach the upstream model. Everything else (temperature, top_p, rate limit, model-name validation) is a hard-coded constant.
+
 - Upstream: `${API_BASE_URL}/v1/chat/completions`, auth via `Authorization: Bearer ${API_KEY}`.
 - The server keeps only the **last 20** history messages to bound the context.
 

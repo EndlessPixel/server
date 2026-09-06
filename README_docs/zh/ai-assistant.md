@@ -70,6 +70,8 @@ const openaiBody = {
 };
 ```
 
+> 以上为服务端内置默认参数，**使用者 / 读者无需配置**；仅部署时需设置环境变量 `API_KEY`（必需）与 `API_BASE_URL`（可选，默认 `https://xn--kiv260fv3i.cn`）以对接上游大模型。temperature、top_p、限流、模型名校验等均为代码写死的常量。
+
 - 上游地址：`${API_BASE_URL}/v1/chat/completions`，鉴权 `Authorization: Bearer ${API_KEY}`。
 - 服务端只保留**最近 20 条**历史消息，避免上下文膨胀。
 
