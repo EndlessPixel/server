@@ -20,7 +20,8 @@ jobs:
                 "description": "**${{ github.repository }}**\nVercel 部署已完成并上线",
                 "url": "https://vercel.com/${{ github.repository }}",
                 "color": 5763719,
-                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+                "thumbnail": { "url": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/vercel.png" }
               }]
             }'
 
@@ -35,6 +36,7 @@ jobs:
                 "description": "**${{ github.repository }}**\nVercel 部署出错，请检查构建日志",
                 "url": "https://github.com/${{ github.repository }}/actions",
                 "color": 15548997,
-                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+                "thumbnail": { "url": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/vercel.png" }
               }]
             }'
