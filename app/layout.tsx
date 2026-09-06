@@ -14,6 +14,8 @@ import FloatActions from "@/components/float-actions";
 import { MouseTrailWrapper } from "@/components/mouse-trail-wrapper";
 import { Navigation } from "@/components/navigation";
 import Footer from "@/components/footer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 // 加载 Noto Sans SC 字体
 const notoSansSC = Noto_Sans_SC({
@@ -250,6 +252,8 @@ export default function RootLayout({
               </ErrorBoundary>
               <Toaster />
               <Footer />
+              <SpeedInsights />
+              <Analytics />
             </AppearanceSettingsManager>
           </AppearanceProvider>
         </ThemeProvider>
