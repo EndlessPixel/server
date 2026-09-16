@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { intervalToDuration } from "date-fns";
 
-const START_DATE = new Date(2024, 9, 16);
+const START_DATE = new Date(2024, 8, 16);
 const UPDATE_INTERVAL = 1000;
 
 const formatDuration = (): string => {
