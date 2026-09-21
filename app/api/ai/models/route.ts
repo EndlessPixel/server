@@ -33,13 +33,21 @@ export async function GET() {
 
     const modelsUrl = `${apiBaseUrl}/v1/models`;
 
-    const response = await fetch(modelsUrl, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const fetchModels = () =>
+      fetch(modelsUrl, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+    // 上游偶发 502/503（nginx/Cloudflare 瞬时故障），重试一次
+    let response = await fetchModels();
+    if (response.status === 502 || response.status === 503) {
+      await new Promise(r => setTimeout(r, 800));
+      response = await fetchModels();
+    }
 
     if (!response.ok) {
       const errorBody = await response.text().catch(() => '');
