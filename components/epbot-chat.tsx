@@ -186,9 +186,10 @@ const DEFAULT_MODEL_ID = "grok-4.6";
 // 根据 futureppo 实际可用模型，按综合实力精选推荐（覆盖各厂商旗舰/主力聊天模型）。
 // 仅匹配明确强的大模型系列，排除 lite/codex/reasoning/translate/vision 等轻量或专项变体。
 const RECOMMENDED_PATTERNS = [
-  /grok-4\.6/i,                       // xAI 最新旗舰
-  /grok-chat-(?:fast|expert)/i,       // Grok 聊天专用版
-  /gpt-5\.[2-9](?!-(?:codex|sol|terra|luna|chat))/i, // GPT-5.2/5.5 等主力（排除专项后缀）
+  /grok-4\.6/i,
+  /grok-chat-(?:fast|expert)/i,
+  /gpt-5\.6/,
+  /gpt-5\.[2-9](?!-(?:codex|sol|terra|luna|chat))/i,
   /gpt-5\.1/i,
   /gpt-5-mini/i,
   /gpt-4o/i,                          // GPT-4o 经典通用
