@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
       { role: 'system', content: systemContent },
       ...messages.slice(-20),
     ];
-    const defaultModel = "grok-4.20-multi-agent-0309";
+    const defaultModel = "grok-4.6";
     const selectedModel = (model && typeof model === 'string' && model.trim())
       ? model.trim()
       : defaultModel;
