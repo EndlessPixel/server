@@ -31,7 +31,7 @@
  * - `id` 一旦发布就不要复用，便于后续统计错题分布。
  */
 
-export type QuizCategory = "接入" | "版本" | "玩法" | "整合包" | "社区" | "规则" | "技术";
+export type QuizCategory = "接入" | "版本" | "玩法" | "整合包" | "社区" | "规则" | "技术" | "开发";
 
 export interface QuizQuestion {
   id: string;
@@ -1204,5 +1204,359 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     answer: 0,
     explanation:
       "客户端报错日志在客户端根目录下的 ./logs 文件夹里，日志内容是排查问题的关键线索。拿到之后传到 mclo.gs 或 Pastebin，再把链接给官方。",
+  },
+
+  /* ---------------- 开发 ----------------
+   * 这一组面向开发者（接口调用、OAuth 接入、图册上传流程、PCL2 主页与启动器数据）。
+   * 默认不进入考卷，由考生在开考页选择是否包含。
+   */
+  {
+    id: "dev-api-categories",
+    category: "开发",
+    question: "官方 API 开放文档里，下面哪一类接口已经废弃？",
+    options: ["AI 客服", "OAuth 第三方身份验证", "服务器硬件信息", "Minecraft 语言文件"],
+    answer: 1,
+    explanation:
+      "API 文档里在用的是基础 API、AI 客服、服务器硬件信息、Minecraft 语言文件、愚人节整蛊接口；OAuth 第三方身份验证已被弃用，文档只作归档保留。",
+  },
+  {
+    id: "dev-api-fool-code",
+    category: "开发",
+    question: "愚人节整蛊接口 /api/fool 固定返回哪个 HTTP 状态码？",
+    options: ["200", "404", "418", "500"],
+    answer: 2,
+    explanation:
+      "/api/fool 是纯粹的整蛊娱乐接口，固定返回 HTTP 418（I'm a teapot），没有任何实际业务功能。",
+  },
+  {
+    id: "dev-api-fool-random",
+    category: "开发",
+    question: "反复请求 /api/fool，返回的内容会一样吗？",
+    options: [
+      "每次都会随机生成不同内容",
+      "固定返回同一份文案",
+      "只有愚人节当天才随机",
+      "取决于用 GET 还是 POST",
+    ],
+    answer: 0,
+    explanation:
+      "每次请求都会随机生成不同的文案、心情、错误与推荐仓库，几乎不会重复；返回里的 april_fools 字段固定为 true。",
+  },
+  {
+    id: "dev-api-status-url",
+    category: "开发",
+    question: "查询服务器在线状态的官方接口地址是？",
+    options: [
+      "https://www.endlesspixel.cn/api/status",
+      "https://www.endlesspixel.cn/api/mcserver/epmc",
+      "https://api.endlesspixel.cn/server",
+      "https://www.endlesspixel.cn/api/mcserver/status",
+    ],
+    answer: 1,
+    explanation: "在线状态接口是 /api/mcserver/epmc，返回服务器在线状态、玩家数量、Motd 等信息。",
+  },
+  {
+    id: "dev-api-status-compat",
+    category: "开发",
+    question: "服务器状态接口的返回格式，与哪个公开服务保持一致？",
+    options: ["api.mojang.com", "api.mcsrvstat.us", "mcstatus.io", "api.github.com"],
+    answer: 1,
+    explanation: "该接口返回结果与 api.mcsrvstat.us 相同，解析方式可以直接按它的官方文档来。",
+  },
+  {
+    id: "dev-api-status-fields",
+    category: "开发",
+    question: "服务器状态接口返回的 players 字段里包含哪些内容？",
+    options: ["只有当前在线人数", "online、max、list", "玩家昵称与延迟列表", "历史在线人数曲线"],
+    answer: 1,
+    explanation: "players 是一个对象，包含 online（当前在线）、max（上限）与 list（玩家列表）。",
+  },
+  {
+    id: "dev-api-ping-url",
+    category: "开发",
+    question: "测试服务器网络延迟的官方接口是？",
+    options: [
+      "https://www.endlesspixel.cn/api/ping/epmc",
+      "https://www.endlesspixel.cn/api/latency",
+      "https://www.endlesspixel.cn/api/mcserver/ping",
+      "https://www.endlesspixel.cn/api/tps",
+    ],
+    answer: 0,
+    explanation:
+      "ping 接口是 /api/ping/epmc，返回 host、ip、location 以及 min / avg / max 延迟统计。",
+  },
+  {
+    id: "dev-api-ai-url",
+    category: "开发",
+    question: "AI 客服（EPBot）对外开放的接口地址是？",
+    options: [
+      "https://www.endlesspixel.cn/api/ai/chat",
+      "https://www.endlesspixel.cn/api/chat",
+      "https://www.endlesspixel.cn/api/epbot",
+      "https://www.endlesspixel.cn/api/ai/completions",
+    ],
+    answer: 0,
+    explanation: "AI 客服接口是 /api/ai/chat，请求体格式为 application/json。",
+  },
+  {
+    id: "dev-api-ai-sse",
+    category: "开发",
+    question: "AI 客服接口的响应类型是什么？",
+    options: ["application/json", "text/event-stream", "text/plain", "application/octet-stream"],
+    answer: 1,
+    explanation:
+      "AI 客服是流式返回，响应类型为 text/event-stream（SSE），所以前端要按事件流逐块解析，不能当成一次性 JSON 响应。",
+  },
+  {
+    id: "dev-api-ai-messages",
+    category: "开发",
+    question: "调用 AI 客服接口时，messages 里每条消息包含哪些字段？",
+    options: [
+      "只有 role 和 content",
+      "role、content、timestamp、senderName",
+      "prompt 和 history",
+      "user、assistant、system",
+    ],
+    answer: 1,
+    explanation:
+      "每条消息包含 role（user / assistant）、content 正文、timestamp 时间戳与 senderName 发送者名称；多轮对话就是把历史消息一并带上。",
+  },
+  {
+    id: "dev-api-hw-merge",
+    category: "开发",
+    question: "原来独立的 hardware-info、real-time-data、disk-usage 三个接口现在怎样了？",
+    options: [
+      "仍然各自独立",
+      "已合并为 /api/data，一次返回全部数据",
+      "已全部废弃",
+      "合并成了 /api/hardware",
+    ],
+    answer: 1,
+    explanation:
+      "三个接口已统一合并为 /api/data，一次性返回 hardware_info、real_time_data 与 disk_usage 三块数据。",
+  },
+  {
+    id: "dev-api-hw-proxy",
+    category: "开发",
+    question: "本项目的 Next.js 后端用哪个路由代理硬件监控接口？",
+    options: ["/api/hardware", "/systemstatus/data", "/api/data", "/systemstatus/api"],
+    answer: 1,
+    explanation:
+      "官网后端通过 /systemstatus/data 代理上游的 /api/data 接口，避免前端直接跨域请求。",
+  },
+  {
+    id: "dev-api-mclang-source",
+    category: "开发",
+    question: "/api/mclang/blocks 返回的中文翻译数据来源是？",
+    options: [
+      "Mojang 官方 zh_cn.json 语言文件",
+      "社区玩家手工翻译",
+      "Minecraft 中文维基",
+      "AI 翻译生成",
+    ],
+    answer: 0,
+    explanation:
+      "该接口的方块译名直接取自 Mojang 官方 zh_cn.json 语言文件：键是语言文件键名（如 block.minecraft.acacia_button），值是中文名。",
+  },
+  {
+    id: "dev-api-mclang-query",
+    category: "开发",
+    question: "只想查单个方块的翻译，应该怎么调用 /api/mclang/blocks？",
+    options: [
+      "加 ?id=语言文件键名",
+      "加 ?name=中文名",
+      "改用 /api/mclang/blocks/search",
+      "不支持单查，只能拉全表",
+    ],
+    answer: 0,
+    explanation: "传 id 参数即可单查，例如 ?id=block.minecraft.acacia_button，返回 { id, name }。",
+  },
+  {
+    id: "dev-api-mclang-version",
+    category: "开发",
+    question: "/api/mclang/blocks 目前提供的是哪个版本的方块翻译表？",
+    options: ["26.2", "1.21.11", "1.20.1", "1.7.2"],
+    answer: 0,
+    explanation:
+      "当前提供的是 Minecraft 26.2 的方块翻译表，与本服主推版本一致。版本更新时这份数据也要跟着更新。",
+  },
+  {
+    id: "dev-api-oauth-file",
+    category: "开发",
+    question: "OAuth 应用做域名归属验证时，要把哪个文件放到网站静态文件根目录？",
+    options: ["oauth-verify.html", "EndlessPixelOAuth.xml", "endlesspixel.txt", "robots.txt"],
+    answer: 1,
+    explanation:
+      "需要下载 EndlessPixelOAuth.xml 放到网站静态文件根目录并保证可通过公网 HTTPS 访问；文件内容不得修改，且需长期可访问（官方会定期复检）。",
+  },
+  {
+    id: "dev-api-oauth-secret",
+    category: "开发",
+    question: "OAuth 应用凭证里，哪一个是绝密、只在创建时展示一次？",
+    options: ["client_id", "client_secret", "redirect_uri", "应用名称"],
+    answer: 1,
+    explanation:
+      "client_id 是公开的应用唯一标识；client_secret 用于服务端换取令牌，属于绝密且只展示一次，泄露后要在管理页面重置密钥。",
+  },
+  {
+    id: "dev-api-oauth-entry",
+    category: "开发",
+    question: "在官网的哪里创建 OAuth 应用？",
+    options: [
+      "账号主页的用户名 →「开发者选项」→ OAuth APP",
+      "官网首页的「关于我们」页面",
+      "在 GitHub 上提 Issue 申请",
+      "在游戏内用指令申请",
+    ],
+    answer: 0,
+    explanation:
+      "入口在账号主页：点击用户名 →「开发者选项」→ OAuth APP，路径是 /profile/dev/oauth_app。",
+  },
+  {
+    id: "dev-api-gallery-repo",
+    category: "开发",
+    question: "要往玩家图册上传图片，需要先 fork 哪个仓库？",
+    options: [
+      "EndlessPixel/server",
+      "EndlessPixel/EndlessPixel-Player-Image",
+      "EndlessPixel/EndlessPixel-Modpack",
+      "EndlessPixel/EP-XPcheckin",
+    ],
+    answer: 1,
+    explanation:
+      "玩家图册走 GitHub 流程：fork EndlessPixel/EndlessPixel-Player-Image，再把图片放进 assets 目录并更新 assets.json。",
+  },
+  {
+    id: "dev-api-gallery-meta",
+    category: "开发",
+    question: "玩家图册的图片元数据要写进哪个文件？",
+    options: ["metadata.json", "assets.json", "manifest.json", "index.json"],
+    answer: 1,
+    explanation:
+      "元数据写进仓库的 assets.json，每条包含 path、player、date、resolution、size 与 sha256。",
+  },
+  {
+    id: "dev-api-gallery-dir",
+    category: "开发",
+    question: "上传到玩家图册的图片文件应该放在仓库的哪个目录？",
+    options: ["assets 目录", "images 目录", "public 目录", "仓库根目录"],
+    answer: 0,
+    explanation: "图片放在 assets 目录下，assets.json 里的 path 写 assets/{文件名}。",
+  },
+  {
+    id: "dev-pcl2-url",
+    category: "开发",
+    question: "PCL2 个性化主页的官方主推联网更新地址是？",
+    options: [
+      "https://pcl2home.endlesspixel.cn/Server_Update/Custom.xaml",
+      "https://www.endlesspixel.cn/pcl2.xml",
+      "https://pcl2.endlesspixel.cn/Custom.xaml",
+      "https://github.com/EndlessPixel/PCL2-Homepage/releases",
+    ],
+    answer: 0,
+    explanation:
+      "主推地址是 pcl2home.endlesspixel.cn 下的 Server_Update/Custom.xaml；另有 GitHub RAW 原地址与若干个国内加速节点。",
+  },
+  {
+    id: "dev-pcl2-repo",
+    category: "开发",
+    question: "PCL2 个性化主页的内容放在哪个仓库？",
+    options: [
+      "Meloong-Git/PCL",
+      "EndlessPixel/EndlessPixel-PCL2-Homepage",
+      "EndlessPixel/server",
+      "EndlessPixel/EndlessPixel-Modpack",
+    ],
+    answer: 1,
+    explanation:
+      "内容放在 EndlessPixel/EndlessPixel-PCL2-Homepage 仓库的 Server_Update/Custom.xaml，RAW 原地址就指向这个文件。",
+  },
+  {
+    id: "dev-pcl2-setting",
+    category: "开发",
+    question: "在 PCL2 里怎么启用这个自定义主页？",
+    options: [
+      "设置 → 个性化 → 主页选「联网更新」，填入链接",
+      "设置 → 启动 → 自定义 JVM 参数",
+      "直接改 config.json 文件",
+      "PCL2 不支持自定义主页",
+    ],
+    answer: 0,
+    explanation:
+      "路径是 PCL2 设置 → 个性化 → 主页栏目选择「联网更新」，再把链接填进去即可同步更新日志。",
+  },
+  {
+    id: "dev-pcl2-proxy",
+    category: "开发",
+    question: "PCL2 主页配置里给出的国内加速节点，用的是哪个加速服务的域名？",
+    options: ["gh-proxy.org", "jsdelivr.net", "fastgit.org", "ghproxy.com"],
+    answer: 0,
+    explanation:
+      "备用节点基于 gh-proxy.org，分别是通用、香港（hk.）、CDN（cdn.）与 EdgeOne（edgeone.）四个前缀，不要记成 jsdelivr。",
+  },
+  {
+    id: "dev-launcher-url",
+    category: "开发",
+    question: "本站启动器下载地址的拼接公式是？",
+    options: [
+      "https://www.endlesspixel.cn/downloads/launcher/{key}",
+      "https://www.endlesspixel.cn/launcher/{repo}",
+      "https://download.endlesspixel.cn/{key}",
+      "https://www.endlesspixel.cn/downloads/{owner}/{repo}",
+    ],
+    answer: 0,
+    explanation:
+      "启动器数据里每条有 key / owner / repo：GitHub 链接按 https://github.com/{owner}/{repo} 拼，本站下载地址按 https://www.endlesspixel.cn/downloads/launcher/{key} 拼。",
+  },
+  {
+    id: "dev-launcher-releases-empty",
+    category: "开发",
+    question: '启动器数据里 releases 字段的值为 "empty" 表示什么？',
+    options: [
+      "有 Release 页面，但没有可下载附件",
+      "完全没有 Release 页面",
+      "有可下载的公开附件",
+      "这一项尚未验证",
+    ],
+    answer: 0,
+    explanation:
+      'releases 的取值有三种含义：true 表示存在带可下载文件的公开 Release，false 表示没有公开 Release，"empty" 表示有 Release 页面但没有任何可下载附件。',
+  },
+  {
+    id: "dev-launcher-notfound",
+    category: "开发",
+    question: "查询启动器时匹配不到对应条目，官方要求怎么回复？",
+    options: [
+      "统一回复「该启动器未收录，无法提供相关信息」",
+      "让玩家自己去搜索引擎找",
+      "推荐一个功能相近的启动器替代",
+      "根据名字现编一段介绍",
+    ],
+    answer: 0,
+    explanation:
+      "启动器信息只能从官方预设列表提取，匹配 key 或 displayName 都找不到时，统一回复「该启动器未收录，无法提供相关信息」，不得新增启动器或杜撰评价。",
+  },
+  {
+    id: "dev-launcher-key",
+    category: "开发",
+    question: "启动器数据里，PCL2 的 key 是什么？",
+    options: ["pcl2", "pcl-2", "pcl", "pcl2-ce"],
+    answer: 1,
+    explanation:
+      "PCL2 的 key 是 pcl-2（PCL2-社区版则是 pcl2-ce）；key 写错就会拼出错误的下载地址。",
+  },
+  {
+    id: "dev-launcher-list-source",
+    category: "开发",
+    question: "关于启动器列表的信息来源，下面说法哪个是对的？",
+    options: [
+      "只能从官方预设的列表提取，不得新增启动器或编造网址",
+      "可以根据自己的了解补充新启动器",
+      "可以酌情修改 desc 里的评价措辞",
+      "可以直接从启动器官网抓取最新信息",
+    ],
+    answer: 0,
+    explanation:
+      "启动器信息只能从官方预设的 JSON 数组提取，禁止新增启动器、修改字段、编造网址或杜撰评价；复述 desc 时也只能原样或精简转述，不得加「最强、最好」这类夸大形容词。",
   },
 ];
