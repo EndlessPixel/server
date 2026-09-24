@@ -1,7 +1,22 @@
 "use client";
 
 import { useEffect, useState, memo, type HTMLAttributes } from "react";
-import { Clock, Server, CalendarClock, Loader2, Star, GitFork, ExternalLink, Signal, Users, MessageCircle, Package, Tag, Download, ShieldCheck } from "lucide-react";
+import {
+  Clock,
+  Server,
+  CalendarClock,
+  Loader2,
+  Star,
+  GitFork,
+  ExternalLink,
+  Signal,
+  Users,
+  MessageCircle,
+  Package,
+  Tag,
+  Download,
+  ShieldCheck,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RunningDuration } from "@/components/running-duration";
 import { DEFAULT_MIRRORS, type MirrorConfig } from "@/lib/mirrors";
@@ -12,10 +27,10 @@ import { DEFAULT_MIRRORS, type MirrorConfig } from "@/lib/mirrors";
  * 会反复触发 useEffect，加缓存可避免重复打后端、浪费接口额度。
  */
 const FETCH_CACHE_TTL = 60_000;
-const _fetchCache = new Map<string, { expires: number; ok: boolean; json: unknown }>();
-async function fetchCached(
-  url: string,
-): Promise<{ ok: boolean; json: any }> {
+/** 上游接口字段随版本变化，取值处再自行窄化，这里统一用宽松结构承接 */
+type LooseJson = Record<string, any>;
+const _fetchCache = new Map<string, { expires: number; ok: boolean; json: LooseJson }>();
+async function fetchCached(url: string): Promise<{ ok: boolean; json: LooseJson }> {
   const now = Date.now();
   const hit = _fetchCache.get(url);
   if (hit && hit.expires > now) {
@@ -45,15 +60,7 @@ export type WidgetDescriptor = {
  * 的属性直接映射成 WidgetDescriptor 并渲染为对应卡片。
  * HTML 属性经 rehype-raw 传递后保留原始小写名称（name/host/repo/...）。
  */
-export const WidgetTag = memo(function WidgetTag(
-  props: HTMLAttributes<HTMLElement>,
-) {
-  const { name, host, repo, number, founded, date, children, node, ...rest } =
-    props as Record<string, string> & { children?: React.ReactNode };
-  void children;
-  void node;
-  void rest;
-  const widgetName = name || "";
+export const WidgetTag = memo(function WidgetTag(props: HTMLAttributes<HTMLElement>) {
   const attrs: Record<string, string> = {};
   for (const [k, v] of Object.entries(props)) {
     if (typeof v === "string" && k !== "node" && k !== "children" && k !== "ref") {
@@ -62,11 +69,10 @@ export const WidgetTag = memo(function WidgetTag(
   }
   return (
     <div data-widget-card>
-      <WidgetBlock widget={{ name: widgetName, attrs }} />
+      <WidgetBlock widget={{ name: attrs.name ?? "", attrs }} />
     </div>
   );
 });
-
 
 function WidgetShell({
   icon,
@@ -120,8 +126,8 @@ function ClockWidget() {
       weekday: "short",
     });
   return (
-    <WidgetShell icon={<Clock className="w-4 h-4" />} title="当前时间">
-      {now ? fmt(now) : <Loader2 className="w-4 h-4 animate-spin" />}
+    <WidgetShell icon={<Clock className="h-4 w-4" />} title="当前时间">
+      {now ? fmt(now) : <Loader2 className="h-4 w-4 animate-spin" />}
       <span className="ml-1 text-xs text-muted-foreground">(北京时间 CST)</span>
     </WidgetShell>
   );
@@ -149,17 +155,13 @@ function ServerStatusWidget({ host }: { host: string }) {
           fetch("/api/ping/epmc").then((r) => r.json()),
         ]);
         if (!alive) return;
-        const pingStatus =
-          pg?.data?.status ?? pg?.status;
-        const online: boolean =
-          typeof mc?.online === "boolean"
-            ? mc.online
-            : pingStatus === "up";
+        const pingStatus = pg?.data?.status ?? pg?.status;
+        const online: boolean = typeof mc?.online === "boolean" ? mc.online : pingStatus === "up";
         const players = mc?.players ?? {};
         const version: string =
           typeof mc?.version === "object"
-            ? mc?.version?.name ?? "—"
-            : (mc?.version as string) ?? "—";
+            ? (mc?.version?.name ?? "—")
+            : ((mc?.version as string) ?? "—");
         setData({
           online,
           players,
@@ -185,8 +187,8 @@ function ServerStatusWidget({ host }: { host: string }) {
 
   if (state === "loading")
     return (
-      <WidgetShell icon={<Server className="w-4 h-4" />} title={`服务器状态 · ${host}`}>
-        <Loader2 className="w-4 h-4 animate-spin" />
+      <WidgetShell icon={<Server className="h-4 w-4" />} title={`服务器状态 · ${host}`}>
+        <Loader2 className="h-4 w-4 animate-spin" />
       </WidgetShell>
     );
 
@@ -196,10 +198,7 @@ function ServerStatusWidget({ host }: { host: string }) {
   const version = data?.version ?? "—";
 
   return (
-    <WidgetShell
-      icon={<Server className="w-4 h-4" />}
-      title={`服务器状态 · ${host}`}
-    >
+    <WidgetShell icon={<Server className="h-4 w-4" />} title={`服务器状态 · ${host}`}>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
         <span
           className={cn(
@@ -208,18 +207,15 @@ function ServerStatusWidget({ host }: { host: string }) {
           )}
         >
           <span
-            className={cn(
-              "h-2 w-2 rounded-full",
-              online ? "bg-green-500" : "bg-destructive",
-            )}
+            className={cn("h-2 w-2 rounded-full", online ? "bg-green-500" : "bg-destructive")}
           />
           {online ? "在线" : "离线"}
         </span>
-        <span>在线 {String(players)}/{String(max)}</span>
+        <span>
+          在线 {String(players)}/{String(max)}
+        </span>
         <span className="text-muted-foreground">版本 {String(version)}</span>
-        {ping !== null && (
-          <span className="text-muted-foreground">延迟 {ping}ms</span>
-        )}
+        {ping !== null && <span className="text-muted-foreground">延迟 {ping}ms</span>}
       </div>
     </WidgetShell>
   );
@@ -233,7 +229,7 @@ function ServerUptimeWidget({ founded }: { founded?: string }) {
     if (!Number.isNaN(d.getTime())) startDate = d;
   }
   return (
-    <WidgetShell icon={<CalendarClock className="w-4 h-4" />} title="服务器已运行">
+    <WidgetShell icon={<CalendarClock className="h-4 w-4" />} title="服务器已运行">
       <RunningDuration size="md" showIcon startDate={startDate} />
       {startDate && (
         <span className="ml-1 text-xs text-muted-foreground">
@@ -250,28 +246,18 @@ export function WidgetBlock({ widget }: { widget: WidgetDescriptor }) {
     case "clock":
       return <ClockWidget />;
     case "server_status":
-      return (
-        <ServerStatusWidget host={widget.attrs.host || "mc.endlesspixel.cn"} />
-      );
+      return <ServerStatusWidget host={widget.attrs.host || "mc.endlesspixel.cn"} />;
     case "server_uptime":
-      return (
-        <ServerUptimeWidget
-          founded={widget.attrs.founded || widget.attrs.date}
-        />
-      );
+      return <ServerUptimeWidget founded={widget.attrs.founded || widget.attrs.date} />;
     case "github_repo":
       return <GithubRepoWidget repo={widget.attrs.repo || ""} />;
     case "server_ping":
-      return (
-        <ServerPingWidget host={widget.attrs.host || "mc.endlesspixel.cn"} />
-      );
+      return <ServerPingWidget host={widget.attrs.host || "mc.endlesspixel.cn"} />;
     case "qq_group":
       return <QQGroupWidget number={widget.attrs.number || "870594910"} />;
     case "modpack_latest":
       return (
-        <ModpackLatestWidget
-          repo={widget.attrs.repo || "EndlessPixel/EndlessPixel-Modpack"}
-        />
+        <ModpackLatestWidget repo={widget.attrs.repo || "EndlessPixel/EndlessPixel-Modpack"} />
       );
     case "discord":
       return <DiscordWidget />;
@@ -313,16 +299,14 @@ function GithubRepoWidget({ repo }: { repo: string }) {
     let alive = true;
     (async () => {
       try {
-        const { ok, json } = await fetchCached(
-          `/api/github/repo?repo=${encodeURIComponent(repo)}`,
-        );
+        const { ok, json } = await fetchCached(`/api/github/repo?repo=${encodeURIComponent(repo)}`);
         if (!alive) return;
         if (!ok) {
           setState("err");
           setErrMsg(json?.error || "获取仓库信息失败");
           return;
         }
-        setData(json);
+        setData(json as GithubRepoData);
         setState("ok");
       } catch {
         if (alive) {
@@ -340,15 +324,15 @@ function GithubRepoWidget({ repo }: { repo: string }) {
 
   if (state === "loading") {
     return (
-      <WidgetShell icon={<Star className="w-4 h-4" />} title={title}>
-        <Loader2 className="w-4 h-4 animate-spin" />
+      <WidgetShell icon={<Star className="h-4 w-4" />} title={title}>
+        <Loader2 className="h-4 w-4 animate-spin" />
       </WidgetShell>
     );
   }
 
   if (state === "err") {
     return (
-      <WidgetShell icon={<Star className="w-4 h-4" />} title={title}>
+      <WidgetShell icon={<Star className="h-4 w-4" />} title={title}>
         <span className="text-destructive">{errMsg || "加载失败"}</span>
       </WidgetShell>
     );
@@ -366,23 +350,14 @@ function GithubRepoWidget({ repo }: { repo: string }) {
         icon={
           d.owner_avatar ? (
             // 用 img 渲染头像，lucide 无 GitHub 图标
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={d.owner_avatar}
-              alt={d.owner || ""}
-              className="h-4 w-4 rounded-full"
-            />
+            <img src={d.owner_avatar} alt={d.owner || ""} className="h-4 w-4 rounded-full" />
           ) : (
-            <Star className="w-4 h-4" />
+            <Star className="h-4 w-4" />
           )
         }
         title={title}
       >
-        {d.description && (
-          <div className="mb-1.5 text-sm text-foreground/90">
-            {d.description}
-          </div>
-        )}
+        {d.description && <div className="mb-1.5 text-sm text-foreground/90">{d.description}</div>}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           {d.language && (
             <span className="inline-flex items-center gap-1">
@@ -399,9 +374,7 @@ function GithubRepoWidget({ repo }: { repo: string }) {
             {d.forks_count?.toLocaleString("zh-CN") ?? 0}
           </span>
           {d.license && <span>{d.license}</span>}
-          {d.archived && (
-            <span className="text-amber-500">已归档</span>
-          )}
+          {d.archived && <span className="text-amber-500">已归档</span>}
           <span className="inline-flex items-center gap-0.5 text-primary">
             在 GitHub 查看
             <ExternalLink className="h-3 w-3" />
@@ -424,8 +397,7 @@ function ServerPingWidget({ host }: { host?: string }) {
       try {
         const { json } = await fetchCached("/api/ping/epmc");
         if (!alive) return;
-        const s =
-          json?.data?.status ?? json?.status ?? (json?.ping != null ? "up" : "");
+        const s = json?.data?.status ?? json?.status ?? (json?.ping != null ? "up" : "");
         const p =
           typeof json?.data?.ping === "number"
             ? json.data.ping
@@ -452,14 +424,14 @@ function ServerPingWidget({ host }: { host?: string }) {
 
   if (state === "loading")
     return (
-      <WidgetShell icon={<Signal className="w-4 h-4" />} title={`网络延迟 · ${host}`}>
-        <Loader2 className="w-4 h-4 animate-spin" />
+      <WidgetShell icon={<Signal className="h-4 w-4" />} title={`网络延迟 · ${host}`}>
+        <Loader2 className="h-4 w-4 animate-spin" />
       </WidgetShell>
     );
 
   if (state === "err")
     return (
-      <WidgetShell icon={<Signal className="w-4 h-4" />} title={`网络延迟 · ${host}`}>
+      <WidgetShell icon={<Signal className="h-4 w-4" />} title={`网络延迟 · ${host}`}>
         <span className="text-destructive">获取延迟失败</span>
       </WidgetShell>
     );
@@ -477,7 +449,7 @@ function ServerPingWidget({ host }: { host?: string }) {
             : { label: "偏高", color: "text-destructive" };
 
   return (
-    <WidgetShell icon={<Signal className="w-4 h-4" />} title={`网络延迟 · ${host}`}>
+    <WidgetShell icon={<Signal className="h-4 w-4" />} title={`网络延迟 · ${host}`}>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
         <span
           className={cn(
@@ -485,17 +457,10 @@ function ServerPingWidget({ host }: { host?: string }) {
             up ? "text-green-500" : "text-destructive",
           )}
         >
-          <span
-            className={cn(
-              "h-2 w-2 rounded-full",
-              up ? "bg-green-500" : "bg-destructive",
-            )}
-          />
+          <span className={cn("h-2 w-2 rounded-full", up ? "bg-green-500" : "bg-destructive")} />
           {up ? "可达" : "不可达"}
         </span>
-        {ping !== null && (
-          <span className="text-muted-foreground">{Math.round(ping)}ms</span>
-        )}
+        {ping !== null && <span className="text-muted-foreground">{Math.round(ping)}ms</span>}
         {quality && <span className={quality.color}>网络{quality.label}</span>}
       </div>
     </WidgetShell>
@@ -552,19 +517,18 @@ function QQGroupWidget({ number }: { number: string }) {
   };
 
   const title = data?.group_name || `官方 QQ 群 ${data?.group_id || number}`;
-  const joinUrl =
-    data?.join_url || `https://qm.qq.com/q/${data?.group_id || number}`;
+  const joinUrl = data?.join_url || `https://qm.qq.com/q/${data?.group_id || number}`;
 
   if (state === "loading")
     return (
-      <WidgetShell icon={<MessageCircle className="w-4 h-4" />} title="官方 QQ 群">
-        <Loader2 className="w-4 h-4 animate-spin" />
+      <WidgetShell icon={<MessageCircle className="h-4 w-4" />} title="官方 QQ 群">
+        <Loader2 className="h-4 w-4 animate-spin" />
       </WidgetShell>
     );
 
   if (state === "err")
     return (
-      <WidgetShell icon={<MessageCircle className="w-4 h-4" />} title="官方 QQ 群">
+      <WidgetShell icon={<MessageCircle className="h-4 w-4" />} title="官方 QQ 群">
         <span className="text-destructive">获取群信息失败</span>
       </WidgetShell>
     );
@@ -574,21 +538,14 @@ function QQGroupWidget({ number }: { number: string }) {
     <WidgetShell
       icon={
         d.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={d.avatar_url}
-            alt={d.group_name || ""}
-            className="h-4 w-4 rounded"
-          />
+          <img src={d.avatar_url} alt={d.group_name || ""} className="h-4 w-4 rounded" />
         ) : (
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="h-4 w-4" />
         )
       }
       title={title}
     >
-      {d.description && (
-        <div className="mb-1.5 text-sm text-foreground/90">{d.description}</div>
-      )}
+      {d.description && <div className="mb-1.5 text-sm text-foreground/90">{d.description}</div>}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
         {d.group_id && (
           <span className="inline-flex items-center gap-1">
@@ -615,11 +572,7 @@ function QQGroupWidget({ number }: { number: string }) {
           申请加入
           <ExternalLink className="h-3 w-3" />
         </a>
-        <button
-          type="button"
-          onClick={copy}
-          className="transition-colors hover:text-foreground"
-        >
+        <button type="button" onClick={copy} className="transition-colors hover:text-foreground">
           {copied ? "已复制" : "复制群号"}
         </button>
       </div>
@@ -660,9 +613,7 @@ function ModpackLatestWidget({ repo }: { repo: string }) {
     let alive = true;
     (async () => {
       try {
-        const { json } = await fetchCached(
-          `/api/github/release?repo=${encodeURIComponent(repo)}`,
-        );
+        const { json } = await fetchCached(`/api/github/release?repo=${encodeURIComponent(repo)}`);
         if (!alive) return;
         if (!json?.tag_name) {
           setState("err");
@@ -681,27 +632,25 @@ function ModpackLatestWidget({ repo }: { repo: string }) {
 
   if (state === "loading")
     return (
-      <WidgetShell icon={<Package className="w-4 h-4" />} title="官方整合包">
-        <Loader2 className="w-4 h-4 animate-spin" />
+      <WidgetShell icon={<Package className="h-4 w-4" />} title="官方整合包">
+        <Loader2 className="h-4 w-4 animate-spin" />
       </WidgetShell>
     );
 
   if (state === "err")
     return (
-      <WidgetShell icon={<Package className="w-4 h-4" />} title="官方整合包">
+      <WidgetShell icon={<Package className="h-4 w-4" />} title="官方整合包">
         <span className="text-destructive">获取最新版本失败</span>
       </WidgetShell>
     );
 
   const d = data!;
   const download =
-    d.assets && d.assets.length > 0
-      ? d.assets[0]
-      : { name: "", url: d.html_url || "", size: 0 };
+    d.assets && d.assets.length > 0 ? d.assets[0] : { name: "", url: d.html_url || "", size: 0 };
 
   return (
     <WidgetShell
-      icon={<Package className="w-4 h-4" />}
+      icon={<Package className="h-4 w-4" />}
       title={`官方整合包 · ${d.name || d.tag_name}`}
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
@@ -710,9 +659,7 @@ function ModpackLatestWidget({ repo }: { repo: string }) {
           最新版 {d.tag_name}
         </span>
         {d.published_at && (
-          <span className="text-muted-foreground">
-            发布于 {formatDate(d.published_at)}
-          </span>
+          <span className="text-muted-foreground">发布于 {formatDate(d.published_at)}</span>
         )}
         {d.prerelease && <span className="text-amber-500">预发布</span>}
       </div>
@@ -727,9 +674,7 @@ function ModpackLatestWidget({ repo }: { repo: string }) {
             <Download className="h-3.5 w-3.5" />
             {download.name || "前往下载"}
             {formatSize(download.size) && (
-              <span className="opacity-70">
-                （{formatSize(download.size)}）
-              </span>
+              <span className="opacity-70">（{formatSize(download.size)}）</span>
             )}
             <ExternalLink className="h-3 w-3" />
           </a>
@@ -758,9 +703,7 @@ function ModpackLatestWidget({ repo }: { repo: string }) {
                 title={m.tip}
               >
                 {m.tag}
-                {m.recommended && (
-                  <span className="text-[10px] text-emerald-500">荐</span>
-                )}
+                {m.recommended && <span className="text-[10px] text-emerald-500">荐</span>}
               </a>
             ))}
           </div>
@@ -810,14 +753,14 @@ function DiscordWidget() {
 
   if (state === "loading")
     return (
-      <WidgetShell icon={<MessageCircle className="w-4 h-4" />} title="官方 Discord">
-        <Loader2 className="w-4 h-4 animate-spin" />
+      <WidgetShell icon={<MessageCircle className="h-4 w-4" />} title="官方 Discord">
+        <Loader2 className="h-4 w-4 animate-spin" />
       </WidgetShell>
     );
 
   if (state === "err")
     return (
-      <WidgetShell icon={<MessageCircle className="w-4 h-4" />} title="官方 Discord">
+      <WidgetShell icon={<MessageCircle className="h-4 w-4" />} title="官方 Discord">
         <span className="text-destructive">获取服务器信息失败</span>
       </WidgetShell>
     );
@@ -827,17 +770,14 @@ function DiscordWidget() {
     <WidgetShell
       icon={
         d.icon ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img src={d.icon} alt={d.name || ""} className="h-4 w-4 rounded" />
         ) : (
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="h-4 w-4" />
         )
       }
       title={d.name || "官方 Discord"}
     >
-      {d.description && (
-        <div className="mb-1.5 text-sm text-foreground/90">{d.description}</div>
-      )}
+      {d.description && <div className="mb-1.5 text-sm text-foreground/90">{d.description}</div>}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
         {typeof d.memberCount === "number" && (
           <span className="inline-flex items-center gap-1">

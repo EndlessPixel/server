@@ -82,20 +82,22 @@ const WidgetsWithText = memo(function WidgetsWithText({ text }: { text: string }
             key={`md-${i}`}
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeHighlight]}
-            components={{
-              a: ({ href, ...props }: ComponentPropsWithoutRef<"a">) => {
-                if (!href) return <a {...props} />;
-                const encodedUrl = encodeURIComponent(href);
-                return (
-                  <a
-                    href={`/ai_link?url=${encodedUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    {...props}
-                  />
-                );
-              },
-            } as unknown as Components}
+            components={
+              {
+                a: ({ href, ...props }: ComponentPropsWithoutRef<"a">) => {
+                  if (!href) return <a {...props} />;
+                  const encodedUrl = encodeURIComponent(href);
+                  return (
+                    <a
+                      href={`/ai_link?url=${encodedUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      {...props}
+                    />
+                  );
+                },
+              } as unknown as Components
+            }
           >
             {seg.value}
           </ReactMarkdown>
@@ -124,10 +126,7 @@ function parseWidgetAttrs(tag: string): Record<string, string> {
  * broken card mid-stream.
  */
 function hideIncompleteWidget(text: string): string {
-  return text.replace(
-    /<widget\b[\s\S]*?$/m,
-    (m) => (/\/>\s*$/.test(m) ? m : "▦ "),
-  );
+  return text.replace(/<widget\b[\s\S]*?$/m, (m) => (/\/>\s*$/.test(m) ? m : "▦ "));
 }
 
 const getCookie = (name: string): string | null => {
@@ -192,18 +191,18 @@ const RECOMMENDED_PATTERNS = [
   /gpt-5\.[2-9](?!-(?:codex|sol|terra|luna|chat))/i,
   /gpt-5\.1/i,
   /gpt-5-mini/i,
-  /gpt-4o/i,                          // GPT-4o 经典通用
-  /gpt-oss-(?:20|120)b/i,             // 开源 GPT-OSS
-  /gemini-2\.5-(?:pro|flash)$/i,      // Gemini 2.5 双档（不含 lite）
-  /gemini-3\.[0-9]-flash$/i,          // Gemini 3.x 闪速档（不含 lite/preview-tts）
+  /gpt-4o/i, // GPT-4o 经典通用
+  /gpt-oss-(?:20|120)b/i, // 开源 GPT-OSS
+  /gemini-2\.5-(?:pro|flash)$/i, // Gemini 2.5 双档（不含 lite）
+  /gemini-3\.[0-9]-flash$/i, // Gemini 3.x 闪速档（不含 lite/preview-tts）
   /gemini-3-flash-preview/i,
-  /deepseek-v4-(?:pro|flash)/i,       // DeepSeek V4 主力
-  /qwen3-(?:30b-a3b|14b|3\.5-2b)/i,   // 通义千问主力档
-  /glm-5\.2/i,                        // 智谱 GLM 旗舰
+  /deepseek-v4-(?:pro|flash)/i, // DeepSeek V4 主力
+  /qwen3-(?:30b-a3b|14b|3\.5-2b)/i, // 通义千问主力档
+  /glm-5\.2/i, // 智谱 GLM 旗舰
   /zai-glm-4\.7/i,
-  /llama-4-maverick/i,                // Meta Llama 4 旗舰
-  /kimi-thinking/i,                   // 月之暗面
-  /minimax-m3/i,                      // MiniMax
+  /llama-4-maverick/i, // Meta Llama 4 旗舰
+  /kimi-thinking/i, // 月之暗面
+  /minimax-m3/i, // MiniMax
   /nemotron-3-(?:ultra|super-120b)/i, // Nemotron 大模型
 ];
 const extractModelSize = (id: string): string => {
@@ -231,10 +230,7 @@ const getStorageUsagePercent = (): number => {
 
 const generateTitle = (messages: Message[]): string => {
   const firstUserMsg = messages.find((m) => m.role === "user")?.content || "";
-  return (
-    firstUserMsg.slice(0, 20) + (firstUserMsg.length > 20 ? "…" : "") ||
-    "新对话"
-  );
+  return firstUserMsg.slice(0, 20) + (firstUserMsg.length > 20 ? "…" : "") || "新对话";
 };
 
 // ---- <thinking> tag parsing -------------------------------------------
@@ -283,40 +279,30 @@ const parseThinking = (content: string): ParsedThinking => {
 // Remove thinking blocks before sending history back to the model, so the
 // context window is not wasted on old reasoning traces.
 const stripThinking = (content: string): string => {
-  const stripped = content
-    .replace(/<thinking>[\s\S]*?<\/thinking>\s*/gi, "")
-    .trim();
+  const stripped = content.replace(/<thinking>[\s\S]*?<\/thinking>\s*/gi, "").trim();
   return stripped || content;
 };
 
 // Collapsible reasoning section rendered above the assistant answer.
-const ThinkingBlock = ({
-  thinking,
-  streaming,
-}: {
-  thinking: string;
-  streaming: boolean;
-}) => {
+const ThinkingBlock = ({ thinking, streaming }: { thinking: string; streaming: boolean }) => {
   const [expanded, setExpanded] = useState(false);
   return (
-    <div className="mb-2 rounded-xl bg-background border border-border text-xs overflow-hidden not-prose">
+    <div className="not-prose mb-2 overflow-hidden rounded-xl border border-border bg-background text-xs">
       <button
         onClick={() => setExpanded((v) => !v)}
-        className="w-full flex items-center gap-1.5 px-3 py-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
+        className="flex w-full items-center gap-1.5 px-3 py-2 text-muted-foreground transition-colors duration-200 hover:text-foreground"
       >
-        <Brain
-          className={cn("w-3.5 h-3.5 shrink-0", streaming && "animate-pulse")}
-        />
+        <Brain className={cn("h-3.5 w-3.5 shrink-0", streaming && "animate-pulse")} />
         <span>{streaming ? "思考中…" : "已完成思考"}</span>
         <ChevronDown
           className={cn(
-            "w-3.5 h-3.5 ml-auto shrink-0 transition-transform duration-200",
+            "ml-auto h-3.5 w-3.5 shrink-0 transition-transform duration-200",
             expanded && "rotate-180",
           )}
         />
       </button>
       {(expanded || streaming) && thinking && (
-        <div className="px-3 pb-2.5 text-muted-foreground/80 whitespace-pre-wrap leading-relaxed">
+        <div className="px-3 pb-2.5 leading-relaxed whitespace-pre-wrap text-muted-foreground/80">
           {thinking}
         </div>
       )}
@@ -331,7 +317,7 @@ const TypingIndicator = () => (
     {[0, 1, 2].map((i) => (
       <span
         key={i}
-        className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 animate-bounce"
+        className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/50"
         style={{ animationDelay: `${i * 0.15}s` }}
       />
     ))}
@@ -358,7 +344,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [loadingModels, setLoadingModels] = useState(false);
   const [showModelPanel, setShowModelPanel] = useState(false);
   const [modelSearchQuery, setModelSearchQuery] = useState("");
-  const [selectedCategory] = useState<string>("all");
   const [showRecommendedOnly, setShowRecommendedOnly] = useState(true);
   const [modelSortBy, setModelSortBy] = useState<"recommended" | "name" | "size">("recommended");
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -375,10 +360,20 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userScrolledUpRef = useRef(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => { currentSessionIdRef.current = currentSessionId; }, [currentSessionId]);
-  useEffect(() => { loadingRef.current = loading; sendingRef.current = loading; }, [loading]);
-  useEffect(() => { messagesRef.current = messages; }, [messages]);
-  const getSenderName = () => { const user = getCookie("mc_user"); return user || "用户"; };
+  useEffect(() => {
+    currentSessionIdRef.current = currentSessionId;
+  }, [currentSessionId]);
+  useEffect(() => {
+    loadingRef.current = loading;
+    sendingRef.current = loading;
+  }, [loading]);
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+  const getSenderName = () => {
+    const user = getCookie("mc_user");
+    return user || "用户";
+  };
   const showToast = (msg: string) => {
     setToast(msg);
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -386,7 +381,9 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       if (mountedRef.current) setToast("");
     }, 2800);
   };
-  const isRecommendedModel = (modelId: string): boolean => { return RECOMMENDED_PATTERNS.some((pattern) => pattern.test(modelId)); };
+  const isRecommendedModel = (modelId: string): boolean => {
+    return RECOMMENDED_PATTERNS.some((pattern) => pattern.test(modelId));
+  };
   const loadModels = async () => {
     if (modelsLoaded || loadingModels) return;
     setLoadingModels(true);
@@ -412,9 +409,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         } else {
           // Prefer the configured DEFAULT_MODEL_ID, then any recommended
           // model, then fall back to the first available model.
-          const defaultModel = processedModels.find(
-            (m) => m.id === DEFAULT_MODEL_ID,
-          );
+          const defaultModel = processedModels.find((m) => m.id === DEFAULT_MODEL_ID);
           const recommendedModel = processedModels.find((m) => m.recommended);
           const fallback = defaultModel || recommendedModel || processedModels[0];
           if (fallback) setSelectedModel(fallback.id);
@@ -440,11 +435,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
           model.owned_by.toLowerCase().includes(query),
       );
     }
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(
-        (model) => model.category === selectedCategory,
-      );
-    }
     if (showRecommendedOnly) {
       filtered = filtered.filter((model) => model.recommended);
     }
@@ -464,13 +454,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       });
     }
     setFilteredModels(filtered);
-  }, [
-    models,
-    modelSearchQuery,
-    selectedCategory,
-    showRecommendedOnly,
-    modelSortBy,
-  ]);
+  }, [models, modelSearchQuery, showRecommendedOnly, modelSortBy]);
 
   const handleModelChange = (modelId: string) => {
     setSelectedModel(modelId);
@@ -525,9 +509,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       prev.map((s) => {
         if (s.id !== currentSessionIdRef.current) return s;
         const title =
-          s.title === "新对话" && newMessages.length > 0
-            ? generateTitle(newMessages)
-            : s.title;
+          s.title === "新对话" && newMessages.length > 0 ? generateTitle(newMessages) : s.title;
         return { ...s, messages: newMessages, title };
       }),
     );
@@ -580,9 +562,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         body: JSON.stringify({
           // Strip old <thinking> blocks from assistant turns to save context.
           messages: newHistory.map((msg) =>
-            msg.role === "assistant"
-              ? { ...msg, content: stripThinking(msg.content) }
-              : msg,
+            msg.role === "assistant" ? { ...msg, content: stripThinking(msg.content) } : msg,
           ),
           model: selectedModel || undefined,
         }),
@@ -638,8 +618,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             let content = "";
             if (j.type === "text-delta" && j.delta) content = j.delta;
             else if (j.content) content = j.content;
-            else if (j.choices?.[0]?.delta?.content)
-              content = j.choices[0].delta.content;
+            else if (j.choices?.[0]?.delta?.content) content = j.choices[0].delta.content;
 
             if (content) {
               reply += content;
@@ -670,7 +649,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                 return newMsgs;
               });
             }
-          } catch (err) {
+          } catch {
             console.warn("SSE parse error:", ev.data);
           }
         },
@@ -684,7 +663,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
           throw err; // Prevent fetchEventSource from retrying
         },
       });
-    } catch (err) {
+    } catch {
       // Connection/open errors are already surfaced via onerror.
       // Aborted (user-initiated) requests need no extra handling.
     } finally {
@@ -854,7 +833,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     if (savedSessions) {
       try {
         parsedSessions = JSON.parse(savedSessions);
-      } catch { }
+      } catch {}
     }
     if (parsedSessions.length === 0) {
       const defaultSession: Session = {
@@ -898,15 +877,13 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   useEffect(() => {
     if (sessions.length > 0) {
       const usage = getStorageUsagePercent();
-      if (usage >= MAX_STORAGE_PERCENT)
-        showToast("⚠️ 存储空间即将用尽，请删除部分对话");
+      if (usage >= MAX_STORAGE_PERCENT) showToast("⚠️ 存储空间即将用尽，请删除部分对话");
       else localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
     }
   }, [sessions]);
 
   useEffect(() => {
-    if (currentSessionId)
-      localStorage.setItem(CURRENT_SESSION_KEY, currentSessionId);
+    if (currentSessionId) localStorage.setItem(CURRENT_SESSION_KEY, currentSessionId);
   }, [currentSessionId]);
 
   // Auto-scroll on new messages, but only if user hasn't scrolled up
@@ -921,8 +898,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     if (!container) return;
     const threshold = 60;
     const isAtBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight <
-      threshold;
+      container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
     userScrolledUpRef.current = !isAtBottom;
   };
 
@@ -965,12 +941,12 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       )}
     >
       {toast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-60 px-5 py-2 rounded-lg bg-foreground/90 backdrop-blur-lg text-background text-sm shadow-lg whitespace-nowrap">
+        <div className="fixed top-4 left-1/2 z-60 -translate-x-1/2 rounded-lg bg-foreground/90 px-5 py-2 text-sm whitespace-nowrap text-background shadow-lg backdrop-blur-lg">
           {toast}
         </div>
       )}
 
-      <div className="flex h-full w-full bg-background overflow-hidden relative shadow-2xl md:h-[90vh] md:w-[80%] md:max-w-300 md:rounded-2xl md:min-w-100">
+      <div className="relative flex h-full w-full overflow-hidden bg-background shadow-2xl md:h-[90vh] md:w-[80%] md:max-w-300 md:min-w-100 md:rounded-2xl">
         {/* 移动端侧边栏遮罩 */}
         {mobileNavOpen && (
           <div
@@ -981,29 +957,27 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         {/* 左侧边栏：桌面内联，移动端浮层抽屉 */}
         <div
           className={cn(
-            "h-full bg-card flex flex-col shrink-0",
-            "absolute inset-y-0 left-0 z-40 max-w-[80vw] transition-transform duration-300 md:static md:z-auto md:translate-x-0 md:max-w-none md:transition-none",
+            "flex h-full shrink-0 flex-col bg-card",
+            "absolute inset-y-0 left-0 z-40 max-w-[80vw] transition-transform duration-300 md:static md:z-auto md:max-w-none md:translate-x-0 md:transition-none",
             mobileNavOpen ? "translate-x-0" : "-translate-x-full",
             sidebarCollapsed ? "md:w-12" : "w-72 md:w-72",
           )}
         >
-          <div className={cn(
-            "p-3 flex items-center shrink-0",
-            sidebarCollapsed ? "justify-center" : "justify-between"
-          )}>
-            {!sidebarCollapsed && (
-              <h4 className="text-foreground font-medium text-sm">
-                对话历史
-              </h4>
+          <div
+            className={cn(
+              "flex shrink-0 items-center p-3",
+              sidebarCollapsed ? "justify-center" : "justify-between",
             )}
+          >
+            {!sidebarCollapsed && <h4 className="text-sm font-medium text-foreground">对话历史</h4>}
             <div className="flex gap-1">
               {!sidebarCollapsed && (
                 <button
                   onClick={createNewSession}
-                  className="p-1.5 rounded-lg hover:bg-secondary transition-colors duration-200"
+                  className="rounded-lg p-1.5 transition-colors duration-200 hover:bg-secondary"
                   title="新建对话"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="h-4 w-4" />
                 </button>
               )}
               <button
@@ -1014,47 +988,49 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                     setSidebarCollapsed(!sidebarCollapsed);
                   }
                 }}
-                className="p-1.5 rounded-lg hover:bg-secondary transition-colors duration-200"
+                className="rounded-lg p-1.5 transition-colors duration-200 hover:bg-secondary"
                 title={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
               >
-                {sidebarCollapsed ? <Menu className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+                {sidebarCollapsed ? (
+                  <Menu className="h-4 w-4" />
+                ) : (
+                  <ChevronLeft className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
+          <div className="flex-1 space-y-1 overflow-y-auto p-2">
             {sessions
               .sort((a, b) => b.createdAt - a.createdAt)
               .map((session) => (
                 <div
                   key={session.id}
                   className={cn(
-                    "group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-200",
+                    "group flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 transition-colors duration-200",
                     session.id === currentSessionId
                       ? "bg-secondary font-medium"
                       : "hover:bg-secondary/60",
-                    sidebarCollapsed && "justify-center px-2"
+                    sidebarCollapsed && "justify-center px-2",
                   )}
                   onClick={() => switchSession(session.id)}
                   title={sidebarCollapsed ? session.title : undefined}
                 >
                   {sidebarCollapsed ? (
-                    <div className="w-5 h-5 flex items-center justify-center text-xs font-medium bg-foreground/10 rounded text-foreground/60">
+                    <div className="flex h-5 w-5 items-center justify-center rounded bg-foreground/10 text-xs font-medium text-foreground/60">
                       {session.title.charAt(0)}
                     </div>
                   ) : (
                     <>
-                      <div className="flex-1 truncate text-sm text-foreground">
-                        {session.title}
-                      </div>
+                      <div className="flex-1 truncate text-sm text-foreground">{session.title}</div>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           deleteSession(session.id);
                         }}
-                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/10 transition-opacity duration-200"
+                        className="rounded p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:bg-destructive/10"
                       >
-                        <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
+                        <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
                       </button>
                     </>
                   )}
@@ -1062,72 +1038,72 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               ))}
           </div>
 
-          <div className={cn(
-            "p-3 text-xs text-muted-foreground shrink-0",
-            sidebarCollapsed && "text-center"
-          )}>
+          <div
+            className={cn(
+              "shrink-0 p-3 text-xs text-muted-foreground",
+              sidebarCollapsed && "text-center",
+            )}
+          >
             {!sidebarCollapsed ? (
               <>
                 <div>存储用量：{Math.round(getStorageUsagePercent() * 100)}%</div>
               </>
             ) : (
-              <div className="text-xs">
-                {Math.round(getStorageUsagePercent() * 100)}%
-              </div>
+              <div className="text-xs">{Math.round(getStorageUsagePercent() * 100)}%</div>
             )}
           </div>
         </div>
 
         {/* 右侧主内容区 */}
-        <div className="flex-1 flex flex-col min-w-0 h-full relative bg-background">
-          <div className="px-4 py-3 bg-background shrink-0">
+        <div className="relative flex h-full min-w-0 flex-1 flex-col bg-background">
+          <div className="shrink-0 bg-background px-4 py-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0">
+              <div className="flex min-w-0 items-center gap-2">
                 <button
                   onClick={() => setMobileNavOpen(true)}
-                  className="md:hidden p-1.5 -ml-1 rounded-lg hover:bg-secondary transition-colors duration-200 shrink-0"
+                  className="-ml-1 shrink-0 rounded-lg p-1.5 transition-colors duration-200 hover:bg-secondary md:hidden"
                   title="打开对话列表"
                 >
-                  <Menu className="w-5 h-5" />
+                  <Menu className="h-5 w-5" />
                 </button>
-                <h3 className="text-foreground font-semibold truncate">
+                <h3 className="truncate font-semibold text-foreground">
                   {currentSession?.title || "EPBot 客服助手"}
                 </h3>
               </div>
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <button
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-secondary text-sm transition-colors duration-200"
+                    className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors duration-200 hover:bg-secondary"
                     onClick={() => {
                       if (!modelsLoaded) loadModels();
                       setShowModelPanel(!showModelPanel);
                     }}
                   >
-                    <span className="hidden sm:inline max-w-60 truncate">
+                    <span className="hidden max-w-60 truncate sm:inline">
                       {currentModel?.name || selectedModel || "选择模型"}
                     </span>
-                    <Settings className="w-4 h-4" />
+                    <Settings className="h-4 w-4" />
                   </button>
 
                   {showModelPanel && (
                     <div
                       ref={modelPanelRef}
-                      className="absolute top-full right-0 mt-2 z-20 w-120 max-w-[calc(100vw-2rem)] bg-popover/98 backdrop-blur-xl rounded-2xl shadow-xl ring-1 ring-foreground/5 overflow-hidden"
+                      className="absolute top-full right-0 z-20 mt-2 w-120 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl bg-popover/98 shadow-xl ring-1 ring-foreground/5 backdrop-blur-xl"
                     >
                       <div className="p-3">
-                        <div className="flex justify-between items-center mb-3">
+                        <div className="mb-3 flex items-center justify-between">
                           <h4 className="font-medium text-foreground">选择模型</h4>
                           <button
                             onClick={() => setShowModelPanel(false)}
-                            className="p-1 hover:bg-secondary rounded-lg transition-colors duration-200"
+                            className="rounded-lg p-1 transition-colors duration-200 hover:bg-secondary"
                           >
-                            <X className="w-4 h-4" />
+                            <X className="h-4 w-4" />
                           </button>
                         </div>
 
-                        <div className="mb-3 p-2 bg-muted rounded-xl">
+                        <div className="mb-3 rounded-xl bg-muted p-2">
                           <div className="flex items-start gap-2">
-                            <AlertCircle className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                             <div className="text-xs text-muted-foreground">
                               并非所有模型都适合用对话，随意选择可能影响回复质量。
                             </div>
@@ -1136,17 +1112,17 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
 
                         <div className="space-y-2">
                           <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                             <input
                               ref={searchInputRef}
                               type="text"
                               placeholder="搜索模型名称、ID 或提供商..."
                               value={modelSearchQuery}
                               onChange={(e) => setModelSearchQuery(e.target.value)}
-                              className="w-full pl-9 pr-3 py-2 text-sm bg-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/30 transition-colors duration-200 placeholder:text-muted-foreground/50"
+                              className="w-full rounded-lg bg-secondary py-2 pr-3 pl-9 text-sm transition-colors duration-200 placeholder:text-muted-foreground/50 focus:ring-2 focus:ring-ring/30 focus:outline-none"
                             />
                           </div>
-                          <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
                             <div className="flex items-center gap-3">
                               <label className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <input
@@ -1158,10 +1134,14 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                                 仅显示推荐
                               </label>
                               <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                <Filter className="w-3 h-3" />
+                                <Filter className="h-3 w-3" />
                                 <select
                                   value={modelSortBy}
-                                  onChange={(e) => setModelSortBy(e.target.value as any)}
+                                  onChange={(e) =>
+                                    setModelSortBy(
+                                      e.target.value as "recommended" | "name" | "size",
+                                    )
+                                  }
                                   className="bg-transparent text-sm focus:outline-none"
                                 >
                                   <option value="recommended">推荐优先</option>
@@ -1179,16 +1159,16 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
 
                       <div className="max-h-100 overflow-y-auto p-2">
                         {loadingModels ? (
-                          <div className="text-center py-8 text-muted-foreground">
+                          <div className="py-8 text-center text-muted-foreground">
                             加载模型中...
                           </div>
                         ) : filteredModels.length === 0 ? (
-                          <div className="text-center py-8">
-                            <p className="text-muted-foreground text-sm">未找到匹配的模型</p>
+                          <div className="py-8 text-center">
+                            <p className="text-sm text-muted-foreground">未找到匹配的模型</p>
                             {modelSearchQuery && (
                               <button
                                 onClick={() => setModelSearchQuery("")}
-                                className="mt-2 px-3 py-1 text-sm text-foreground/70 hover:text-foreground transition-colors duration-200"
+                                className="mt-2 px-3 py-1 text-sm text-foreground/70 transition-colors duration-200 hover:text-foreground"
                               >
                                 清除搜索
                               </button>
@@ -1199,7 +1179,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                             <div
                               key={model.id}
                               className={cn(
-                                "p-3 rounded-xl cursor-pointer transition-colors duration-200 mb-1",
+                                "mb-1 cursor-pointer rounded-xl p-3 transition-colors duration-200",
                                 selectedModel === model.id
                                   ? "bg-secondary"
                                   : "hover:bg-secondary/60",
@@ -1207,28 +1187,28 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                               onClick={() => handleModelChange(model.id)}
                             >
                               <div className="flex items-start justify-between">
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2 flex-wrap">
-                                    <div className="font-medium text-sm text-foreground truncate">
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <div className="truncate text-sm font-medium text-foreground">
                                       {model.name}
                                     </div>
                                     {model.recommended && (
-                                      <span className="text-xs px-1.5 py-0.5 bg-foreground/10 text-foreground/70 rounded-md flex items-center gap-1">
-                                        <Star className="w-3 h-3" /> 推荐
+                                      <span className="flex items-center gap-1 rounded-md bg-foreground/10 px-1.5 py-0.5 text-xs text-foreground/70">
+                                        <Star className="h-3 w-3" /> 推荐
                                       </span>
                                     )}
                                     {model.size && (
-                                      <span className="text-xs px-1.5 py-0.5 bg-foreground/5 text-muted-foreground rounded-md">
+                                      <span className="rounded-md bg-foreground/5 px-1.5 py-0.5 text-xs text-muted-foreground">
                                         {model.size}
                                       </span>
                                     )}
                                   </div>
-                                  <span className="text-xs text-muted-foreground/60 truncate">
+                                  <span className="truncate text-xs text-muted-foreground/60">
                                     {model.id}
                                   </span>
                                 </div>
                                 {selectedModel === model.id && (
-                                  <Check className="w-4 h-4 text-foreground ml-2 shrink-0" />
+                                  <Check className="ml-2 h-4 w-4 shrink-0 text-foreground" />
                                 )}
                               </div>
                             </div>
@@ -1240,10 +1220,10 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-lg hover:bg-secondary transition-colors duration-200"
+                  className="rounded-lg p-1.5 transition-colors duration-200 hover:bg-secondary"
                   title="关闭"
                 >
-                  <Minimize2 className="w-5 h-5" />
+                  <Minimize2 className="h-5 w-5" />
                 </button>
               </div>
             </div>
@@ -1252,13 +1232,13 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
           <div
             ref={chatContainerRef}
             onScroll={handleChatScroll}
-            className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
+            className="flex-1 space-y-4 overflow-y-auto scroll-smooth p-4"
           >
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-                <MessageCircle className="w-16 h-16 mb-4 opacity-30" />
+              <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
+                <MessageCircle className="mb-4 h-16 w-16 opacity-30" />
                 <p className="text-lg font-medium">EPBot 客服助手</p>
-                <p className="text-sm mt-2">有什么我可以帮助你的吗？</p>
+                <p className="mt-2 text-sm">有什么我可以帮助你的吗？</p>
               </div>
             ) : (
               messages.map((m, i) =>
@@ -1269,40 +1249,40 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                       <span>{formatTime(m.timestamp)}</span>
                       <button
                         onClick={() => startEdit(i, m.content)}
-                        className="p-1 hover:text-foreground/70 transition-colors duration-200"
+                        className="p-1 transition-colors duration-200 hover:text-foreground/70"
                       >
-                        <Edit2 className="w-3.5 h-3.5" />
+                        <Edit2 className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => deleteMessage(i)}
-                        className="p-1 hover:text-destructive transition-colors duration-200"
+                        className="p-1 transition-colors duration-200 hover:text-destructive"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
                     {editId === i ? (
-                      <div className="flex gap-2 items-center max-w-[80%] bg-secondary rounded-2xl px-3 py-2">
+                      <div className="flex max-w-[80%] items-center gap-2 rounded-2xl bg-secondary px-3 py-2">
                         <textarea
                           autoFocus
                           value={editContent}
                           onChange={(e) => setEditContent(e.target.value)}
-                          className="flex-1 bg-transparent text-foreground text-sm outline-none w-full resize-none min-h-10"
+                          className="min-h-10 w-full flex-1 resize-none bg-transparent text-sm text-foreground outline-none"
                         />
                         <button
                           onClick={() => saveEdit(i)}
-                          className="text-foreground/70 p-1 hover:text-foreground transition-colors duration-200"
+                          className="p-1 text-foreground/70 transition-colors duration-200 hover:text-foreground"
                         >
-                          <Check className="w-4 h-4" />
+                          <Check className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => setEditId(null)}
-                          className="text-muted-foreground p-1 hover:text-foreground transition-colors duration-200"
+                          className="p-1 text-muted-foreground transition-colors duration-200 hover:text-foreground"
                         >
-                          <XIcon className="w-4 h-4" />
+                          <XIcon className="h-4 w-4" />
                         </button>
                       </div>
                     ) : (
-                      <div className="max-w-[80%] bg-muted rounded-2xl px-4 py-3 text-foreground text-sm wrap-break-word">
+                      <div className="max-w-[80%] rounded-2xl bg-muted px-4 py-3 text-sm wrap-break-word text-foreground">
                         {m.content}
                       </div>
                     )}
@@ -1315,10 +1295,10 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                       {m.failed && i === messages.length - 1 && (
                         <button
                           onClick={retryLast}
-                          className="flex items-center gap-1 p-1 hover:text-foreground transition-colors duration-200"
+                          className="flex items-center gap-1 p-1 transition-colors duration-200 hover:text-foreground"
                           title="重试"
                         >
-                          <RotateCw className="w-3.5 h-3.5" />
+                          <RotateCw className="h-3.5 w-3.5" />
                           <span>重试</span>
                         </button>
                       )}
@@ -1329,21 +1309,19 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                             setCopiedId(String(i));
                             showToast("✅ 已复制回答");
                             setTimeout(() => {
-                              setCopiedId((cur) =>
-                                cur === String(i) ? null : cur,
-                              );
+                              setCopiedId((cur) => (cur === String(i) ? null : cur));
                             }, 1500);
                           } catch {
                             showToast("❌ 复制失败");
                           }
                         }}
-                        className="p-1 hover:text-foreground/70 transition-colors duration-200"
+                        className="p-1 transition-colors duration-200 hover:text-foreground/70"
                         title="复制回答"
                       >
                         {copiedId === String(i) ? (
-                          <Check className="w-3.5 h-3.5 text-green-500" />
+                          <Check className="h-3.5 w-3.5 text-green-500" />
                         ) : (
-                          <Copy className="w-3.5 h-3.5" />
+                          <Copy className="h-3.5 w-3.5" />
                         )}
                       </button>
                       <button
@@ -1362,45 +1340,35 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                           }
                           speech.speak(text, {
                             onStart: () => setSpeakingId(String(i)),
-                            onEnd: () =>
-                              setSpeakingId((cur) =>
-                                cur === String(i) ? null : cur,
-                              ),
+                            onEnd: () => setSpeakingId((cur) => (cur === String(i) ? null : cur)),
                             onError: () => {
-                              setSpeakingId((cur) =>
-                                cur === String(i) ? null : cur,
-                              );
+                              setSpeakingId((cur) => (cur === String(i) ? null : cur));
                               showToast("❌ 朗读出错");
                             },
                           });
                         }}
                         className={cn(
                           "p-1 transition-colors duration-200",
-                          speakingId === String(i)
-                            ? "text-primary"
-                            : "hover:text-foreground/70",
+                          speakingId === String(i) ? "text-primary" : "hover:text-foreground/70",
                         )}
-                        title={
-                          speakingId === String(i) ? "停止朗读" : "朗读回答"
-                        }
+                        title={speakingId === String(i) ? "停止朗读" : "朗读回答"}
                       >
                         {speakingId === String(i) ? (
-                          <Square className="w-3.5 h-3.5" />
+                          <Square className="h-3.5 w-3.5" />
                         ) : (
-                          <Volume2 className="w-3.5 h-3.5" />
+                          <Volume2 className="h-3.5 w-3.5" />
                         )}
                       </button>
                       <button
                         onClick={() => deleteMessage(i)}
-                        className="p-1 hover:text-destructive transition-colors duration-200"
+                        className="p-1 transition-colors duration-200 hover:text-destructive"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
-                    <div className="max-w-[85%] bg-secondary rounded-2xl px-4 py-3 text-foreground prose prose-sm wrap-break-word">
+                    <div className="prose prose-sm max-w-[85%] rounded-2xl bg-secondary px-4 py-3 wrap-break-word text-foreground">
                       {(() => {
-                        const isStreamingLast =
-                          loading && i === messages.length - 1;
+                        const isStreamingLast = loading && i === messages.length - 1;
                         if (m.content === "" && isStreamingLast) {
                           return <TypingIndicator />;
                         }
@@ -1410,9 +1378,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                             {(parsed.thinking || !parsed.thinkingDone) && (
                               <ThinkingBlock
                                 thinking={parsed.thinking}
-                                streaming={
-                                  !parsed.thinkingDone && isStreamingLast
-                                }
+                                streaming={!parsed.thinkingDone && isStreamingLast}
                               />
                             )}
                             {parsed.answer ? (
@@ -1422,9 +1388,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                               // so later tokens won't remount it / re-fire fetches).
                               // Incomplete trailing widget tags are hidden until done.
                               isStreamingLast ? (
-                                <WidgetsWithText
-                                  text={hideIncompleteWidget(parsed.answer)}
-                                />
+                                <WidgetsWithText text={hideIncompleteWidget(parsed.answer)} />
                               ) : (
                                 <WidgetsWithText text={parsed.answer} />
                               )
@@ -1442,15 +1406,19 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             <div ref={bottomRef} />
           </div>
 
-          <div className="p-4 flex gap-3 items-end bg-background shrink-0">
+          <div className="flex shrink-0 items-end gap-3 bg-background p-4">
             <textarea
               ref={textareaRef}
-              className="flex-1 bg-secondary rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:bg-background resize-none max-h-36 overflow-y-auto text-sm min-h-10.5 transition-colors duration-200"
+              className="max-h-36 min-h-10.5 flex-1 resize-none overflow-y-auto rounded-xl bg-secondary px-4 py-3 text-sm text-foreground transition-colors duration-200 placeholder:text-muted-foreground/50 focus:bg-background focus:ring-2 focus:ring-ring/30 focus:outline-none"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              onCompositionStart={() => { composingRef.current = true; }}
-              onCompositionEnd={() => { composingRef.current = false; }}
+              onCompositionStart={() => {
+                composingRef.current = true;
+              }}
+              onCompositionEnd={() => {
+                composingRef.current = false;
+              }}
               placeholder="输入消息... (Shift+Enter 换行)"
               disabled={loading}
               rows={1}
@@ -1459,19 +1427,19 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               onClick={loading ? cancelCurrentRequest : send}
               disabled={loading ? false : !input.trim()}
               aria-label={loading ? "停止生成" : "发送"}
-              className="bg-foreground text-background p-3 rounded-xl flex items-center justify-center disabled:opacity-40 shadow-sm hover:bg-foreground/90 active:scale-[0.97] transition-all duration-200"
+              className="flex items-center justify-center rounded-xl bg-foreground p-3 text-background shadow-sm transition-all duration-200 hover:bg-foreground/90 active:scale-[0.97] disabled:opacity-40"
             >
-              {loading ? <Square className="w-5 h-5" /> : <Send className="w-5 h-5" />}
+              {loading ? <Square className="h-5 w-5" /> : <Send className="h-5 w-5" />}
             </button>
           </div>
 
-          <div className="px-4 py-2 text-xs text-muted-foreground/50 bg-background shrink-0">
+          <div className="shrink-0 bg-background px-4 py-2 text-xs text-muted-foreground/50">
             <div className="flex justify-between">
               <span>
                 注意：AI 模型回复可能包含错误信息，请注意辨别，不要过度依赖 AI 模型的回复内容。
               </span>
               {currentModel && (
-                <span className="hidden sm:inline truncate max-w-64">
+                <span className="hidden max-w-64 truncate sm:inline">
                   当前模型：{currentModel.name}
                 </span>
               )}

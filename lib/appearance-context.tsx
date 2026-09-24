@@ -1,22 +1,11 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-type FontOption =
-  | "default"
-  | "noto-sans"
-  | "dengxian"
-  | "chill-reunion"
-  | "fz-cuyuan"
-  | "hy-tangmeiren";
+export type FontOption =
+  "default" | "noto-sans" | "dengxian" | "chill-reunion" | "fz-cuyuan" | "hy-tangmeiren";
 
-interface AppearanceSettings {
+export interface AppearanceSettings {
   showAddressBar: boolean;
   showSaying: boolean;
   showAIChat: boolean;
@@ -47,9 +36,7 @@ const defaultSettings: AppearanceSettings = {
   showMouseTrail: false,
 };
 
-const AppearanceContext = createContext<AppearanceContextType | undefined>(
-  undefined,
-);
+const AppearanceContext = createContext<AppearanceContextType | undefined>(undefined);
 
 export function AppearanceProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<AppearanceSettings>(defaultSettings);
@@ -74,10 +61,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     setSettings((prev) => {
       const newSettings = { ...prev, ...updates };
       try {
-        localStorage.setItem(
-          "appearance-settings",
-          JSON.stringify(newSettings),
-        );
+        localStorage.setItem("appearance-settings", JSON.stringify(newSettings));
       } catch (error) {
         console.error("Failed to save appearance settings:", error);
       }
@@ -123,8 +107,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
       switch (settings.customFont) {
         case "noto-sans":
           // 使用 Next.js 注入的 CSS 变量
-          body.style.fontFamily =
-            "var(--font-noto-sans-sc), 'Microsoft YaHei', sans-serif";
+          body.style.fontFamily = "var(--font-noto-sans-sc), 'Microsoft YaHei', sans-serif";
           body.classList.add("font-noto-sans");
           break;
         case "dengxian":
@@ -133,20 +116,17 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
           break;
         case "chill-reunion":
           // ChillReunion 回退到 Noto Sans SC
-          body.style.fontFamily =
-            "'ChillReunion Round', var(--font-noto-sans-sc), sans-serif";
+          body.style.fontFamily = "'ChillReunion Round', var(--font-noto-sans-sc), sans-serif";
           body.classList.add("font-chill-reunion");
           break;
         case "fz-cuyuan":
           // 黑糖话梅 Black Sugar Plum Candy
-          body.style.fontFamily =
-            "'Black Sugar Plum Candy', '黑糖话梅', sans-serif";
+          body.style.fontFamily = "'Black Sugar Plum Candy', '黑糖话梅', sans-serif";
           body.classList.add("font-fz-cuyuan");
           break;
         case "hy-tangmeiren":
           // 小赖字体 SC Xiaolai SC
-          body.style.fontFamily =
-            "'Xiaolai SC', '小赖字体 SC', sans-serif";
+          body.style.fontFamily = "'Xiaolai SC', '小赖字体 SC', sans-serif";
           body.classList.add("font-hy-tangmeiren");
           break;
         default:
