@@ -1,0 +1,71 @@
+# Dependabot 配置
+# 文档：https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# 策略说明：
+# - minor / patch 合并成一个 PR，避免一次开出几十个 PR 把仓库刷屏；
+# - major 不分组，单独开 PR —— 主版本（Next、React、Tailwind、TS 等）影响面大，
+#   需要人工看 release notes 再决定，不能混在小版本里被顺手合掉；
+# - commit message 用本项目统一的 Conventional Commits 前缀，scope 取依赖类型，
+#   产出形如 chore(deps): ... / chore(deps-dev): ...。
+
+version: 2
+updates:
+  # ---------------- npm 依赖 ----------------
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    # 注意：两个分组必须互斥（这里用 exclude-patterns 明确切开）。
+    # 一个依赖同时匹配多个分组时的归属行为在不同版本的 Dependabot 上并不一致，
+    # 历史上出现过同一个升级被同时归入多个分组、重复开 PR 的情况
+    # （见 dependabot-core#7939），所以不要依赖「先声明者优先」这类隐式规则。
+    groups:
+      # 类型定义单独一组，出问题时一眼能看出来是 @types 的锅
+      type-definitions:
+        applies-to: version-updates
+        patterns:
+          - "@types/*"
+        update-types:
+          - "minor"
+          - "patch"
+      # 其余依赖的小版本与补丁版本合并成一个 PR
+      minor-and-patch:
+        applies-to: version-updates
+        exclude-patterns:
+          - "@types/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # ---------------- GitHub Actions ----------------
+  # 目前工作流里只有 run/curl，还没有第三方 action；先开着，
+  # 以后引入 actions/checkout 之类的版本引用会自动收到升级 PR。
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns:
+          - "*"
