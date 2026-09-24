@@ -74,6 +74,7 @@ export default function AboutPage() {
               </CardContent>
             </Card>
           </section>
+          <br />
           <section className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <TeamSection />
@@ -88,6 +89,7 @@ export default function AboutPage() {
                 </Card>
               </section>
               {/* 许可证与仓库信息已迁移至 /about/repository */}
+              <br />
               <section>
                 <Link href="/about/repository">
                   <Card className="transition-colors hover:bg-secondary/60">
