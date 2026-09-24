@@ -56,7 +56,7 @@
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4.3.0",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "allowScripts": {
     "sharp@0.34.5": true,
