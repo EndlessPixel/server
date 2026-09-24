@@ -100,6 +100,8 @@ Then visit <https://localhost:3000>.
 | `npm start` | Run the production build |
 | `npm run lint` | ESLint check (zero warnings) |
 | `npm run lint:fix` | Auto-fix lint issues |
+| `npm run format` | Format source with Prettier (incl. Tailwind class sorting) |
+| `npm run format:check` | Check formatting compliance |
 
 ---
 
