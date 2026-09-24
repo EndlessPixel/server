@@ -23,6 +23,7 @@ EndlessPixel 官网围绕「玩家服务」设计，以下模块均已上线。�
 /downloads/custom_downloads  自定义 GitHub Releases 下载
 /status                    服务状态索引
 /status/mcserverstatus     MC 服务器状态详情
+/quiz                      服务器考试（随机 20 题，成绩存浏览器本地）
 /login                     登录（账号密码 / GitHub OAuth）
 /profile                   个人中心（登录后可访问）
 /ai_link                   AI 输出外链的安全中转页

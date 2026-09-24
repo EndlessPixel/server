@@ -57,6 +57,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${config.siteUrl}/quiz/`,
+      lastModified: config.lastModified,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
       url: `${config.siteUrl}/about/`,
       lastModified: config.lastModified,
       changeFrequency: "monthly",
