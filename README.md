@@ -100,6 +100,8 @@ npm run dev-https
 | `npm start` | 运行生产构建 |
 | `npm run lint` | ESLint 检查（零警告） |
 | `npm run lint:fix` | 自动修复可修复的 lint 问题 |
+| `npm run format` | Prettier 格式化源码（含 Tailwind 类名排序） |
+| `npm run format:check` | 检查代码是否符合 Prettier 规范 |
 
 ---
 
