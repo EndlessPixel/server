@@ -86,10 +86,10 @@ function LiveContent() {
   }, [current]);
 
   return (
-    <div className="relative min-h-[calc(100vh-80px)] bg-background pt-4 transition-colors duration-300">
+    <div className="relative min-h-[calc(100vh-80px)] bg-background transition-colors duration-300">
       {/* 移除所有背景装饰（彩色光晕和网格） */}
 
-      <div className="relative mx-auto max-w-7xl px-4 py-6 md:py-8">
+      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* 标题 - 纯灰阶 */}
         <div className="mb-6 text-center md:text-left">
           <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">

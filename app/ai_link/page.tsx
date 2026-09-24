@@ -101,7 +101,9 @@ export default function AiLinkPage() {
             ) : (
               <div className="flex flex-col items-center gap-8">
                 <div>
-                  <h1 className="mb-4 text-3xl font-bold text-foreground">外部链接警告</h1>
+                  <h1 className="mb-4 text-3xl font-bold text-foreground md:text-4xl">
+                    外部链接警告
+                  </h1>
                   <p className="text-lg text-muted-foreground">
                     您即将离开 EndlessPixel 官方站点，访问外部链接
                   </p>
