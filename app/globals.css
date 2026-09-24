@@ -340,6 +340,22 @@ button,
    放入 components 层：可覆盖 preflight，又可被工具类覆盖。
    ============================================================ */
 @layer components {
+  /* ============================================================
+     卡片纵向留白兜底
+     Card 自身不设纵向内边距（否则会与调用方的 p-4 / p-6 冲突），
+     改为给 CardHeader / CardContent 自带默认留白。
+
+     放在 components 层是关键：utilities 层优先级更高，
+     因此任何显式 padding（p-4、p-6、py-16、pt-8、pb-2 …）都能原样覆盖，
+     不会出现「默认值 + 显式值」叠加成双重内边距。
+     ============================================================ */
+  [data-slot="card-header"] {
+    padding-top: 1.5rem;
+  }
+  [data-slot="card-content"] {
+    padding-bottom: 1.5rem;
+  }
+
   .prose {
     line-height: 1.65;
   }

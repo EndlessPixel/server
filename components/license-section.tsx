@@ -62,7 +62,7 @@ const LicenseCategoryCard = ({ category }: { category: LicenseCategory }) => (
 
 const LicenseUsageTip = ({ tip, title = "使用提示" }: { tip: string; title?: string }) => (
   <Card>
-    <CardHeader>
+    <CardHeader className="pb-6">
       <CardTitle className="text-base">{title}</CardTitle>
       <CardDescription>{tip}</CardDescription>
     </CardHeader>
