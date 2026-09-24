@@ -49,8 +49,23 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     };
 
     checkLoginStatus();
-    const interval = setInterval(checkLoginStatus, 1000);
-    return () => clearInterval(interval);
+
+    // 仅在标签页可见时低频轮询，并额外在窗口重新聚焦 / 可见性变化时立即校验，
+    // 避免每个页面常驻一个 1s 定时器（原实现后台标签页也在跑）。
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") checkLoginStatus();
+    }, 5000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") checkLoginStatus();
+    };
+    window.addEventListener("focus", checkLoginStatus);
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", checkLoginStatus);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, []);
 
   const handleLogout = async () => {

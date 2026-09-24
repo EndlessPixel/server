@@ -546,7 +546,6 @@ button,
 .dark body {
   background-color: var(--background);
   background-image: none;
-  background-attachment: fixed;
 }
 
 /* 亮色模式也加一道更隐约的绿调渐变（近白底 + 极淡绿） */
@@ -558,7 +557,41 @@ body {
     var(--background) 55%,
     color-mix(in oklch, var(--background) 97%, var(--accent) 3%) 100%
   );
-  background-attachment: fixed;
+}
+
+/* background-attachment: fixed 会让移动端滚动时整页重绘，仅在桌面端启用；
+   触屏设备让渐变随内容滚动（渐变极淡，观感差异可忽略）。 */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    background-attachment: fixed;
+  }
+}
+
+/* ============================================================
+   舒适度兜底
+   ============================================================ */
+
+/* 尊重系统「减弱动态效果」：关闭装饰性动画与过渡 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 锚点跳转时给置顶导航留出空间 */
+:target {
+  scroll-margin-top: 7rem;
+}
+
+/* 键盘聚焦统一可见环（未自定义 focus 的元素兜底） */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 /* ============================================================
