@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
 };
 import { Button } from "@/components/ui/button";
-import { Server, Globe, Activity, ArrowRight, Users} from "lucide-react";
+import { Server, Globe, Activity, ArrowRight, Users } from "lucide-react";
 interface ServiceItem {
   name: string;
   path: string;
@@ -37,7 +37,7 @@ const SERVICES: ServiceItem[] = [
     icon: Server,
     status: "online",
     description: "游戏服务器实时状态",
-    color: "from-primary to-accent"
+    color: "from-primary to-accent",
   },
   {
     name: "服务器性能监控",
@@ -46,50 +46,50 @@ const SERVICES: ServiceItem[] = [
     status: "online",
     description: "服务器性能监控",
     color: "from-primary to-accent",
-    external: true
-  }
+    external: true,
+  },
 ];
 const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service }) => {
   const Icon = service.icon;
   return (
-    <Card className="group bg-card border-foreground/8 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-foreground/12">
+    <Card className="group rounded-2xl border-foreground/8 bg-card backdrop-blur-sm transition-all duration-300 hover:border-foreground/12 hover:shadow-xl">
       <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-4">
+        <div className="mb-4 flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className={`p-3 bg-linear-to-r ${service.color} rounded-xl text-white`}>
-              <Icon className="w-6 h-6" aria-hidden="true" />
+            <div className={`bg-linear-to-r p-3 ${service.color} rounded-xl text-white`}>
+              <Icon className="h-6 w-6" aria-hidden="true" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-foreground text-lg">{service.name}</h3>
+                <h3 className="text-lg font-semibold text-foreground">{service.name}</h3>
               </div>
-              <p className="text-muted-foreground text-sm">{service.description}</p>
+              <p className="text-sm text-muted-foreground">{service.description}</p>
             </div>
           </div>
         </div>
-        
-        <div className="flex items-center justify-between mt-6">
+
+        <div className="mt-6 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             {service.external && (
               <span className="flex items-center gap-1" aria-label="外部服务">
-                <Globe className="w-4 h-4" aria-hidden="true" />
+                <Globe className="h-4 w-4" aria-hidden="true" />
                 外部服务
               </span>
             )}
           </div>
-          <Button 
-            asChild 
-            size="sm" 
-            className="bg-foreground text-background hover:bg-foreground/85 transition-all group-hover:scale-105"
+          <Button
+            asChild
+            size="sm"
+            className="bg-foreground text-background transition-all group-hover:scale-105 hover:bg-foreground/85"
           >
-            <Link 
+            <Link
               href={service.path}
               target={service.external ? "_blank" : undefined}
               rel={service.external ? "noopener noreferrer" : undefined}
               className="flex items-center gap-2"
             >
               查看详情
-              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </Button>
         </div>
@@ -97,16 +97,14 @@ const ServiceCard: React.FC<{ service: ServiceItem }> = React.memo(({ service })
     </Card>
   );
 });
-const SectionHeader: React.FC<{ 
-  title: string; 
-  description: string; 
+const SectionHeader: React.FC<{
+  title: string;
+  description: string;
   icon: React.ReactNode;
 }> = React.memo(({ title, description, icon }) => {
   return (
-    <div className="flex items-center gap-3 mb-8">
-      <div className="p-2 bg-secondary rounded-lg text-foreground/60">
-        {icon}
-      </div>
+    <div className="mb-8 flex items-center gap-3">
+      <div className="rounded-lg bg-secondary p-2 text-foreground/60">{icon}</div>
       <div>
         <h2 className="text-2xl font-semibold text-foreground">{title}</h2>
         <p className="text-muted-foreground">{description}</p>
@@ -118,43 +116,41 @@ export default function StatusIndexPage() {
   return (
     <div className="min-h-screen bg-background">
       <main className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              服务状态监控
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <div className="mb-16 text-center">
+            <h1 className="mb-6 text-4xl font-bold text-foreground md:text-5xl">服务状态监控</h1>
+            <p className="mx-auto max-w-3xl text-xl leading-relaxed text-muted-foreground">
               这里能实时看到 EndlessPixel 各个服务是不是开着、跑得怎么样
             </p>
           </div>
           <section className="mb-12" aria-labelledby="services-heading">
-            <SectionHeader 
-              title="核心服务" 
+            <SectionHeader
+              title="核心服务"
               description="关键服务状态概览"
-              icon={<Server className="w-5 h-5 text-foreground/60" aria-hidden="true" />}
+              icon={<Server className="h-5 w-5 text-foreground/60" aria-hidden="true" />}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {SERVICES.map((service) => (
                 <ServiceCard key={service.name} service={service} />
               ))}
             </div>
           </section>
-          <section className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="bg-card border-foreground/8 rounded-2xl backdrop-blur-sm">
+          <section className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <Card className="rounded-2xl border-foreground/8 bg-card backdrop-blur-sm">
               <CardContent className="p-6">
-                <h3 className="font-semibold text-foreground text-lg mb-4 flex items-center gap-2">
-                  <Users className="w-5 h-5 text-foreground/60" aria-hidden="true" />
+                <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+                  <Users className="h-5 w-5 text-foreground/60" aria-hidden="true" />
                   技术支持
                 </h3>
                 <div className="space-y-4 text-muted-foreground">
                   <p>如果您发现服务异常或需要技术支持：</p>
                   <div className="flex flex-wrap gap-3">
                     <Button asChild variant="outline" size="sm">
-                      <Link 
-                        href="https://github.com/EndlessPixel/server/issues" 
-                        target="_blank" 
+                      <Link
+                        href="https://github.com/EndlessPixel/server/issues"
+                        target="_blank"
                         rel="noopener noreferrer"
                         aria-label="提交问题到GitHub"
                       >
@@ -162,9 +158,9 @@ export default function StatusIndexPage() {
                       </Link>
                     </Button>
                     <Button asChild variant="outline" size="sm">
-                      <Link 
-                        href="https://qm.qq.com/q/sFrax2Ilxe" 
-                        target="_blank" 
+                      <Link
+                        href="https://qm.qq.com/q/sFrax2Ilxe"
+                        target="_blank"
                         rel="noopener noreferrer"
                         aria-label="加入QQ群获取支持"
                       >

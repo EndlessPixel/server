@@ -35,10 +35,10 @@ export function FloatChatButton() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "h-14 w-14 rounded-full shadow-lg flex items-center justify-center",
-          "bg-foreground hover:bg-foreground/85 text-background",
+          "flex h-14 w-14 items-center justify-center rounded-full shadow-lg",
+          "bg-foreground text-background hover:bg-foreground/85",
           "transition-colors duration-200",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
+          "focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none",
         )}
         aria-label={open ? "关闭聊天" : "打开聊天"}
       >

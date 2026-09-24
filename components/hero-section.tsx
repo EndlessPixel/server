@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Armchair,
   Pickaxe,
@@ -76,8 +70,7 @@ export function HeroSection() {
     },
     {
       title: "千种结构",
-      description:
-        "300+ 新结构：雪山村落、地下城、空中遗迹……每次启程都有惊喜。",
+      description: "300+ 新结构：雪山村落、地下城、空中遗迹……每次启程都有惊喜。",
       icon: Target,
     },
     {
@@ -102,8 +95,7 @@ export function HeroSection() {
     },
     {
       title: "超限附魔",
-      description:
-        "突破 30 级上限，20+ 全新魔咒：连锁、时停、吸血……打造神级装备。",
+      description: "突破 30 级上限，20+ 全新魔咒：连锁、时停、吸血……打造神级装备。",
       icon: Sparkles,
     },
   ];
@@ -175,21 +167,18 @@ export function HeroSection() {
   ];
 
   return (
-    <section
-      ref={heroRef}
-      className="relative py-12 md:py-24 lg:py-28 overflow-hidden"
-    >
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={heroRef} className="relative overflow-hidden py-12 md:py-24 lg:py-28">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           {/* 欢迎标签 */}
           <motion.div
-            className="inline-flex items-center gap-2 bg-secondary/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium text-foreground/70 mb-6 shadow-sm hover-lift"
+            className="hover-lift mb-6 inline-flex items-center gap-2 rounded-full bg-secondary/80 px-4 py-2 text-sm font-medium text-foreground/70 shadow-sm backdrop-blur-sm"
             initial={{ opacity: 0, y: -20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <motion.div
-              className="w-2 h-2 bg-foreground/30 rounded-full"
+              className="h-2 w-2 rounded-full bg-foreground/30"
               animate={{ scale: [1, 1.5, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
@@ -202,26 +191,23 @@ export function HeroSection() {
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-foreground tracking-tight">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
               无尽像素 | EndlessPixel
             </h1>
             <motion.p
-              className="text-xl sm:text-2xl font-light text-muted-foreground mt-2 mb-6 max-w-4xl mx-auto"
+              className="mx-auto mt-2 mb-6 max-w-4xl text-xl font-light text-muted-foreground sm:text-2xl"
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : { opacity: 0 }}
               transition={{ delay: 0.5, duration: 0.6 }}
             >
               一个创造
-              <span className="font-semibold text-foreground">
-                无限可能
-              </span>
-              的 Minecraft 服务器
+              <span className="font-semibold text-foreground">无限可能</span>的 Minecraft 服务器
             </motion.p>
           </motion.div>
 
           {/* 描述 */}
           <motion.p
-            className="text-base sm:text-lg text-muted-foreground mb-6 max-w-3xl mx-auto leading-relaxed"
+            className="mx-auto mb-6 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg"
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : { opacity: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
@@ -231,7 +217,7 @@ export function HeroSection() {
 
           {/* 特色标签 */}
           <motion.div
-            className="text-sm sm:text-base text-muted-foreground mb-8 max-w-2xl mx-auto flex flex-wrap justify-center gap-2"
+            className="mx-auto mb-8 flex max-w-2xl flex-wrap justify-center gap-2 text-sm text-muted-foreground sm:text-base"
             variants={containerVariants}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
@@ -242,11 +228,9 @@ export function HeroSection() {
                 <motion.span
                   key={feature.label}
                   variants={itemVariants}
-                  className="flex items-center gap-1 bg-secondary/80 backdrop-blur-sm px-3 py-1.5 rounded-full hover:bg-secondary transition-all duration-200 group cursor-default hover-lift"
+                  className="group hover-lift flex cursor-default items-center gap-1 rounded-full bg-secondary/80 px-3 py-1.5 backdrop-blur-sm transition-all duration-200 hover:bg-secondary"
                 >
-                  <Icon
-                    className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors"
-                  />
+                  <Icon className="h-3.5 w-3.5 text-muted-foreground transition-colors group-hover:text-foreground" />
                   {feature.label}
                 </motion.span>
               );
@@ -258,19 +242,19 @@ export function HeroSection() {
 
           {/* CTA 按钮组 */}
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-12 max-w-xl mx-auto"
+            className="mx-auto mb-12 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-2"
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.9, duration: 0.6 }}
           >
             <Link
               href="/status"
-              className="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-foreground text-background font-medium text-sm shadow-sm hover-lift hover:shadow-md transition-shadow duration-200"
+              className="hover-lift inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-foreground px-5 text-sm font-medium text-background shadow-sm transition-shadow duration-200 hover:shadow-md"
             >
-              <Server className="w-4.5 h-4.5" />
+              <Server className="h-4.5 w-4.5" />
               <span>服务器状态</span>
               <motion.div
-                className="w-2 h-2 bg-green-500 rounded-full"
+                className="h-2 w-2 rounded-full bg-green-500"
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -278,13 +262,9 @@ export function HeroSection() {
 
             <Link
               href="/live"
-              className="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-secondary text-foreground font-medium text-sm shadow-sm hover-lift hover:bg-secondary/70 transition-colors duration-200"
+              className="hover-lift inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-secondary px-5 text-sm font-medium text-foreground shadow-sm transition-colors duration-200 hover:bg-secondary/70"
             >
-              <svg
-                className="w-4.5 h-4.5"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
               <span>服务器实况</span>
@@ -292,22 +272,17 @@ export function HeroSection() {
 
             <Link
               href="/downloads/modpack"
-              className="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-secondary/80 text-foreground font-medium text-sm shadow-sm hover-lift hover:bg-secondary transition-colors duration-200"
+              className="hover-lift inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-secondary/80 px-5 text-sm font-medium text-foreground shadow-sm transition-colors duration-200 hover:bg-secondary"
             >
-              <Package className="w-4.5 h-4.5" />
+              <Package className="h-4.5 w-4.5" />
               <span>官方整合包</span>
             </Link>
 
             <Link
               href="/gallery"
-              className="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-secondary/80 text-foreground font-medium text-sm shadow-sm hover-lift hover:bg-secondary transition-colors duration-200"
+              className="hover-lift inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-secondary/80 px-5 text-sm font-medium text-foreground shadow-sm transition-colors duration-200 hover:bg-secondary"
             >
-              <svg
-                className="w-4.5 h-4.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -324,7 +299,7 @@ export function HeroSection() {
             硬件详情：AMD Ryzen 9 9950X + 12GB 真实占用 + 磁盘 / 网络 / 负载全公开。
             <Link
               href="http://sys.epmc.qzz.io"
-              className="ml-1 underline underline-offset-2 hover:text-foreground transition-colors"
+              className="ml-1 underline underline-offset-2 transition-colors hover:text-foreground"
               target="_blank"
             >
               查看监控 →
@@ -335,7 +310,7 @@ export function HeroSection() {
 
           {/* 核心特性 */}
           <motion.div
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 max-w-6xl mx-auto"
+            className="mx-auto grid max-w-6xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
             variants={containerVariants}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
@@ -343,23 +318,16 @@ export function HeroSection() {
             {coreFeatures.map((feature) => {
               const Icon = feature.icon;
               return (
-                <motion.div
-                  key={feature.title}
-                  variants={itemVariants}
-                >
-                  <Card className="group bg-card hover-lift transition-shadow duration-300 overflow-hidden cursor-pointer relative rounded-2xl shadow-sm hover:shadow-md">
-                    <CardContent className="p-4 text-center relative z-10">
-                      <motion.div
-                        className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-foreground/10 transition-colors duration-300"
-                      >
-                        <Icon
-                          className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors"
-                        />
+                <motion.div key={feature.title} variants={itemVariants}>
+                  <Card className="group hover-lift relative cursor-pointer overflow-hidden rounded-2xl bg-card shadow-sm transition-shadow duration-300 hover:shadow-md">
+                    <CardContent className="relative z-10 p-4 text-center">
+                      <motion.div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary transition-colors duration-300 group-hover:bg-foreground/10">
+                        <Icon className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-foreground" />
                       </motion.div>
-                      <h3 className="font-semibold text-sm text-foreground mb-1">
+                      <h3 className="mb-1 text-sm font-semibold text-foreground">
                         {feature.title}
                       </h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
+                      <p className="text-xs leading-relaxed text-muted-foreground">
                         {feature.description}
                       </p>
                     </CardContent>
@@ -374,23 +342,23 @@ export function HeroSection() {
       <div className="py-10 md:py-16" />
 
       {/* 统计数据 */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="text-center mb-10 md:mb-16"
+          className="mb-10 text-center md:mb-16"
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground tracking-tight">
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
             服务器特色功能
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-lg">
             下面这些功能，都是我们自己玩的时候一点点加上去的
           </p>
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-10 md:mb-16"
+          className="mb-10 grid grid-cols-2 gap-3 md:mb-16 md:gap-6 lg:grid-cols-4"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -399,19 +367,17 @@ export function HeroSection() {
             const Icon = stat.icon;
             return (
               <motion.div key={stat.label} variants={itemVariants}>
-                <div className="relative bg-card rounded-2xl p-4 md:p-8 text-center shadow-sm hover-lift hover:shadow-md transition-shadow duration-300">
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-secondary rounded-2xl flex items-center justify-center mx-auto mb-3">
-                    <Icon className="w-6 h-6 md:w-8 md:h-8 text-muted-foreground" />
+                <div className="hover-lift relative rounded-2xl bg-card p-4 text-center shadow-sm transition-shadow duration-300 hover:shadow-md md:p-8">
+                  <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary md:h-16 md:w-16">
+                    <Icon className="h-6 w-6 text-muted-foreground md:h-8 md:w-8" />
                   </div>
-                  <div className="text-2xl md:text-3xl font-bold text-foreground mb-1">
+                  <div className="mb-1 text-2xl font-bold text-foreground md:text-3xl">
                     {stat.value}
                   </div>
-                  <div className="text-sm md:text-lg font-semibold text-foreground">
+                  <div className="text-sm font-semibold text-foreground md:text-lg">
                     {stat.label}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {stat.description}
-                  </div>
+                  <div className="mt-1 text-xs text-muted-foreground">{stat.description}</div>
                 </div>
               </motion.div>
             );
@@ -420,7 +386,7 @@ export function HeroSection() {
 
         {/* 特性卡片 */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8 lg:grid-cols-3"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -428,22 +394,18 @@ export function HeroSection() {
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
-              <motion.div
-                key={feature.title}
-                variants={itemVariants}
-                className="hover-lift"
-              >
-                <Card className="group bg-card transition-shadow duration-300 hover:shadow-md cursor-pointer overflow-hidden relative rounded-2xl">
-                  <CardHeader className="text-center p-6 md:p-10 relative z-10">
-                    <div className="flex justify-center mb-4 md:mb-6">
-                      <div className="w-16 h-16 md:w-20 md:h-20 bg-secondary rounded-[1.75rem] flex items-center justify-center group-hover:bg-foreground/10 transition-colors duration-300">
-                        <Icon className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground group-hover:text-foreground transition-colors" />
+              <motion.div key={feature.title} variants={itemVariants} className="hover-lift">
+                <Card className="group relative cursor-pointer overflow-hidden rounded-2xl bg-card transition-shadow duration-300 hover:shadow-md">
+                  <CardHeader className="relative z-10 p-6 text-center md:p-10">
+                    <div className="mb-4 flex justify-center md:mb-6">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-[1.75rem] bg-secondary transition-colors duration-300 group-hover:bg-foreground/10 md:h-20 md:w-20">
+                        <Icon className="h-8 w-8 text-muted-foreground transition-colors group-hover:text-foreground md:h-10 md:w-10" />
                       </div>
                     </div>
-                    <CardTitle className="text-xl md:text-2xl font-bold text-foreground mb-3">
+                    <CardTitle className="mb-3 text-xl font-bold text-foreground md:text-2xl">
                       {feature.title}
                     </CardTitle>
-                    <CardDescription className="text-sm md:text-lg text-muted-foreground leading-relaxed">
+                    <CardDescription className="text-sm leading-relaxed text-muted-foreground md:text-lg">
                       {feature.description}
                     </CardDescription>
                   </CardHeader>
@@ -455,39 +417,37 @@ export function HeroSection() {
 
         {/* CTA 底部 */}
         <motion.div
-          className="text-center mt-10 md:mt-20"
+          className="mt-10 text-center md:mt-20"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
         >
-          <div className="bg-card rounded-[2rem] p-6 md:p-12 max-w-4xl mx-auto shadow-sm">
-            <Award className="w-12 h-12 md:w-16 md:h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              来试试看吧
-            </h3>
-            <p className="text-base md:text-xl text-muted-foreground mb-6 leading-relaxed">
+          <div className="mx-auto max-w-4xl rounded-[2rem] bg-card p-6 shadow-sm md:p-12">
+            <Award className="mx-auto mb-4 h-12 w-12 text-muted-foreground md:h-16 md:w-16" />
+            <h3 className="mb-4 text-2xl font-bold text-foreground md:text-3xl">来试试看吧</h3>
+            <p className="mb-6 text-base leading-relaxed text-muted-foreground md:text-xl">
               服务器一直开着，下载客户端就能进，想认识人也欢迎加群
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 href="/downloads"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-foreground text-background rounded-xl font-semibold shadow-sm hover-lift hover:shadow-md transition-shadow duration-200"
+                className="hover-lift inline-flex items-center justify-center gap-2 rounded-xl bg-foreground px-6 py-3 font-semibold text-background shadow-sm transition-shadow duration-200 hover:shadow-md"
               >
-                <Rocket className="w-5 h-5" />
+                <Rocket className="h-5 w-5" />
                 下载客户端
               </Link>
               <Link
                 href="/status"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-secondary text-foreground rounded-xl font-semibold shadow-sm hover-lift hover:bg-secondary/70 transition-colors duration-200"
+                className="hover-lift inline-flex items-center justify-center gap-2 rounded-xl bg-secondary px-6 py-3 font-semibold text-foreground shadow-sm transition-colors duration-200 hover:bg-secondary/70"
               >
-                <TrendingUp className="w-5 h-5" />
+                <TrendingUp className="h-5 w-5" />
                 查看状态
               </Link>
               <a
                 href="https://qm.qq.com/q/sFrax2Ilxe"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-secondary text-foreground rounded-xl font-semibold shadow-sm hover-lift hover:bg-secondary/70 transition-colors duration-200"
+                className="hover-lift inline-flex items-center justify-center gap-2 rounded-xl bg-secondary px-6 py-3 font-semibold text-foreground shadow-sm transition-colors duration-200 hover:bg-secondary/70"
               >
-                <Heart className="w-5 h-5" />
+                <Heart className="h-5 w-5" />
                 加入社区
               </a>
             </div>

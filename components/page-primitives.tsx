@@ -8,19 +8,14 @@ interface PageHeaderProps {
   actions?: ReactNode;
 }
 
-export function PageHeader({
-  title,
-  description,
-  className = "",
-  actions,
-}: PageHeaderProps) {
+export function PageHeader({ title, description, className = "", actions }: PageHeaderProps) {
   return (
-    <div className={`text-center mb-12 ${className}`}>
-      <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
+    <div className={`mb-12 text-center ${className}`}>
+      <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground md:text-5xl">
         {title}
       </h1>
       {description && (
-        <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+        <p className="mx-auto max-w-3xl text-base leading-relaxed text-muted-foreground md:text-lg">
           {description}
         </p>
       )}
@@ -48,9 +43,7 @@ export function ContentContainer({
   maxWidth = "default",
 }: ContentContainerProps) {
   return (
-    <div
-      className={`${MAX_WIDTH[maxWidth]} mx-auto px-4 sm:px-6 lg:px-8 ${className}`}
-    >
+    <div className={`${MAX_WIDTH[maxWidth]} mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
       {children}
     </div>
   );

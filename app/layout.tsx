@@ -195,17 +195,11 @@ const jsonLd = [
   },
 ];
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="zh-CN"
-      className={clsx(
-        GeistSans.variable,
-        GeistMono.variable,
-        notoSansSC.variable,
-      )}
+      className={clsx(GeistSans.variable, GeistMono.variable, notoSansSC.variable)}
       suppressHydrationWarning
     >
       <head>
@@ -213,16 +207,25 @@ export default function RootLayout({
         <meta name="referrer" content="no-referrer" />
         <meta name="msvalidate.01" content="B9D8B7001682D3FB5F699A38C4C6DAF4" />
         <meta name="copyright" content={`© ${CURRENT_YEAR} ${BRAND_NAME}`} />
-        <link rel="preload" href="/fonts/ChillReunion_Round.otf" as="font" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/BlackSugarPlumCandy-Bold.ttf" as="font" crossOrigin="anonymous" />
+        <link
+          rel="preload"
+          href="/fonts/ChillReunion_Round.otf"
+          as="font"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/BlackSugarPlumCandy-Bold.ttf"
+          as="font"
+          crossOrigin="anonymous"
+        />
         <link rel="preload" href="/fonts/XiaolaiSC-Regular.ttf" as="font" crossOrigin="anonymous" />
       </head>
-      <body className="antialiased min-h-screen bg-background text-foreground">
+      <body className="min-h-screen bg-background text-foreground antialiased">
         <noscript>
           本站部分功能需要JavaScript支持，请启用JS以获得最佳体验。
           <br />
-          Some features of this site require JavaScript. Please enable JS for
-          the best experience.
+          Some features of this site require JavaScript. Please enable JS for the best experience.
         </noscript>
 
         {/* JSON-LD 结构化数据 */}

@@ -1,6 +1,6 @@
-import { Suspense } from 'react';
-import type { Metadata } from 'next';
-import CustomDownloadsPage from './client-page';
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import CustomDownloadsPage from "./client-page";
 
 export const metadata: Metadata = {
   title: "资源合集下载 - EndlessPixel Minecraft 服务器",
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-    return (
-        <Suspense fallback={<div className="min-h-screen" />}>
-            <CustomDownloadsPage />
-        </Suspense>
-    );
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <CustomDownloadsPage />
+    </Suspense>
+  );
 }

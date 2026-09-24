@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from 'crypto';
+import { createHmac, timingSafeEqual } from "crypto";
 
 /**
  * 服务端签名会话工具。
@@ -9,26 +9,26 @@ import { createHmac, timingSafeEqual } from 'crypto';
  * 仅保留给前端显示昵称，不再承担任何鉴权作用。
  */
 
-export const SESSION_COOKIE = 'ep_session';
+export const SESSION_COOKIE = "ep_session";
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 天（秒）
 
 /** 登录来源标记 cookie：minecraft=原账号密码登录 / github=GitHub OAuth 登录 */
-export const PROVIDER_COOKIE = 'ep_provider';
+export const PROVIDER_COOKIE = "ep_provider";
 
 function getSecret(): string {
   const secret = process.env.SESSION_SECRET;
   if (secret && secret.length >= 16) return secret;
   // 开发环境兜底：生产环境务必通过环境变量配置 SESSION_SECRET（>=16 位）
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     console.warn(
-      '[session] 生产环境未配置 SESSION_SECRET，请设置至少 16 位的环境变量，否则会话可被伪造。'
+      "[session] 生产环境未配置 SESSION_SECRET，请设置至少 16 位的环境变量，否则会话可被伪造。",
     );
   }
-  return 'dev-only-insecure-session-secret-change-me';
+  return "dev-only-insecure-session-secret-change-me";
 }
 
 function sign(payload: string): string {
-  const mac = createHmac('sha256', getSecret()).update(payload).digest('base64url');
+  const mac = createHmac("sha256", getSecret()).update(payload).digest("base64url");
   return mac;
 }
 
@@ -43,7 +43,7 @@ export function createSessionToken(name: string): string {
 /** 校验会话令牌，返回用户名；无效/过期返回 null */
 export function verifySessionToken(token: string | undefined): string | null {
   if (!token) return null;
-  const lastDot = token.lastIndexOf('.');
+  const lastDot = token.lastIndexOf(".");
   if (lastDot <= 0) return null;
   const payload = token.slice(0, lastDot);
   const sig = token.slice(lastDot + 1);
@@ -52,7 +52,7 @@ export function verifySessionToken(token: string | undefined): string | null {
   const a = Buffer.from(sig);
   const b = Buffer.from(expected);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
-  const sep = payload.lastIndexOf('|');
+  const sep = payload.lastIndexOf("|");
   if (sep <= 0) return null;
   const name = payload.slice(0, sep);
   const exp = Number(payload.slice(sep + 1));
