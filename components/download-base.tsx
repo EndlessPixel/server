@@ -13,54 +13,19 @@ import {
   Rocket,
   Calendar,
   TrendingUp,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  MirrorConfig,
-  DEFAULT_MIRRORS,
-  DEFAULT_MIRROR_DOMAINS,
-} from "@/lib/mirrors";
+import { MirrorConfig, DEFAULT_MIRRORS, DEFAULT_MIRROR_DOMAINS } from "@/lib/mirrors";
+import type { ParsedRelease } from "@/lib/github";
 
 // ============ 类型定义 ============
 
-export interface GitHubRelease {
-  id: number;
-  tag_name: string;
-  name: string;
-  body: string;
-  published_at: string;
-  html_url: string;
-  prerelease: boolean;
-  assets: Array<{
-    name: string;
-    download_count: number;
-    browser_download_url: string;
-  }>;
-}
-
-export interface ParsedRelease {
-  name: string;
-  version: string;
-  mcVersion: string;
-  releaseDate: string;
-  isPrerelease: boolean;
-  isLatest: boolean;
-  downloadCount: number;
-  files: Array<{
-    name: string;
-    downloadUrl: string;
-    downloadCount: number;
-  }>;
-  changelog: string;
-  branch?: "main" | "real";
-  tags?: string[];
-}
+// Release 数据模型统一维护在 lib/github，这里仅做再导出以保持既有引用不变
+export type { GitHubRelease, ParsedRelease, ReleaseFile } from "@/lib/github";
 
 // ============ 版本比较函数 ============
 
@@ -111,84 +76,8 @@ export const compareSemanticVersions = (v1: string, v2: string): number => {
 
 // ============ 分页组件 ============
 
-interface PaginationProps {
-  total: number;
-  current: number;
-  onPage: (p: number) => void;
-  className?: string;
-}
-
-export function Pagination({
-  total,
-  current,
-  onPage,
-  className = "",
-}: PaginationProps) {
-  if (total <= 1) return null;
-
-  const delta = 2;
-  const left = Math.max(1, current - delta);
-  const right = Math.min(total, current + delta);
-  const pages: (number | string)[] = [];
-
-  if (left > 1) pages.push(1, "...");
-  for (let i = left; i <= right; i++) pages.push(i);
-  if (right < total) pages.push("...", total);
-
-  return (
-    <nav
-      className={`flex justify-center items-center gap-2 pt-4 ${className}`}
-      role="navigation"
-      aria-label="分页导航"
-    >
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => onPage(Math.max(1, current - 1))}
-        disabled={current === 1}
-        aria-label="上一页"
-        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
-      >
-        <ChevronLeft className="w-4 h-4" aria-hidden="true" />
-      </Button>
-
-      {pages.map((p, i) =>
-        typeof p === "number" ? (
-          <Button
-            key={i}
-            size="sm"
-            variant={p === current ? "default" : "outline"}
-            onClick={() => onPage(p)}
-            aria-label={`第 ${p} 页`}
-            aria-current={p === current ? "page" : undefined}
-            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
-          >
-            {p}
-          </Button>
-        ) : (
-          <span
-            key={i}
-            className="px-2 text-muted-foreground"
-            aria-hidden="true"
-          >
-            ...
-          </span>
-        ),
-      )}
-
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => onPage(Math.min(total, current + 1))}
-        disabled={current === total}
-        aria-label="下一页"
-        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
-      >
-        <ChevronRight className="w-4 h-4" aria-hidden="true" />
-      </Button>
-    </nav>
-  );
-}
+// 统一实现见 components/ui/pagination，这里再导出以保持既有引用不变
+export { Pagination } from "@/components/ui/pagination";
 
 // ============ 文件下载块组件 ============
 
@@ -209,23 +98,19 @@ export function FileBlock({
   getMirrorUrl = (host, url) => `${host}${url}`,
   showOfficial = true,
 }: FileBlockProps) {
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-4 rounded-xl bg-secondary/50 hover:shadow-sm transition-all duration-300"
+      className="rounded-xl bg-secondary/50 p-4 transition-all duration-300 hover:shadow-sm"
     >
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2 min-w-0">
-          <span
-            className="font-medium text-sm truncate text-foreground"
-            title={file.name}
-          >
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="truncate text-sm font-medium text-foreground" title={file.name}>
             {file.name}
           </span>
         </div>
-        <Badge variant="secondary" className="text-xs shrink-0">
+        <Badge variant="secondary" className="shrink-0 text-xs">
           {file.downloadCount.toLocaleString()} 次下载
         </Badge>
       </div>
@@ -235,7 +120,7 @@ export function FileBlock({
           <Button
             size="sm"
             asChild
-            className="bg-foreground hover:bg-foreground/85 text-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+            className="bg-foreground text-background hover:bg-foreground/85 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
           >
             <a
               href={file.downloadUrl}
@@ -243,7 +128,7 @@ export function FileBlock({
               rel="noopener noreferrer"
               aria-label={`从官方下载 ${file.name}`}
             >
-              <Download className="w-3 h-3 mr-1" aria-hidden="true" />
+              <Download className="mr-1 h-3 w-3" aria-hidden="true" />
               官方
             </a>
           </Button>
@@ -267,11 +152,9 @@ export function FileBlock({
               rel="noopener noreferrer"
               aria-label={`从 ${m.tag} 镜像下载 ${file.name}`}
             >
-              <ExternalLink className="w-3 h-3 mr-1" aria-hidden="true" />
+              <ExternalLink className="mr-1 h-3 w-3" aria-hidden="true" />
               {m.tag}
-              {m.recommended && (
-                <span className="ml-1 text-foreground/50 text-xs">★</span>
-              )}
+              {m.recommended && <span className="ml-1 text-xs text-foreground/50">★</span>}
             </a>
           </Button>
         ))}
@@ -301,15 +184,9 @@ export function ReleaseCard({
   const [filesExpanded, setFilesExpanded] = useState(defaultExpanded);
 
   const isMain = release.branch === "main" || !release.branch;
-  const typeLabel = release.isPrerelease
-    ? "预发布版"
-    : isMain
-      ? "正式版"
-      : "Real版";
+  const typeLabel = release.isPrerelease ? "预发布版" : isMain ? "正式版" : "Real版";
   const hasManyFiles = release.files.length > 4;
-  const displayFiles = filesExpanded
-    ? release.files
-    : release.files.slice(0, 4);
+  const displayFiles = filesExpanded ? release.files : release.files.slice(0, 4);
 
   return (
     <motion.article
@@ -318,45 +195,38 @@ export function ReleaseCard({
       transition={{ duration: 0.3 }}
       className={cn(
         "relative overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-md",
-        release.isLatest
-          ? "bg-foreground/5"
-          : "bg-card",
+        release.isLatest ? "bg-foreground/5" : "bg-card",
       )}
     >
       {release.isLatest && (
         <Badge
-          className="absolute top-4 right-4 bg-foreground text-background px-4 py-1.5 shadow-sm flex items-center gap-1.5 rounded-lg"
+          className="absolute top-4 right-4 flex items-center gap-1.5 rounded-lg bg-foreground px-4 py-1.5 text-background shadow-sm"
           aria-label="最新版本"
         >
-          <Zap className="w-3.5 h-3.5" aria-hidden="true" />
+          <Zap className="h-3.5 w-3.5" aria-hidden="true" />
           最新版本
         </Badge>
       )}
 
       <div className="p-6">
         {/* 标题区域 */}
-        <header className="flex items-start gap-4 mb-4">
+        <header className="mb-4 flex items-start gap-4">
           <div
             className={cn(
-              "p-3 rounded-xl text-background shrink-0",
+              "shrink-0 rounded-xl p-3 text-background",
               isMain ? "bg-foreground" : "bg-foreground/80",
             )}
             aria-hidden="true"
           >
-            <Download className="w-6 h-6" />
+            <Download className="h-6 w-6" />
           </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap mb-2">
-              <h3
-                className="text-lg font-bold truncate text-foreground"
-                title={release.name}
-              >
+          <div className="min-w-0 flex-1">
+            <div className="mb-2 flex flex-wrap items-center gap-2">
+              <h3 className="truncate text-lg font-bold text-foreground" title={release.name}>
                 {release.name}
               </h3>
-              <Badge variant="secondary">
-                {typeLabel}
-              </Badge>
+              <Badge variant="secondary">{typeLabel}</Badge>
               {showBranchBadge && (
                 <Badge variant="outline" className="text-xs">
                   {isMain ? "主分支" : "Real 分支"}
@@ -367,24 +237,21 @@ export function ReleaseCard({
             {/* 元信息 */}
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
-                <Rocket className="w-3.5 h-3.5" aria-hidden="true" />
-                MC版本:{" "}
-                <strong className="text-foreground">
-                  {release.mcVersion}
-                </strong>
+                <Rocket className="h-3.5 w-3.5" aria-hidden="true" />
+                MC版本: <strong className="text-foreground">{release.mcVersion}</strong>
               </span>
               <span className="text-foreground/20" aria-hidden="true">
                 •
               </span>
               <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
+                <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
                 {release.releaseDate}
               </span>
               <span className="text-foreground/20" aria-hidden="true">
                 •
               </span>
               <span className="flex items-center gap-1">
-                <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" />
+                <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
                 {release.downloadCount.toLocaleString()} 次下载
               </span>
             </div>
@@ -393,7 +260,7 @@ export function ReleaseCard({
 
         {/* 文件列表 */}
         <section aria-label="下载文件列表">
-          <div className="grid gap-3 md:grid-cols-2 mb-4">
+          <div className="mb-4 grid gap-3 md:grid-cols-2">
             <AnimatePresence mode="popLayout">
               {displayFiles.map((f, i) => (
                 <motion.div
@@ -403,11 +270,7 @@ export function ReleaseCard({
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <FileBlock
-                    file={f}
-                    mirrors={mirrors}
-                    getMirrorUrl={getMirrorUrl}
-                  />
+                  <FileBlock file={f} mirrors={mirrors} getMirrorUrl={getMirrorUrl} />
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -424,12 +287,12 @@ export function ReleaseCard({
             >
               {filesExpanded ? (
                 <>
-                  <ChevronUp className="w-4 h-4" aria-hidden="true" />
+                  <ChevronUp className="h-4 w-4" aria-hidden="true" />
                   收起更多文件 ({release.files.length - 4} 个)
                 </>
               ) : (
                 <>
-                  <ChevronDown className="w-4 h-4" aria-hidden="true" />
+                  <ChevronDown className="h-4 w-4" aria-hidden="true" />
                   展开更多文件 ({release.files.length - 4} 个)
                 </>
               )}
@@ -449,12 +312,12 @@ export function ReleaseCard({
           >
             {open ? (
               <>
-                <ChevronUp className="w-4 h-4" aria-hidden="true" />
+                <ChevronUp className="h-4 w-4" aria-hidden="true" />
                 隐藏更新日志
               </>
             ) : (
               <>
-                <ChevronDown className="w-4 h-4" aria-hidden="true" />
+                <ChevronDown className="h-4 w-4" aria-hidden="true" />
                 查看更新日志
               </>
             )}
@@ -471,14 +334,11 @@ export function ReleaseCard({
                 className="mt-3 overflow-hidden"
               >
                 <div
-                  className="rounded-xl bg-secondary/50 p-4 prose prose-sm dark:prose-invert max-w-none overflow-auto max-h-60"
+                  className="prose prose-sm dark:prose-invert max-h-60 max-w-none overflow-auto rounded-xl bg-secondary/50 p-4"
                   role="region"
                   aria-label="更新日志内容"
                 >
-                  <ReactMarkdown
-                    rehypePlugins={[rehypeRaw]}
-                    remarkPlugins={[remarkGfm]}
-                  >
+                  <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
                     {release.changelog || "暂无更新日志。"}
                   </ReactMarkdown>
                 </div>
@@ -504,7 +364,7 @@ export function MirrorFooter({
 }: MirrorFooterProps) {
   return (
     <footer
-      className={`text-center text-sm text-muted-foreground p-6 rounded-xl bg-secondary/30 ${className}`}
+      className={`rounded-xl bg-secondary/30 p-6 text-center text-sm text-muted-foreground ${className}`}
       role="contentinfo"
       aria-label="镜像服务说明"
     >
@@ -516,7 +376,7 @@ export function MirrorFooter({
             href={`https://${d}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/85 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+            className="rounded-lg bg-foreground px-4 py-2 text-background transition-colors hover:bg-foreground/85 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
             aria-label={`访问 ${d}`}
           >
             {d}
@@ -565,18 +425,18 @@ export function Toolbar({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      <div className="flex flex-col lg:flex-row gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row">
         <div className="relative flex-1">
           <input
             type="search"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={placeholder}
-            className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary focus:outline-none focus:ring-2 focus:ring-ring/30 focus:bg-background text-foreground placeholder:text-muted-foreground"
+            className="w-full rounded-xl bg-secondary py-3 pr-4 pl-10 text-foreground placeholder:text-muted-foreground focus:bg-background focus:ring-2 focus:ring-ring/30 focus:outline-none"
             aria-label="搜索版本"
           />
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
+            className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -596,13 +456,13 @@ export function Toolbar({
             variant="outline"
             onClick={onRefresh}
             disabled={loading}
-            className="lg:w-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 lg:w-auto"
             aria-label="刷新数据"
           >
             {loading ? (
               <>
                 <span
-                  className="w-4 h-4 border-2 border-foreground/30 border-t-transparent rounded-full animate-spin mr-2"
+                  className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-foreground/30 border-t-transparent"
                   aria-hidden="true"
                 />
                 加载中...
@@ -610,7 +470,7 @@ export function Toolbar({
             ) : (
               <>
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="mr-2 h-4 w-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -631,9 +491,7 @@ export function Toolbar({
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm font-medium text-foreground/70">
-          排序：
-        </span>
+        <span className="text-sm font-medium text-foreground/70">排序：</span>
         {sortOptions.map((opt) => {
           const Icon = opt.icon;
           const isActive = sortBy === opt.key;
@@ -654,7 +512,7 @@ export function Toolbar({
               aria-label={`按${opt.label}排序`}
               aria-pressed={isActive}
             >
-              <Icon className="w-4 h-4" aria-hidden="true" />
+              <Icon className="h-4 w-4" aria-hidden="true" />
               {opt.label}
               {isActive && (
                 <span className="ml-1" aria-hidden="true">
@@ -676,16 +534,13 @@ interface EmptyStateProps {
   className?: string;
 }
 
-export function EmptyState({
-  message = "暂无匹配版本",
-  className = "",
-}: EmptyStateProps) {
+export function EmptyState({ message = "暂无匹配版本", className = "" }: EmptyStateProps) {
   return (
-    <Card className={cn("border-foreground/8 border-dashed", className)}>
+    <Card className={cn("border-dashed border-foreground/8", className)}>
       <CardContent className="py-16 text-center">
-        <div className="text-muted-foreground mb-2">
+        <div className="mb-2 text-muted-foreground">
           <svg
-            className="w-12 h-12 mx-auto"
+            className="mx-auto h-12 w-12"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -718,12 +573,12 @@ export function LoadingState({
 }: LoadingStateProps) {
   return (
     <div
-      className={`flex flex-col items-center justify-center py-16 gap-4 ${className}`}
+      className={`flex flex-col items-center justify-center gap-4 py-16 ${className}`}
       role="status"
       aria-live="polite"
     >
       <div
-        className="w-12 h-12 border-4 border-foreground/20 border-t-foreground/50 rounded-full animate-spin"
+        className="h-12 w-12 animate-spin rounded-full border-4 border-foreground/20 border-t-foreground/50"
         aria-hidden="true"
       />
       <p className="text-muted-foreground">{message}</p>
@@ -853,13 +708,13 @@ export function InfiniteReleaseGrid({
         <div ref={loadMoreRef} className="py-8 text-center">
           {isLoadingMore ? (
             <div className="flex items-center justify-center gap-3">
-              <div className="w-6 h-6 border-2 border-foreground/30 border-t-transparent rounded-full animate-spin" />
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-foreground/30 border-t-transparent" />
               <span className="text-muted-foreground">加载更多版本...</span>
             </div>
           ) : (
             <button
               onClick={onLoadMore}
-              className="px-6 py-3 bg-secondary hover:bg-secondary/70 rounded-xl text-foreground/70 transition-colors cursor-pointer"
+              className="cursor-pointer rounded-xl bg-secondary px-6 py-3 text-foreground/70 transition-colors hover:bg-secondary/70"
             >
               加载更多版本
             </button>
@@ -900,11 +755,7 @@ export function useReleaseFilter(
           return m * compareSemanticVersions(a.version, b.version);
         }
         if (sortBy === "releaseDate") {
-          return (
-            m *
-            (new Date(a.releaseDate).getTime() -
-              new Date(b.releaseDate).getTime())
-          );
+          return m * (new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
         }
         return m * (a.downloadCount - b.downloadCount);
       });
@@ -912,11 +763,7 @@ export function useReleaseFilter(
   }, [releases, activeBranch, search, sortBy, sortOrder]);
 }
 
-export function usePagination(
-  filtered: ParsedRelease[],
-  page: number,
-  perPage: number,
-) {
+export function usePagination(filtered: ParsedRelease[], page: number, perPage: number) {
   const total = Math.ceil(filtered.length / perPage);
   const paged = useMemo(
     () => filtered.slice((page - 1) * perPage, page * perPage),

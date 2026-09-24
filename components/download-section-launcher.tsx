@@ -1,20 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Star,
-  GitBranch,
-  Eye,
-  Clock,
-  Archive,
-  Tag,
-  Loader2,
-  WifiOff,
-  XCircle,
-} from "lucide-react";
+import { Star, GitBranch, Eye, Clock, Archive, Tag, Loader2, WifiOff, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Toolbar,
@@ -26,6 +16,7 @@ import {
 } from "@/components/download-base";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import { githubProxyUrl, parseGitHubRelease } from "@/lib/github";
 
 // ============ 类型定义 ============
 
@@ -59,15 +50,12 @@ function RepoInfoCardSkeleton() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="max-w-6xl mx-auto bg-card backdrop-blur-md rounded-2xl shadow-sm p-6"
+      className="mx-auto max-w-6xl rounded-2xl bg-card p-6 shadow-sm backdrop-blur-md"
     >
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-3 p-3 bg-secondary rounded-xl"
-          >
-            <Skeleton className="w-10 h-10 rounded-full" />
+          <div key={i} className="flex items-center gap-3 rounded-xl bg-secondary p-3">
+            <Skeleton className="h-10 w-10 rounded-full" />
             <div className="space-y-1">
               <Skeleton className="h-6 w-16" />
               <Skeleton className="h-3 w-12" />
@@ -77,7 +65,7 @@ function RepoInfoCardSkeleton() {
       </div>
       <div className="mt-6">
         <Skeleton className="h-4 w-32" />
-        <div className="flex flex-wrap gap-2 mt-3">
+        <div className="mt-3 flex flex-wrap gap-2">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-6 w-16 rounded-full" />
           ))}
@@ -94,14 +82,14 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-6xl mx-auto bg-card rounded-2xl shadow-sm"
+      className="mx-auto max-w-6xl rounded-2xl bg-card shadow-sm"
       aria-label="仓库信息"
     >
       <CardContent className="p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
-            <div className="p-2 bg-background rounded-full">
-              <Star className="w-5 h-5 text-foreground/60" aria-hidden="true" />
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="flex items-center gap-3 rounded-xl bg-secondary p-3">
+            <div className="rounded-full bg-background p-2">
+              <Star className="h-5 w-5 text-foreground/60" aria-hidden="true" />
             </div>
             <div>
               <div className="text-xl font-bold text-foreground">
@@ -110,9 +98,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-xs text-muted-foreground">Stars</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
-            <div className="p-2 bg-background rounded-full">
-              <GitBranch className="w-5 h-5 text-foreground/60" aria-hidden="true" />
+          <div className="flex items-center gap-3 rounded-xl bg-secondary p-3">
+            <div className="rounded-full bg-background p-2">
+              <GitBranch className="h-5 w-5 text-foreground/60" aria-hidden="true" />
             </div>
             <div>
               <div className="text-xl font-bold text-foreground">
@@ -121,9 +109,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-xs text-muted-foreground">Forks</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
-            <div className="p-2 bg-background rounded-full">
-              <Eye className="w-5 h-5 text-foreground/60" aria-hidden="true" />
+          <div className="flex items-center gap-3 rounded-xl bg-secondary p-3">
+            <div className="rounded-full bg-background p-2">
+              <Eye className="h-5 w-5 text-foreground/60" aria-hidden="true" />
             </div>
             <div>
               <div className="text-xl font-bold text-foreground">
@@ -132,9 +120,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
               <div className="text-xs text-muted-foreground">Watchers</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
-            <div className="p-2 bg-background rounded-full">
-              <Clock className="w-5 h-5 text-foreground/60" aria-hidden="true" />
+          <div className="flex items-center gap-3 rounded-xl bg-secondary p-3">
+            <div className="rounded-full bg-background p-2">
+              <Clock className="h-5 w-5 text-foreground/60" aria-hidden="true" />
             </div>
             <div>
               <div className="text-sm font-semibold text-foreground">
@@ -146,9 +134,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
         </div>
 
         {repoInfo.archived && (
-          <div className="mt-6 p-4 bg-secondary rounded-xl">
+          <div className="mt-6 rounded-xl bg-secondary p-4">
             <div className="flex items-center gap-2 text-foreground/70">
-              <Archive className="w-5 h-5" aria-hidden="true" />
+              <Archive className="h-5 w-5" aria-hidden="true" />
               <span className="font-medium">此仓库已归档，可能不再维护</span>
             </div>
           </div>
@@ -156,11 +144,9 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
 
         {repoInfo.topics.length > 0 && (
           <div className="mt-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Tag className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-              <span className="text-sm font-medium text-foreground/70">
-                主题标签：
-              </span>
+            <div className="mb-3 flex items-center gap-2">
+              <Tag className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+              <span className="text-sm font-medium text-foreground/70">主题标签：</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {repoInfo.topics.map((topic) => (
@@ -178,13 +164,7 @@ function RepoInfoCard({ repoInfo }: { repoInfo: GitHubRepoInfo }) {
 
 // ============ 错误状态组件 ============
 
-function ErrorState({
-  status,
-  onRetry,
-}: {
-  status: RequestStatus;
-  onRetry: () => void;
-}) {
+function ErrorState({ status, onRetry }: { status: RequestStatus; onRetry: () => void }) {
   const getErrorInfo = () => {
     switch (status) {
       case "timeout":
@@ -213,21 +193,16 @@ function ErrorState({
   return (
     <Card className="bg-destructive/5">
       <CardContent className="py-16 text-center">
-        <Icon
-          className="w-12 h-12 mx-auto text-destructive/60 mb-4"
-          aria-hidden="true"
-        />
-        <h3 className="text-lg font-semibold text-foreground mb-2">
-          {title}
-        </h3>
-        <p className="text-muted-foreground mb-4">{message}</p>
+        <Icon className="mx-auto mb-4 h-12 w-12 text-destructive/60" aria-hidden="true" />
+        <h3 className="mb-2 text-lg font-semibold text-foreground">{title}</h3>
+        <p className="mb-4 text-muted-foreground">{message}</p>
         <Button
           variant="outline"
           onClick={onRetry}
           className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
         >
           <svg
-            className="w-4 h-4 mr-2"
+            className="mr-2 h-4 w-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -259,32 +234,26 @@ export function DownloadSectionLauncher({
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(true);
-  const [releases, setReleases] = useState<ParsedRelease[]>([]);
+  const [allReleases, setAllReleases] = useState<ParsedRelease[]>([]);
   const [repoInfo, setRepoInfo] = useState<GitHubRepoInfo | null>(null);
   const [repoStatus, setRepoStatus] = useState<RequestStatus>("idle");
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<
-    "semantic" | "releaseDate" | "downloadCount"
-  >("semantic");
+  const [sortBy, setSortBy] = useState<"semantic" | "releaseDate" | "downloadCount">("semantic");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [displayedCount, setDisplayedCount] = useState(itemsPerPage);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [allReleases, setAllReleases] = useState<ParsedRelease[]>([]);
 
   // 获取仓库信息（经 /api/gh_api 代理，带 GH_TOKEN 认证，避免限流）
-  const fetchRepoInfo = async () => {
-    const repoUrlMatch = githubApiUrl.match(/repos\/([^\/]+)\/([^\/]+)/);
+  const fetchRepoInfo = useCallback(async () => {
+    const repoUrlMatch = githubApiUrl.match(/repos\/([^/]+)\/([^/]+)/);
     if (!repoUrlMatch) return;
 
     const target = `https://api.github.com/repos/${repoUrlMatch[1]}/${repoUrlMatch[2]}`;
     try {
-      const res = await fetch(
-        `/api/gh_api?url=${encodeURIComponent(target)}`,
-        {
-          signal: AbortSignal.timeout(requestTimeout),
-        },
-      );
+      const res = await fetch(githubProxyUrl(target), {
+        signal: AbortSignal.timeout(requestTimeout),
+      });
       if (!res.ok) throw new Error(String(res.status));
       const data: GitHubRepoInfo = await res.json();
       setRepoInfo(data);
@@ -292,74 +261,44 @@ export function DownloadSectionLauncher({
     } catch {
       setRepoStatus("error");
     }
-  };
+  }, [githubApiUrl, requestTimeout]);
 
-  // 获取发布版本
-  const fetchReleases = async () => {
-    try {
-      setLoading(true);
-      setRepoStatus("loading");
+  // 经 /api/gh_api 代理单次拉取一页，限流（403）时退避重试一次
+  const fetchReleasesPage = useCallback(
+    async (page: number): Promise<ParsedRelease[]> => {
+      const baseUrl = githubApiUrl.includes("?")
+        ? `${githubApiUrl}&per_page=100&page=${page}`
+        : `${githubApiUrl}?per_page=100&page=${page}`;
 
-      // 并行获取仓库信息和发布版本
-      await Promise.all([fetchRepoInfo(), fetchReleasesData()]);
-    } catch {
-      toast({ title: "获取版本信息失败", variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
-  };
+      const repoMatch = githubApiUrl.match(/repos\/([^/]+)\/([^/]+)/);
+      const target = baseUrl.startsWith("http")
+        ? baseUrl
+        : `https://api.github.com/repos/${repoMatch?.[1]}/${repoMatch?.[2]}/releases?per_page=100&page=${page}`;
 
-  // 经 /api/gh_api 代理单次拉取一页，带限流重试
-  const fetchReleasesPage = async (page: number): Promise<ParsedRelease[]> => {
-    const baseUrl = githubApiUrl.includes("?")
-      ? `${githubApiUrl}&per_page=100&page=${page}`
-      : `${githubApiUrl}?per_page=100&page=${page}`;
+      const proxyUrl = githubProxyUrl(target);
 
-    const target = baseUrl.startsWith("http")
-      ? baseUrl
-      : `https://api.github.com/repos/${githubApiUrl.match(/repos\/([^\/]+)\/([^\/]+)/)?.[1]}/${githubApiUrl.match(/repos\/([^\/]+)\/([^\/]+)/)?.[2]}/releases?per_page=100&page=${page}`;
-
-    const proxyUrl = `/api/gh_api?url=${encodeURIComponent(target)}`;
-
-    // 限流（403）时退避重试一次
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const res = await fetch(proxyUrl, {
-        signal: AbortSignal.timeout(requestTimeout),
-      });
-      if (res.ok) {
-        const data: GitHubRelease[] = await res.json();
-        return data.map((r) => {
-          const files = r.assets.map((a) => ({
-            name: a.name,
-            downloadUrl: a.browser_download_url,
-            downloadCount: a.download_count,
-          }));
-          return {
-            name: r.name || r.tag_name,
-            version: r.tag_name,
-            mcVersion:
-              r.tag_name.match(/^(\d+\.\d+(\.\d+)?)/)?.[1] ?? "Unknown",
-            releaseDate: new Date(r.published_at).toLocaleDateString("zh-CN"),
-            isPrerelease: r.prerelease,
-            isLatest: false,
-            downloadCount: files.reduce((s, f) => s + f.downloadCount, 0),
-            files,
-            changelog: r.body || "暂无更新日志。",
-          };
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        const res = await fetch(proxyUrl, {
+          signal: AbortSignal.timeout(requestTimeout),
         });
+        if (res.ok) {
+          const data: GitHubRelease[] = await res.json();
+          return data.map(parseGitHubRelease);
+        }
+        if (res.status === 403 && attempt === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          continue;
+        }
+        throw new Error(String(res.status));
       }
-      if (res.status === 403 && attempt === 0) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        continue;
-      }
-      throw new Error(String(res.status));
-    }
-    throw new Error("Failed to fetch releases");
-  };
+      throw new Error("Failed to fetch releases");
+    },
+    [githubApiUrl, requestTimeout],
+  );
 
   // 拉取发布版本：首屏自动连续翻页直到拉全（上限 10 页 / 1000 条）
-  const fetchReleasesData = async (startPage: number = 1) => {
-    try {
+  const fetchReleasesData = useCallback(
+    async (startPage = 1): Promise<ParsedRelease[]> => {
       const MAX_PAGES = 10;
       let collected: ParsedRelease[] = [];
       let page = startPage;
@@ -378,28 +317,38 @@ export function DownloadSectionLauncher({
       if (collected.length > 0) {
         const stableReleases = collected.filter((r) => !r.isPrerelease);
         const anchor = stableReleases.length > 0 ? stableReleases : collected;
-        anchor
-          .sort((a, b) => b.releaseDate.localeCompare(a.releaseDate))[0]
-          .isLatest = true;
+        anchor.sort((a, b) => b.releaseDate.localeCompare(a.releaseDate))[0].isLatest = true;
       }
 
       if (startPage === 1) {
         setAllReleases(collected);
-        setReleases(collected);
       } else {
         setAllReleases((prev) => [...prev, ...collected]);
-        setReleases((prev) => [...prev, ...collected]);
       }
 
       setHasMore(page <= MAX_PAGES && more);
 
       return collected;
-    } catch {
-      throw new Error("Failed to fetch releases");
-    }
-  };
+    },
+    [fetchReleasesPage],
+  );
 
-  const handleLoadMore = async () => {
+  // 获取发布版本
+  const fetchReleases = useCallback(async () => {
+    try {
+      setLoading(true);
+      setRepoStatus("loading");
+
+      // 并行获取仓库信息和发布版本
+      await Promise.all([fetchRepoInfo(), fetchReleasesData()]);
+    } catch {
+      toast({ title: "获取版本信息失败", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchRepoInfo, fetchReleasesData, toast]);
+
+  const handleLoadMore = useCallback(async () => {
     if (isLoadingMore || !hasMore) return;
 
     setIsLoadingMore(true);
@@ -412,11 +361,11 @@ export function DownloadSectionLauncher({
     } finally {
       setIsLoadingMore(false);
     }
-  };
+  }, [allReleases.length, fetchReleasesData, hasMore, isLoadingMore, itemsPerPage, toast]);
 
   useEffect(() => {
     fetchReleases();
-  }, [githubApiUrl]);
+  }, [fetchReleases]);
 
   const filtered = useReleaseFilter(allReleases, search, sortBy, sortOrder);
 
@@ -424,9 +373,9 @@ export function DownloadSectionLauncher({
   if (loading) {
     return (
       <section className="space-y-6" aria-label="下载资源区域">
-        <header className="text-center space-y-3">
+        <header className="space-y-3 text-center">
           <h2 className="text-3xl font-bold text-foreground">{title}</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">{description}</p>
+          <p className="mx-auto max-w-2xl text-muted-foreground">{description}</p>
         </header>
 
         <AnimatePresence mode="wait">
@@ -440,21 +389,19 @@ export function DownloadSectionLauncher({
           </motion.div>
         </AnimatePresence>
 
-        <Card className="p-4 bg-card">
+        <Card className="bg-card p-4">
           <div className="space-y-4">
-            <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex flex-col gap-4 lg:flex-row">
               <div className="relative flex-1">
-                <Skeleton className="w-full h-12 rounded-xl" />
+                <Skeleton className="h-12 w-full rounded-xl" />
               </div>
               <Button variant="outline" disabled className="lg:w-auto">
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 加载中...
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-sm font-medium text-foreground/70">
-                排序：
-              </span>
+              <span className="text-sm font-medium text-foreground/70">排序：</span>
               {["版本号", "发布日期", "下载量"].map((label) => (
                 <Skeleton key={label} className="h-9 w-20 rounded-lg" />
               ))}
@@ -472,8 +419,8 @@ export function DownloadSectionLauncher({
             >
               <Card>
                 <CardContent className="p-6">
-                  <div className="flex items-start gap-4 mb-4">
-                    <Skeleton className="w-16 h-16 rounded-xl" />
+                  <div className="mb-4 flex items-start gap-4">
+                    <Skeleton className="h-16 w-16 rounded-xl" />
                     <div className="flex-1 space-y-2">
                       <Skeleton className="h-6 w-32" />
                       <div className="flex flex-wrap gap-2">
@@ -487,7 +434,7 @@ export function DownloadSectionLauncher({
                       <Skeleton key={j} className="h-16 rounded-xl" />
                     ))}
                   </div>
-                  <Skeleton className="h-8 w-full mt-4" />
+                  <Skeleton className="mt-4 h-8 w-full" />
                 </CardContent>
               </Card>
             </motion.div>
@@ -497,20 +444,20 @@ export function DownloadSectionLauncher({
     );
   }
 
-  if (repoStatus === "error" && releases.length === 0) {
+  if (repoStatus === "error" && allReleases.length === 0) {
     return <ErrorState status={repoStatus} onRetry={fetchReleases} />;
   }
 
   return (
     <section className="space-y-6" aria-label="下载资源区域">
-      <header className="text-center space-y-3">
+      <header className="space-y-3 text-center">
         <h2 className="text-3xl font-bold text-foreground">{title}</h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">{description}</p>
+        <p className="mx-auto max-w-2xl text-muted-foreground">{description}</p>
       </header>
 
       {repoInfo && <RepoInfoCard repoInfo={repoInfo} />}
 
-      <Card className="p-4 bg-card">
+      <Card className="bg-card p-4">
         <Toolbar
           search={search}
           onSearchChange={setSearch}
