@@ -1,9 +1,12 @@
 /**
  * 服务器考试题库（纯数据）。
  *
- * 事实来源（写题前一律先 grep 核对，找不到出处就不要写）：
- * - `public/system.md`   EPBot 官方知识库，最权威
+ * 事实来源（写题前一律先核对，找不到出处就不要写）：
+ * - `../EndlessPixel-Wiki/wiki/**`  官方 Wiki 源仓库（即 wiki.endlesspixel.cn），内容最细，优先级最高
+ * - `public/system.md`              EPBot 官方知识库
  * - `README.md`、`app/page.tsx`、`app/layout.tsx`、`components/hero-section.tsx`  站内公开口径
+ * 注意：Wiki 里少数页面自带「不一定正确实装 / 暂无玩家测试」的 warning（例如
+ * `server_feature/interaction.md` 的附魔台透明方块兼容），这类内容**不要拿来出题**。
  *
  * 出题四条硬标准（不合就改，改不了就删）：
  * 0. **必须点明「问的是谁」** —— 最容易翻车的一条。只要知识点的答案在原版与本服之间
@@ -113,6 +116,30 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
       "LittleSkin 与 HelloSkin 等第三方皮肤账号都能直连，游戏内还可以用指令设置与预览皮肤。",
   },
 
+  {
+    id: "login-register",
+    category: "接入",
+    question: "在本服，离线登录的玩家第一次进服，要用哪个指令注册账号？",
+    options: ["/register 密码 密码", "/login 密码", "/bindemail set 邮箱", "无需注册，进去就能玩"],
+    answer: 0,
+    explanation:
+      "离线登录需要用 /register <密码> <密码>（简写 /reg）注册，之后每次进服用 /login <密码> 登录。密码需包含数字、字母、特殊字符并达到长度要求。",
+  },
+  {
+    id: "login-email-reset",
+    category: "接入",
+    question: "在本服用邮箱重置密码，前提是什么？",
+    options: [
+      "账号已经绑定过安全邮箱",
+      "先找管理员要验证码",
+      "先绑定正版 Minecraft 账号",
+      "不需要任何前提",
+    ],
+    answer: 0,
+    explanation:
+      "忘记密码要用 /repw forget 触发重置流程，前提是账号已经通过 /bindemail set <邮箱> 绑定并验证过邮箱。一个邮箱通常只能绑定一个账号。",
+  },
+
   /* ---------------- 版本 ---------------- */
   {
     id: "version-main",
@@ -164,7 +191,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "version-java-fix",
     category: "版本",
-    question: "启动游戏时提示「Java 版本过低」，应该怎么处理？",
+    question: "启动官方整合包时提示「Java 版本过低」，应该怎么处理？",
     options: [
       "把整合包里的模组删掉几个",
       "在启动器里把 Java 升级到 21 或 25 后重试",
@@ -197,6 +224,16 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     ],
     answer: 0,
     explanation: "新版快照格式为「年份.年内更新序号-snapshot-快照号」，例如 26.4-snapshot-1。",
+  },
+
+  {
+    id: "version-protocol",
+    category: "版本",
+    question: "本服当前的服务器协议号是？",
+    options: ["763", "774", "776", "800"],
+    answer: 2,
+    explanation:
+      "本服协议号为 776，这也是跨版本连接的核心参数。服务器已用插件自动完成协议转换，玩家不需要手动改客户端协议配置。",
   },
 
   /* ---------------- 玩法 ---------------- */
@@ -233,10 +270,11 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "game-farm-protection",
     category: "玩法",
-    question: "在本服，从成熟的农作物上跑过去会怎样？",
-    options: ["会把作物踩坏", "不会损毁成熟农作物", "完全无法在农田上行走", "作物会自动恢复"],
+    question: "本服的「农田防踩踏」功能，防止的是什么？",
+    options: ["作物被玩家收获", "农田被踩踏后退化为普通泥土", "怪物破坏农田", "农田被水冲毁"],
     answer: 1,
-    explanation: "本服开启了农田保护：行走踩踏不会损毁成熟农作物。",
+    explanation:
+      "默认规则下玩家踩在耕好的农田上，农田会退化为普通泥土、导致作物生长中断；开启该功能后农田被踩踏不再退化，始终保持耕地状态。",
   },
   {
     id: "game-dominion",
@@ -318,6 +356,258 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     options: ["/skin", "/skin2", "/myskin", "/setskin"],
     answer: 0,
     explanation: "皮肤相关指令是 /skin，例如 /skin set Dream，可以设置、上传与预览皮肤。",
+  },
+
+  {
+    id: "game-enchant-max",
+    category: "玩法",
+    question: "本服的附魔最高可以堆到多少级？",
+    options: ["30 级", "100 级", "255 级", "没有上限"],
+    answer: 2,
+    explanation:
+      "本服的无限附魔系统放开了附魔等级上限，绝大多数原版附魔（锋利、保护、效率、时运等）以及新增的吸血、凋零伤害附加等自定义附魔最高都能堆到 255 级。",
+  },
+  {
+    id: "game-enchant-conflict",
+    category: "玩法",
+    question: "本服还保留原版「锋利与节肢杀手不能共存」这类附魔互斥规则吗？",
+    options: [
+      "保留了，和原版一样",
+      "已取消，互斥的附魔可以自由堆叠组合",
+      "只有武器取消了互斥",
+      "只有护甲取消了互斥",
+    ],
+    answer: 1,
+    explanation:
+      "本服取消了原版附魔互斥规则，原本互相冲突、无法共存的附魔可以自由堆叠组合，能做出原版永远实现不了的装备搭配。",
+  },
+  {
+    id: "game-anvil-limit",
+    category: "玩法",
+    question: "在本服用铁砧反复合并装备，还会提示「过于昂贵」而无法继续附魔吗？",
+    options: [
+      "还会，和原版一样",
+      "不会，合并次数上限与经验惩罚都已移除",
+      "会，但上限提高到了 100 次",
+      "只有创造模式不会提示",
+    ],
+    answer: 1,
+    explanation:
+      "铁砧的「过于昂贵」限制在本服已移除：原版的合并次数上限与高额经验惩罚都不再存在，只要有附魔书就能一直往上叠等级。",
+  },
+  {
+    id: "game-elytra-enchant",
+    category: "玩法",
+    question: "本服的鞘翅能附保护类附魔吗？",
+    options: [
+      "不能，和原版一样",
+      "能，保护、火焰保护、爆炸保护、弹射物保护都支持",
+      "只能附耐久",
+      "只能附经验修补",
+    ],
+    answer: 1,
+    explanation:
+      "本服打破了原版鞘翅无法附加保护类附魔的限制，鞘翅现在支持全套保护系列附魔，配合等级突破最高同样能堆到 255 级。",
+  },
+  {
+    id: "game-abyss",
+    category: "玩法",
+    question: "东西被扫地机清掉了，在本服用哪个指令能找回？",
+    options: ["/abyss", "/back", "/checkin", "/cdk"],
+    answer: 0,
+    explanation: "/abyss 打开深渊界面，可以拿回被扫地机清除的物品。",
+  },
+  {
+    id: "game-killme",
+    category: "玩法",
+    question: "在本服想立刻结束当前生命、回到重生点，用哪个指令？",
+    options: ["/killme", "/back", "/rtp", "/tpa"],
+    answer: 0,
+    explanation: "/killme 立即自杀并回到重生点，也可以直接输入简写 /4。",
+  },
+  {
+    id: "game-checkin",
+    category: "玩法",
+    question: "本服的每日签到用哪个指令？",
+    options: ["/checkin", "/daily", "/sign", "/welfare"],
+    answer: 0,
+    explanation:
+      "/checkin 每日一次免费签到，可获得随机经验奖励，连续签到天数越多加成越高；/checkin info 查记录，/checkin on、/checkin off 开关登录提醒。",
+  },
+  {
+    id: "game-cdk-channel",
+    category: "玩法",
+    question: "官方的 CDK 兑换码在哪里发放？",
+    options: [
+      "官方 Discord 的 #endlesspixel-cdk 频道",
+      "官方 QQ 群公告",
+      "游戏内登录时自动发放",
+      "官网首页弹窗",
+    ],
+    answer: 0,
+    explanation:
+      "CDK 在官方 Discord 的 #endlesspixel-cdk 频道发放，每隔一段时间发一次。拿到后用 /cdk use <码> 兑换，单个兑换码通常只能用一次。",
+  },
+  {
+    id: "game-rtp",
+    category: "玩法",
+    question: "在本服想随机传送到地图上的安全位置去探索，用哪个指令？",
+    options: ["/rtp", "/tpa", "/back", "/tpauto"],
+    answer: 0,
+    explanation:
+      "/rtp 随机传送到地图上的安全位置，适合外出探索；/tpa 是请求传送到指定玩家身边，别搞混。",
+  },
+  {
+    id: "game-skin-clear",
+    category: "玩法",
+    question: "在本服清除当前皮肤、恢复默认皮肤，用哪个指令？",
+    options: ["/skin clear", "/skin reset", "/clearskin", "/skin off"],
+    answer: 0,
+    explanation:
+      "/skin clear 清除当前皮肤恢复默认；/skin update 用于更新皮肤资源、修复显示异常；/skins 是打开皮肤菜单。",
+  },
+  {
+    id: "game-mana",
+    category: "玩法",
+    question: "在本服查看自己当前的法力值，用哪个指令？",
+    options: ["/mana", "/mp", "/skills", "/stats"],
+    answer: 0,
+    explanation: "/mana 显示当前法力值及恢复信息；/skills 是打开技能菜单查看各技能等级与经验进度。",
+  },
+  {
+    id: "game-hidden-frame",
+    category: "玩法",
+    question: "本服的隐形物品框架怎么获得？",
+    options: [
+      "通过合成获得，不需要指令也不需要额外权限",
+      "只能用指令领取",
+      "需要找管理员申请",
+      "只能在活动期间获得",
+    ],
+    answer: 0,
+    explanation:
+      "隐形物品框架可以直接合成。空框时可见便于对准定位，放入物品后框架自动隐形、只保留展示内容，取出物品后框架重新出现；潜行时右键可调整展示角度。",
+  },
+  {
+    id: "game-enchanted-apple",
+    category: "玩法",
+    question: "关于附魔金苹果，本服做了什么？",
+    options: [
+      "用数据包恢复了经典合成配方，并强化了效果",
+      "移除了它的宝箱掉落",
+      "改成只能通过村民交易获得",
+      "新增了更便宜的合成配方",
+    ],
+    answer: 0,
+    explanation:
+      "原版早已移除附魔金苹果的合成配方，本服通过数据包恢复了经典配方（8 个金块 + 1 个苹果）并强化效果；宝箱自然生成的获取途径依然保留。",
+  },
+  {
+    id: "game-warden-echo",
+    category: "玩法",
+    question: "本服里循声守卫掉落「回响碎片」的触发条件是什么？",
+    options: [
+      "击杀就有概率掉落",
+      "仅在被复原指南针直接命中击杀时才会掉落",
+      "只在困难模式下掉落",
+      "只有在远古城市里击杀才掉落",
+    ],
+    answer: 1,
+    explanation:
+      "回响碎片是低概率特殊掉落，只有用复原指南针直接命中击杀循声守卫才会掉落 —— 这个特殊触发条件正是收集它的难点。",
+  },
+  {
+    id: "game-old-chunk",
+    category: "玩法",
+    question: "在本服，数据包更新后回到旧存档，已经加载过的区域会出现新建筑吗？",
+    options: [
+      "不会，只有尚未加载的新区块才会生成新内容",
+      "会，全部自动替换成新模型",
+      "会，但需要重进游戏两次",
+      "会，只要往外走 100 格就会出现",
+    ],
+    answer: 0,
+    explanation:
+      "MC 的区块加载机制决定：已经生成完成的区块不会自动重写建筑。想看新版结构，必须前往该世界尚未加载的新区块探索 —— 原版结构替换和维度升级都是这个规则。",
+  },
+  {
+    id: "game-seed-site",
+    category: "玩法",
+    question: "在本服用 ChunkBase 这类种子查询网站找结构，哪种说法是对的？",
+    options: [
+      "所有结构都能靠种子网站准确定位",
+      "原版结构（村庄、前哨站等）坐标仍兼容，被重置过的维度新结构则不可信",
+      "任何结构都不可信，种子网站已经失效",
+      "只有末地结构可以查询",
+    ],
+    answer: 1,
+    explanation:
+      "原版结构替换只动了外观模型，生成坐标、刷怪规则、战利品完全沿用原版，所以村庄、掠夺者前哨站等仍可用 ChunkBase 定位；但维度升级对世界做了大规模重置，那些新结构跟种子网站上的信息不一定对得上。",
+  },
+  {
+    id: "game-furnace-block",
+    category: "玩法",
+    question: "在本服的高炉或熔炉里冶炼「原矿块」，特点是？",
+    options: [
+      "速度和冶炼单件物品一样快",
+      "耗时是单件的 9 倍，好处是节省背包与箱子空间",
+      "只有高炉能冶炼",
+      "冶炼后产出翻倍",
+    ],
+    answer: 1,
+    explanation:
+      "本服支持在高炉或熔炉中冶炼原矿块，耗时是单件物品的 9 倍。它的核心优势是节省存储空间而不是缩短耗时，适合批量处理矿物。",
+  },
+  {
+    id: "game-ship-nether",
+    category: "玩法",
+    question: "本服的「下界飞船」和普通舰船相比，特殊在哪？",
+    options: [
+      "用下界菌柄等木材制作，能在下界的熔岩海洋里航行",
+      "只能在末地航行",
+      "航行速度是普通舰船的 3 倍",
+      "不需要任何材料就能合成",
+    ],
+    answer: 0,
+    explanation:
+      "海洋探索新增了舰船体系，基础舰船有 7 种变体；用下界绯红菌柄、诡异菌柄等木材可以做出「下界飞船」，能在下界的熔岩海洋里航行，实现跨维度探险。",
+  },
+
+  {
+    id: "game-blocklocker-line",
+    category: "玩法",
+    question: "在本服给箱子上锁，告示牌第一行要写什么？",
+    options: ["[Private]", "[Lock]", "[Chest]", "[Owner]"],
+    answer: 0,
+    explanation:
+      "对着箱子、熔炉等容器贴上告示牌后，插件会自动在第一行生成 [Private]、第二行填上你的游戏昵称。手动放置时同样要在第一行输入 [Private]。",
+  },
+  {
+    id: "game-blocklocker-friend",
+    category: "玩法",
+    question: "在本服，[Private] 告示牌上最多能直接写几名好友来共享使用权限？",
+    options: ["1 名", "2 名", "5 名", "不限数量"],
+    answer: 1,
+    explanation:
+      "告示牌第三、四行可以各写一名好友，所以单人额外授权最多 2 名。需要加 2 名以上时，在同一容器上再贴一块告示牌，插件会自动生成 [More Users] 权限牌。",
+  },
+  {
+    id: "game-blocklocker-timer",
+    category: "玩法",
+    question: "想让上锁的门在 3 秒后自动关闭，告示牌上要加哪个标签？",
+    options: ["[Timer:3]", "[Auto3]", "[Close:3]", "[Delay:3]"],
+    answer: 0,
+    explanation:
+      "[Timer:X] 是自动关门计时，X 填 0~9（单位秒），例如 [Timer:3] 就是 3 秒后自动关闭；[Timer:0] 表示永久保持开启。该标签的优先级高于服务器默认的关门设置。",
+  },
+  {
+    id: "game-blocklocker-redstone",
+    category: "玩法",
+    question: "在本服，想允许漏斗从自己上锁的箱子里抽取物品，要加哪个标签？",
+    options: ["[Redstone]", "[Hopper]", "[Everyone]", "[Automation]"],
+    answer: 0,
+    explanation:
+      "[Redstone] 是红石兼容权限，允许漏斗抽取容器里的物品、也允许红石信号开关门与活板门；[Everyone] 则是把使用权开放给所有玩家。",
   },
 
   /* ---------------- 整合包 ---------------- */
@@ -427,6 +717,30 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
       "当前约 80% 的核心模组仅持续维护 Fabric 分支，所以暂无 NeoForge 版本计划；如果模组生态整体转向，规划可能随之调整。",
   },
 
+  {
+    id: "modpack-report-java",
+    category: "整合包",
+    question: "反馈整合包问题时，除了完整版本号，还必须提供什么？",
+    options: ["Java 具体版本", "电脑 CPU 型号", "显示器分辨率", "存档的种子"],
+    answer: 0,
+    explanation:
+      "反馈的必填项是整合包完整版本号 + Java 具体版本（如 Java 21.0.1 LTS）。注意是在启动器设置里看 Java 版本，不是游戏版本，这两者很容易搞混。",
+  },
+  {
+    id: "modpack-start-v5",
+    category: "整合包",
+    question: "整合包的版本序列为什么是从 v5 开始，而不是 v1？",
+    options: [
+      "公开上线之前已经迭代过多个内部构建版本",
+      "从 v5 开始只是讨个彩头",
+      "v1~v4 因为兼容问题被下架了",
+      "v1~v4 只提供给管理员内部使用",
+    ],
+    answer: 0,
+    explanation:
+      "在 1.21.4 分支公开上线前已经迭代过几个内部版本：1.20.1-v1、1.20.6-v2、1.21.1-v3，其中 1.21.4-v4 是存在模组冲突与兼容问题的试水预览版，1.21.4-v5 才是首个达到公开发布标准的稳定版。",
+  },
+
   /* ---------------- 社区 ---------------- */
   {
     id: "community-qq",
@@ -501,6 +815,91 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     explanation: "硬件详情公开在 sys.epmc.qzz.io，站内首页与页脚都有入口。",
   },
 
+  {
+    id: "community-discord-report",
+    category: "社区",
+    question: "服务器本身出问题（卡顿、掉线、连不上），应该去哪个渠道反馈？",
+    options: [
+      "官方 Discord 的 #报告问题 板块",
+      "GitHub 的 EndlessPixel/server 仓库",
+      "在官方 QQ 群聊天里直接说",
+      "发邮件给某一位置管理员的私人邮箱",
+    ],
+    answer: 0,
+    explanation:
+      "服务端类问题（卡顿、频繁掉线、无法连接、游戏内服务端故障）请到官方 Discord 的 `#报告问题 - report_problems` 板块提交，按模板写清问题描述、现象与触发条件。GitHub 的 EndlessPixel/server 仓库负责的是**官方网站**的问题，不是服务器游戏问题。",
+  },
+  {
+    id: "community-group-invalid",
+    category: "社区",
+    question: "在官方 QQ 群里发问题反馈，会怎么处理？",
+    options: [
+      "会被判定为无效反馈，因为社群不承接正式问题反馈",
+      "管理员会代为转交到 GitHub",
+      "和 Discord 一样都会被正常受理",
+      "会被记录进官方待办清单",
+    ],
+    answer: 0,
+    explanation:
+      "官方社群、聊天群只作为玩家日常闲聊与游玩交流的非正式场所，**不承接任何正式问题反馈与故障报修**。群聊内发布的反馈会被判定为无效，请按问题类型走 Discord 或 GitHub。",
+  },
+  {
+    id: "community-support-hours",
+    category: "社区",
+    question: "官方人工客服的在线服务时间是？",
+    options: [
+      "周一至周五 18:00-22:30，周末与节假日 08:00-22:00",
+      "每天 09:00-18:00",
+      "7×24 小时随时都有人工在线",
+      "只在周末提供人工客服",
+    ],
+    answer: 0,
+    explanation:
+      "客服与运维的实时支持时间是周一至周五（含调休日）18:00-22:30、周六日及节假日 08:00-22:00，非服务时段的问题会在工作日优先处理。",
+  },
+  {
+    id: "community-24x7",
+    category: "社区",
+    question: "客服下班之后，服务器会停止运行吗？",
+    options: [
+      "不会，服务器 7×24 小时运行，服务时间只针对人工客服",
+      "会，客服下班后就停机维护",
+      "会，但管理员可以手动开启",
+      "只在周末停止运行",
+    ],
+    answer: 0,
+    explanation:
+      "服务器保持 7×24 小时稳定运行，官方公示的服务时间只针对人工客服的响应，不影响正常登录游戏。",
+  },
+  {
+    id: "community-reply-mail",
+    category: "社区",
+    question: "你给 support@endlesspixel.cn 发了问题邮件，收到回复时应该认准哪个发件地址？",
+    options: [
+      "system-mini@outlook.com 或 bot@endlesspixel.cn",
+      "support@qq.com 或 admin@163.com",
+      "help@endlesspixel.cn 或 service@epmc.cn",
+      "官方没有固定的回复邮箱",
+    ],
+    answer: 0,
+    explanation:
+      "官方邮件支持发往 support@endlesspixel.cn，但**回复**要认准 system-mini@outlook.com / bot@endlesspixel.cn。对处理结果有异议还可以通过邮件申请二次复核。",
+  },
+  {
+    id: "community-antifraud",
+    category: "社区",
+    question: "有人主动私聊你，自称官方客服，要你的账号密码来帮你处理问题，应该怎么做？",
+    options: [
+      "官方绝不会主动私下联系玩家，直接无视并提高警惕",
+      "把密码发给他，处理完再改掉",
+      "先把验证码发给他验证身份",
+      "让他出示管理员证明之后再把密码给他",
+    ],
+    answer: 0,
+    explanation:
+      "官方运营与正规渠道绝不会以任何私人形式、任何社交渠道、任何陌生邮件主动私下联系玩家，也不会索要账号密码、登录验证码或要求转账。管理员和服主本身也是普通玩家身份，不会假借官方名义私聊交涉。凡是主动找上门自称官方的，都是冒充者。",
+  },
+
   /* ---------------- 规则 ---------------- */
   {
     id: "rule-ban-scope",
@@ -508,7 +907,8 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     question: "服务器的规则主要封禁哪类行为？",
     options: ["任何 PVP 行为", "作弊与恶意破坏", "建造大型建筑", "使用村民交易"],
     answer: 1,
-    explanation: "规则整体宽松，只封禁作弊、恶意破坏这类行为，鼓励自由建造与探索。",
+    explanation:
+      "规则整体宽松，只封禁作弊、恶意破坏这类行为，鼓励自由建造与探索。唯一的例外是矿透类辅助工具：允许适度使用，但要求保持低调。",
   },
   {
     id: "rule-issue-repo",
@@ -587,6 +987,114 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     answer: 2,
     explanation:
       "EndlessPixel 服务器完全免费：没有内置充值、没有会员体系、没有付费道具、也没有强制或诱导性的广告。",
+  },
+
+  {
+    id: "rule-xray",
+    category: "规则",
+    question: "本服对矿透（X-ray）类辅助工具的态度是？",
+    options: [
+      "允许适度使用但要求保持低调，飞行、穿墙、秒杀等其他作弊工具一律严禁",
+      "任何辅助工具都不允许使用",
+      "所有作弊工具都可以随意使用",
+      "只能在自己领地范围内使用",
+    ],
+    answer: 0,
+    explanation:
+      "本服规则相对宽松：允许适度使用矿透类辅助工具，但要求保持低调、不得影响其他玩家体验。除此之外严禁任何其他形式的外挂，包括飞行、穿墙、秒杀、物品刷取等。",
+  },
+  {
+    id: "rule-spam",
+    category: "规则",
+    question: "在本服的聊天频道里，连续发送多少条相同或无关的内容会被判定为刷屏？",
+    options: ["3 条及以上", "5 条及以上", "10 条及以上", "20 条及以上"],
+    answer: 2,
+    explanation:
+      "游戏聊天频道禁止恶意刷屏，单次连续发送 10 条及以上相同或无关内容即视为违规，会影响其他玩家正常交流。",
+  },
+  {
+    id: "rule-punish",
+    category: "规则",
+    question: "本服的违规处罚是怎么递进的？",
+    options: [
+      "封禁 1 天 → 30 天 → 6 个月 → 永久封禁",
+      "警告 → 禁言 → 封禁 1 天 → 永久封禁",
+      "直接永久封禁，没有梯度",
+      "每次都固定封禁 7 天",
+    ],
+    answer: 0,
+    explanation:
+      "违规处罚按次数递进：第一次封禁 1 天（ban1d），第二次 30 天（ban30d），第三次 6 个月（ban6m），第四次永久封禁（ban∞）。",
+  },
+  {
+    id: "rule-unprotected-grief",
+    category: "规则",
+    question: "在本服，没有被领地保护的建筑，别的玩家可以拆吗？",
+    options: [
+      "不可以，即使建筑没有领地保护，规则也禁止毁坏",
+      "可以，没圈地就等于放弃了保护",
+      "可以，只要不在公共区域就行",
+      "看建筑大小，大型建筑受规则保护",
+    ],
+    answer: 0,
+    explanation:
+      "规则明确禁止毁坏其他玩家的任何建筑，**即使它没有受到领地保护**，公共资源同样如此 —— 除非本人明确同意，或者已经放弃了该建筑。",
+  },
+  {
+    id: "rule-public-chest",
+    category: "规则",
+    question: "在本服给公共箱子上锁独占资源，会怎么处理？",
+    options: [
+      "属于违规，管理员有权直接解除箱子锁",
+      "没问题，谁先上锁就归谁",
+      "需要给其他玩家付费才能上锁",
+      "只有在主城才违规",
+    ],
+    answer: 0,
+    explanation:
+      "公共箱子是供全体玩家共享资源的设施，禁止恶意上锁独占；发现此类行为，管理员有权直接解除锁具。",
+  },
+  {
+    id: "rule-realmoney",
+    category: "规则",
+    question: "用现实货币买卖游戏物品或账号，服务器是什么态度？",
+    options: [
+      "规则禁止，且私下交易被骗服务器概不负责",
+      "允许，服务器会提供担保",
+      "允许，但需要向管理员报备",
+      "只有卖账号违规，卖物品不违规",
+    ],
+    answer: 0,
+    explanation:
+      "规则禁止使用现实货币交易游戏内物品和账号。所有私下现金交易行为均与服务器无关，若因此被骗，服务器概不负责、也不会介入处理纠纷。",
+  },
+  {
+    id: "rule-cdk-resell",
+    category: "规则",
+    question: "官方的礼品兑换码（CDK）可以高价转售吗？",
+    options: [
+      "不可以，所有 CDK 都能通过官方 Discord 等渠道免费获取",
+      "可以，属于玩家之间的自由交易",
+      "可以，但要向管理员缴纳手续费",
+      "只有活动发放的 CDK 不能转售",
+    ],
+    answer: 0,
+    explanation:
+      "礼品兑换码禁止高价二次转售 —— 所有 CDK 都可以通过官方 Discord 等官方渠道免费获取，认准官方发放途径，不要轻信非官方渠道售卖的兑换码。",
+  },
+  {
+    id: "rule-land-abuse",
+    category: "规则",
+    question: "在本服随意在不属于自己的区域或公共资源区圈地建领地，会怎样？",
+    options: [
+      "属于违规，管理员可以直接编辑、拆除或删除该领地",
+      "只要领地插件允许圈就没问题",
+      "只要不给领地上锁就没事",
+      "只要定期缴纳游戏币就能保留",
+    ],
+    answer: 0,
+    explanation:
+      "规则禁止恶意创建领地：不得在不属于自己的私人区域或公共资源区域随意圈地。管理员拥有领地的最高管理权限，可直接编辑、拆除或删除违规领地，不要抱「领地无敌」的侥幸心理。",
   },
 
   /* ---------------- 技术 ---------------- */
