@@ -384,8 +384,11 @@ export function Navigation() {
                     </MotionLink>
                   );
                 })}
-                <br />
-                {settings.showLoginButton && <LoginButton />}
+                {settings.showLoginButton && (
+                  <div className="pt-2">
+                    <LoginButton />
+                  </div>
+                )}
               </div>
             </motion.div>
           </>

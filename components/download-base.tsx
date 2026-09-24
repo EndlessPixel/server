@@ -334,7 +334,7 @@ export function ReleaseCard({
                 className="mt-3 overflow-hidden"
               >
                 <div
-                  className="prose prose-sm dark:prose-invert max-h-60 max-w-none overflow-auto rounded-xl bg-secondary/50 p-4"
+                  className="prose prose-sm max-h-60 max-w-none overflow-auto rounded-xl bg-secondary/50 p-4"
                   role="region"
                   aria-label="更新日志内容"
                 >
