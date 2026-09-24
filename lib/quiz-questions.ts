@@ -140,6 +140,21 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
       "忘记密码要用 /repw forget 触发重置流程，前提是账号已经通过 /bindemail set <邮箱> 绑定并验证过邮箱。一个邮箱通常只能绑定一个账号。",
   },
 
+  {
+    id: "login-changepw",
+    category: "接入",
+    question: "在本服想修改账号密码，用哪个指令？",
+    options: [
+      "/changepassword 旧密码 新密码",
+      "/setpassword 新密码",
+      "/resetpassword 新密码",
+      "/login 新密码",
+    ],
+    answer: 0,
+    explanation:
+      "改密码用 /changepassword <旧密码> <新密码>（简写 /changepw）。如果已经忘了密码，就得先绑定过安全邮箱，再走 /repw forget 的重置流程。",
+  },
+
   /* ---------------- 版本 ---------------- */
   {
     id: "version-main",
@@ -608,6 +623,16 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     answer: 0,
     explanation:
       "[Redstone] 是红石兼容权限，允许漏斗抽取容器里的物品、也允许红石信号开关门与活板门；[Everyone] 则是把使用权开放给所有玩家。",
+  },
+
+  {
+    id: "game-skill-claim",
+    category: "玩法",
+    question: "在本服领取技能升级奖励，用哪个指令？",
+    options: ["/sk claimitems", "/checkin", "/cdk use 兑换码", "/sk top"],
+    answer: 0,
+    explanation:
+      "/sk claimitems 打开物品认领菜单，用来领取技能升级奖励；/sk top 是技能等级排行榜，/checkin 是每日签到，别搞混。",
   },
 
   /* ---------------- 整合包 ---------------- */
@@ -1165,5 +1190,19 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     options: ["4GB", "8GB", "12GB", "32GB"],
     answer: 2,
     explanation: "官方公开的真实内存占用约 12GB，与 CPU、磁盘、网络、负载等信息一起公开。",
+  },
+  {
+    id: "tech-log-path",
+    category: "技术",
+    question: "反馈问题前要找客户端的报错日志，一般在哪个目录？",
+    options: [
+      "客户端根目录下的 logs 文件夹",
+      "整合包内的 config 文件夹",
+      "游戏截图用的 screenshots 文件夹",
+      "系统的「下载」文件夹",
+    ],
+    answer: 0,
+    explanation:
+      "客户端报错日志在客户端根目录下的 ./logs 文件夹里，日志内容是排查问题的关键线索。拿到之后传到 mclo.gs 或 Pastebin，再把链接给官方。",
   },
 ];
