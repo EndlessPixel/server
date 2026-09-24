@@ -35,6 +35,7 @@ import {
   formatFinishedAt,
   gradeExam,
   loadQuizRecords,
+  maxDevRatioPercent,
   QUESTION_BANK_SIZE,
   saveQuizRecord,
   scoreGrade,
@@ -154,8 +155,11 @@ export function QuizClient() {
 
   /* ------------------------------ 开始页 ------------------------------ */
   if (phase === "intro") {
-    // 组卷名额按占比拆分，说明文案与实际组卷共用同一份结果
-    const { total: actualSize, coreCount, devCount } = splitExamByDevRatio(examSize, devRatio);
+    // 占比上限由开发者题库容量决定（50 题及以下可达 100%，100 题时只有 50%），
+    // 所以滑块上限随题量变化，超出的旧值在这里被收敛
+    const ratioMax = maxDevRatioPercent(examSize);
+    const activeRatio = Math.min(devRatio, ratioMax);
+    const { total: actualSize, coreCount, devCount } = splitExamByDevRatio(examSize, activeRatio);
 
     return (
       <div className="min-h-screen bg-background">
@@ -222,22 +226,25 @@ export function QuizClient() {
                     id="dev-ratio"
                     type="range"
                     min={DEV_RATIO_MIN}
-                    max={DEV_RATIO_MAX}
+                    max={ratioMax}
                     step={1}
-                    value={devRatio}
+                    value={activeRatio}
                     onChange={(event) => setDevRatio(Number(event.target.value))}
                     className="h-1.5 w-40 cursor-pointer accent-foreground sm:w-56"
                   />
                   <span className="w-9 text-right text-xs font-semibold text-foreground tabular-nums">
-                    {devRatio}%
+                    {activeRatio}%
                   </span>
                 </div>
                 <p className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
                   题库里另有 {DEV_BANK_SIZE} 道接口调用、OAuth
                   接入、图册上传、启动器配置等开发者向题目。
                   {devCount > 0
-                    ? `按 ${devRatio}% 折算，本次 ${actualSize} 题中会抽 ${devCount} 道。`
-                    : `按 ${devRatio}% 折算不足 1 道，本次不抽开发者题（调高占比或增加题量即可）。`}
+                    ? `按 ${activeRatio}% 折算，本次 ${actualSize} 题中会抽 ${devCount} 道。`
+                    : `按 ${activeRatio}% 折算不足 1 道，本次不抽开发者题（调高占比或增加题量即可）。`}
+                  {ratioMax < DEV_RATIO_MAX
+                    ? ` 开发者题总共只有 ${DEV_BANK_SIZE} 道，所以选 ${examSize} 题时占比最高到 ${ratioMax}%。`
+                    : ""}
                 </p>
               </div>
 

@@ -40,14 +40,18 @@ export const QUESTION_BANK_SIZE = CORE_QUESTIONS.length;
 /** 开发者试题数 */
 export const DEV_BANK_SIZE = DEV_QUESTIONS.length;
 
-/** 开发者试题占比可选的百分比区间与默认值 */
+/**
+ * 开发者试题占比可选的百分比区间与默认值。
+ * 上限取 100%：真正的天花板是开发者题库容量（DEV_BANK_SIZE = 50 道），
+ * 由 {@link maxDevRatioPercent} 按题量换算 —— 100 道题时上限才是 50%。
+ */
 export const DEV_RATIO_MIN = 1;
-export const DEV_RATIO_MAX = 50;
+export const DEV_RATIO_MAX = 100;
 export const DEV_RATIO_DEFAULT = 10;
 
 /**
  * 把占比夹到合法区间（单位是百分比，不是 0~1 的小数）。
- * 传 0 或负数表示不含开发者试题（不套用下限），正数则夹到 1%~50% 并取整。
+ * 传 0 或负数表示不含开发者试题（不套用下限），正数则夹到 1%~100% 并取整。
  *
  * 注意：这里刻意保留百分比整数形式，不先转成小数 —— 先除后乘会引入浮点误差
  * （例如 50 题 29% 时 50 * 0.29 = 14.499999999999998，取整就会少一道）。
@@ -55,6 +59,18 @@ export const DEV_RATIO_DEFAULT = 10;
 export function clampDevRatioPercent(percent: number): number {
   if (!Number.isFinite(percent) || percent <= 0) return 0;
   return Math.min(Math.max(Math.round(percent), DEV_RATIO_MIN), DEV_RATIO_MAX);
+}
+
+/**
+ * 给定题量下，开发者试题实际能达到的最高占比（百分比）。
+ *
+ * 天花板是开发者题库容量：50 道题及以下可以全部出开发者题（100%），
+ * 100 道题时最多 50 道，也就是 50%。
+ */
+export function maxDevRatioPercent(count: number): number {
+  const total = Math.min(Math.max(Math.round(count), 0), QUESTION_BANK_SIZE + DEV_BANK_SIZE);
+  if (total <= 0) return 0;
+  return Math.min(DEV_RATIO_MAX, Math.floor((DEV_BANK_SIZE / total) * 100));
 }
 
 /**
