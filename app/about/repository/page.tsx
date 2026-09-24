@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function RepositoryPage() {
   return (
     <div className="min-h-screen bg-background">
-      <main className="py-10">
+      <main className="py-8">
         <div className="mx-auto max-w-6xl space-y-8 px-4 sm:px-6 lg:px-8">
           {/* -------------- Hero -------------- */}
           <section className="text-center">

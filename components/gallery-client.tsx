@@ -248,10 +248,10 @@ function GalleryContent() {
 
   return (
     <>
-      <main className="min-h-screen bg-background px-3 py-8 sm:px-4 md:py-12">
+      <main className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-8 text-center">
-            <h1 className="text-2xl font-bold text-foreground sm:text-3xl">玩家截图图册</h1>
+            <h1 className="text-3xl font-bold text-foreground md:text-4xl">玩家截图图册</h1>
           </div>
 
           <div className="mb-6 rounded-xl border border-foreground/8 bg-card p-4 shadow-sm">
@@ -279,7 +279,7 @@ function GalleryContent() {
               <CheckCircle2Icon className="h-5 w-5 text-foreground/60" />
               <h2 className="font-bold text-foreground">使用声明 & 版权协议</h2>
             </div>
-            <div className="mt-3 rounded border border-red-200 bg-red-50 p-2 text-xs font-medium text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+            <div className="mt-3 rounded border border-destructive/30 bg-destructive/10 p-2 text-xs font-medium text-destructive">
               重要提醒：无论你是直接下载、右键另存为、F12 获取图片链接、或从 GitHub 仓库下载，均受到
               CC BY-NC-SA 4.0 协议保护，请合规使用！
             </div>
@@ -303,7 +303,7 @@ function GalleryContent() {
 
           {!loading && error && (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <AlertCircleIcon className="mb-4 h-12 w-12 text-red-500" />
+              <AlertCircleIcon className="mb-4 h-12 w-12 text-destructive" />
               <p className="text-foreground/80">图片加载失败，请切换镜像源重试</p>
             </div>
           )}
@@ -504,7 +504,7 @@ function GalleryContent() {
       {toast.show && (
         <div
           className={`fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-lg px-4 py-2 text-sm text-white shadow-lg ${
-            toast.type === "success" ? "bg-green-600" : "bg-red-500"
+            toast.type === "success" ? "bg-green-600" : "bg-destructive/100"
           }`}
         >
           {toast.type === "success" ? (

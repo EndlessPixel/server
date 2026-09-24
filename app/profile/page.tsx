@@ -463,11 +463,11 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
       )}
 
       {/* 优化后的 Tooltip */}
-      <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1 hidden max-w-xs min-w-45 -translate-x-1/2 rounded-lg border border-gray-700/80 bg-black/90 p-2.5 text-xs text-white shadow-xl group-hover:block">
+      <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1 hidden max-w-xs min-w-45 -translate-x-1/2 rounded-lg border border-border bg-popover p-2.5 text-xs text-popover-foreground shadow-xl group-hover:block">
         {/* 物品名称 + 数量 */}
-        <div className="mb-1.5 font-bold text-yellow-200">
+        <div className="mb-1.5 font-bold text-foreground">
           {displayName}
-          {count > 1 && <span className="ml-1 font-normal text-gray-400">×{count}</span>}
+          {count > 1 && <span className="ml-1 font-normal text-muted-foreground">×{count}</span>}
         </div>
 
         {/* 附魔 */}
@@ -483,12 +483,12 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
 
         {/* 耐久损耗 */}
         {damage !== undefined && (
-          <div className="mt-1 text-[10px] text-gray-400">耐久损耗: {damage}</div>
+          <div className="mt-1 text-[10px] text-muted-foreground">耐久损耗: {damage}</div>
         )}
 
         {/* Lore（自定义描述） */}
         {loreLines.length > 0 && (
-          <div className="mt-1.5 space-y-0.5 border-t border-gray-600/50 pt-1.5 text-[10px] text-gray-300">
+          <div className="mt-1.5 space-y-0.5 border-t border-border pt-1.5 text-[10px] text-muted-foreground/80">
             {loreLines.map((line, i) => (
               <div key={i}>{line}</div>
             ))}
@@ -1052,9 +1052,9 @@ export default function ProfilePage() {
         <div className="absolute right-10 bottom-20 h-80 w-80 rounded-full bg-foreground/3 opacity-70 blur-3xl" />
       </div>
 
-      <main className="relative z-10 container mx-auto max-w-5xl flex-1 px-4 py-8">
+      <main className="relative z-10 mx-auto max-w-5xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">个人中心</h1>
+          <h1 className="text-3xl font-bold text-foreground md:text-4xl">个人中心</h1>
           <p className="mt-1 text-sm text-muted-foreground">查看你的账号信息</p>
         </div>
 

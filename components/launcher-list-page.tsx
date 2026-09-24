@@ -107,7 +107,7 @@ export function LauncherListPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
-      <div className="relative z-10 mx-auto max-w-7xl px-6 py-12">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <motion.div
           className="mb-16 text-center"
           initial={{ opacity: 0, y: -30 }}
