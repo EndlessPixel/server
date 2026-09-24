@@ -59,13 +59,13 @@ const calcTotalPages = (link: string | null) => {
 };
 function StatsCard({ icon, label, value }: { icon: JSX.Element; label: string; value: number }) {
   return (
-    <Card className="rounded-xl border-slate-200 bg-white/80 shadow-sm backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/70">
+    <Card className="rounded-xl border-border bg-card/80 shadow-sm backdrop-blur-sm">
       <CardContent className="p-6">
         <div className="mb-4 flex items-center justify-between">
           <div className="rounded-xl bg-secondary p-3 text-foreground/60">{icon}</div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{value}</div>
+          <div className="text-2xl font-bold text-foreground">{value}</div>
         </div>
-        <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">{label}</div>
+        <div className="text-lg font-semibold text-foreground">{label}</div>
       </CardContent>
     </Card>
   );
@@ -75,7 +75,7 @@ function IssueCard({ issue, onClick }: { issue: GitHubIssue; onClick: (url: stri
   return (
     <Card
       onClick={() => onClick(issue.html_url)}
-      className="group cursor-pointer rounded-xl border-slate-200 bg-white/80 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/70"
+      className="group cursor-pointer rounded-xl border-border bg-card/80 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg"
     >
       <CardContent className="p-6">
         <div className="mb-3 flex items-start justify-between">
@@ -93,7 +93,7 @@ function IssueCard({ issue, onClick }: { issue: GitHubIssue; onClick: (url: stri
             {isPR ? "PR" : issue.state === "open" ? "开放" : "已关闭"}
           </Badge>
         </div>
-        <div className="mb-3 flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
+        <div className="mb-3 flex items-center gap-4 text-sm text-muted-foreground">
           <span className="flex items-center gap-1">
             <User className="h-4 w-4" />
             {issue.user.login}
@@ -217,7 +217,7 @@ export default function GitHubIssuesList({
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Card>
           <CardContent className="space-y-4 p-8 text-center">
-            <AlertCircle className="mx-auto h-10 w-10 text-red-500" />
+            <AlertCircle className="mx-auto h-10 w-10 text-destructive" />
             <p className="text-muted-foreground">{error}</p>
             <Button onClick={() => location.reload()}>重新加载</Button>
           </CardContent>
@@ -226,7 +226,7 @@ export default function GitHubIssuesList({
     );
   return (
     <>
-      <main className="min-h-screen bg-background p-6">
+      <main className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl space-y-8">
           <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
             <div className="space-y-2">
@@ -241,8 +241,8 @@ export default function GitHubIssuesList({
                   {owner}/{repo}
                 </Badge>
               </div>
-              <h1 className="text-3xl font-bold text-foreground">问题与反馈</h1>
-              <p className="text-slate-600 dark:text-slate-400">跟踪 Issues 与 Pull Requests</p>
+              <h1 className="text-3xl font-bold text-foreground md:text-4xl">问题与反馈</h1>
+              <p className="text-muted-foreground">跟踪 Issues 与 Pull Requests</p>
             </div>
             <div className="flex items-center gap-3">
               <Button
@@ -301,8 +301,8 @@ export default function GitHubIssuesList({
                   <MessageSquare className="h-5 w-5 text-foreground/60" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white">全部条目</h2>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <h2 className="text-xl font-semibold text-foreground">全部条目</h2>
+                  <p className="text-sm text-muted-foreground">
                     第 {pagination.currentPage} 页，共 {pagination.totalPages} 页
                   </p>
                 </div>
@@ -311,13 +311,9 @@ export default function GitHubIssuesList({
             {issues.length === 0 ? (
               <Card className="border-dashed py-16 text-center">
                 <CardContent>
-                  <CheckCircle className="mx-auto mb-4 h-16 w-16 text-slate-300 dark:text-slate-600" />
-                  <h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">
-                    暂无条目
-                  </h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    成为第一个提交 Issue 的人吧！
-                  </p>
+                  <CheckCircle className="mx-auto mb-4 h-16 w-16 text-muted-foreground/40" />
+                  <h3 className="mb-2 text-lg font-semibold text-foreground">暂无条目</h3>
+                  <p className="text-muted-foreground">成为第一个提交 Issue 的人吧！</p>
                 </CardContent>
               </Card>
             ) : (
