@@ -1,19 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef, type ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import {
-  UserIcon,
-  ShieldIcon,
-  LogOutIcon,
-  Loader2Icon,
-  BanIcon,
-  PackageIcon,
-} from 'lucide-react';
-import { getEnchantmentDisplayName } from '../../lib/enchantments';
-import { getItemDisplayName, getEntityDisplayName } from '../../lib/items';
-import React from 'react';
-import SkinViewer from '../../components/skin-viewer';
+import React, { useState, useEffect, useRef, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { UserIcon, ShieldIcon, LogOutIcon, Loader2Icon, BanIcon, PackageIcon } from "lucide-react";
+import { getEnchantmentDisplayName } from "@/lib/enchantments";
+import { getItemDisplayName, getEntityDisplayName } from "@/lib/items";
+import SkinViewer from "@/components/skin-viewer";
 
 /* ---------- 类型定义 ---------- */
 interface InventoryItem {
@@ -30,12 +22,12 @@ interface InventoryItem {
     };
   };
   components?: {
-    'minecraft:damage'?: number;
-    'minecraft:enchantments'?: Record<string, number>;
-    'minecraft:lore'?: any[];
-    'minecraft:custom_name'?: string | Record<string, any>;
-    'minecraft:profile'?: any;
-    'minecraft:custom_data'?: any;
+    "minecraft:damage"?: number;
+    "minecraft:enchantments"?: Record<string, number>;
+    "minecraft:lore"?: any[];
+    "minecraft:custom_name"?: string | Record<string, any>;
+    "minecraft:profile"?: any;
+    "minecraft:custom_data"?: any;
     [key: string]: any;
   };
 }
@@ -59,12 +51,12 @@ interface UserInfo {
 /* ---------- 工具函数 ---------- */
 const formatTime = (timeStr: string) => {
   try {
-    return new Date(timeStr).toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(timeStr).toLocaleString("zh-CN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch {
     return timeStr;
@@ -75,7 +67,7 @@ const getRelativeTime = (timeStr: string) => {
   try {
     const diff = Date.now() - new Date(timeStr).getTime();
     const m = Math.floor(diff / 60000);
-    if (m < 1) return '刚刚';
+    if (m < 1) return "刚刚";
     if (m < 60) return `${m} 分钟前`;
     const h = Math.floor(m / 60);
     if (h < 24) return `${h} 小时前`;
@@ -121,11 +113,9 @@ const getLevelByTotalExp = (totalExp: number): number => {
   return low;
 };
 
-
-
 const findKeyRec = (obj: any, key: string, depth = 4): any => {
   if (!obj || depth < 0) return undefined;
-  if (typeof obj !== 'object') return undefined;
+  if (typeof obj !== "object") return undefined;
   if (Object.prototype.hasOwnProperty.call(obj, key)) return obj[key];
   for (const val of Object.values(obj)) {
     const res = findKeyRec(val, key, depth - 1);
@@ -137,13 +127,13 @@ const findKeyRec = (obj: any, key: string, depth = 4): any => {
 const extractTotalExpFromNbt = (nbt: any): number | undefined => {
   if (!nbt) return undefined;
   // 尝试常见路径
-  let candidate: any = findKeyRec(nbt, 'newTotalExp', 5);
+  let candidate: any = findKeyRec(nbt, "newTotalExp", 5);
   if (candidate === undefined) {
     // 有些服务会把 nbt 字符串化，尝试解析一次
-    if (typeof nbt === 'string') {
+    if (typeof nbt === "string") {
       try {
         const parsed = JSON.parse(nbt);
-        candidate = findKeyRec(parsed, 'newTotalExp', 5);
+        candidate = findKeyRec(parsed, "newTotalExp", 5);
       } catch {
         // ignore
       }
@@ -152,17 +142,17 @@ const extractTotalExpFromNbt = (nbt: any): number | undefined => {
 
   if (candidate === undefined || candidate === null) return undefined;
 
-  if (typeof candidate === 'number') return candidate;
-  if (typeof candidate === 'string') {
+  if (typeof candidate === "number") return candidate;
+  if (typeof candidate === "string") {
     // 尝试直接转换数字或 JSON 字符串
     const trimmed = candidate.trim();
     if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) return Number(trimmed);
     try {
       const parsed = JSON.parse(trimmed);
-      if (typeof parsed === 'number') return parsed;
-      const nested = findKeyRec(parsed, 'newTotalExp', 3);
-      if (typeof nested === 'number') return nested;
-      if (typeof nested === 'string' && /^-?\d+$/.test(nested)) return Number(nested);
+      if (typeof parsed === "number") return parsed;
+      const nested = findKeyRec(parsed, "newTotalExp", 3);
+      if (typeof nested === "number") return nested;
+      if (typeof nested === "string" && /^-?\d+$/.test(nested)) return Number(nested);
     } catch {
       // ignore
     }
@@ -170,17 +160,17 @@ const extractTotalExpFromNbt = (nbt: any): number | undefined => {
   }
 
   // 其他结构（例如 {value: '123'}）
-  if (typeof candidate === 'object') {
+  if (typeof candidate === "object") {
     const v = candidate.value ?? candidate.Value ?? candidate.v;
-    if (typeof v === 'number') return v;
-    if (typeof v === 'string' && /^-?\d+$/.test(v.trim())) return Number(v.trim());
+    if (typeof v === "number") return v;
+    if (typeof v === "string" && /^-?\d+$/.test(v.trim())) return Number(v.trim());
   }
   return undefined;
 };
 
 const formatNumber = (n: number): string => {
   try {
-    return new Intl.NumberFormat('zh-CN').format(n);
+    return new Intl.NumberFormat("zh-CN").format(n);
   } catch {
     return String(n);
   }
@@ -188,28 +178,28 @@ const formatNumber = (n: number): string => {
 
 const parseMinecraftText = (text: any): string => {
   const normalizeTextObject = (obj: any): string => {
-    if (!obj || typeof obj !== 'object') return '';
-    if (Array.isArray(obj)) return obj.map(normalizeTextObject).join('');
+    if (!obj || typeof obj !== "object") return "";
+    if (Array.isArray(obj)) return obj.map(normalizeTextObject).join("");
     const keys = Object.keys(obj);
-    if (keys.length === 0) return '';
-    if (keys.length === 1 && keys[0] === '' && obj[''] === '') return '';
-    let result = '';
-    if (typeof obj.text === 'string') result += obj.text;
-    if (Array.isArray(obj.extra)) result += obj.extra.map(normalizeTextObject).join('');
+    if (keys.length === 0) return "";
+    if (keys.length === 1 && keys[0] === "" && obj[""] === "") return "";
+    let result = "";
+    if (typeof obj.text === "string") result += obj.text;
+    if (Array.isArray(obj.extra)) result += obj.extra.map(normalizeTextObject).join("");
     return result;
   };
 
-  if (typeof text === 'string') {
+  if (typeof text === "string") {
     try {
       const parsed = JSON.parse(text);
-      if (typeof parsed === 'string') return parsed;
-      return normalizeTextObject(parsed) || text.replace(/§./g, '');
+      if (typeof parsed === "string") return parsed;
+      return normalizeTextObject(parsed) || text.replace(/§./g, "");
     } catch {
       // not json
     }
-    return text.replace(/§./g, '');
+    return text.replace(/§./g, "");
   }
-  if (typeof text === 'object' && text !== null) {
+  if (typeof text === "object" && text !== null) {
     return normalizeTextObject(text);
   }
   return String(text);
@@ -217,65 +207,63 @@ const parseMinecraftText = (text: any): string => {
 
 const getColorFromMinecraft = (color: string | undefined): string | undefined => {
   if (!color) return undefined;
-  const normalized = color.replace('-', '_').toLowerCase();
+  const normalized = color.replace("-", "_").toLowerCase();
   const colors: Record<string, string> = {
-    black: '#000000',
-    dark_blue: '#0000AA',
-    dark_green: '#00AA00',
-    dark_aqua: '#00AAAA',
-    dark_red: '#AA0000',
-    dark_purple: '#AA00AA',
-    gold: '#FFAA00',
-    gray: '#AAAAAA',
-    dark_gray: '#555555',
-    blue: '#5555FF',
-    green: '#55FF55',
-    aqua: '#55FFFF',
-    red: '#FF5555',
-    light_purple: '#FF55FF',
-    yellow: '#FFFF55',
-    white: '#FFFFFF',
-    orange: '#FFAA00',
+    black: "#000000",
+    dark_blue: "#0000AA",
+    dark_green: "#00AA00",
+    dark_aqua: "#00AAAA",
+    dark_red: "#AA0000",
+    dark_purple: "#AA00AA",
+    gold: "#FFAA00",
+    gray: "#AAAAAA",
+    dark_gray: "#555555",
+    blue: "#5555FF",
+    green: "#55FF55",
+    aqua: "#55FFFF",
+    red: "#FF5555",
+    light_purple: "#FF55FF",
+    yellow: "#FFFF55",
+    white: "#FFFFFF",
+    orange: "#FFAA00",
   };
   return colors[normalized] ?? color;
 };
 
 const getMinecraftStyle = (obj: any): React.CSSProperties => {
   const style: React.CSSProperties = {};
-  if (!obj || typeof obj !== 'object') return style;
-  if (obj.bold) style.fontWeight = 'bold';
-  if (obj.italic) style.fontStyle = 'italic';
+  if (!obj || typeof obj !== "object") return style;
+  if (obj.bold) style.fontWeight = "bold";
+  if (obj.italic) style.fontStyle = "italic";
   const decorations: string[] = [];
-  if (obj.underlined) decorations.push('underline');
-  if (obj.strikethrough) decorations.push('line-through');
-  if (decorations.length) style.textDecoration = decorations.join(' ');
+  if (obj.underlined) decorations.push("underline");
+  if (obj.strikethrough) decorations.push("line-through");
+  if (decorations.length) style.textDecoration = decorations.join(" ");
   if (obj.color) style.color = getColorFromMinecraft(obj.color);
-  if (obj.obfuscated) style.letterSpacing = '0.05em';
+  if (obj.obfuscated) style.letterSpacing = "0.05em";
   return style;
 };
 
 const renderMinecraftText = (text: any): ReactNode => {
-  if (text === null || text === undefined) return '';
-  if (typeof text === 'string') {
-    return text.replace(/§./g, '');
+  if (text === null || text === undefined) return "";
+  if (typeof text === "string") {
+    return text.replace(/§./g, "");
   }
   if (Array.isArray(text)) {
     return text.map((item, index) => (
       <React.Fragment key={`mc-array-${index}`}>{renderMinecraftText(item)}</React.Fragment>
     ));
   }
-  if (typeof text === 'object') {
-    if (Object.keys(text).length === 1 && text[''] === '') return '';
+  if (typeof text === "object") {
+    if (Object.keys(text).length === 1 && text[""] === "") return "";
     const children: ReactNode[] = [];
-    if (typeof text.text === 'string') {
-      children.push(text.text.replace(/§./g, ''));
+    if (typeof text.text === "string") {
+      children.push(text.text.replace(/§./g, ""));
     }
     if (Array.isArray(text.extra)) {
       text.extra.forEach((extra: any, index: number) => {
         children.push(
-          <React.Fragment key={`mc-extra-${index}`}>
-            {renderMinecraftText(extra)}
-          </React.Fragment>
+          <React.Fragment key={`mc-extra-${index}`}>{renderMinecraftText(extra)}</React.Fragment>,
         );
       });
     }
@@ -288,63 +276,67 @@ const renderMinecraftText = (text: any): ReactNode => {
 };
 
 const getDisplayItemName = (item: InventoryItem): string => {
-  const rawName = item.tag?.display?.Name ?? item.components?.['minecraft:custom_name'];
-  if (rawName) return parseMinecraftText(rawName).replace(/§./g, '');
+  const rawName = item.tag?.display?.Name ?? item.components?.["minecraft:custom_name"];
+  if (rawName) return parseMinecraftText(rawName).replace(/§./g, "");
   return getItemDisplayName(item.id);
 };
 
 // 部分物品（如 enchanted_golden_apple）在资源包中没有独立贴图，
 // 它们是基础物品（golden_apple）的附魔特效覆盖层版本，需回退到基础物品贴图。
 const stripEnchantedPrefix = (id: string): string =>
-  id.startsWith('enchanted_') ? id.slice('enchanted_'.length) : id;
+  id.startsWith("enchanted_") ? id.slice("enchanted_".length) : id;
 
 const getDefaultItemImageUrl = (itemId: string): string => {
-  const id = stripEnchantedPrefix(itemId.replace('minecraft:', ''));
+  const id = stripEnchantedPrefix(itemId.replace("minecraft:", ""));
   return `https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/${id}.png`;
 };
 
 const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
-  const profile = item.components?.['minecraft:profile'];
-  if (!profile || typeof profile !== 'object' || !Array.isArray(profile.properties)) return undefined;
+  const profile = item.components?.["minecraft:profile"];
+  if (!profile || typeof profile !== "object" || !Array.isArray(profile.properties))
+    return undefined;
 
-  const textureProperty = profile.properties.find((prop: any) => prop.name === 'textures');
-  if (!textureProperty || typeof textureProperty.value !== 'string') return undefined;
+  const textureProperty = profile.properties.find(
+    (prop: { name?: string; value?: string }) => prop.name === "textures",
+  );
+  if (!textureProperty || typeof textureProperty.value !== "string") return undefined;
+
+  // 安全解码 base64，客户端使用 atob，防止无效数据抛出
+  let decodedStr = "";
   try {
-    // 安全解码 base64，客户端使用 atob，防止无效数据抛出
-    let decodedStr = '';
-    try {
-      decodedStr = typeof window !== 'undefined' && typeof atob === 'function'
+    decodedStr =
+      typeof window !== "undefined" && typeof atob === "function"
         ? atob(textureProperty.value)
-        : Buffer.from(textureProperty.value, 'base64').toString('utf8');
-    } catch (e) {
-      // 记录原始值以便定位问题（已移除生产日志）
-      return undefined;
-    }
+        : Buffer.from(textureProperty.value, "base64").toString("utf8");
+  } catch {
+    return undefined;
+  }
 
-    let decoded: any;
-    try {
-      decoded = JSON.parse(decodedStr);
-    } catch (e) {
-      return undefined;
-    }
+  let decoded: { textures?: Record<string, unknown> } | null = null;
+  try {
+    decoded = JSON.parse(decodedStr);
+  } catch {
+    return undefined;
+  }
 
-    const textures = decoded?.textures;
-    if (!textures || typeof textures !== 'object') return undefined;
-    const skin = (textures as any).SKIN;
-    const candidates = skin ? [skin] : Object.values(textures);
-    for (const texture of candidates) {
-      if (texture && typeof texture === 'object' && typeof texture.url === 'string') {
-        return texture.url.replace(/^http:/, 'https:');
-      }
+  const textures = decoded?.textures;
+  if (!textures || typeof textures !== "object") return undefined;
+  const skin = textures.SKIN;
+  const candidates = skin ? [skin] : Object.values(textures);
+  for (const texture of candidates) {
+    if (
+      texture &&
+      typeof texture === "object" &&
+      typeof (texture as { url?: unknown }).url === "string"
+    ) {
+      return (texture as { url: string }).url.replace(/^http:/, "https:");
     }
-  } catch (e) {
-    // unexpected error reading texture
   }
   return undefined;
 };
 
 const getItemImageUrl = (item: InventoryItem): string => {
-  if (item.id === 'minecraft:player_head') {
+  if (item.id === "minecraft:player_head") {
     const customUrl = getPlayerHeadTextureUrl(item);
     if (customUrl) return customUrl;
   }
@@ -355,18 +347,18 @@ const getItemImageUrl = (item: InventoryItem): string => {
 const normalizeInventory = (rawItems: any[]): InventoryItem[] => {
   if (!Array.isArray(rawItems)) return [];
   return rawItems
-    .filter((item) => item && typeof item === 'object' && item.id)
+    .filter((item) => item && typeof item === "object" && item.id)
     .map((item) => {
       // 如果已经是旧版 tag 格式，直接返回
       if (item.tag) return item;
 
       const comps = item.components || {};
-      const enchantmentsObj = comps['minecraft:enchantments'] || {};
+      const enchantmentsObj = comps["minecraft:enchantments"] || {};
       const enchantments = Object.entries(enchantmentsObj).map(([id, lvl]) => ({ id, lvl }));
 
       const display: { Name?: string; Lore?: string[] } = {};
-      if (comps['minecraft:custom_name']) display.Name = comps['minecraft:custom_name'];
-      if (comps['minecraft:lore']) display.Lore = comps['minecraft:lore'];
+      if (comps["minecraft:custom_name"]) display.Name = comps["minecraft:custom_name"];
+      if (comps["minecraft:lore"]) display.Lore = comps["minecraft:lore"];
 
       return {
         id: item.id,
@@ -374,7 +366,7 @@ const normalizeInventory = (rawItems: any[]): InventoryItem[] => {
         Slot: item.Slot,
         components: Object.keys(comps).length ? comps : undefined,
         tag: {
-          Damage: comps['minecraft:damage'],
+          Damage: comps["minecraft:damage"],
           Enchantments: enchantments.length ? enchantments : undefined,
           display: Object.keys(display).length ? display : undefined,
         },
@@ -394,7 +386,7 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   }, [item]);
 
   if (!item) {
-    return <div className="w-12 h-12 bg-secondary rounded border border-foreground/10" />;
+    return <div className="h-12 w-12 rounded border border-foreground/10 bg-secondary" />;
   }
 
   const displayName = getDisplayItemName(item);
@@ -409,17 +401,28 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   // 这些物品在资源包中有多帧/方向变体（如盾牌、旗帜、床、箱子等），
   // 其贴图需要追加 _00 帧后缀才能命中。普通物品不存在该变体，强行回退只会 404。
   const MULTI_FRAME_ITEMS = new Set([
-    'shield', 'banner', 'standing_banner', 'wall_banner',
-    'bed', 'chest', 'trapped_chest', 'ender_chest',
-    'oak_door', 'iron_door', 'wooden_door', 'dark_oak_door',
-    'white_bed', 'red_bed', 'black_bed',
+    "shield",
+    "banner",
+    "standing_banner",
+    "wall_banner",
+    "bed",
+    "chest",
+    "trapped_chest",
+    "ender_chest",
+    "oak_door",
+    "iron_door",
+    "wooden_door",
+    "dark_oak_door",
+    "white_bed",
+    "red_bed",
+    "black_bed",
   ]);
 
   const getUnknownItemUrl = (): string =>
-    'https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/barrier.png';
+    "https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/barrier.png";
 
   const handleImageError = () => {
-    const baseId = stripEnchantedPrefix(item.id.replace('minecraft:', ''));
+    const baseId = stripEnchantedPrefix(item.id.replace("minecraft:", ""));
     // stage 0 -> 1：首次失败，先重试一次基础贴图（防偶发网络抖动误判）
     if (imgStageRef.current === 0) {
       imgStageRef.current = 1;
@@ -430,7 +433,7 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
     if (imgStageRef.current === 1) {
       imgStageRef.current = 2;
       if (MULTI_FRAME_ITEMS.has(baseId)) {
-        setImgSrc(getDefaultItemImageUrl(item.id).replace('.png', '_00.png'));
+        setImgSrc(getDefaultItemImageUrl(item.id).replace(".png", "_00.png"));
         return;
       }
     }
@@ -441,26 +444,36 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   };
 
   return (
-    <div className="relative group w-12 h-12 bg-secondary rounded border border-foreground/10 flex items-center justify-center">
-      {imgSrc && <img src={imgSrc} alt={displayName} className="w-8 h-8 object-contain" onError={handleImageError} />}
-      {/* 附魔/特效紫光：仅覆盖在图标之上，动态扫光动画 */}
-      {(item.id.replace('minecraft:', '').startsWith('enchanted_') || (enchants && enchants.length > 0)) && (
-        <span className="enchant-glint" aria-hidden="true" />
+    <div className="group relative flex h-12 w-12 items-center justify-center rounded border border-foreground/10 bg-secondary">
+      {imgSrc && (
+        <img
+          src={imgSrc}
+          alt={displayName}
+          className="h-8 w-8 object-contain"
+          onError={handleImageError}
+        />
       )}
-      {count > 1 && <span className="absolute bottom-0 right-0 text-[10px] text-white bg-black/60 px-1 rounded leading-none">{count}</span>}
+      {/* 附魔/特效紫光：仅覆盖在图标之上，动态扫光动画 */}
+      {(item.id.replace("minecraft:", "").startsWith("enchanted_") ||
+        (enchants && enchants.length > 0)) && <span className="enchant-glint" aria-hidden="true" />}
+      {count > 1 && (
+        <span className="absolute right-0 bottom-0 rounded bg-black/60 px-1 text-[10px] leading-none text-white">
+          {count}
+        </span>
+      )}
 
       {/* 优化后的 Tooltip */}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-black/90 text-white text-xs p-2.5 rounded-lg shadow-xl z-50 min-w-45 max-w-xs pointer-events-none border border-gray-700/80">
+      <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1 hidden max-w-xs min-w-45 -translate-x-1/2 rounded-lg border border-gray-700/80 bg-black/90 p-2.5 text-xs text-white shadow-xl group-hover:block">
         {/* 物品名称 + 数量 */}
-        <div className="font-bold text-yellow-200 mb-1.5">
+        <div className="mb-1.5 font-bold text-yellow-200">
           {displayName}
-          {count > 1 && <span className="text-gray-400 ml-1 font-normal">×{count}</span>}
+          {count > 1 && <span className="ml-1 font-normal text-gray-400">×{count}</span>}
         </div>
 
         {/* 附魔 */}
         {enchants && enchants.length > 0 && (
-          <div className="text-muted-foreground italic space-y-0.5 mb-1">
-            {enchants.map(e => (
+          <div className="mb-1 space-y-0.5 text-muted-foreground italic">
+            {enchants.map((e) => (
               <div key={e.id} className="text-[11px]">
                 {getEnchantmentDisplayName(e.id)} {e.lvl}
               </div>
@@ -470,12 +483,12 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
 
         {/* 耐久损耗 */}
         {damage !== undefined && (
-          <div className="text-gray-400 text-[10px] mt-1">耐久损耗: {damage}</div>
+          <div className="mt-1 text-[10px] text-gray-400">耐久损耗: {damage}</div>
         )}
 
         {/* Lore（自定义描述） */}
         {loreLines.length > 0 && (
-          <div className="text-gray-300 text-[10px] mt-1.5 pt-1.5 border-t border-gray-600/50 space-y-0.5">
+          <div className="mt-1.5 space-y-0.5 border-t border-gray-600/50 pt-1.5 text-[10px] text-gray-300">
             {loreLines.map((line, i) => (
               <div key={i}>{line}</div>
             ))}
@@ -490,10 +503,12 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
 export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isGithubUser, setIsGithubUser] = useState(false);
-  const [githubName, setGithubName] = useState('');
-  const [activeTab, setActiveTab] = useState<'info' | 'inventory' | 'ender' | 'stats' | 'achievements'>('info');
+  const [githubName, setGithubName] = useState("");
+  const [activeTab, setActiveTab] = useState<
+    "info" | "inventory" | "ender" | "stats" | "achievements"
+  >("info");
   const router = useRouter();
 
   useEffect(() => {
@@ -506,33 +521,33 @@ export default function ProfilePage() {
         // GitHub 登录用户为独立身份，不查询 Minecraft 游戏资料。
         // ep_provider / mc_user 是明文 cookie，前端可读。
         const provider = document.cookie
-          .split('; ')
-          .find((c) => c.startsWith('ep_provider='))
-          ?.split('=')[1];
-        if (provider === 'github') {
+          .split("; ")
+          .find((c) => c.startsWith("ep_provider="))
+          ?.split("=")[1];
+        if (provider === "github") {
           const gh = document.cookie
-            .split('; ')
-            .find((c) => c.startsWith('mc_user='))
-            ?.split('=')[1];
-          setGithubName(gh ? decodeURIComponent(gh) : 'GitHub 用户');
+            .split("; ")
+            .find((c) => c.startsWith("mc_user="))
+            ?.split("=")[1];
+          setGithubName(gh ? decodeURIComponent(gh) : "GitHub 用户");
           setIsGithubUser(true);
           setLoading(false);
           return;
         }
 
-        const res = await fetch('/api/users/info');
+        const res = await fetch("/api/users/info");
         if (res.status === 401) {
-          router.push('/login?redirect=/profile');
+          router.push("/login?redirect=/profile");
           return;
         }
         if (res.status === 429) {
           // 适配后端限流：避免抛错中断页面，给出友好提示
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.message || '请求过于频繁，请稍后再试');
+          throw new Error(errData.message || "请求过于频繁，请稍后再试");
         }
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.detail || '获取失败');
+          throw new Error(errData.detail || "获取失败");
         }
         const data = await res.json();
 
@@ -550,7 +565,7 @@ export default function ProfilePage() {
         }
 
         // 2. 从 nbt.equipment 获取盔甲
-        if (data.nbt?.equipment && typeof data.nbt.equipment === 'object') {
+        if (data.nbt?.equipment && typeof data.nbt.equipment === "object") {
           const equip = data.nbt.equipment;
           const slotMap: Record<string, number> = {
             head: 39,
@@ -560,7 +575,7 @@ export default function ProfilePage() {
           };
           for (const [key, item] of Object.entries(equip)) {
             // 修复类型错误：使用 'id' in item 进行类型守卫
-            if (item && typeof item === 'object' && 'id' in item && (item as any).id) {
+            if (item && typeof item === "object" && "id" in item && (item as any).id) {
               const converted = normalizeInventory([item as any]);
               if (converted.length > 0) {
                 const invItem = converted[0];
@@ -571,10 +586,15 @@ export default function ProfilePage() {
           }
         }
 
-        setUserInfo({ ...data, inventory, enderItems, stats: data.stats ?? null, advancements: data.advancements ?? null });
-        // Debug logs removed after verification
+        setUserInfo({
+          ...data,
+          inventory,
+          enderItems,
+          stats: data.stats ?? null,
+          advancements: data.advancements ?? null,
+        });
       } catch (err) {
-        setError(err instanceof Error ? err.message : '加载用户信息失败');
+        setError(err instanceof Error ? err.message : "加载用户信息失败");
       } finally {
         setLoading(false);
       }
@@ -584,28 +604,28 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     // 清除前端显示态
-    document.cookie = 'mc_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = "mc_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     // 清除服务端 HttpOnly 签名会话 cookie
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch("/api/auth/logout", { method: "POST" });
     } catch {
       // 忽略网络错误，前端态已清理
     }
-    router.push('/');
+    router.push("/");
     router.refresh();
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-40 -left-40 w-96 h-96 bg-foreground/3 rounded-full blur-3xl opacity-70" />
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-foreground/3 rounded-full blur-3xl opacity-70" />
+      <div className="relative flex min-h-screen flex-col overflow-hidden bg-background">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-foreground/3 opacity-70 blur-3xl" />
+          <div className="absolute right-10 bottom-20 h-80 w-80 rounded-full bg-foreground/3 opacity-70 blur-3xl" />
         </div>
-        <main className="flex-1 flex items-center justify-center relative z-10">
+        <main className="relative z-10 flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            <Loader2Icon className="w-8 h-8 text-foreground/60 animate-spin" />
-            <p className="text-muted-foreground text-sm">加载中...</p>
+            <Loader2Icon className="h-8 w-8 animate-spin text-foreground/60" />
+            <p className="text-sm text-muted-foreground">加载中...</p>
           </div>
         </main>
       </div>
@@ -613,28 +633,31 @@ export default function ProfilePage() {
   }
 
   /* 背包 / 末影箱 格子区块 */
-  const InventoryPanel = ({ items, showArmor = false }: { items: InventoryItem[]; showArmor?: boolean }) => {
+  const InventoryPanel = ({
+    items,
+    showArmor = false,
+  }: {
+    items: InventoryItem[];
+    showArmor?: boolean;
+  }) => {
     // 末影箱物品通常不带 Slot，按数组顺序映射到主背包区域（9 + 0..26）
-    const hasSlot = items.some((it) => typeof it.Slot === 'number');
-    const orderedItems = hasSlot
-      ? items
-      : items.map((it, i) => ({ ...it, Slot: 9 + i }));
+    const hasSlot = items.some((it) => typeof it.Slot === "number");
+    const orderedItems = hasSlot ? items : items.map((it, i) => ({ ...it, Slot: 9 + i }));
 
-    const getItemBySlotLocal = (slot: number) =>
-      orderedItems.find((item) => item.Slot === slot);
+    const getItemBySlotLocal = (slot: number) => orderedItems.find((item) => item.Slot === slot);
 
     return (
-      <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-            <PackageIcon className="w-5 h-5 text-foreground/60" />
-            {showArmor ? '背包物品' : '末影箱物品'}
-            <span className="text-sm font-normal text-muted-foreground ml-2">({items.length})</span>
+      <div className="rounded-xl border border-foreground/8 bg-card p-6 shadow-sm backdrop-blur-md">
+        <div className="mb-6 flex items-center justify-between">
+          <h3 className="flex items-center gap-2 text-lg font-bold text-foreground">
+            <PackageIcon className="h-5 w-5 text-foreground/60" />
+            {showArmor ? "背包物品" : "末影箱物品"}
+            <span className="ml-2 text-sm font-normal text-muted-foreground">({items.length})</span>
           </h3>
         </div>
 
         {showArmor && (
-          <div className="flex items-center gap-2 mb-4">
+          <div className="mb-4 flex items-center gap-2">
             {[39, 38, 37, 36].map((slot) => (
               <ItemSlot key={`armor-${slot}`} item={getItemBySlotLocal(slot)} />
             ))}
@@ -643,7 +666,7 @@ export default function ProfilePage() {
           </div>
         )}
 
-        <div className="grid grid-cols-9 gap-1 mb-4">
+        <div className="mb-4 grid grid-cols-9 gap-1">
           {Array.from({ length: 27 }, (_, i) => {
             const slot = 9 + i;
             return <ItemSlot key={`main-${slot}`} item={getItemBySlotLocal(slot)} />;
@@ -663,54 +686,54 @@ export default function ProfilePage() {
   /* ---------- 统计信息：原版 statistics 格式 ---------- */
   // 分类中文名
   const STAT_CATEGORY_LABELS: Record<string, string> = {
-    'minecraft:custom': '综合',
-    'minecraft:mined': '挖掘方块',
-    'minecraft:crafted': '合成物品',
-    'minecraft:used': '使用物品',
-    'minecraft:broken': '损坏物品',
-    'minecraft:picked_up': '捡起物品',
-    'minecraft:dropped': '丢弃物品',
-    'minecraft:killed': '击杀生物',
-    'minecraft:killed_by': '被击杀',
+    "minecraft:custom": "综合",
+    "minecraft:mined": "挖掘方块",
+    "minecraft:crafted": "合成物品",
+    "minecraft:used": "使用物品",
+    "minecraft:broken": "损坏物品",
+    "minecraft:picked_up": "捡起物品",
+    "minecraft:dropped": "丢弃物品",
+    "minecraft:killed": "击杀生物",
+    "minecraft:killed_by": "被击杀",
   };
 
   // 综合指标中文名（custom 下的常用 key）
   const CUSTOM_STAT_LABELS: Record<string, string> = {
-    'minecraft:play_time': '游戏时长',
-    'minecraft:total_world_time': '总世界时间',
-    'minecraft:time_since_death': '距上次死亡',
-    'minecraft:time_since_rest': '距上次休息',
-    'minecraft:mob_kills': '击杀生物',
-    'minecraft:player_kills': '击杀玩家',
-    'minecraft:deaths': '死亡次数',
-    'minecraft:damage_dealt': '造成伤害',
-    'minecraft:damage_taken': '承受伤害',
-    'minecraft:jump': '跳跃次数',
-    'minecraft:walk_one_cm': '行走距离',
-    'minecraft:sprint_one_cm': '疾跑距离',
-    'minecraft:crouch_one_cm': '潜行距离',
-    'minecraft:swim_one_cm': '游泳距离',
-    'minecraft:fly_one_cm': '飞行距离',
-    'minecraft:fall_one_cm': '掉落距离',
-    'minecraft:climb_one_cm': '攀爬距离',
-    'minecraft:horse_one_cm': '骑马距离',
-    'minecraft:walk_under_water_one_cm': '水下行走距离',
-    'minecraft:walk_on_water_one_cm': '水上行走距离',
-    'minecraft:leave_game': '退出游戏',
-    'minecraft:talked_to_villager': '与村民交谈',
-    'minecraft:traded_with_villager': '与村民交易',
-    'minecraft:enchant_item': '附魔物品',
-    'minecraft:interact_with_crafting_table': '使用工作台',
-    'minecraft:interact_with_furnace': '使用熔炉',
-    'minecraft:interact_with_blast_furnace': '使用高炉',
-    'minecraft:interact_with_smoker': '使用烟熏炉',
-    'minecraft:interact_with_anvil': '使用铁砧',
-    'minecraft:interact_with_grindstone': '使用砂轮',
-    'minecraft:open_chest': '打开箱子',
-    'minecraft:open_barrel': '打开木桶',
-    'minecraft:bell_ring': '敲响钟',
-    'minecraft:drop': '丢弃次数',
-    'minecraft:sneak_time': '潜行时间',
+    "minecraft:play_time": "游戏时长",
+    "minecraft:total_world_time": "总世界时间",
+    "minecraft:time_since_death": "距上次死亡",
+    "minecraft:time_since_rest": "距上次休息",
+    "minecraft:mob_kills": "击杀生物",
+    "minecraft:player_kills": "击杀玩家",
+    "minecraft:deaths": "死亡次数",
+    "minecraft:damage_dealt": "造成伤害",
+    "minecraft:damage_taken": "承受伤害",
+    "minecraft:jump": "跳跃次数",
+    "minecraft:walk_one_cm": "行走距离",
+    "minecraft:sprint_one_cm": "疾跑距离",
+    "minecraft:crouch_one_cm": "潜行距离",
+    "minecraft:swim_one_cm": "游泳距离",
+    "minecraft:fly_one_cm": "飞行距离",
+    "minecraft:fall_one_cm": "掉落距离",
+    "minecraft:climb_one_cm": "攀爬距离",
+    "minecraft:horse_one_cm": "骑马距离",
+    "minecraft:walk_under_water_one_cm": "水下行走距离",
+    "minecraft:walk_on_water_one_cm": "水上行走距离",
+    "minecraft:leave_game": "退出游戏",
+    "minecraft:talked_to_villager": "与村民交谈",
+    "minecraft:traded_with_villager": "与村民交易",
+    "minecraft:enchant_item": "附魔物品",
+    "minecraft:interact_with_crafting_table": "使用工作台",
+    "minecraft:interact_with_furnace": "使用熔炉",
+    "minecraft:interact_with_blast_furnace": "使用高炉",
+    "minecraft:interact_with_smoker": "使用烟熏炉",
+    "minecraft:interact_with_anvil": "使用铁砧",
+    "minecraft:interact_with_grindstone": "使用砂轮",
+    "minecraft:open_chest": "打开箱子",
+    "minecraft:open_barrel": "打开木桶",
+    "minecraft:bell_ring": "敲响钟",
+    "minecraft:drop": "丢弃次数",
+    "minecraft:sneak_time": "潜行时间",
   };
 
   const formatCm = (cm: number): string => {
@@ -730,13 +753,13 @@ export default function ProfilePage() {
   };
 
   const formatStatValue = (key: string, value: number): string => {
-    if (key.includes('_one_cm')) return formatCm(value);
-    if (key.endsWith('_time') || key.startsWith('minecraft:time_since')) return formatTicks(value);
+    if (key.includes("_one_cm")) return formatCm(value);
+    if (key.endsWith("_time") || key.startsWith("minecraft:time_since")) return formatTicks(value);
     return formatNumber(value);
   };
 
   // 取物品/实体 id 的简短中文或保留英文 id
-  const shortId = (id: string): string => id.replace(/^minecraft:/, '');
+  const shortId = (id: string): string => id.replace(/^minecraft:/, "");
 
   const StatsPanel = () => {
     const rawStats = userInfo?.stats?.stats ?? {};
@@ -747,26 +770,26 @@ export default function ProfilePage() {
     const [activeCat, setActiveCat] = useState<string | null>(null);
     const currentCat = activeCat ?? categories[0]?.[0] ?? null;
     const [page, setPage] = useState(0);
-    type SortMode = 'value_desc' | 'value_asc' | 'name_asc' | 'name_desc';
-    const [sortMode, setSortMode] = useState<SortMode>('value_desc');
+    type SortMode = "value_desc" | "value_asc" | "name_asc" | "name_desc";
+    const [sortMode, setSortMode] = useState<SortMode>("value_desc");
 
     // 切换分类时重置页码与排序
     const selectCat = (cat: string) => {
       setActiveCat(cat);
       setPage(0);
-      setSortMode('value_desc');
+      setSortMode("value_desc");
     };
 
     const totalDone = (() => {
       if (!userInfo?.stats) return null;
       const all = Object.values(rawStats).flatMap((cat) => Object.values(cat ?? {}));
-      return all.reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
+      return all.reduce((a, b) => a + (typeof b === "number" ? b : 0), 0);
     })();
 
     const activeEntries = currentCat ? (rawStats[currentCat] ?? {}) : {};
     const displayName = (id: string): string => {
-      const isCustom = currentCat === 'minecraft:custom';
-      const isEntity = currentCat === 'minecraft:killed' || currentCat === 'minecraft:killed_by';
+      const isCustom = currentCat === "minecraft:custom";
+      const isEntity = currentCat === "minecraft:killed" || currentCat === "minecraft:killed_by";
       return isCustom
         ? (CUSTOM_STAT_LABELS[id] ?? shortId(id))
         : isEntity
@@ -776,29 +799,39 @@ export default function ProfilePage() {
     const sorted = (() => {
       const entries = Object.entries(activeEntries) as [string, number][];
       switch (sortMode) {
-        case 'value_asc':
+        case "value_asc":
           return entries.sort((a, b) => a[1] - b[1]);
-        case 'name_asc':
-          return entries.sort((a, b) => displayName(a[0]).localeCompare(displayName(b[0]), 'zh-Hans-CN'));
-        case 'name_desc':
-          return entries.sort((a, b) => displayName(b[0]).localeCompare(displayName(a[0]), 'zh-Hans-CN'));
-        case 'value_desc':
+        case "name_asc":
+          return entries.sort((a, b) =>
+            displayName(a[0]).localeCompare(displayName(b[0]), "zh-Hans-CN"),
+          );
+        case "name_desc":
+          return entries.sort((a, b) =>
+            displayName(b[0]).localeCompare(displayName(a[0]), "zh-Hans-CN"),
+          );
+        case "value_desc":
         default:
           return entries.sort((a, b) => b[1] - a[1]);
       }
     })();
     const totalPages = Math.max(1, Math.ceil(sorted.length / STAT_PAGE_SIZE));
     const safePage = Math.min(page, totalPages - 1);
-    const pageItems = sorted.slice(safePage * STAT_PAGE_SIZE, safePage * STAT_PAGE_SIZE + STAT_PAGE_SIZE);
+    const pageItems = sorted.slice(
+      safePage * STAT_PAGE_SIZE,
+      safePage * STAT_PAGE_SIZE + STAT_PAGE_SIZE,
+    );
 
     return (
-      <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-            <UserIcon className="w-5 h-5 text-foreground/60" />统计信息
+      <div className="rounded-xl border border-foreground/8 bg-card p-6 shadow-sm backdrop-blur-md">
+        <div className="mb-6 flex items-center justify-between">
+          <h3 className="flex items-center gap-2 text-lg font-bold text-foreground">
+            <UserIcon className="h-5 w-5 text-foreground/60" />
+            统计信息
           </h3>
           {totalDone !== null && (
-            <span className="text-sm text-muted-foreground">累计统计项总计数：{formatNumber(totalDone)}</span>
+            <span className="text-sm text-muted-foreground">
+              累计统计项总计数：{formatNumber(totalDone)}
+            </span>
           )}
         </div>
 
@@ -807,7 +840,7 @@ export default function ProfilePage() {
         ) : (
           <>
             {/* 统计子选项卡：按分类 */}
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="mb-6 flex flex-wrap gap-2">
               {categories.map(([category, entries]) => {
                 const label = STAT_CATEGORY_LABELS[category] ?? category;
                 const count = Object.keys(entries ?? {}).length;
@@ -816,14 +849,16 @@ export default function ProfilePage() {
                   <button
                     key={category}
                     onClick={() => selectCat(category)}
-                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                       active
-                        ? 'bg-foreground text-background'
-                        : 'bg-secondary text-foreground/70 hover:bg-secondary/70'
+                        ? "bg-foreground text-background"
+                        : "bg-secondary text-foreground/70 hover:bg-secondary/70"
                     }`}
                   >
                     {label}
-                    <span className={`ml-1.5 text-xs ${active ? 'text-background/70' : 'text-muted-foreground'}`}>
+                    <span
+                      className={`ml-1.5 text-xs ${active ? "text-background/70" : "text-muted-foreground"}`}
+                    >
                       {count}
                     </span>
                   </button>
@@ -833,21 +868,24 @@ export default function ProfilePage() {
 
             {/* 排序方式 */}
             {currentCat && (
-              <div className="flex flex-wrap items-center gap-2 mb-4">
-                <span className="text-xs text-muted-foreground mr-1">排序：</span>
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="mr-1 text-xs text-muted-foreground">排序：</span>
                 {[
-                  { key: 'value_desc', label: '数值 ↓' },
-                  { key: 'value_asc', label: '数值 ↑' },
-                  { key: 'name_asc', label: '名称 A→Z' },
-                  { key: 'name_desc', label: '名称 Z→A' },
+                  { key: "value_desc", label: "数值 ↓" },
+                  { key: "value_asc", label: "数值 ↑" },
+                  { key: "name_asc", label: "名称 A→Z" },
+                  { key: "name_desc", label: "名称 Z→A" },
                 ].map((opt) => (
                   <button
                     key={opt.key}
-                    onClick={() => { setSortMode(opt.key as SortMode); setPage(0); }}
-                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                    onClick={() => {
+                      setSortMode(opt.key as SortMode);
+                      setPage(0);
+                    }}
+                    className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                       sortMode === opt.key
-                        ? 'bg-foreground text-background'
-                        : 'bg-secondary text-foreground/70 hover:bg-secondary/70'
+                        ? "bg-foreground text-background"
+                        : "bg-secondary text-foreground/70 hover:bg-secondary/70"
                     }`}
                   >
                     {opt.label}
@@ -863,9 +901,13 @@ export default function ProfilePage() {
                   {pageItems.map(([id, val]) => {
                     const name = displayName(id);
                     return (
-                      <div key={id} className="bg-secondary/40 rounded-lg p-3">
-                        <p className="text-xs text-muted-foreground truncate" title={id}>{name}</p>
-                        <p className="mt-1 text-lg font-bold text-foreground">{formatStatValue(id, val as number)}</p>
+                      <div key={id} className="rounded-lg bg-secondary/40 p-3">
+                        <p className="truncate text-xs text-muted-foreground" title={id}>
+                          {name}
+                        </p>
+                        <p className="mt-1 text-lg font-bold text-foreground">
+                          {formatStatValue(id, val as number)}
+                        </p>
                       </div>
                     );
                   })}
@@ -876,7 +918,7 @@ export default function ProfilePage() {
                     <button
                       onClick={() => setPage((p) => Math.max(0, p - 1))}
                       disabled={safePage === 0}
-                      className="px-3 py-1.5 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="rounded-md bg-secondary px-3 py-1.5 text-sm text-foreground/70 hover:bg-secondary/70 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       上一页
                     </button>
@@ -886,7 +928,7 @@ export default function ProfilePage() {
                     <button
                       onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
                       disabled={safePage >= totalPages - 1}
-                      className="px-3 py-1.5 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="rounded-md bg-secondary px-3 py-1.5 text-sm text-foreground/70 hover:bg-secondary/70 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       下一页
                     </button>
@@ -917,13 +959,14 @@ export default function ProfilePage() {
     const pageItems = filtered.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE);
 
     return (
-      <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-            <UserIcon className="w-5 h-5 text-foreground/60" />成就 / 进度
+      <div className="rounded-xl border border-foreground/8 bg-card p-6 shadow-sm backdrop-blur-md">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <h3 className="flex items-center gap-2 text-lg font-bold text-foreground">
+            <UserIcon className="h-5 w-5 text-foreground/60" />
+            成就 / 进度
           </h3>
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground select-none">
               <input
                 type="checkbox"
                 checked={onlyDone}
@@ -935,7 +978,9 @@ export default function ProfilePage() {
               />
               仅看已完成
             </label>
-            <span className="text-sm text-muted-foreground">已完成 {doneCount} / {total}</span>
+            <span className="text-sm text-muted-foreground">
+              已完成 {doneCount} / {total}
+            </span>
           </div>
         </div>
 
@@ -949,16 +994,18 @@ export default function ProfilePage() {
               {pageItems.map(([id, v]) => (
                 <div
                   key={id}
-                  className={`flex items-center gap-3 rounded-lg p-3 border ${
-                    v?.done ? 'bg-secondary/40 border-foreground/8' : 'bg-destructive/5 border-destructive/10'
+                  className={`flex items-center gap-3 rounded-lg border p-3 ${
+                    v?.done
+                      ? "border-foreground/8 bg-secondary/40"
+                      : "border-destructive/10 bg-destructive/5"
                   }`}
                 >
                   <span
-                    className={`shrink-0 w-2.5 h-2.5 rounded-full ${
-                      v?.done ? 'bg-green-500' : 'bg-muted-foreground/30'
+                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                      v?.done ? "bg-green-500" : "bg-muted-foreground/30"
                     }`}
                   />
-                  <span className="text-sm text-foreground/80 truncate" title={id}>
+                  <span className="truncate text-sm text-foreground/80" title={id}>
                     {shortId(id)}
                   </span>
                 </div>
@@ -969,7 +1016,7 @@ export default function ProfilePage() {
               <button
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
                 disabled={safePage === 0}
-                className="px-3 py-1.5 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="rounded-md bg-secondary px-3 py-1.5 text-sm text-foreground/70 hover:bg-secondary/70 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 上一页
               </button>
@@ -979,7 +1026,7 @@ export default function ProfilePage() {
               <button
                 onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
                 disabled={safePage >= totalPages - 1}
-                className="px-3 py-1.5 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="rounded-md bg-secondary px-3 py-1.5 text-sm text-foreground/70 hover:bg-secondary/70 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 下一页
               </button>
@@ -991,57 +1038,70 @@ export default function ProfilePage() {
   };
 
   const tabs: { id: typeof activeTab; label: string }[] = [
-    { id: 'info', label: '基础信息' },
-    { id: 'inventory', label: '背包' },
-    { id: 'ender', label: '末影箱' },
-    { id: 'stats', label: '统计信息' },
-    { id: 'achievements', label: '成就' },
+    { id: "info", label: "基础信息" },
+    { id: "inventory", label: "背包" },
+    { id: "ender", label: "末影箱" },
+    { id: "stats", label: "统计信息" },
+    { id: "achievements", label: "成就" },
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-foreground/3 rounded-full blur-3xl opacity-70" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-foreground/3 rounded-full blur-3xl opacity-70" />
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-foreground/3 opacity-70 blur-3xl" />
+        <div className="absolute right-10 bottom-20 h-80 w-80 rounded-full bg-foreground/3 opacity-70 blur-3xl" />
       </div>
 
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl relative z-10">
+      <main className="relative z-10 container mx-auto max-w-5xl flex-1 px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">个人中心</h1>
-          <p className="text-muted-foreground mt-1 text-sm">查看你的账号信息</p>
+          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">个人中心</h1>
+          <p className="mt-1 text-sm text-muted-foreground">查看你的账号信息</p>
         </div>
 
         {error && (
-          <div className="mb-6 bg-destructive/5 text-destructive/80 px-4 py-3 rounded-lg text-sm shadow-sm">
+          <div className="mb-6 rounded-lg bg-destructive/5 px-4 py-3 text-sm text-destructive/80 shadow-sm">
             {error}
           </div>
         )}
 
         {isGithubUser && (
-          <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-8 mb-6">
+          <div className="mb-6 rounded-xl border border-foreground/8 bg-card p-8 shadow-sm backdrop-blur-md">
             <div className="flex items-center gap-5">
-              <div className="w-20 h-20 shrink-0 rounded-full bg-foreground flex items-center justify-center text-background text-3xl font-bold shadow-sm">
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-foreground text-3xl font-bold text-background shadow-sm">
                 {githubName.charAt(0).toUpperCase()}
               </div>
               <div className="min-w-0">
-                <h2 className="text-xl font-bold text-foreground truncate">{githubName}</h2>
-                <span className="inline-flex items-center gap-1 mt-2 px-3 py-1 rounded-full text-xs font-medium bg-secondary text-foreground/70">
+                <h2 className="truncate text-xl font-bold text-foreground">{githubName}</h2>
+                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-foreground/70">
                   通过 GitHub 登录
                 </span>
               </div>
               <button
                 onClick={handleLogout}
-                className="ml-auto hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 shrink-0"
+                className="ml-auto hidden shrink-0 items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm text-foreground/70 hover:bg-secondary/70 sm:inline-flex"
               >
-                <LogOutIcon className="w-4 h-4" />退出登录
+                <LogOutIcon className="h-4 w-4" />
+                退出登录
               </button>
             </div>
             <div className="mt-6 flex items-start gap-3 rounded-lg bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
-              <svg className="w-5 h-5 shrink-0 mt-0.5 text-foreground/50" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="mt-0.5 h-5 w-5 shrink-0 text-foreground/50"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <p>
-                该账号由 GitHub 登录，与 Minecraft 游戏账号体系相互独立，<span className="text-foreground/80 font-medium">无法查询游戏资料</span>
+                该账号由 GitHub 登录，与 Minecraft 游戏账号体系相互独立，
+                <span className="font-medium text-foreground/80">无法查询游戏资料</span>
                 （如背包、统计、成就等）。如需查看游戏数据，请使用 Minecraft 用户名和密码登录。
               </p>
             </div>
@@ -1051,20 +1111,22 @@ export default function ProfilePage() {
         {userInfo && (
           <>
             {/* 顶部常驻：头像 + 用户名 */}
-            <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6 mb-6">
+            <div className="mb-6 rounded-xl border border-foreground/8 bg-card p-6 shadow-sm backdrop-blur-md">
               <div className="flex items-center gap-5">
-                <div className="w-20 h-20 shrink-0 rounded-full bg-foreground flex items-center justify-center text-background text-3xl font-bold shadow-sm">
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-foreground text-3xl font-bold text-background shadow-sm">
                   {userInfo.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-xl font-bold text-foreground truncate">{userInfo.name}</h2>
+                  <h2 className="truncate text-xl font-bold text-foreground">{userInfo.name}</h2>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-secondary text-foreground/70">
-                      <ShieldIcon className="w-3 h-3" />普通用户
+                    <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-foreground/70">
+                      <ShieldIcon className="h-3 w-3" />
+                      普通用户
                     </span>
                     {userInfo.ban && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
-                        <BanIcon className="w-3 h-3" />已封禁
+                      <span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive">
+                        <BanIcon className="h-3 w-3" />
+                        已封禁
                       </span>
                     )}
                     <span className="text-xs text-muted-foreground">
@@ -1075,9 +1137,10 @@ export default function ProfilePage() {
 
                 <button
                   onClick={handleLogout}
-                  className="ml-auto hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70 shrink-0"
+                  className="ml-auto hidden shrink-0 items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm text-foreground/70 hover:bg-secondary/70 sm:inline-flex"
                 >
-                  <LogOutIcon className="w-4 h-4" />退出登录
+                  <LogOutIcon className="h-4 w-4" />
+                  退出登录
                 </button>
               </div>
 
@@ -1087,10 +1150,10 @@ export default function ProfilePage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                       activeTab === tab.id
-                        ? 'bg-foreground text-background'
-                        : 'bg-secondary text-foreground/70 hover:bg-secondary/70'
+                        ? "bg-foreground text-background"
+                        : "bg-secondary text-foreground/70 hover:bg-secondary/70"
                     }`}
                   >
                     {tab.label}
@@ -1100,104 +1163,108 @@ export default function ProfilePage() {
             </div>
 
             {/* 选项卡内容 */}
-            {activeTab === 'info' && (
-              <div className="bg-card backdrop-blur-md rounded-xl shadow-sm border border-foreground/8 p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-                    <UserIcon className="w-5 h-5 text-foreground/60" />基本信息
+            {activeTab === "info" && (
+              <div className="rounded-xl border border-foreground/8 bg-card p-6 shadow-sm backdrop-blur-md">
+                <div className="mb-6 flex items-center justify-between">
+                  <h3 className="flex items-center gap-2 text-lg font-bold text-foreground">
+                    <UserIcon className="h-5 w-5 text-foreground/60" />
+                    基本信息
                   </h3>
                 </div>
 
                 {/* 双栏：电脑端左信息、右皮肤；手机端单栏（信息在上、皮肤在下） */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
                   {/* 左栏：基础信息 */}
                   <div className="space-y-4">
                     {[
-                      ['用户名', userInfo.name],
-                      ['UUID', userInfo.uuid],
-                      ['最后登录 IP', userInfo.ip],
-                      ['最后登录地点', userInfo.ipLocation],
-                      ['注册时间', formatTime(userInfo.createdAt)],
+                      ["用户名", userInfo.name],
+                      ["UUID", userInfo.uuid],
+                      ["最后登录 IP", userInfo.ip],
+                      ["最后登录地点", userInfo.ipLocation],
+                      ["注册时间", formatTime(userInfo.createdAt)],
                       [
-                        '最后登录',
+                        "最后登录",
                         <>
                           <span>{getRelativeTime(userInfo.lastActive)}</span>
-                          <p className="text-xs text-muted-foreground/70">{formatTime(userInfo.lastActive)}</p>
+                          <p className="text-xs text-muted-foreground/70">
+                            {formatTime(userInfo.lastActive)}
+                          </p>
                         </>,
                       ],
                     ].map(([label, value], idx) => (
-                      <div key={idx} className="flex items-center justify-between py-3 border-b border-foreground/5">
-                        <span className="text-muted-foreground text-sm">{label}</span>
-                        <span className="text-foreground/80 font-medium text-sm">{value}</span>
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between border-b border-foreground/5 py-3"
+                      >
+                        <span className="text-sm text-muted-foreground">{label}</span>
+                        <span className="text-sm font-medium text-foreground/80">{value}</span>
                       </div>
                     ))}
-                  {(() => {
-                    const extracted = extractTotalExpFromNbt(userInfo.nbt);
-                    if (extracted === undefined) {
+                    {(() => {
+                      const extracted = extractTotalExpFromNbt(userInfo.nbt);
+                      if (extracted === undefined) {
+                        return <div className="pt-3 text-sm text-muted-foreground">无经验数据</div>;
+                      }
+                      const totalExp = Number(extracted);
+                      if (Number.isNaN(totalExp)) {
+                        return <div className="pt-3 text-sm text-muted-foreground">无经验数据</div>;
+                      }
+                      const level = getLevelByTotalExp(totalExp);
                       return (
-                        <div className="pt-3 text-sm text-muted-foreground">
-                          无经验数据
+                        <div className="border-b border-foreground/5">
+                          <div className="flex items-center justify-between py-3 text-sm text-muted-foreground">
+                            <span>经验等级：</span>
+                            <span className="font-medium text-foreground/80">{level}</span>
+                            <span>总经验：</span>
+                            <span className="font-medium text-foreground/80">
+                              {formatNumber(totalExp)}
+                            </span>
+                          </div>
                         </div>
                       );
-                    }
-                    const totalExp = Number(extracted);
-                    if (Number.isNaN(totalExp)) {
-                      return (
-                        <div className="pt-3 text-sm text-muted-foreground">无经验数据</div>
-                      );
-                    }
-                    const level = getLevelByTotalExp(totalExp);
-                    return (
-                      <div className="border-b border-foreground/5">
-                        <div className="flex items-center justify-between py-3 text-sm text-muted-foreground">
-                          <span>经验等级：</span>
-                          <span className="text-foreground/80 font-medium">{level}</span>
-                          <span>总经验：</span>
-                          <span className="text-foreground/80 font-medium">{formatNumber(totalExp)}</span>
+                    })()}
+
+                    {/* QQ */}
+                    <div className="flex items-center justify-between border-b border-foreground/5 py-3">
+                      <span className="text-sm text-muted-foreground">QQ 绑定</span>
+                      {userInfo.qq ? (
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={`https://q.qlogo.cn/g?b=qq&nk=${userInfo.qq.uuid}&s=640`}
+                            alt="QQ头像"
+                            className="h-8 w-8 rounded-full border border-foreground/10"
+                            onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
+                          />
+                          <div className="text-right">
+                            <span className="text-sm font-medium text-foreground/80">
+                              {userInfo.qq.name || userInfo.qq.uuid}
+                            </span>
+                            <p className="text-xs text-muted-foreground/70">
+                              QQ号: {userInfo.qq.uuid}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })()}
+                      ) : (
+                        <span className="text-sm text-muted-foreground">未绑定</span>
+                      )}
+                    </div>
 
-
-                  {/* QQ */}
-                  <div className="flex items-center justify-between py-3 border-b border-foreground/5">
-                    <span className="text-muted-foreground text-sm">QQ 绑定</span>
-                    {userInfo.qq ? (
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={`https://q.qlogo.cn/g?b=qq&nk=${userInfo.qq.uuid}&s=640`}
-                          alt="QQ头像"
-                          className="w-8 h-8 rounded-full border border-foreground/10"
-                          onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')}
-                        />
-                        <div className="text-right">
-                          <span className="text-foreground/80 font-medium text-sm">
-                            {userInfo.qq.name || userInfo.qq.uuid}
-                          </span>
-                          <p className="text-xs text-muted-foreground/70">QQ号: {userInfo.qq.uuid}</p>
-                        </div>
-                      </div>
-                    ) : (
-                      <span className="text-muted-foreground text-sm">未绑定</span>
-                    )}
-                  </div>
-
-                  {/* 封禁状态 */}
-                  <div className="flex items-center justify-between py-3">
-                    <span className="text-muted-foreground text-sm">封禁状态</span>
-                    <span
-                      className={`text-sm font-medium ${userInfo.ban ? 'text-destructive' : 'text-foreground/60'
-                                }`}
-                    >
-                      {userInfo.ban ? '已封禁' : '正常'}
-                    </span>
-                  </div>
+                    {/* 封禁状态 */}
+                    <div className="flex items-center justify-between py-3">
+                      <span className="text-sm text-muted-foreground">封禁状态</span>
+                      <span
+                        className={`text-sm font-medium ${
+                          userInfo.ban ? "text-destructive" : "text-foreground/60"
+                        }`}
+                      >
+                        {userInfo.ban ? "已封禁" : "正常"}
+                      </span>
+                    </div>
                   </div>
 
                   {/* 右栏：3D 皮肤预览（电脑端在右侧，手机端自动落到底部） */}
-                  <div className="flex justify-center md:justify-start md:sticky md:top-6">
-                    <div className="rounded-xl border border-foreground/8 p-4 bg-gradient-to-b from-secondary/30 to-transparent">
+                  <div className="flex justify-center md:sticky md:top-6 md:justify-start">
+                    <div className="rounded-xl border border-foreground/8 bg-gradient-to-b from-secondary/30 to-transparent p-4">
                       <SkinViewer uuid={userInfo.uuid} skinBase="proxy" width={280} height={360} />
                       <p className="mt-3 text-center text-xs text-muted-foreground">
                         你的 Minecraft 皮肤（3D 立体预览）
@@ -1208,20 +1275,21 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {activeTab === 'inventory' && <InventoryPanel items={userInfo.inventory} showArmor />}
+            {activeTab === "inventory" && <InventoryPanel items={userInfo.inventory} showArmor />}
 
-            {activeTab === 'ender' && <InventoryPanel items={userInfo.enderItems} />}
+            {activeTab === "ender" && <InventoryPanel items={userInfo.enderItems} />}
 
-            {activeTab === 'stats' && <StatsPanel />}
+            {activeTab === "stats" && <StatsPanel />}
 
-            {activeTab === 'achievements' && <AchievementsPanel />}
+            {activeTab === "achievements" && <AchievementsPanel />}
 
             {/* 移动端退出登录按钮 */}
             <button
               onClick={handleLogout}
-              className="mt-6 w-full sm:hidden inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm bg-secondary text-foreground/70 hover:bg-secondary/70"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm text-foreground/70 hover:bg-secondary/70 sm:hidden"
             >
-              <LogOutIcon className="w-4 h-4" />退出登录
+              <LogOutIcon className="h-4 w-4" />
+              退出登录
             </button>
           </>
         )}

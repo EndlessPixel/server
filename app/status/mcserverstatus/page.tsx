@@ -5,7 +5,26 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, Cpu, MessageSquare, AlertTriangle, ArrowLeft, Wifi, WifiOff, Clock, RefreshCw, ChevronDown, ChevronUp, Zap, Shield, RotateCcw, Gauge, AlertOctagon, MapPin, Loader2 } from "lucide-react";
+import {
+  Users,
+  Cpu,
+  MessageSquare,
+  AlertTriangle,
+  ArrowLeft,
+  Wifi,
+  WifiOff,
+  Clock,
+  RefreshCw,
+  ChevronDown,
+  ChevronUp,
+  Zap,
+  Shield,
+  RotateCcw,
+  Gauge,
+  AlertOctagon,
+  MapPin,
+  Loader2,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Player {
@@ -36,11 +55,6 @@ interface ServerPlayers {
   list?: Player[];
 }
 
-interface ServerPluginMod {
-  name?: string;
-  version?: string;
-}
-
 interface ServerData {
   online: boolean;
   ip?: string;
@@ -56,10 +70,7 @@ interface ServerData {
   eula_blocked?: boolean;
   motd?: ServerMotd;
   players?: ServerPlayers;
-  plugins?: ServerPluginMod[];
-  mods?: ServerPluginMod[];
   info?: ServerMotd;
-  debug?: Record<string, any>;
 }
 
 interface PingData {
@@ -114,7 +125,7 @@ const fetchServerData = async (ip: string, skipCache = false): Promise<ServerDat
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
     const response = await fetch(`/api/mcserver/epmc`, {
       signal: controller.signal,
-      headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' }
+      headers: { Accept: "application/json", "Cache-Control": "no-cache" },
     });
     clearTimeout(timeout);
 
@@ -141,7 +152,7 @@ const fetchServerPing = async (host: string): Promise<PingData | null> => {
     const res = await fetch(`/api/ping/epmc`, {
       signal: controller.signal,
       headers: { Accept: "application/json" },
-      cache: "no-store"
+      cache: "no-store",
     });
     clearTimeout(timeout);
 
@@ -153,7 +164,11 @@ const fetchServerPing = async (host: string): Promise<PingData | null> => {
     const avgVal = isNaN(Number(data.avg)) ? 0 : Number(data.avg);
     const maxVal = isNaN(Number(data.max)) ? 0 : Number(data.max);
 
-    return { min: Number(minVal.toFixed(1)), avg: Number(avgVal.toFixed(1)), max: Number(maxVal.toFixed(1)) };
+    return {
+      min: Number(minVal.toFixed(1)),
+      avg: Number(avgVal.toFixed(1)),
+      max: Number(maxVal.toFixed(1)),
+    };
   } catch {
     return null;
   }
@@ -178,32 +193,22 @@ export default function McServerStatusPage() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refreshCount, setRefreshCount] = useState(0);
-  const [expandedSections, setExpandedSections] = useState({
-    players: false,
-    plugins: false,
-    mods: false,
-    debug: false
-  });
+  const [playersExpanded, setPlayersExpanded] = useState(false);
 
   const isMountedRef = useRef(true);
+  const isLoadingRef = useRef(false);
   const lastRefreshRef = useRef<number>(0);
-
-  const debounce = (func: Function, delay: number) => {
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-    return (...args: any[]) => {
-      if (timeoutId) clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func.apply(null, args), delay);
-    };
-  };
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadServerData = useCallback(async (skipCache = false) => {
-    if (isLoading) return;
+    if (isLoadingRef.current) return;
     if (!isMountedRef.current) return;
 
     const now = Date.now();
     if (!skipCache && now - lastRefreshRef.current < 2000) return;
 
     lastRefreshRef.current = now;
+    isLoadingRef.current = true;
     setIsLoading(true);
     setError(null);
 
@@ -211,7 +216,7 @@ export default function McServerStatusPage() {
       const [data, ping, ip] = await Promise.all([
         fetchServerData(ACTIVE_NODE.ip, skipCache),
         fetchServerPing(ACTIVE_NODE.ip),
-        fetchMyIp()
+        fetchMyIp(),
       ]);
 
       if (isMountedRef.current) {
@@ -220,7 +225,7 @@ export default function McServerStatusPage() {
         setMyIpData(ip);
         if (data) {
           setLastUpdated(new Date());
-          setRefreshCount(prev => prev + 1);
+          setRefreshCount((prev) => prev + 1);
         }
       }
     } catch (err) {
@@ -228,14 +233,15 @@ export default function McServerStatusPage() {
         setError(err instanceof Error ? err.message : "获取服务器数据失败");
       }
     } finally {
+      isLoadingRef.current = false;
       if (isMountedRef.current) setIsLoading(false);
     }
-  }, [isLoading]);
+  }, []);
 
-  const debouncedLoadServerData = useCallback(
-    debounce(() => loadServerData(false), 1000),
-    [loadServerData]
-  );
+  const debouncedLoadServerData = useCallback(() => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => loadServerData(false), 1000);
+  }, [loadServerData]);
 
   const handleRefresh = useCallback(() => {
     if (isLoading) return;
@@ -247,8 +253,8 @@ export default function McServerStatusPage() {
     loadServerData(true);
   }, [isLoading, loadServerData]);
 
-  const toggleSection = useCallback((section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  const togglePlayers = useCallback(() => {
+    setPlayersExpanded((prev) => !prev);
   }, []);
 
   useEffect(() => {
@@ -257,26 +263,27 @@ export default function McServerStatusPage() {
     return () => {
       isMountedRef.current = false;
       clearTimeout(initTimer);
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
   }, [loadServerData]);
 
   const renderPlayerList = () => {
     const players = serverData?.players?.list;
     if (!players || players.length === 0) {
-      return <p className="text-muted-foreground text-sm p-4">暂无在线玩家</p>;
+      return <p className="p-4 text-sm text-muted-foreground">暂无在线玩家</p>;
     }
     return (
       <div className="flex flex-wrap gap-2">
         {players.map((player) => (
           <div
             key={player.uuid}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted/30 hover:bg-muted/60 rounded-full text-sm text-foreground transition-colors" // FIXED: 提高对比度
+            className="inline-flex items-center gap-1.5 rounded-full bg-muted/30 px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted/60"
             title={player.name}
           >
-            <span className="w-5 h-5 rounded-full bg-foreground flex items-center justify-center text-background text-[10px] font-bold shrink-0">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
               {player.name.charAt(0).toUpperCase()}
             </span>
-            <span className="truncate max-w-[120px]">{player.name}</span>
+            <span className="max-w-[120px] truncate">{player.name}</span>
           </div>
         ))}
       </div>
@@ -284,14 +291,14 @@ export default function McServerStatusPage() {
   };
 
   const renderSkeletonLoader = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, i) => (
         <Card key={i}>
           <CardHeader className="pb-2">
             <Skeleton className="h-5 w-1/2 rounded" />
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-4 w-3/4 rounded mb-2" />
+            <Skeleton className="mb-2 h-4 w-3/4 rounded" />
             <Skeleton className="h-3 w-1/2 rounded" />
           </CardContent>
         </Card>
@@ -308,12 +315,14 @@ export default function McServerStatusPage() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground mb-4">
-          {error || "请检查网络连接或稍后重试"}
-        </p>
+        <p className="mb-4 text-sm text-muted-foreground">{error || "请检查网络连接或稍后重试"}</p>
         <div className="flex flex-wrap gap-2">
-          <Button onClick={handleRefresh} disabled={isLoading} variant="default"> {/* FIXED: 使用默认变体 */}
-            {isLoading ? <RefreshCw size={16} className="mr-2 animate-spin" /> : <RefreshCw size={16} className="mr-2" />}
+          <Button onClick={handleRefresh} disabled={isLoading} variant="default">
+            {isLoading ? (
+              <RefreshCw size={16} className="mr-2 animate-spin" />
+            ) : (
+              <RefreshCw size={16} className="mr-2" />
+            )}
             {isLoading ? "加载中..." : "重新尝试"}
           </Button>
         </div>
@@ -324,29 +333,31 @@ export default function McServerStatusPage() {
   const renderPingCard = () => {
     if (!pingData || pingData.message) {
       return (
-        <Card className="bg-secondary/5"> {/* FIXED: 改用可见背景 */}
+        <Card className="bg-secondary/5">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+            <CardTitle className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
               <Gauge size={14} /> 网络延迟
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-lg font-semibold text-muted-foreground">{pingData?.message || "获取失败"}</p>
+            <p className="text-lg font-semibold text-muted-foreground">
+              {pingData?.message || "获取失败"}
+            </p>
           </CardContent>
         </Card>
       );
     }
 
     return (
-      <Card> {/* FIXED: 统一背景 */}
+      <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+          <CardTitle className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
             <Gauge size={14} /> 网络延迟
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-lg font-bold text-foreground">{pingData.avg} ms</p>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="mt-1 text-xs text-muted-foreground">
             最小 {pingData.min} · 平均 {pingData.avg} · 最大 {pingData.max} ms
           </p>
         </CardContent>
@@ -358,39 +369,59 @@ export default function McServerStatusPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {/* Header */}
-        <div className="flex flex-col gap-4 mb-8">
+        <div className="mb-8 flex flex-col gap-4">
           {/* Top row: back button + title */}
-          <div className="flex items-center justify-between flex-wrap gap-2"> {/* FIXED: 防止移动端换行错位 */}
-            <Button variant="ghost" onClick={() => window.history.back()} className="text-muted-foreground hover:text-foreground">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => window.history.back()}
+              className="text-muted-foreground hover:text-foreground"
+            >
               <ArrowLeft size={18} className="mr-2" /> 返回状态页
             </Button>
             <div className="flex items-center gap-2">
               {lastUpdated && (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Clock size={12} /> {lastUpdated.toLocaleTimeString()}
                 </span>
               )}
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <span className="flex items-center gap-1 text-xs text-muted-foreground">
                 <RotateCcw size={12} /> {refreshCount}次
               </span>
             </div>
           </div>
 
           {/* Bottom row: title + controls */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-2xl font-bold text-foreground">Minecraft 服务器状态</h1>
-              <p className="text-sm text-muted-foreground mt-1">实时监控服务器状态，获取最新服务器信息</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                实时监控服务器状态，获取最新服务器信息
+              </p>
             </div>
-            <div className="flex items-center gap-2 shrink-0 flex-wrap"> {/* FIXED: 允许换行 */}
-              <Button onClick={handleRefresh} disabled={isLoading} variant="default" size="sm"> {/* FIXED: 标准变体 */}
-                {isLoading ? <RefreshCw size={16} className="animate-spin" /> : <RefreshCw size={16} className="mr-1" />}
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              <Button onClick={handleRefresh} disabled={isLoading} variant="default" size="sm">
+                {isLoading ? (
+                  <RefreshCw size={16} className="animate-spin" />
+                ) : (
+                  <RefreshCw size={16} className="mr-1" />
+                )}
                 {isLoading ? "" : "刷新"}
               </Button>
-              <Button onClick={handleForceRefresh} disabled={isLoading} size="sm" variant="outline" className="text-muted-foreground">
-                {isLoading ? <Loader2 size={16} className="animate-spin" /> : <AlertOctagon size={16} className="mr-1" />}
+              <Button
+                onClick={handleForceRefresh}
+                disabled={isLoading}
+                size="sm"
+                variant="outline"
+                className="text-muted-foreground"
+              >
+                {isLoading ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <AlertOctagon size={16} className="mr-1" />
+                )}
                 {isLoading ? "" : "强制刷新"}
               </Button>
               {isLoading && !isInitialLoading && (
@@ -403,28 +434,28 @@ export default function McServerStatusPage() {
         </div>
 
         {/* Info bar */}
-        <div className="bg-card rounded-2xl shadow-sm p-4 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-xl">
-              <Cpu size={16} className="text-foreground/40 shrink-0" />
-              <span className="text-sm text-foreground/70 truncate">服务器：{ACTIVE_NODE.ip}</span>
+        <div className="mb-8 rounded-2xl bg-card p-4 shadow-sm">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="flex items-center gap-2 rounded-xl bg-secondary/50 p-3">
+              <Cpu size={16} className="shrink-0 text-foreground/40" />
+              <span className="truncate text-sm text-foreground/70">服务器：{ACTIVE_NODE.ip}</span>
             </div>
             {myIpData ? (
               <>
-                <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-xl">
-                  <Wifi size={16} className="text-foreground/40 shrink-0" />
-                  <span className="text-sm text-foreground/70 truncate">你的IP：{myIpData.ip}</span>
+                <div className="flex items-center gap-2 rounded-xl bg-secondary/50 p-3">
+                  <Wifi size={16} className="shrink-0 text-foreground/40" />
+                  <span className="truncate text-sm text-foreground/70">你的IP：{myIpData.ip}</span>
                 </div>
-                <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-xl">
-                  <MapPin size={16} className="text-foreground/40 shrink-0" />
-                  <span className="text-sm text-foreground/70 truncate">
+                <div className="flex items-center gap-2 rounded-xl bg-secondary/50 p-3">
+                  <MapPin size={16} className="shrink-0 text-foreground/40" />
+                  <span className="truncate text-sm text-foreground/70">
                     位置：{myIpData.region} · {myIpData.llc || myIpData.isp}
                   </span>
                 </div>
               </>
             ) : (
-              <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-xl text-muted-foreground">
-                <Loader2 size={16} className="animate-spin shrink-0" />
+              <div className="flex items-center gap-2 rounded-xl bg-secondary/50 p-3 text-muted-foreground">
+                <Loader2 size={16} className="shrink-0 animate-spin" />
                 <span className="text-sm">获取IP中…</span>
               </div>
             )}
@@ -437,48 +468,66 @@ export default function McServerStatusPage() {
         {serverData && (
           <>
             {/* Main server card */}
-            <div className="bg-card rounded-2xl shadow-sm">
+            <div className="rounded-2xl bg-card shadow-sm">
               <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-xl font-bold text-foreground">{ACTIVE_NODE.name}</h2>
                   <Badge
-                    className={serverData.online
-                      ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 shadow-none"
-                      : "bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 shadow-none"
+                    className={
+                      serverData.online
+                        ? "bg-emerald-50 text-emerald-700 shadow-none dark:bg-emerald-950/40 dark:text-emerald-300"
+                        : "bg-red-50 text-red-700 shadow-none dark:bg-red-950/40 dark:text-red-300"
                     }
                   >
-                    {serverData.online ? <Wifi size={14} className="mr-1" /> : <WifiOff size={14} className="mr-1" />}
+                    {serverData.online ? (
+                      <Wifi size={14} className="mr-1" />
+                    ) : (
+                      <WifiOff size={14} className="mr-1" />
+                    )}
                     {serverData.online ? "服务器在线" : "服务器离线"}
                   </Badge>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-6">
+                <div className="flex flex-col gap-6 md:flex-row">
                   <div className="shrink-0">
                     {serverData.icon ? (
                       <img
                         src={serverData.icon}
                         alt="Server Icon"
-                        className="w-24 h-24 rounded-xl shadow-sm"
-                        onError={(e) => (e.target as HTMLImageElement).src = '/default-server-icon.png'}
+                        className="h-24 w-24 rounded-xl shadow-sm"
+                        onError={(e) =>
+                          ((e.target as HTMLImageElement).src = "/default-server-icon.png")
+                        }
                       />
                     ) : (
-                      <div className="w-24 h-24 rounded-xl bg-secondary flex items-center justify-center">
-                        <Image src="/default-server-icon.png" alt="Default Icon" width={96} height={96} className="rounded-xl" />
+                      <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-secondary">
+                        <Image
+                          src="/default-server-icon.png"
+                          alt="Default Icon"
+                          width={96}
+                          height={96}
+                          className="rounded-xl"
+                        />
                       </div>
                     )}
                   </div>
                   <div className="grow">
-                    {serverData.motd?.html && serverData.motd.html.some(l => l.trim()) && (
+                    {serverData.motd?.html && serverData.motd.html.some((l) => l.trim()) && (
                       <div>
-                        <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                        <h3 className="mb-2 flex items-center gap-1 text-sm font-medium text-muted-foreground">
                           <MessageSquare size={14} /> 服务器 Motd
                         </h3>
-                        <div className="bg-secondary/50 p-4 rounded-xl max-w-full break-words"> {/* FIXED: 防止溢出 */}
-                          {serverData.motd.html.map((line, index) => (
-                            line.trim() && (
-                              <p key={index} className="text-sm text-foreground/80 mb-1 last:mb-0" dangerouslySetInnerHTML={{ __html: line }} />
-                            )
-                          ))}
+                        <div className="max-w-full rounded-xl bg-secondary/50 p-4 break-words">
+                          {serverData.motd.html.map(
+                            (line, index) =>
+                              line.trim() && (
+                                <p
+                                  key={index}
+                                  className="mb-1 text-sm text-foreground/80 last:mb-0"
+                                  dangerouslySetInnerHTML={{ __html: line }}
+                                />
+                              ),
+                          )}
                         </div>
                       </div>
                     )}
@@ -488,48 +537,58 @@ export default function McServerStatusPage() {
             </div>
 
             {/* Stats grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8 mb-6">
-              <Card className="flex flex-col justify-center py-4 min-h-[112px]"> {/* FIXED: 改用最小高度 */}
+            <div className="mt-8 mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <Card className="flex min-h-[112px] flex-col justify-center py-4">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                  <CardTitle className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
                     <Zap size={14} /> 游戏版本
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg font-semibold text-foreground truncate" title={serverData.protocol?.name}> {/* FIXED: 加 title 提示 */}
+                  <p
+                    className="truncate text-lg font-semibold text-foreground"
+                    title={serverData.protocol?.name}
+                  >
                     {serverData.protocol?.name || "—"}
                   </p>
                   {serverData.protocol?.version && (
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       协议版本: {serverData.protocol.version}
                     </p>
                   )}
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col justify-center py-4 min-h-[112px]">
+              <Card className="flex min-h-[112px] flex-col justify-center py-4">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                  <CardTitle className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
                     <Shield size={14} /> 服务器核心
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg font-semibold text-foreground truncate" title={serverData.version}>
+                  <p
+                    className="truncate text-lg font-semibold text-foreground"
+                    title={serverData.version}
+                  >
                     {serverData.version || "—"}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">服务端软件</p>
+                  <p className="mt-1 text-xs text-muted-foreground">服务端软件</p>
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col justify-center py-4 min-h-[112px]">
+              <Card className="flex min-h-[112px] flex-col justify-center py-4">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                  <CardTitle className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
                     <Users size={14} /> 在线玩家
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg font-semibold text-foreground">{serverData.players ? `${serverData.players.online} / ${serverData.players.max}` : "—"}</p>
-                  <p className="text-xs text-muted-foreground mt-1">当前在线 / 最大玩家数</p>
+                  <p className="text-lg font-semibold text-foreground">
+                    {serverData.players
+                      ? `${serverData.players.online} / ${serverData.players.max}`
+                      : "—"}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">当前在线 / 最大玩家数</p>
                 </CardContent>
               </Card>
 
@@ -537,24 +596,28 @@ export default function McServerStatusPage() {
             </div>
 
             {/* Players list */}
-            <div className="bg-card rounded-2xl shadow-sm mb-8">
+            <div className="mb-8 rounded-2xl bg-card shadow-sm">
               <button
-                className="w-full p-6 text-left flex items-center justify-between cursor-pointer hover:bg-secondary/30 transition-colors rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
-                onClick={() => toggleSection('players')}
-                aria-expanded={expandedSections.players}
+                className="flex w-full cursor-pointer items-center justify-between rounded-2xl p-6 text-left transition-colors hover:bg-secondary/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+                onClick={togglePlayers}
+                aria-expanded={playersExpanded}
               >
                 <div className="flex items-center gap-2">
                   <Users size={20} className="text-foreground/60" />
                   <span className="font-semibold text-foreground">在线玩家列表</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-xs">{serverData.players?.list?.length || 0} 人在线</Badge>
-                  {expandedSections.players ? <ChevronUp size={16} className="text-muted-foreground" /> : <ChevronDown size={16} className="text-muted-foreground" />}
+                  <Badge variant="secondary" className="text-xs">
+                    {serverData.players?.list?.length || 0} 人在线
+                  </Badge>
+                  {playersExpanded ? (
+                    <ChevronUp size={16} className="text-muted-foreground" />
+                  ) : (
+                    <ChevronDown size={16} className="text-muted-foreground" />
+                  )}
                 </div>
               </button>
-              {expandedSections.players && (
-                <div className="px-6 pb-6">{renderPlayerList()}</div>
-              )}
+              {playersExpanded && <div className="px-6 pb-6">{renderPlayerList()}</div>}
             </div>
           </>
         )}
