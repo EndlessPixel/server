@@ -1559,4 +1559,249 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     explanation:
       "启动器信息只能从官方预设的 JSON 数组提取，禁止新增启动器、修改字段、编造网址或杜撰评价；复述 desc 时也只能原样或精简转述，不得加「最强、最好」这类夸大形容词。",
   },
+  {
+    id: "dev-site-framework",
+    category: "开发",
+    question: "官网前端用的是哪套框架？",
+    options: [
+      "Next.js 16（App Router + Turbopack）",
+      "Vite + React 18",
+      "Nuxt 3（Vue）",
+      "Create React App",
+    ],
+    answer: 0,
+    explanation:
+      "官网基于 Next.js 16 的 App Router，构建用 Turbopack，同时用到 SSR / SSG / ISR 三种渲染方式。",
+  },
+  {
+    id: "dev-site-style",
+    category: "开发",
+    question: "官网的样式方案是？",
+    options: ["Tailwind CSS 4", "Bootstrap 5", "styled-components", "原生 CSS Modules"],
+    answer: 0,
+    explanation:
+      "样式使用 Tailwind CSS 4（原子化写法，暗色模式开箱即用），配合 ESLint + Prettier 保证代码风格一致。",
+  },
+  {
+    id: "dev-ai-link-page",
+    category: "开发",
+    question: "站点里的 /ai_link 页面是做什么的？",
+    options: ["AI 输出外链的安全中转页", "AI 客服的独立聊天页", "接口文档索引页", "友情链接页"],
+    answer: 0,
+    explanation:
+      "AI 回复里出现的站外链接会先经过 /ai_link 这个安全中转页，不会让玩家从对话里直接跳到未知站点。",
+  },
+  {
+    id: "dev-session-token-algo",
+    category: "开发",
+    question: "官网的登录会话令牌是怎么签发的？",
+    options: [
+      "HMAC-SHA256 + base64url 签名的无状态令牌",
+      "JWT（RS256 非对称签名）",
+      "服务端保存的随机 Session ID",
+      "明文用户名的 Cookie",
+    ],
+    answer: 0,
+    explanation:
+      "会话用 HMAC-SHA256 对 `${name}|${exp}` 这段 payload 签名、再用 base64url 编码，是无状态令牌，服务端不保存 session 记录。",
+  },
+  {
+    id: "dev-session-cookie",
+    category: "开发",
+    question: "会话 Cookie 的名称和有效期分别是？",
+    options: [
+      "ep_session，7 天",
+      "ep_session，24 小时",
+      "ep_token，30 天",
+      "session_id，关闭浏览器即失效",
+    ],
+    answer: 0,
+    explanation:
+      "会话 Cookie 名是 ep_session，SESSION_MAX_AGE 为 60×60×24×7 秒，也就是 7 天；另有 ep_provider 记录登录来源（minecraft / github）。",
+  },
+  {
+    id: "dev-session-secret",
+    category: "开发",
+    question: "环境变量 SESSION_SECRET 的长度要求是？",
+    options: ["至少 16 位", "至少 8 位", "至少 32 位", "没有长度要求"],
+    answer: 0,
+    explanation: "SESSION_SECRET 是 HMAC 会话签名密钥，要求长度 ≥ 16 位，部署时必须配置。",
+  },
+  {
+    id: "dev-session-secret-fallback",
+    category: "开发",
+    question: "如果没有配置 SESSION_SECRET，或者长度不达标，程序会怎么做？",
+    options: [
+      "回退到源码里的硬编码兜底串，并在生产环境打印警告",
+      "直接启动失败",
+      "自动随机生成一个并写回 .env",
+      "关闭登录功能",
+    ],
+    answer: 0,
+    explanation:
+      "此时会回退到源码里的开发用兜底串（等于会话可被伪造），并在生产环境打印警告 —— 所以部署时这个变量必须配上。",
+  },
+  {
+    id: "dev-env-gh-token",
+    category: "开发",
+    question: "环境变量 GH_TOKEN 的作用是？",
+    options: [
+      "GitHub API 访问令牌，用来提升 Releases / Issue 的请求限额",
+      "GitHub OAuth 登录的客户端 ID",
+      "玩家图册仓库的写入密钥",
+      "整合包下载地址的镜像前缀",
+    ],
+    answer: 0,
+    explanation:
+      "GH_TOKEN 用于访问 GitHub API，主要是提高 Releases、Issue 这类请求的限额；OAuth 登录用的是 GH_CLIENT_ID / GH_CLIENT_SECRETS。",
+  },
+  {
+    id: "dev-env-target-api",
+    category: "开发",
+    question: "环境变量 TARGET_API_URL 指向的是什么？",
+    options: [
+      "宿主机硬件监控的上游地址（由 /systemstatus/data 代理）",
+      "AI 上游接口地址",
+      "整合包下载的镜像地址",
+      "游戏服务器地址",
+    ],
+    answer: 0,
+    explanation:
+      "TARGET_API_URL 是宿主机硬件监控的上游地址，网站通过 /systemstatus/data 代理它；AI 上游地址用的是 API_BASE_URL。",
+  },
+  {
+    id: "dev-ai-models-api",
+    category: "开发",
+    question: "想拉取 AI 客服当前可用的模型列表，应该调哪个接口？",
+    options: ["GET /api/ai/models", "GET /api/ai/chat", "GET /api/ai/list", "GET /api/models"],
+    answer: 0,
+    explanation:
+      "/api/ai/models 是 GET 接口，用来拉取可用模型列表；/api/ai/chat 则是 POST 的流式对话接口。",
+  },
+  {
+    id: "dev-ai-rate-limit",
+    category: "开发",
+    question: "AI 客服接口的限流策略是？",
+    options: [
+      "每个 IP 每 60 秒最多 10 次",
+      "每个 IP 每 10 秒最多 60 次",
+      "每个账号每天 100 次",
+      "没有限流",
+    ],
+    answer: 0,
+    explanation: "限流按 IP 计，每 60 秒最多 10 次，用进程内的内存 Map 实现。",
+  },
+  {
+    id: "dev-ai-sse-events",
+    category: "开发",
+    question: "AI 客服的 SSE 流里，服务端只会下发哪几种事件？",
+    options: [
+      "text-delta、usage、error",
+      "start、chunk、end",
+      "message、event、done",
+      "open、data、close",
+    ],
+    answer: 0,
+    explanation:
+      "只有三种：text-delta（文本增量）、usage（用量统计，流末发一次）与 error（错误）。流结束另外用 [DONE] 标记。",
+  },
+  {
+    id: "dev-ai-done",
+    category: "开发",
+    question: "AI 客服的 SSE 流，用什么标记结束？",
+    options: ["[DONE]", "</stream>", "event: end", "EOF 空行"],
+    answer: 0,
+    explanation: "流结束标记是 [DONE]；出错时会先下发一个 error 事件，随后同样以 [DONE] 结束。",
+  },
+  {
+    id: "dev-ai-default-model",
+    category: "开发",
+    question: "请求 AI 客服接口时不传 model，会使用哪个默认模型？",
+    options: ["grok-4.6", "gpt-4o", "claude-3.5", "deepseek-v3"],
+    answer: 0,
+    explanation: "默认模型是 grok-4.6；传入的模型名还会做校验，长度不得超过 100 字符。",
+  },
+  {
+    id: "dev-ai-system-prompt",
+    category: "开发",
+    question: "AI 客服的 system 提示由哪几层拼成？",
+    options: [
+      "当前真实时间 + system.md 知识库 + 登录玩家身份",
+      "只有 system.md 知识库",
+      "知识库 + 随机示例对话",
+      "用户问题 + 历史消息",
+    ],
+    answer: 0,
+    explanation:
+      "三层：当前真实时间块（UTC+8）、public/system.md 知识库（约 62 KB，模块级缓存）、登录玩家身份块（查上游玩家接口，4 秒超时，失败则静默降级）。",
+  },
+  {
+    id: "dev-ai-model-name-rule",
+    category: "开发",
+    question: "AI 客服接口对传入的 model 字段有什么校验？",
+    options: [
+      "长度不超过 100 字符，且只允许字母、数字与 _ - / . 这些字符",
+      "必须是官方模型列表里的名字，否则拒绝",
+      "只能是数字 ID",
+      "不做任何校验",
+    ],
+    answer: 0,
+    explanation:
+      "服务端只做格式校验：长度 ≤ 100，且只允许 a-zA-Z0-9 与 _ - / . ；并不比对官方模型列表，所以填了不存在的模型会由上游报错。",
+  },
+  {
+    id: "dev-skin-proxy-reason",
+    category: "开发",
+    question: "皮肤预览为什么必须走同源代理，而不是直连第三方皮肤源？",
+    options: [
+      "skinview3d 会强制 crossOrigin=anonymous，直连第三方源会触发 CORS 限制",
+      "第三方皮肤源要收费",
+      "需要给皮肤图片加水印",
+      "为了压缩图片体积",
+    ],
+    answer: 0,
+    explanation:
+      'skinview3d 加载皮肤时会强制设 crossOrigin="anonymous"，直接从浏览器请求第三方皮肤源会被 CORS 拦下，报出很难定位的 [object Event] 错误，所以要走同源代理。',
+  },
+  {
+    id: "dev-skin-upstream",
+    category: "开发",
+    question: "皮肤代理路由 /api/skin 的上游是哪个服务？",
+    options: [
+      "crafatar（微软官方皮肤库镜像）",
+      "LittleSkin",
+      "Mojang 官方 API 直连",
+      "GitHub 图床",
+    ],
+    answer: 0,
+    explanation: "代理上游是 crafatar，它是微软官方皮肤库的镜像，比直连 Mojang 更稳定。",
+  },
+  {
+    id: "dev-skin-fallback",
+    category: "开发",
+    question: "皮肤代理遇到上游 5xx、超时或网络异常时，会怎么处理？",
+    options: [
+      "三级回退：玩家皮肤 → 默认皮肤 → 1×1 透明 PNG，任何情况都返回 200 image/png",
+      "把上游的 500 状态码原样透传给前端",
+      "返回一个 404 让前端自己处理",
+      "返回 JSON 错误信息",
+    ],
+    answer: 0,
+    explanation:
+      "这是该模块最关键的容错设计：绝不向客户端透传上游错误，任何情况都返回 200 image/png。上游正常给玩家皮肤，异常则回退默认皮肤（Mojang Steve），连默认皮肤也失败就返回 1×1 透明 PNG。线上曾因为直接透传 crafatar 的 500 导致 skinview3d 崩溃白屏。",
+  },
+  {
+    id: "dev-status-no-polling",
+    category: "开发",
+    question: "服务器状态页的刷新机制是怎样的？",
+    options: [
+      "手动刷新，全站没有 setInterval 自动轮询",
+      "每 2 秒自动轮询一次",
+      "每 30 秒自动轮询一次",
+      "只在页面首次加载时请求一次，之后完全不能刷新",
+    ],
+    answer: 0,
+    explanation:
+      "全站没有任何 setInterval 自动轮询：首次加载后延迟 100 ms 请求一次，「刷新」按钮走 1000 ms 防抖，「强制刷新」会跳过 sessionStorage 缓存直接请求，非强制刷新还有 2 秒节流保护。",
+  },
 ];

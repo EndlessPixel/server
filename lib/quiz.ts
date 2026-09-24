@@ -40,14 +40,37 @@ export const QUESTION_BANK_SIZE = CORE_QUESTIONS.length;
 /** 开发者试题数 */
 export const DEV_BANK_SIZE = DEV_QUESTIONS.length;
 
-/** 按是否包含开发者试题取题库 */
-export function questionsFor(includeDev: boolean): readonly QuizQuestion[] {
-  return includeDev ? QUIZ_QUESTIONS : CORE_QUESTIONS;
+/** 开发者试题占比可选的百分比区间与默认值 */
+export const DEV_RATIO_MIN = 1;
+export const DEV_RATIO_MAX = 50;
+export const DEV_RATIO_DEFAULT = 10;
+
+/**
+ * 把占比夹到合法区间（单位是百分比，不是 0~1 的小数）。
+ * 传 0 或负数表示不含开发者试题（不套用下限），正数则夹到 1%~50% 并取整。
+ *
+ * 注意：这里刻意保留百分比整数形式，不先转成小数 —— 先除后乘会引入浮点误差
+ * （例如 50 题 29% 时 50 * 0.29 = 14.499999999999998，取整就会少一道）。
+ */
+export function clampDevRatioPercent(percent: number): number {
+  if (!Number.isFinite(percent) || percent <= 0) return 0;
+  return Math.min(Math.max(Math.round(percent), DEV_RATIO_MIN), DEV_RATIO_MAX);
 }
 
-/** 实际出题数：所选题量超过题库总量时按题库全出 */
-export function resolveExamSize(size: number, bankSize: number = QUESTION_BANK_SIZE): number {
-  return Math.min(size, bankSize);
+/**
+ * 按占比拆分一份考卷的名额。
+ * 开发者题数先按占比取整，再受题库容量与总题量双重收敛；
+ * 若常规题名额不够（题库上限 100），多出来的部分会补给开发者题。
+ */
+export function splitExamByDevRatio(
+  count: number,
+  percent: number,
+): { total: number; coreCount: number; devCount: number } {
+  const total = Math.min(Math.max(Math.round(count), 0), QUESTION_BANK_SIZE + DEV_BANK_SIZE);
+  let devCount = Math.min(Math.round((total * clampDevRatioPercent(percent)) / 100), DEV_BANK_SIZE);
+  const coreCount = Math.min(total - devCount, QUESTION_BANK_SIZE);
+  devCount = Math.min(total - coreCount, DEV_BANK_SIZE);
+  return { total: coreCount + devCount, coreCount, devCount };
 }
 
 /** 成绩记录的 localStorage 键名（结构调整时请升版本号） */
@@ -114,27 +137,39 @@ function shuffle<T>(items: readonly T[]): T[] {
   return result;
 }
 
+/** 把一道题转成考卷题目：打乱选项顺序，并把正确答案重映射到新下标 */
+function toExamQuestion(question: QuizQuestion): ExamQuestion {
+  const order = shuffle(question.options.map((_, index) => index));
+  return {
+    id: question.id,
+    category: question.category,
+    question: question.question,
+    options: order.map((index) => question.options[index]),
+    answer: order.indexOf(question.answer),
+    explanation: question.explanation,
+  };
+}
+
+/** 组卷参数 */
+export interface BuildExamOptions {
+  /** 开发者试题占比（百分比，1~50）；0 或省略表示不含开发者试题 */
+  devRatio?: number;
+}
+
 /**
- * 抽题组卷：随机抽取题目，并同时打乱每题内选项顺序
- * （打乱选项后会把正确答案重映射到新下标）。
+ * 抽题组卷：按题目数量与开发者试题占比分别从两个题库抽取，合并后再打乱。
+ * 每题内部选项顺序也会被打乱，并把正确答案重映射到新下标。
  */
 export function buildExam(
   count: number = EXAM_SIZE,
-  bank: readonly QuizQuestion[] = CORE_QUESTIONS,
+  { devRatio = 0 }: BuildExamOptions = {},
 ): ExamQuestion[] {
-  const picked = shuffle(bank).slice(0, Math.min(count, bank.length));
+  const { coreCount, devCount } = splitExamByDevRatio(count, devRatio);
 
-  return picked.map((q) => {
-    const order = shuffle(q.options.map((_, index) => index));
-    return {
-      id: q.id,
-      category: q.category,
-      question: q.question,
-      options: order.map((index) => q.options[index]),
-      answer: order.indexOf(q.answer),
-      explanation: q.explanation,
-    };
-  });
+  return shuffle([
+    ...shuffle(CORE_QUESTIONS).slice(0, coreCount),
+    ...shuffle(DEV_QUESTIONS).slice(0, devCount),
+  ]).map(toExamQuestion);
 }
 
 /** 判分：未作答按错误计 */

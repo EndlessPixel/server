@@ -26,6 +26,9 @@ import {
   buildExam,
   clearQuizRecords,
   DEV_BANK_SIZE,
+  DEV_RATIO_DEFAULT,
+  DEV_RATIO_MAX,
+  DEV_RATIO_MIN,
   EXAM_SIZE,
   EXAM_SIZE_OPTIONS,
   formatDuration,
@@ -33,10 +36,9 @@ import {
   gradeExam,
   loadQuizRecords,
   QUESTION_BANK_SIZE,
-  questionsFor,
-  resolveExamSize,
   saveQuizRecord,
   scoreGrade,
+  splitExamByDevRatio,
   type ExamQuestion,
   type ExamResult,
   type QuizRecord,
@@ -70,7 +72,7 @@ export function QuizClient() {
   const [startedAt, setStartedAt] = useState(0);
   const [records, setRecords] = useState<QuizRecord[]>([]);
   const [examSize, setExamSize] = useState<number>(EXAM_SIZE);
-  const [includeDev, setIncludeDev] = useState(false);
+  const [devRatio, setDevRatio] = useState<number>(DEV_RATIO_DEFAULT);
   const [confirmingSubmit, setConfirmingSubmit] = useState(false);
   const [confirmingClear, setConfirmingClear] = useState(false);
 
@@ -91,7 +93,7 @@ export function QuizClient() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const startExam = () => {
-    const exam = buildExam(examSize, questionsFor(includeDev));
+    const exam = buildExam(examSize, { devRatio });
     setQuestions(exam);
     setAnswers(new Array(exam.length).fill(null));
     setCurrent(0);
@@ -152,9 +154,8 @@ export function QuizClient() {
 
   /* ------------------------------ 开始页 ------------------------------ */
   if (phase === "intro") {
-    // 开发者试题按需并入题库；题量说明与组卷范围都以这个合并后的总量为准
-    const bankSize = includeDev ? QUESTION_BANK_SIZE + DEV_BANK_SIZE : QUESTION_BANK_SIZE;
-    const actualSize = resolveExamSize(examSize, bankSize);
+    // 组卷名额按占比拆分，说明文案与实际组卷共用同一份结果
+    const { total: actualSize, coreCount, devCount } = splitExamByDevRatio(examSize, devRatio);
 
     return (
       <div className="min-h-screen bg-background">
@@ -209,27 +210,41 @@ export function QuizClient() {
                 ))}
               </div>
               <div className="mt-4 border-t border-border/60 pt-4">
-                <div className="flex justify-center">
-                  <Button
-                    size="sm"
-                    variant={includeDev ? "default" : "outline"}
-                    aria-pressed={includeDev}
-                    onClick={() => setIncludeDev((prev) => !prev)}
+                <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+                  <label
+                    htmlFor="dev-ratio"
+                    className="flex items-center gap-1.5 text-xs font-medium text-foreground"
                   >
-                    <Code aria-hidden="true" />
-                    包含开发者试题
-                  </Button>
+                    <Code className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    开发者试题占比
+                  </label>
+                  <input
+                    id="dev-ratio"
+                    type="range"
+                    min={DEV_RATIO_MIN}
+                    max={DEV_RATIO_MAX}
+                    step={1}
+                    value={devRatio}
+                    onChange={(event) => setDevRatio(Number(event.target.value))}
+                    className="h-1.5 w-40 cursor-pointer accent-foreground sm:w-56"
+                  />
+                  <span className="w-9 text-right text-xs font-semibold text-foreground tabular-nums">
+                    {devRatio}%
+                  </span>
                 </div>
                 <p className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
-                  另有 {DEV_BANK_SIZE} 道接口调用、OAuth 接入、图册上传、启动器配置等开发者向题目
-                  {includeDev ? "，已计入本次抽题范围" : "，默认不考"}。
+                  题库里另有 {DEV_BANK_SIZE} 道接口调用、OAuth
+                  接入、图册上传、启动器配置等开发者向题目。
+                  {devCount > 0
+                    ? `按 ${devRatio}% 折算，本次 ${actualSize} 题中会抽 ${devCount} 道。`
+                    : `按 ${devRatio}% 折算不足 1 道，本次不抽开发者题（调高占比或增加题量即可）。`}
                 </p>
               </div>
 
               <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">
-                题库共 {bankSize} 题，本次抽 {actualSize} 题
-                {examSize > bankSize ? "（已超过题库总量，按全部出卷）" : ""}
-                。题目与选项顺序每次都会重新打乱。
+                题库共 {QUESTION_BANK_SIZE + DEV_BANK_SIZE} 题（常规 {QUESTION_BANK_SIZE} + 开发者{" "}
+                {DEV_BANK_SIZE}），本次抽 {actualSize} 题：常规 {coreCount} 题 + 开发者 {devCount}{" "}
+                题。 题目与选项顺序每次都会重新打乱。
               </p>
             </div>
 
