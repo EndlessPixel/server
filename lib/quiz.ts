@@ -18,12 +18,36 @@ export type ExamSize = (typeof EXAM_SIZE_OPTIONS)[number];
 /** 默认题量 */
 export const EXAM_SIZE: ExamSize = 20;
 
-/** 题库总题数 */
-export const QUESTION_BANK_SIZE = QUIZ_QUESTIONS.length;
+/** 开发者试题所属分类 */
+export const DEV_CATEGORY: QuizCategory = "开发";
+
+/**
+ * 常规题库：默认考卷使用。
+ * 开发者试题面向接口调用 / OAuth 接入等场景，默认不进考卷。
+ */
+export const CORE_QUESTIONS: readonly QuizQuestion[] = QUIZ_QUESTIONS.filter(
+  (question) => question.category !== DEV_CATEGORY,
+);
+
+/** 开发者试题 */
+export const DEV_QUESTIONS: readonly QuizQuestion[] = QUIZ_QUESTIONS.filter(
+  (question) => question.category === DEV_CATEGORY,
+);
+
+/** 常规题库题数 */
+export const QUESTION_BANK_SIZE = CORE_QUESTIONS.length;
+
+/** 开发者试题数 */
+export const DEV_BANK_SIZE = DEV_QUESTIONS.length;
+
+/** 按是否包含开发者试题取题库 */
+export function questionsFor(includeDev: boolean): readonly QuizQuestion[] {
+  return includeDev ? QUIZ_QUESTIONS : CORE_QUESTIONS;
+}
 
 /** 实际出题数：所选题量超过题库总量时按题库全出 */
-export function resolveExamSize(size: number): number {
-  return Math.min(size, QUESTION_BANK_SIZE);
+export function resolveExamSize(size: number, bankSize: number = QUESTION_BANK_SIZE): number {
+  return Math.min(size, bankSize);
 }
 
 /** 成绩记录的 localStorage 键名（结构调整时请升版本号） */
@@ -96,7 +120,7 @@ function shuffle<T>(items: readonly T[]): T[] {
  */
 export function buildExam(
   count: number = EXAM_SIZE,
-  bank: readonly QuizQuestion[] = QUIZ_QUESTIONS,
+  bank: readonly QuizQuestion[] = CORE_QUESTIONS,
 ): ExamQuestion[] {
   const picked = shuffle(bank).slice(0, Math.min(count, bank.length));
 

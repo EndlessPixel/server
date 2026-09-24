@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ClipboardList,
+  Code,
   GraduationCap,
   History,
   ListChecks,
@@ -24,6 +25,7 @@ import { ContentContainer } from "@/components/page-primitives";
 import {
   buildExam,
   clearQuizRecords,
+  DEV_BANK_SIZE,
   EXAM_SIZE,
   EXAM_SIZE_OPTIONS,
   formatDuration,
@@ -31,6 +33,7 @@ import {
   gradeExam,
   loadQuizRecords,
   QUESTION_BANK_SIZE,
+  questionsFor,
   resolveExamSize,
   saveQuizRecord,
   scoreGrade,
@@ -67,6 +70,7 @@ export function QuizClient() {
   const [startedAt, setStartedAt] = useState(0);
   const [records, setRecords] = useState<QuizRecord[]>([]);
   const [examSize, setExamSize] = useState<number>(EXAM_SIZE);
+  const [includeDev, setIncludeDev] = useState(false);
   const [confirmingSubmit, setConfirmingSubmit] = useState(false);
   const [confirmingClear, setConfirmingClear] = useState(false);
 
@@ -87,7 +91,7 @@ export function QuizClient() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const startExam = () => {
-    const exam = buildExam(examSize);
+    const exam = buildExam(examSize, questionsFor(includeDev));
     setQuestions(exam);
     setAnswers(new Array(exam.length).fill(null));
     setCurrent(0);
@@ -148,6 +152,10 @@ export function QuizClient() {
 
   /* ------------------------------ 开始页 ------------------------------ */
   if (phase === "intro") {
+    // 开发者试题按需并入题库；题量说明与组卷范围都以这个合并后的总量为准
+    const bankSize = includeDev ? QUESTION_BANK_SIZE + DEV_BANK_SIZE : QUESTION_BANK_SIZE;
+    const actualSize = resolveExamSize(examSize, bankSize);
+
     return (
       <div className="min-h-screen bg-background">
         <main>
@@ -200,9 +208,27 @@ export function QuizClient() {
                   </Button>
                 ))}
               </div>
+              <div className="mt-4 border-t border-border/60 pt-4">
+                <div className="flex justify-center">
+                  <Button
+                    size="sm"
+                    variant={includeDev ? "default" : "outline"}
+                    aria-pressed={includeDev}
+                    onClick={() => setIncludeDev((prev) => !prev)}
+                  >
+                    <Code aria-hidden="true" />
+                    包含开发者试题
+                  </Button>
+                </div>
+                <p className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
+                  另有 {DEV_BANK_SIZE} 道接口调用、OAuth 接入、图册上传、启动器配置等开发者向题目
+                  {includeDev ? "，已计入本次抽题范围" : "，默认不考"}。
+                </p>
+              </div>
+
               <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">
-                题库共 {QUESTION_BANK_SIZE} 题，本次抽 {resolveExamSize(examSize)} 题
-                {examSize > QUESTION_BANK_SIZE ? "（已超过题库总量，按全部出卷）" : ""}
+                题库共 {bankSize} 题，本次抽 {actualSize} 题
+                {examSize > bankSize ? "（已超过题库总量，按全部出卷）" : ""}
                 。题目与选项顺序每次都会重新打乱。
               </p>
             </div>
