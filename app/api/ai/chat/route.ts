@@ -1,9 +1,9 @@
-import { NextRequest } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-import { SESSION_COOKIE, verifySessionToken } from '@/lib/session';
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
+import { NextRequest } from "next/server";
+import fs from "fs/promises";
+import path from "path";
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 const ipRequestMap = new Map<string, number[]>();
 const PLAYER_INFO_API_URL = `http://156.239.230.98:8080/v1/api/users/info`;
 
@@ -13,12 +13,12 @@ function isRateLimited(ip: string | null): boolean {
   const windowMs = 60 * 1000;
   const maxReq = 10;
   const requests = ipRequestMap.get(ip) ?? [];
-  const recent = requests.filter(t => now - t < windowMs);
+  const recent = requests.filter((t) => now - t < windowMs);
   if (recent.length >= maxReq) return true;
   ipRequestMap.set(ip, [...recent, now]);
   if (ipRequestMap.size > 1000) {
     for (const [key, timestamps] of ipRequestMap.entries()) {
-      if (timestamps.every(t => now - t > windowMs)) {
+      if (timestamps.every((t) => now - t > windowMs)) {
         ipRequestMap.delete(key);
       }
     }
@@ -28,50 +28,50 @@ function isRateLimited(ip: string | null): boolean {
 let systemPromptCache: string | null = null;
 async function getSystemPrompt(): Promise<string> {
   if (systemPromptCache) return systemPromptCache;
-  const filePath = path.join(process.cwd(), 'public', 'system.md');
+  const filePath = path.join(process.cwd(), "public", "system.md");
   try {
-    const content = await fs.readFile(filePath, 'utf-8');
+    const content = await fs.readFile(filePath, "utf-8");
     systemPromptCache = content;
     return content;
   } catch (err) {
-    console.error('Failed to read system.md:', err);
-    throw new Error('系统提示词加载失败');
+    console.error("Failed to read system.md:", err);
+    throw new Error("系统提示词加载失败");
   }
 }
 // Dynamic timestamp injected at the top of the system prompt on every
 // request, e.g. "Now: 2026/07/29 15:26:01" (Asia/Shanghai).
 // 强约束：模型回答时间相关问题必须以该行时间为准。
 function getNowLine(): string {
-  const parts = new Intl.DateTimeFormat('zh-CN', {
-    timeZone: 'Asia/Shanghai',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    weekday: 'short',
+  const parts = new Intl.DateTimeFormat("zh-CN", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    weekday: "short",
     hour12: false,
   }).formatToParts(new Date());
-  const get = (type: string) => parts.find(p => p.type === type)?.value ?? '';
-  const date = `${get('year')}/${get('month')}/${get('day')}`;
-  const time = `${get('hour')}:${get('minute')}:${get('second')}`;
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  const date = `${get("year")}/${get("month")}/${get("day")}`;
+  const time = `${get("hour")}:${get("minute")}:${get("second")}`;
   const weekday =
-    { 周日: '日', 周一: '一', 周二: '二', 周三: '三', 周四: '四', 周五: '五', 周六: '六' }[
-    get('weekday')
-    ] ?? '';
+    { 周日: "日", 周一: "一", 周二: "二", 周三: "三", 周四: "四", 周五: "五", 周六: "六" }[
+      get("weekday")
+    ] ?? "";
   return [
-    '【当前真实时间】回答一切与时间相关的问题（现在几点、今天几号、当前版本、最近等）必须以这一行时间为准，严禁使用你训练记忆里的日期。',
+    "【当前真实时间】回答一切与时间相关的问题（现在几点、今天几号、当前版本、最近等）必须以这一行时间为准，严禁使用你训练记忆里的日期。",
     `Now: ${date} ${time} (UTC+8, 星期${weekday})`,
-    '【结束时间块】',
-  ].join('\n');
+    "【结束时间块】",
+  ].join("\n");
 }
 function getClientIP(req: NextRequest): string | null {
-  const forwarded = req.headers.get('x-forwarded-for');
+  const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) {
-    return forwarded.split(',')[0].trim();
+    return forwarded.split(",")[0].trim();
   }
-  return req.headers.get('x-real-ip') || null;
+  return req.headers.get("x-real-ip") || null;
 }
 
 // 若当前请求携带有效登录会话（ep_session），拉取该玩家的公开资料，
@@ -83,20 +83,20 @@ async function getPlayerContextBlock(req: NextRequest): Promise<string> {
   try {
     const token = req.cookies.get(SESSION_COOKIE)?.value;
     const name = verifySessionToken(token);
-    if (!name) return '';
+    if (!name) return "";
     const upstream = await fetch(`${PLAYER_INFO_API_URL}?name=${encodeURIComponent(name)}`, {
-      cache: 'no-store',
+      cache: "no-store",
       signal: AbortSignal.timeout(4000),
     });
-    if (!upstream.ok) return '';
+    if (!upstream.ok) return "";
     const data = await upstream.json();
-    if (!data || data.success !== true || !data.data) return '';
+    if (!data || data.success !== true || !data.data) return "";
     const u = data.data;
-    const banned = u.ban ? '已被封禁' : '正常';
+    const banned = u.ban ? "已被封禁" : "正常";
     const lines = [
-      '【当前玩家身份（仅供回答玩家本人相关问题时参考，禁止对外泄露或用于越权操作）】',
+      "【当前玩家身份（仅供回答玩家本人相关问题时参考，禁止对外泄露或用于越权操作）】",
       `- 游戏 ID：${USERNAME_PATTERN.test(u.name) ? u.name : name}`,
-      `- UUID：${u.uuid ?? '未知'}`,
+      `- UUID：${u.uuid ?? "未知"}`,
       `- 账号状态：${banned}`,
     ];
     if (u.lastActive) {
@@ -105,21 +105,21 @@ async function getPlayerContextBlock(req: NextRequest): Promise<string> {
     if (u.ipLocation) {
       lines.push(`- 登录属地：${String(u.ipLocation)}`);
     }
-    lines.push('【结束玩家身份块】');
-    return lines.join('\n');
+    lines.push("【结束玩家身份块】");
+    return lines.join("\n");
   } catch {
-    return '';
+    return "";
   }
 }
 function sseError(errorText: string): Response {
   const safeError = errorText
-    .replace(/API_KEY.*/i, '配置错误')
-    .replace(/read system\.txt/i, '服务初始化失败')
-    .replace(/fetch failed/i, '网络连接失败');
+    .replace(/API_KEY.*/i, "配置错误")
+    .replace(/read system\.txt/i, "服务初始化失败")
+    .replace(/fetch failed/i, "网络连接失败");
   const body = `data: {"type":"error","errorText":"${safeError}"}\n\ndata: [DONE]\n\n`;
   return new Response(body, {
     status: 200,
-    headers: { 'Content-Type': 'text/event-stream' },
+    headers: { "Content-Type": "text/event-stream" },
   });
 }
 export async function POST(req: NextRequest) {
@@ -128,33 +128,29 @@ export async function POST(req: NextRequest) {
   try {
     const ip = getClientIP(req);
     if (isRateLimited(ip)) {
-      return sseError('请求过于频繁，请稍后再试');
+      return sseError("请求过于频繁，请稍后再试");
     }
     const body = await req.json().catch(() => null);
     if (!body || !Array.isArray(body.messages)) {
-      return sseError('请求格式错误');
+      return sseError("请求格式错误");
     }
     const { messages, model } = body;
     let systemPrompt: string;
     try {
       systemPrompt = await getSystemPrompt();
-    } catch (err) {
-      return sseError('服务初始化失败，请联系管理员');
+    } catch {
+      return sseError("服务初始化失败，请联系管理员");
     }
     const playerCtx = await getPlayerContextBlock(req);
     const systemContent = playerCtx
       ? `${getNowLine()}\n\n${systemPrompt}\n\n${playerCtx}`
       : `${getNowLine()}\n\n${systemPrompt}`;
-    const fullMessages = [
-      { role: 'system', content: systemContent },
-      ...messages.slice(-20),
-    ];
+    const fullMessages = [{ role: "system", content: systemContent }, ...messages.slice(-20)];
     const defaultModel = "grok-4.6";
-    const selectedModel = (model && typeof model === 'string' && model.trim())
-      ? model.trim()
-      : defaultModel;
+    const selectedModel =
+      model && typeof model === "string" && model.trim() ? model.trim() : defaultModel;
     if (selectedModel.length > 100 || !/^[a-zA-Z0-9_\-/\.]+$/.test(selectedModel)) {
-      return sseError('无效的模型参数');
+      return sseError("无效的模型参数");
     }
     const openaiBody = {
       model: selectedModel,
@@ -164,26 +160,25 @@ export async function POST(req: NextRequest) {
       top_p: 0.7,
       presence_penalty: 0.5,
       frequency_penalty: 0.3,
-      max_tokens: 4096
+      max_tokens: 4096,
     };
     const apiBaseUrl = process.env.API_BASE_URL || "https://xn--kiv260fv3i.cn";
     const upstreamUrl = `${apiBaseUrl}/v1/chat/completions`;
     const apiKey = process.env.API_KEY;
     if (!apiKey) {
-      console.error('[ai/chat] API_KEY not set');
-      return sseError('服务配置错误');
+      console.error("[ai/chat] API_KEY not set");
+      return sseError("服务配置错误");
     }
-    console.log(`[ai/chat] request from ${ip} model=${selectedModel} messages=${messages.length} upstream=${upstreamUrl}`);
     timeout = setTimeout(() => controller.abort(), 120000);
     const headers = {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0.0.0 Safari/537.36",
-      "Accept": "text/event-stream",
-      "Referer": apiBaseUrl,
-      "Origin": apiBaseUrl,
+      Accept: "text/event-stream",
+      Referer: apiBaseUrl,
+      Origin: apiBaseUrl,
       "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "cross-site"
+      "Sec-Fetch-Site": "cross-site",
     };
     let upstream: Response;
     try {
@@ -198,94 +193,94 @@ export async function POST(req: NextRequest) {
       });
     } catch (fetchErr) {
       // Client aborted (switched session / cancelled / unmounted): exit silently.
-      if (fetchErr instanceof Error && fetchErr.name === 'AbortError') {
+      if (fetchErr instanceof Error && fetchErr.name === "AbortError") {
         return new Response(null, { status: 499 });
       }
       const reason =
-        fetchErr instanceof Error && fetchErr.name === 'TimeoutError'
+        fetchErr instanceof Error && fetchErr.name === "TimeoutError"
           ? `连接上游超时: ${upstreamUrl}`
           : `连接上游失败: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`;
       console.error(`[ai/chat] ${reason}`);
-      return sseError('上游连接失败，请稍后重试');
+      return sseError("上游连接失败，请稍后重试");
     }
 
     if (timeout) clearTimeout(timeout);
     timeout = null;
     if (!upstream.ok) {
       let errorMsg = `上游服务暂时不可用 (${upstream.status})`;
-      const errorBody = await upstream.text().catch(() => '');
+      const errorBody = await upstream.text().catch(() => "");
       console.error(`上游错误 ${upstream.status}:`, errorBody.slice(0, 500));
 
       // 尝试解析上游返回的具体错误信息
-      let upstreamMsg = '';
+      let upstreamMsg = "";
       try {
         const parsed = JSON.parse(errorBody);
-        upstreamMsg = parsed.error || parsed.message || parsed.detail || '';
-      } catch { }
+        upstreamMsg = parsed.error || parsed.message || parsed.detail || "";
+      } catch {}
 
       switch (upstream.status) {
         // ---- 客户端错误 ----
         case 400:
-          errorMsg = upstreamMsg || '请求参数错误，请检查输入后重试';
+          errorMsg = upstreamMsg || "请求参数错误，请检查输入后重试";
           break;
         case 401:
         case 403:
-          errorMsg = '认证失败，请联系管理员';
+          errorMsg = "认证失败，请联系管理员";
           break;
         case 404:
-          errorMsg = '请求的资源不存在，请确认接口地址是否正确';
+          errorMsg = "请求的资源不存在，请确认接口地址是否正确";
           break;
         case 408:
-          errorMsg = '上游服务响应超时，请稍后重试';
+          errorMsg = "上游服务响应超时，请稍后重试";
           break;
         case 413:
-          errorMsg = '请求内容过大，请减少输入长度后重试';
+          errorMsg = "请求内容过大，请减少输入长度后重试";
           break;
         case 429:
-          errorMsg = '请求过于频繁，请稍后再试';
+          errorMsg = "请求过于频繁，请稍后再试";
           break;
 
         // ---- Cloudflare 错误 ----
         case 520:
-          errorMsg = '上游服务返回了异常响应，请稍后重试';
+          errorMsg = "上游服务返回了异常响应，请稍后重试";
           break;
         case 521:
-          errorMsg = 'AI 服务暂时离线，请稍后重试';
+          errorMsg = "AI 服务暂时离线，请稍后重试";
           break;
         case 522:
-          errorMsg = '连接AI 服务超时，请稍后重试';
+          errorMsg = "连接AI 服务超时，请稍后重试";
           break;
         case 523:
-          errorMsg = 'AI 服务不可达，请稍后重试';
+          errorMsg = "AI 服务不可达，请稍后重试";
           break;
         case 524:
-          errorMsg = 'AI 服务处理超时，请稍后重试';
+          errorMsg = "AI 服务处理超时，请稍后重试";
           break;
         case 525:
         case 526:
-          errorMsg = '服务安全证书异常，请联系管理员';
+          errorMsg = "服务安全证书异常，请联系管理员";
           break;
         case 530:
-          errorMsg = '服务被拦截或 DNS 异常，请联系管理员';
+          errorMsg = "服务被拦截或 DNS 异常，请联系管理员";
           break;
 
         // ---- 源站 5xx ----
         case 502:
-          errorMsg = '上游网关错误，服务可能正在重启，请稍后重试';
+          errorMsg = "上游网关错误，服务可能正在重启，请稍后重试";
           break;
         case 503:
-          errorMsg = '上游服务暂时不可用，可能正在维护中';
+          errorMsg = "上游服务暂时不可用，可能正在维护中";
           break;
         case 504:
-          errorMsg = '上游服务网关超时，请稍后重试';
+          errorMsg = "上游服务网关超时，请稍后重试";
           break;
 
         // ---- 兜底 ----
         default:
           if (upstream.status >= 500) {
-            errorMsg = '上游服务繁忙，请稍后再试';
+            errorMsg = "上游服务繁忙，请稍后再试";
           } else if (upstream.status >= 400) {
-            errorMsg = '请求被拒绝，请检查后重试';
+            errorMsg = "请求被拒绝，请检查后重试";
           }
       }
 
@@ -296,7 +291,7 @@ export async function POST(req: NextRequest) {
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
     const reader = upstream.body!.getReader();
-    let buffer = '';
+    let buffer = "";
     let hasSentUsage = false;
     (async () => {
       try {
@@ -304,14 +299,14 @@ export async function POST(req: NextRequest) {
           const { done, value } = await reader.read();
           if (done) break;
           buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop() || '';
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
           for (const line of lines) {
             const trimmedLine = line.trim();
-            if (!trimmedLine || !trimmedLine.startsWith('data: ')) continue;
+            if (!trimmedLine || !trimmedLine.startsWith("data: ")) continue;
 
             const dataStr = trimmedLine.slice(6);
-            if (dataStr === '[DONE]') {
+            if (dataStr === "[DONE]") {
               await writer.write(encoder.encode(`data: [DONE]\n\n`));
               continue;
             }
@@ -320,25 +315,25 @@ export async function POST(req: NextRequest) {
               if (chunk.usage && !hasSentUsage) {
                 hasSentUsage = true;
                 const usageData = {
-                  type: 'usage',
+                  type: "usage",
                   usage: {
                     promptTokens: chunk.usage.prompt_tokens,
                     completionTokens: chunk.usage.completion_tokens,
-                    totalTokens: chunk.usage.total_tokens
-                  }
+                    totalTokens: chunk.usage.total_tokens,
+                  },
                 };
                 await writer.write(encoder.encode(`data: ${JSON.stringify(usageData)}\n\n`));
               }
               const content = chunk.choices?.[0]?.delta?.content;
               if (content) {
                 const textDelta = {
-                  type: 'text-delta',
-                  delta: content
+                  type: "text-delta",
+                  delta: content,
                 };
                 await writer.write(encoder.encode(`data: ${JSON.stringify(textDelta)}\n\n`));
               }
             } catch (e) {
-              console.warn('Failed to parse SSE chunk:', e);
+              console.warn("Failed to parse SSE chunk:", e);
             }
           }
         }
@@ -348,15 +343,19 @@ export async function POST(req: NextRequest) {
         await writer.close();
       } catch (err) {
         // A client disconnect aborts the reader; do not log it as a server error.
-        if (err instanceof Error && err.name === 'AbortError') {
-          try { await writer.abort(err); } catch { /* ignore */ }
+        if (err instanceof Error && err.name === "AbortError") {
+          try {
+            await writer.abort(err);
+          } catch {
+            /* ignore */
+          }
           return;
         }
-        console.error('[ai/chat] Stream processing error:', err);
+        console.error("[ai/chat] Stream processing error:", err);
         try {
           await writer.write(
             encoder.encode(
-              `data: ${JSON.stringify({ type: 'error', errorText: '上游流式传输中断，请重试' })}\n\n`,
+              `data: ${JSON.stringify({ type: "error", errorText: "上游流式传输中断，请重试" })}\n\n`,
             ),
           );
           await writer.write(encoder.encode(`data: [DONE]\n\n`));
@@ -373,23 +372,23 @@ export async function POST(req: NextRequest) {
     return new Response(readable, {
       status: 200,
       headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache, no-transform',
-        'Connection': 'keep-alive',
-        'X-Accel-Buffering': 'no',
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+        "X-Accel-Buffering": "no",
       },
     });
   } catch (err) {
     if (timeout) clearTimeout(timeout);
     // Client-initiated abort (cancel / switch session / unmount): exit silently.
-    if (err instanceof Error && err.name === 'AbortError') {
+    if (err instanceof Error && err.name === "AbortError") {
       return new Response(null, { status: 499 });
     }
-    console.error('API 内部错误:', err);
-    let errorText = '服务异常，请稍后再试';
+    console.error("API 内部错误:", err);
+    let errorText = "服务异常，请稍后再试";
     if (err instanceof Error) {
-      if (err.message.includes('fetch failed')) {
-        errorText = '网络连接失败，请检查网络';
+      if (err.message.includes("fetch failed")) {
+        errorText = "网络连接失败，请检查网络";
       }
     }
     return sseError(errorText);

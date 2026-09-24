@@ -1,33 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import { GITHUB_REPO_PATTERN, githubFetch } from "@/lib/github";
 
 /**
  * GitHub 最新 Release 代理：预取仓库最新发布版本信息。
  * 用法: /api/github/release?repo=owner/name
- * 服务端携带 GH_TOKEN 调用 GitHub API，避免前端暴露 token / CORS / 速率限制。
  */
 export async function GET(request: NextRequest) {
+  const repo = request.nextUrl.searchParams.get("repo");
+
+  if (!repo || !GITHUB_REPO_PATTERN.test(repo)) {
+    return NextResponse.json(
+      { error: "Missing or invalid repo. Usage: ?repo=owner/name" },
+      { status: 400 },
+    );
+  }
+
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const repo = searchParams.get("repo");
-
-    if (!repo || !/^[\w.-]+\/[\w.-]+$/.test(repo)) {
-      return NextResponse.json(
-        { error: "Missing or invalid repo. Usage: ?repo=owner/name" },
-        { status: 400 },
-      );
-    }
-
-    const githubUrl = `https://api.github.com/repos/${repo}/releases/latest`;
-    const headers: HeadersInit = {
-      Accept: "application/vnd.github+json",
-      "User-Agent": "EndlessPixel-Server",
-    };
-    const ghToken = process.env.GH_TOKEN;
-    if (ghToken) {
-      headers["Authorization"] = `Bearer ${ghToken}`;
-    }
-
-    const response = await fetch(githubUrl, { method: "GET", headers });
+    const response = await githubFetch(`https://api.github.com/repos/${repo}/releases/latest`);
     if (!response.ok) {
       const message =
         response.status === 404
@@ -65,16 +54,12 @@ export async function GET(request: NextRequest) {
         status: 200,
         headers: {
           "Cache-Control": "public, max-age=300",
-          "X-RateLimit-Remaining":
-            response.headers.get("X-RateLimit-Remaining") || "",
+          "X-RateLimit-Remaining": response.headers.get("X-RateLimit-Remaining") || "",
         },
       },
     );
   } catch (error) {
     console.error("GitHub release proxy error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch GitHub release" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to fetch GitHub release" }, { status: 500 });
   }
 }
