@@ -242,7 +242,7 @@ export function HeroSection() {
 
           {/* CTA 按钮组 */}
           <motion.div
-            className="mx-auto mb-12 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-2"
+            className="mx-auto mt-12 mb-12 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-2"
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.9, duration: 0.6 }}
@@ -295,7 +295,7 @@ export function HeroSection() {
           </motion.div>
 
           {/* 硬件信息 */}
-          <p className="mt-2 text-xs text-muted-foreground/60">
+          <p className="mt-2 mb-12 text-xs text-muted-foreground/60">
             硬件详情：AMD Ryzen 9 9950X + 12GB 真实占用 + 磁盘 / 网络 / 负载全公开。
             <Link
               href="http://sys.epmc.qzz.io"
@@ -305,8 +305,6 @@ export function HeroSection() {
               查看监控 →
             </Link>
           </p>
-          <br />
-          <br />
 
           {/* 核心特性 */}
           <motion.div

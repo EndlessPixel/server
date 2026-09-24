@@ -35,8 +35,6 @@ export default function ServerIpBox() {
           )}
         </div>
       </motion.button>
-      <br />
-      <br />
     </div>
   );
 }
