@@ -25,10 +25,13 @@ import {
   buildExam,
   clearQuizRecords,
   EXAM_SIZE,
+  EXAM_SIZE_OPTIONS,
   formatDuration,
   formatFinishedAt,
   gradeExam,
   loadQuizRecords,
+  QUESTION_BANK_SIZE,
+  resolveExamSize,
   saveQuizRecord,
   scoreGrade,
   type ExamQuestion,
@@ -45,7 +48,11 @@ const RECENT_RECORD_LIMIT = 5;
 type Phase = "intro" | "exam" | "result";
 
 const FEATURES = [
-  { icon: ClipboardList, title: `${EXAM_SIZE} 道题`, desc: "从题库中随机抽取，每次题目都不一样" },
+  {
+    icon: ClipboardList,
+    title: "题量自选",
+    desc: "5 到 100 题任选，从题库随机抽取，每次题目都不一样",
+  },
   { icon: ListChecks, title: "单选作答", desc: "每题一个正确答案，交卷后给出逐题解析" },
   { icon: History, title: "本地记录", desc: "成绩只存在你的浏览器缓存，不上传服务器" },
 ];
@@ -59,6 +66,7 @@ export function QuizClient() {
   const [durationMs, setDurationMs] = useState(0);
   const [startedAt, setStartedAt] = useState(0);
   const [records, setRecords] = useState<QuizRecord[]>([]);
+  const [examSize, setExamSize] = useState<number>(EXAM_SIZE);
   const [confirmingSubmit, setConfirmingSubmit] = useState(false);
   const [confirmingClear, setConfirmingClear] = useState(false);
 
@@ -79,7 +87,7 @@ export function QuizClient() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const startExam = () => {
-    const exam = buildExam();
+    const exam = buildExam(examSize);
     setQuestions(exam);
     setAnswers(new Array(exam.length).fill(null));
     setCurrent(0);
@@ -152,8 +160,9 @@ export function QuizClient() {
                 服务器考试
               </h1>
               <p className="mx-auto mt-3 max-w-2xl leading-relaxed text-muted-foreground">
-                随机抽取 {EXAM_SIZE} 道题，考考你对 EndlessPixel
-                的接入方式、版本、玩法与整合包了解多少。 成绩只保存在你自己的浏览器里。
+                从题库随机抽取题目，考考你对 EndlessPixel
+                的接入方式、版本、玩法、规则与整合包了解多少。开考前可以自选题量，
+                成绩只保存在你自己的浏览器里。
               </p>
             </header>
 
@@ -176,7 +185,29 @@ export function QuizClient() {
               })}
             </div>
 
-            <div className="mt-8 flex justify-center">
+            <div className="mt-8 rounded-2xl bg-secondary/40 px-4 py-5">
+              <p className="text-center text-sm font-medium text-foreground">选择题量</p>
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
+                {EXAM_SIZE_OPTIONS.map((size) => (
+                  <Button
+                    key={size}
+                    size="sm"
+                    variant={examSize === size ? "default" : "outline"}
+                    aria-pressed={examSize === size}
+                    onClick={() => setExamSize(size)}
+                  >
+                    {size} 题
+                  </Button>
+                ))}
+              </div>
+              <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">
+                题库共 {QUESTION_BANK_SIZE} 题，本次抽 {resolveExamSize(examSize)} 题
+                {examSize > QUESTION_BANK_SIZE ? "（已超过题库总量，按全部出卷）" : ""}
+                。题目与选项顺序每次都会重新打乱。
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-center">
               <Button size="lg" onClick={startExam}>
                 <GraduationCap aria-hidden="true" />
                 开始考试

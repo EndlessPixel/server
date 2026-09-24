@@ -9,8 +9,22 @@ import { QUIZ_QUESTIONS, type QuizCategory, type QuizQuestion } from "@/lib/quiz
 
 export type { QuizCategory, QuizQuestion };
 
-/** 每次考试的题目数量 */
-export const EXAM_SIZE = 20;
+/** 开考时可选的题量 */
+export const EXAM_SIZE_OPTIONS = [5, 10, 20, 25, 50, 100] as const;
+
+/** 可选题量 */
+export type ExamSize = (typeof EXAM_SIZE_OPTIONS)[number];
+
+/** 默认题量 */
+export const EXAM_SIZE: ExamSize = 20;
+
+/** 题库总题数 */
+export const QUESTION_BANK_SIZE = QUIZ_QUESTIONS.length;
+
+/** 实际出题数：所选题量超过题库总量时按题库全出 */
+export function resolveExamSize(size: number): number {
+  return Math.min(size, QUESTION_BANK_SIZE);
+}
 
 /** 成绩记录的 localStorage 键名（结构调整时请升版本号） */
 export const QUIZ_STORAGE_KEY = "ep_quiz_records_v1";
