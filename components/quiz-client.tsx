@@ -239,9 +239,11 @@ export function QuizClient() {
                 <p className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
                   题库里另有 {DEV_BANK_SIZE} 道接口调用、OAuth
                   接入、图册上传、启动器配置等开发者向题目。
-                  {devCount > 0
-                    ? `按 ${activeRatio}% 折算，本次 ${actualSize} 题中会抽 ${devCount} 道。`
-                    : `按 ${activeRatio}% 折算不足 1 道，本次不抽开发者题（调高占比或增加题量即可）。`}
+                  {activeRatio === 0
+                    ? "当前为 0%，本次全部出常规题。"
+                    : devCount > 0
+                      ? `按 ${activeRatio}% 折算，本次 ${actualSize} 题中会抽 ${devCount} 道。`
+                      : `按 ${activeRatio}% 折算不足 1 道，本次不抽开发者题（调高占比或增加题量即可）。`}
                   {ratioMax < DEV_RATIO_MAX
                     ? ` 开发者题总共只有 ${DEV_BANK_SIZE} 道，所以选 ${examSize} 题时占比最高到 ${ratioMax}%。`
                     : ""}
@@ -250,8 +252,11 @@ export function QuizClient() {
 
               <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">
                 题库共 {QUESTION_BANK_SIZE + DEV_BANK_SIZE} 题（常规 {QUESTION_BANK_SIZE} + 开发者{" "}
-                {DEV_BANK_SIZE}），本次抽 {actualSize} 题：常规 {coreCount} 题 + 开发者 {devCount}{" "}
-                题。 题目与选项顺序每次都会重新打乱。
+                {DEV_BANK_SIZE}），本次抽 {actualSize} 题
+                {devCount > 0
+                  ? `：常规 ${coreCount} 题 + 开发者 ${devCount} 题。`
+                  : "，全部为常规题。"}{" "}
+                题目与选项顺序每次都会重新打乱。
               </p>
             </div>
 

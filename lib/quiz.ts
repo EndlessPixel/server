@@ -42,16 +42,17 @@ export const DEV_BANK_SIZE = DEV_QUESTIONS.length;
 
 /**
  * 开发者试题占比可选的百分比区间与默认值。
- * 上限取 100%：真正的天花板是开发者题库容量（DEV_BANK_SIZE = 50 道），
- * 由 {@link maxDevRatioPercent} 按题量换算 —— 100 道题时上限才是 50%。
+ * - 下限 0% 表示不含开发者试题（等价于关闭）。
+ * - 上限取 100%：真正的天花板是开发者题库容量（DEV_BANK_SIZE = 50 道），
+ *   由 {@link maxDevRatioPercent} 按题量换算 —— 100 道题时上限才是 50%。
  */
-export const DEV_RATIO_MIN = 1;
+export const DEV_RATIO_MIN = 0;
 export const DEV_RATIO_MAX = 100;
 export const DEV_RATIO_DEFAULT = 10;
 
 /**
  * 把占比夹到合法区间（单位是百分比，不是 0~1 的小数）。
- * 传 0 或负数表示不含开发者试题（不套用下限），正数则夹到 1%~100% 并取整。
+ * 传 0 或负数表示不含开发者试题，正数则夹到 0%~100% 并取整。
  *
  * 注意：这里刻意保留百分比整数形式，不先转成小数 —— 先除后乘会引入浮点误差
  * （例如 50 题 29% 时 50 * 0.29 = 14.499999999999998，取整就会少一道）。
