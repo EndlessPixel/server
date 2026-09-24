@@ -1,16 +1,26 @@
 /**
  * 服务器考试题库（纯数据）。
  *
- * 事实来源：`public/system.md`（EPBot 官方知识库）、`README.md`、`app/about`。
- * 修改题目时请同步核对知识库，避免答案随版本变更而失效。
+ * 事实来源（写题前一律先 grep 核对，找不到出处就不要写）：
+ * - `public/system.md`   EPBot 官方知识库，最权威
+ * - `README.md`、`app/page.tsx`、`app/layout.tsx`、`components/hero-section.tsx`  站内公开口径
  *
  * 出题四条硬标准（不合就改，改不了就删）：
- * 1. **题意自明**：读完题干就知道在问什么，不需要懂插件名 / 版本号命名规范 / 运维术语。
- * 2. **答案唯一**：正确项是唯一说得通的那个，不能出现「另一个也说得对」。
- * 3. **干扰项不误导**：干扰项必须是明确错误的，不能用真实存在但功能相近的东西（例如
- *    WorldGuard、Lockette、CurseForge）当错项 —— 玩家会以为「哪个都对」。
- * 4. **值得玩家记**：考玩家真正会用到的信息（怎么进服、怎么保护建筑、去哪反馈），
- *    不考 CPU 型号、内存占用、快照命名格式这类运维与版本细节。
+ * 0. **必须点明「问的是谁」** —— 最容易翻车的一条。只要知识点的答案在原版与本服之间
+ *    不一样，题干就必须写明「本服 / 服务器 / 官方整合包」，否则玩家拿着原版知识去答，
+ *    答的其实没错，是题目有歧义。反例：
+ *      ✗「在成熟的农作物上跑过去会发生什么？」（玩家会默认问的是原版 → 答案不唯一）
+ *      ✓「在本服，从成熟的农作物上跑过去会怎样？」
+ *    凡是涉及指令（/tpa、/skin）、插件玩法、原版机制改动的题目，题干都要带「本服」。
+ *    纯考 Minecraft 官方版本号、快照格式、原版版本事实的题目，则要写明「Minecraft 官方」，
+ *    避免玩家以为在问本服自定义的东西。
+ * 1. **不许编造**：题干的每个事实点、解析里的每句话，都必须是官方来源里写着的。
+ *    冷门不等于不能考 —— 服务器硬件配置、MC 版本号格式与命名规则、原版版本事实、
+ *    启动器、指令、插件名，只要官方来源有记载就可以考。红线只有一条：**不许自行推测补全**。
+ *    写题前先 grep 出处；解析里也不要补充知识库没写的机制细节。
+ * 2. **题意自明**：读完题干就知道在问什么，不需要玩家自己补全隐含前提。
+ * 3. **答案唯一**：正确项是唯一说得通的那个，不能出现「另一个也说得对」。
+ *    干扰项应当是明确错误的，不要用真实存在且功能相近的东西当错项，玩家会以为「哪个都对」。
  *
  * 其它约定：
  * - 每题恰好 4 个选项，`answer` 是正确项在 `options` 中的下标（0 起）。
@@ -35,16 +45,16 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "connect-address",
     category: "接入",
-    question: "Java 版客户端里，要填哪个服务器地址才能进服？",
+    question: "Java 版客户端里，要填哪个地址才能进服？",
     options: [
       "mc.endlesspixel.cn",
       "play.endlesspixel.cn",
-      "mc.endlesspixel.cn:25566",
+      "www.endlesspixel.cn",
       "localhost:25565",
     ],
     answer: 0,
     explanation:
-      "官方地址是 mc.endlesspixel.cn（备用 epmc.qzz.io）。本服走 SRV 解析，直接填域名就行，不需要在后面加端口。",
+      "官方地址是 mc.endlesspixel.cn，备用地址 epmc.qzz.io。本服走 SRV 解析，直接填域名即可，不需要在后面加端口。www.endlesspixel.cn 是官方网站，不是游戏服务器地址。",
   },
   {
     id: "connect-premium",
@@ -115,7 +125,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "version-range",
     category: "版本",
-    question: "正式服客户端兼容的版本区间是？",
+    question: "本服兼容哪些 Java 版客户端版本？",
     options: ["1.12.2 ~ 1.20.1", "1.7.2 ~ 26.2", "1.16 ~ 1.21", "仅支持 26.x"],
     answer: 1,
     explanation: "正式服兼容 Java 版 1.7.2 ~ 26.2，中间的版本差异通过 ViaVersion 做跨版本兼容。",
@@ -123,7 +133,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "version-year-scheme",
     category: "版本",
-    question: "版本号 26.x 里面的「26」，指的是什么？",
+    question: "Minecraft 官方版本号 26.x 里面的「26」，指的是什么？",
     options: ["第 26 个大版本", "发布年份 2026 年", "网络协议号", "服务器内部编号"],
     answer: 1,
     explanation:
@@ -132,9 +142,9 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "version-12111",
     category: "版本",
-    question: "关于 1.21.11 这个版本，下面说法哪个是对的？",
+    question: "1.21.11 在 Minecraft 官方版本体系里是什么？",
     options: [
-      "它已经被废弃，无法再进服",
+      "它已被官方废弃，不再属于正式版",
       "它是 1.x 体系最后的稳定正式版",
       "它只是一个快照版本",
       "它是 EndlessPixel 自己编的版本号",
@@ -146,7 +156,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "version-java-26",
     category: "版本",
-    question: "玩 MC 26.1 或更高版本时，整合包要求的最低 Java 版本是？",
+    question: "玩 MC 26.1 或更高版本时，官方整合包要求的最低 Java 版本是？",
     options: ["Java 8", "Java 17", "Java 21", "Java 25"],
     answer: 3,
     explanation: "MC 26.1 起要求 Java 25 及以上。26.1 也是第一个彻底移除代码混淆的正式版。",
@@ -156,7 +166,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     category: "版本",
     question: "启动游戏时提示「Java 版本过低」，应该怎么处理？",
     options: [
-      "把游戏版本降回 1.20.1",
+      "把整合包里的模组删掉几个",
       "在启动器里把 Java 升级到 21 或 25 后重试",
       "删掉整合包重新下载",
       "忽略提示直接点继续",
@@ -166,11 +176,34 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
       "这是 Java 版本的问题，不是游戏的问题：MC 1.21.4 及以上要求 Java 21+，其中 26.1+ 要求 Java 25+。在启动器设置里换成符合要求的 Java 即可。",
   },
 
+  {
+    id: "version-262-release",
+    category: "版本",
+    question: "Minecraft 官方 26.2 正式版的名字是？",
+    options: ["洞穴与悬崖", "混沌立方", "棘巧试炼", "群骑纷争"],
+    answer: 1,
+    explanation:
+      "26.2「混沌立方」于 2026-06-16 发布，加入硫黄洞穴、硫黄、朱砂、硫方怪等内容，也是本服当前主推的版本。",
+  },
+  {
+    id: "version-snapshot-format",
+    category: "版本",
+    question: "Minecraft 新版（26.x 体系）快照的命名格式是？",
+    options: [
+      "年份.年内更新序号-snapshot-快照号",
+      "年份.快照号-snapshot-年内更新序号",
+      "snapshot-年份.年内更新序号-快照号",
+      "只用快照号，不带年份",
+    ],
+    answer: 0,
+    explanation: "新版快照格式为「年份.年内更新序号-snapshot-快照号」，例如 26.4-snapshot-1。",
+  },
+
   /* ---------------- 玩法 ---------------- */
   {
     id: "game-chain-mining",
     category: "玩法",
-    question: "连锁挖掘单次最多可以采集多少个同类方块？",
+    question: "本服的连锁挖掘，单次最多能采集多少个同类方块？",
     options: ["16 个", "32 个", "64 个", "没有上限"],
     answer: 2,
     explanation: "按住蹲并用对应工具触发连锁挖掘，单次最多连锁采集 64 个同类方块。",
@@ -200,15 +233,15 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "game-farm-protection",
     category: "玩法",
-    question: "在成熟的农作物上跑过去，会发生什么？",
-    options: ["会把作物踩坏", "不会损毁成熟农作物", "只有跳跃时才会踩坏", "要看你用的游戏版本"],
+    question: "在本服，从成熟的农作物上跑过去会怎样？",
+    options: ["会把作物踩坏", "不会损毁成熟农作物", "完全无法在农田上行走", "作物会自动恢复"],
     answer: 1,
-    explanation: "服务器开启了农田保护，行走踩踏不会损毁成熟农作物。",
+    explanation: "本服开启了农田保护：行走踩踏不会损毁成熟农作物。",
   },
   {
     id: "game-dominion",
     category: "玩法",
-    question: "想保护自己的建筑不被别人破坏，正确做法是？",
+    question: "在本服，想保护自己的建筑不被别人破坏，正确做法是？",
     options: [
       "用领地系统 Dominion 自主圈地",
       "私聊管理员请他帮忙看着",
@@ -222,7 +255,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "game-blocklocker",
     category: "玩法",
-    question: "想防止别人打开自己的箱子，正确做法是？",
+    question: "在本服，想防止别人打开自己的箱子，正确做法是？",
     options: [
       "把箱子埋在方块里面",
       "用告示牌给箱子上锁",
@@ -236,7 +269,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "game-cutter",
     category: "玩法",
-    question: "「大师切割机」为切石机拓展了多少条切割配方？",
+    question: "本服的「大师切割机」为切石机拓展了多少条切割配方？",
     options: ["50 条左右", "100 多条", "300 多条", "500 条以上"],
     answer: 3,
     explanation: "大师切割机拓展了 500 条以上的切割配方，方便建造选材与方块加工。",
@@ -273,7 +306,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "game-teleport-command",
     category: "玩法",
-    question: "想请求传送到别的玩家身边，用下面哪个指令？",
+    question: "在本服，想请求传送到别的玩家身边，用下面哪个指令？",
     options: ["/tpa", "/home2", "/tpall", "/warp2"],
     answer: 0,
     explanation: "/tpa 是玩家之间的传送请求指令，配套的还有 /tpahere、/tpaccept、/spawn 等。",
@@ -281,7 +314,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "game-skin-command",
     category: "玩法",
-    question: "在游戏里设置自己皮肤的指令是？",
+    question: "在本服设置自己皮肤的指令是？",
     options: ["/skin", "/skin2", "/myskin", "/setskin"],
     answer: 0,
     explanation: "皮肤相关指令是 /skin，例如 /skin set Dream，可以设置、上传与预览皮肤。",
@@ -379,6 +412,21 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
       "迭代分为 Alpha（内测）→ Beta（公测）→ Stable（正式稳定版）三个阶段，模组完成度到约 95% 后由 Alpha 转入 Beta。",
   },
 
+  {
+    id: "modpack-neoforge",
+    category: "整合包",
+    question: "官方整合包后续会推出 NeoForge 版本吗？",
+    options: [
+      "已经推出了",
+      "目前暂无计划，因为约 80% 的核心模组只维护 Fabric 分支",
+      "下个版本就会推出",
+      "NeoForge 和 Fabric 可以混用，所以无所谓",
+    ],
+    answer: 1,
+    explanation:
+      "当前约 80% 的核心模组仅持续维护 Fabric 分支，所以暂无 NeoForge 版本计划；如果模组生态整体转向，规划可能随之调整。",
+  },
+
   /* ---------------- 社区 ---------------- */
   {
     id: "community-qq",
@@ -437,6 +485,20 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     answer: 1,
     explanation:
       "误封申诉属于管理侧事务：在官方 QQ 群 870594910 联系管理，或发邮件到 support@endlesspixel.cn 说明情况，由服主核实处理。",
+  },
+
+  {
+    id: "community-monitor",
+    category: "社区",
+    question: "想查看服务器硬件详情（CPU、内存、磁盘、负载），去哪个地址？",
+    options: [
+      "sys.epmc.qzz.io",
+      "status.epmc.cn",
+      "monitor.endlesspixel.cn",
+      "mc.endlesspixel.cn/sys",
+    ],
+    answer: 0,
+    explanation: "硬件详情公开在 sys.epmc.qzz.io，站内首页与页脚都有入口。",
   },
 
   /* ---------------- 规则 ---------------- */
@@ -498,7 +560,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "rule-villager-currency",
     category: "规则",
-    question: "服务器里村民交易用什么作为通货？",
+    question: "本服的村民交易用什么作为通货？",
     options: ["金币", "点券", "绿宝石", "钻石"],
     answer: 2,
     explanation:
@@ -507,7 +569,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
   {
     id: "rule-player-trade",
     category: "规则",
-    question: "玩家之间的交易是怎么进行的？",
+    question: "在本服，玩家之间的交易是怎么进行的？",
     options: [
       "通过拍卖行竞价",
       "以物换物、双方自由商谈",
@@ -570,5 +632,30 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     answer: 0,
     explanation:
       "整合包是客户端优化集合：提升帧率、降低延迟、视觉优化、预置资源包与前置模组。它不解锁玩法，也不是进服的必要条件。",
+  },
+  {
+    id: "tech-modpack-fps",
+    category: "技术",
+    question: "官方整合包在参考配置（i5-12450H / 16GB / 核显）上的优化效果大约是？",
+    options: ["稳定 60FPS", "常态约 200FPS，极限场景可达 600+FPS", "大约 100FPS", "和原版差不多"],
+    answer: 1,
+    explanation: "参考配置上原生约 30FPS，装上整合包后常态约 200FPS，极限场景最高可达 600+FPS。",
+  },
+  {
+    id: "tech-cpu",
+    category: "技术",
+    question: "官方公开的服务器硬件中，CPU 型号是？",
+    options: ["Intel i5-12450H", "AMD Ryzen 9 9950X", "AMD EPYC 7002", "Intel Xeon E5"],
+    answer: 1,
+    explanation:
+      "服务器 CPU 是 AMD Ryzen 9 9950X，真实内存占用 12GB，磁盘、网络、负载等信息一并公开。i5-12450H 是整合包性能测试用的参考配置，不是服务器配置。",
+  },
+  {
+    id: "tech-memory",
+    category: "技术",
+    question: "官方公开的服务器真实内存占用大约是？",
+    options: ["4GB", "8GB", "12GB", "32GB"],
+    answer: 2,
+    explanation: "官方公开的真实内存占用约 12GB，与 CPU、磁盘、网络、负载等信息一起公开。",
   },
 ];
