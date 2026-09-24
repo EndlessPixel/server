@@ -19,6 +19,7 @@ import {
   Clock,
 } from "lucide-react";
 import { GithubIcon } from "@/components/icons";
+import { formatCount, formatDate, formatSize, formatTimeAgo, languageColor } from "@/lib/format";
 
 /** 仓库坐标 */
 const REPO_OWNER = "EndlessPixel";
@@ -100,56 +101,6 @@ async function ghFetch<T>(url: string): Promise<T> {
   return json as T;
 }
 
-const formatCount = (n: number): string => {
-  if (n >= 1000) {
-    const k = n / 1000;
-    return `${k >= 10 ? Math.round(k) : k.toFixed(1).replace(/\.0$/, "")}k`;
-  }
-  return String(n);
-};
-
-const formatSize = (kb: number): string => (kb >= 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb} KB`);
-
-const formatDate = (iso: string): string => {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-};
-
-const timeAgo = (iso: string): string => {
-  const diff = Date.now() - new Date(iso).getTime();
-  const min = Math.floor(diff / 60000);
-  if (min < 1) return "刚刚";
-  if (min < 60) return `${min} 分钟前`;
-  const hr = Math.floor(min / 60);
-  if (hr < 24) return `${hr} 小时前`;
-  const day = Math.floor(hr / 24);
-  if (day < 30) return `${day} 天前`;
-  const mon = Math.floor(day / 30);
-  if (mon < 12) return `${mon} 个月前`;
-  return `${Math.floor(mon / 12)} 年前`;
-};
-
-/** 常见语言的品牌色，用于占比条 */
-const LANG_COLORS: Record<string, string> = {
-  TypeScript: "#3178c6",
-  JavaScript: "#f1e05a",
-  CSS: "#663399",
-  HTML: "#e34c26",
-  Python: "#3572A5",
-  Shell: "#89e051",
-  Java: "#b07219",
-  Rust: "#dea584",
-  Go: "#00ADD8",
-  Vue: "#41b883",
-  Dockerfile: "#384d54",
-  Makefile: "#427819",
-  Lua: "#000080",
-  "C++": "#f34b7d",
-  C: "#555555",
-};
-
-const langColor = (name: string) => LANG_COLORS[name] ?? "#8b949e";
-
 /* ------------------------------ 组件 ------------------------------ */
 
 function SkeletonBlock({ className = "" }: { className?: string }) {
@@ -176,7 +127,7 @@ function StatCard({
             {loading ? (
               <SkeletonBlock className="mt-2 h-7 w-16" />
             ) : (
-              <p className="mt-1 text-2xl font-bold text-foreground truncate">{value}</p>
+              <p className="mt-1 truncate text-2xl font-bold text-foreground">{value}</p>
             )}
           </div>
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-secondary text-foreground/60">
@@ -208,10 +159,20 @@ export function RepoInfoSection() {
 
       const errors: string[] = [];
       const repo = repoRes.status === "fulfilled" ? repoRes.value : null;
-      const contributors = contribRes.status === "fulfilled" && Array.isArray(contribRes.value) ? contribRes.value : [];
-      const languages = langRes.status === "fulfilled" && langRes.value && typeof langRes.value === "object" ? langRes.value : {};
-      const release = releaseRes.status === "fulfilled" && Array.isArray(releaseRes.value) ? releaseRes.value[0] ?? null : null;
-      const commits = commitRes.status === "fulfilled" && Array.isArray(commitRes.value) ? commitRes.value : [];
+      const contributors =
+        contribRes.status === "fulfilled" && Array.isArray(contribRes.value)
+          ? contribRes.value
+          : [];
+      const languages =
+        langRes.status === "fulfilled" && langRes.value && typeof langRes.value === "object"
+          ? langRes.value
+          : {};
+      const release =
+        releaseRes.status === "fulfilled" && Array.isArray(releaseRes.value)
+          ? (releaseRes.value[0] ?? null)
+          : null;
+      const commits =
+        commitRes.status === "fulfilled" && Array.isArray(commitRes.value) ? commitRes.value : [];
 
       if (repoRes.status === "rejected") errors.push("仓库信息");
       if (releaseRes.status === "rejected") errors.push("Releases");
@@ -245,7 +206,6 @@ export function RepoInfoSection() {
       /* 缓存不可用时忽略 */
     }
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -274,37 +234,41 @@ export function RepoInfoSection() {
       {/* -------- 仓库头部 -------- */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-4 p-3 rounded-2xl bg-foreground text-background shadow-sm">
-            <GithubIcon className="w-6 h-6" />
-            <h2 className="text-xl font-bold">{REPO_OWNER} / {REPO_NAME}</h2>
+          <div className="flex items-center gap-4 rounded-2xl bg-foreground p-3 text-background shadow-sm">
+            <GithubIcon className="h-6 w-6" />
+            <h2 className="text-xl font-bold">
+              {REPO_OWNER} / {REPO_NAME}
+            </h2>
           </div>
           <CardTitle className="text-2xl">仓库信息</CardTitle>
-          <CardDescription>
-            本站源码完全开源，数据实时来自 GitHub API。
-          </CardDescription>
+          <CardDescription>本站源码完全开源，数据实时来自 GitHub API。</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {loading && !repo ? (
             <SkeletonBlock className="h-5 w-3/4" />
           ) : repo?.description ? (
-            <p className="text-sm text-muted-foreground leading-relaxed">{repo.description}</p>
+            <p className="text-sm leading-relaxed text-muted-foreground">{repo.description}</p>
           ) : null}
 
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex flex-wrap items-center gap-3">
             <Button size="sm" variant="ghost" onClick={() => window.open(REPO_HTML, "_blank")}>
-              <GithubIcon className="w-4 h-4 mr-2" /> 访问仓库
+              <GithubIcon className="mr-2 h-4 w-4" /> 访问仓库
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => window.open(`${REPO_HTML}/issues`, "_blank")}>
-              <AlertCircle className="w-4 h-4 mr-2" /> 问题反馈
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => window.open(`${REPO_HTML}/issues`, "_blank")}
+            >
+              <AlertCircle className="mr-2 h-4 w-4" /> 问题反馈
             </Button>
             <Button size="sm" variant="ghost" onClick={() => load()} disabled={loading}>
-              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
               刷新数据
             </Button>
             {repo?.pushed_at && !loading && (
-              <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" />
-                最后推送 {timeAgo(repo.pushed_at)}
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                <Clock className="h-3.5 w-3.5" />
+                最后推送 {formatTimeAgo(repo.pushed_at)}
               </span>
             )}
           </div>
@@ -312,7 +276,9 @@ export function RepoInfoSection() {
           {repo?.topics && repo.topics.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-1">
               {repo.topics.map((t) => (
-                <Badge key={t} variant="secondary">{t}</Badge>
+                <Badge key={t} variant="secondary">
+                  {t}
+                </Badge>
               ))}
             </div>
           )}
@@ -320,18 +286,43 @@ export function RepoInfoSection() {
       </Card>
 
       {/* -------- 统计卡片 -------- */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <StatCard icon={<Star className="w-4 h-4" />} label="Stars" value={repo ? formatCount(repo.stargazers_count) : "—"} loading={loading && !repo} />
-        <StatCard icon={<GitFork className="w-4 h-4" />} label="Forks" value={repo ? formatCount(repo.forks_count) : "—"} loading={loading && !repo} />
-        <StatCard icon={<Eye className="w-4 h-4" />} label="Watchers" value={repo ? formatCount(repo.subscribers_count) : "—"} loading={loading && !repo} />
-        <StatCard icon={<AlertCircle className="w-4 h-4" />} label="开放 Issues" value={repo ? formatCount(repo.open_issues_count) : "—"} loading={loading && !repo} />
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         <StatCard
-          icon={<Scale className="w-4 h-4" />}
+          icon={<Star className="h-4 w-4" />}
+          label="Stars"
+          value={repo ? formatCount(repo.stargazers_count) : "—"}
+          loading={loading && !repo}
+        />
+        <StatCard
+          icon={<GitFork className="h-4 w-4" />}
+          label="Forks"
+          value={repo ? formatCount(repo.forks_count) : "—"}
+          loading={loading && !repo}
+        />
+        <StatCard
+          icon={<Eye className="h-4 w-4" />}
+          label="Watchers"
+          value={repo ? formatCount(repo.subscribers_count) : "—"}
+          loading={loading && !repo}
+        />
+        <StatCard
+          icon={<AlertCircle className="h-4 w-4" />}
+          label="开放 Issues"
+          value={repo ? formatCount(repo.open_issues_count) : "—"}
+          loading={loading && !repo}
+        />
+        <StatCard
+          icon={<Scale className="h-4 w-4" />}
           label="许可证"
           value={repo?.license?.spdx_id?.replace("NOASSERTION", "自定义") ?? "—"}
           loading={loading && !repo}
         />
-        <StatCard icon={<Database className="w-4 h-4" />} label="仓库体积" value={repo ? formatSize(repo.size) : "—"} loading={loading && !repo} />
+        <StatCard
+          icon={<Database className="h-4 w-4" />}
+          label="仓库体积"
+          value={repo ? formatSize(repo.size) : "—"}
+          loading={loading && !repo}
+        />
       </div>
 
       {/* -------- 语言占比 -------- */}
@@ -352,15 +343,21 @@ export function RepoInfoSection() {
                 {langList.map((l) => (
                   <div
                     key={l.name}
-                    style={{ width: `${l.percent}%`, backgroundColor: langColor(l.name) }}
+                    style={{ width: `${l.percent}%`, backgroundColor: languageColor(l.name) }}
                     title={`${l.name} ${l.percent.toFixed(1)}%`}
                   />
                 ))}
               </div>
               <div className="flex flex-wrap gap-x-4 gap-y-2">
                 {langList.map((l) => (
-                  <span key={l.name} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: langColor(l.name) }} />
+                  <span
+                    key={l.name}
+                    className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
+                  >
+                    <span
+                      className="h-2.5 w-2.5 rounded-full"
+                      style={{ backgroundColor: languageColor(l.name) }}
+                    />
                     {l.name}
                     <span className="text-foreground/70">{l.percent.toFixed(1)}%</span>
                   </span>
@@ -377,7 +374,7 @@ export function RepoInfoSection() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Tag className="w-4 h-4 text-muted-foreground" />
+            <Tag className="h-4 w-4 text-muted-foreground" />
             <CardTitle className="text-base">最新版本</CardTitle>
           </div>
         </CardHeader>
@@ -393,9 +390,11 @@ export function RepoInfoSection() {
                 className="inline-flex items-center gap-1.5 font-semibold text-foreground hover:underline"
               >
                 {data.release.tag_name}
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="h-3.5 w-3.5" />
               </a>
-              <p className="text-xs text-muted-foreground">发布于 {formatDate(data.release.published_at)}</p>
+              <p className="text-xs text-muted-foreground">
+                发布于 {formatDate(data.release.published_at)}
+              </p>
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">暂无 Release</p>
@@ -406,9 +405,9 @@ export function RepoInfoSection() {
       {/* -------- 提交历史 -------- */}
       <Card>
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <GitCommit className="w-4 h-4 text-muted-foreground" />
+              <GitCommit className="h-4 w-4 text-muted-foreground" />
               <CardTitle className="text-base">提交历史</CardTitle>
             </div>
             <a
@@ -418,7 +417,7 @@ export function RepoInfoSection() {
               className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
             >
               在 GitHub 查看全部
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink className="h-3 w-3" />
             </a>
           </div>
           <CardDescription>最近 {COMMIT_PAGE_SIZE} 条提交</CardDescription>
@@ -441,7 +440,7 @@ export function RepoInfoSection() {
                 return (
                   <li key={c.sha} className="relative">
                     {/* 时间线节点 */}
-                    <span className="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full bg-foreground/40 ring-4 ring-background" />
+                    <span className="absolute top-1.5 -left-[26px] h-2.5 w-2.5 rounded-full bg-foreground/40 ring-4 ring-background" />
                     <a
                       href={c.html_url}
                       target="_blank"
@@ -450,9 +449,8 @@ export function RepoInfoSection() {
                     >
                       {c.commit.message.split("\n")[0]}
                     </a>
-                    <div className="mt-1.5 flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
+                    <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                       {avatar ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img
                           src={avatar}
                           alt={authorName}
@@ -464,7 +462,9 @@ export function RepoInfoSection() {
                       ) : null}
                       <span className="text-foreground/70">{authorName}</span>
                       <span>·</span>
-                      <span title={formatDate(c.commit.author.date)}>{timeAgo(c.commit.author.date)}</span>
+                      <span title={formatDate(c.commit.author.date)}>
+                        {formatTimeAgo(c.commit.author.date)}
+                      </span>
                       <span>·</span>
                       <code className="rounded bg-secondary px-1 py-0.5 font-mono text-[11px]">
                         {c.sha.slice(0, 7)}
@@ -484,7 +484,7 @@ export function RepoInfoSection() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-muted-foreground" />
+            <Users className="h-4 w-4 text-muted-foreground" />
             <CardTitle className="text-base">贡献者</CardTitle>
           </div>
           <CardDescription>感谢每一位提交代码的朋友</CardDescription>
@@ -508,7 +508,6 @@ export function RepoInfoSection() {
                   className="transition-transform hover:scale-110"
                 >
                   {/* 使用原生 img：外链头像，避免 next/image 域名白名单限制 */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={c.avatar_url}
                     alt={c.login}
@@ -531,11 +530,13 @@ export function RepoInfoSection() {
         <Card className="border-destructive/30">
           <CardContent className="p-5">
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-destructive mt-0.5 shrink-0" />
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
               <div className="text-sm">
                 <p className="font-medium text-foreground">仓库数据加载失败</p>
                 <p className="mt-1 text-muted-foreground">
-                  {error}。可能是 GitHub API 限流（未配置 <code className="rounded bg-secondary px-1">GH_TOKEN</code> 时每小时仅 60 次），请稍后重试。
+                  {error}。可能是 GitHub API 限流（未配置{" "}
+                  <code className="rounded bg-secondary px-1">GH_TOKEN</code> 时每小时仅 60
+                  次），请稍后重试。
                 </p>
               </div>
             </div>

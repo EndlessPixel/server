@@ -1,20 +1,10 @@
-
 import GitHubIssueDetail from "@/components/github-issue-detail";
 
-
 const MODPACK_APP_REPO = {
-  owner: 'EndlessPixel',
-  repo: 'EndlessPixel-ModpackAPP',
-  backHref: '/downloads/modpack_app/issues'
+  owner: "EndlessPixel",
+  repo: "EndlessPixel-ModpackAPP",
 };
 
-
-export default async function IssueDetailPage({}: { params: { id: string } }) {
-  return (
-    <GitHubIssueDetail
-      owner={MODPACK_APP_REPO.owner}
-      repo={MODPACK_APP_REPO.repo}
-      backHref={MODPACK_APP_REPO.backHref}
-    />
-  );
+export default function IssueDetailPage() {
+  return <GitHubIssueDetail owner={MODPACK_APP_REPO.owner} repo={MODPACK_APP_REPO.repo} />;
 }
