@@ -309,8 +309,8 @@ export default function GitHubIssuesList({
               </div>
             </div>
             {issues.length === 0 ? (
-              <Card className="border-dashed py-16 text-center">
-                <CardContent>
+              <Card className="border-dashed text-center">
+                <CardContent className="py-16">
                   <CheckCircle className="mx-auto mb-4 h-16 w-16 text-muted-foreground/40" />
                   <h3 className="mb-2 text-lg font-semibold text-foreground">暂无条目</h3>
                   <p className="text-muted-foreground">成为第一个提交 Issue 的人吧！</p>

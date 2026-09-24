@@ -540,7 +540,7 @@ export default function McServerStatusPage() {
 
             {/* Stats grid */}
             <div className="mt-8 mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card className="flex min-h-[112px] flex-col justify-center py-4">
+              <Card className="flex min-h-[112px] flex-col justify-center">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
                     <Zap size={14} /> 游戏版本
@@ -561,7 +561,7 @@ export default function McServerStatusPage() {
                 </CardContent>
               </Card>
 
-              <Card className="flex min-h-[112px] flex-col justify-center py-4">
+              <Card className="flex min-h-[112px] flex-col justify-center">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
                     <Shield size={14} /> 服务器核心
@@ -578,7 +578,7 @@ export default function McServerStatusPage() {
                 </CardContent>
               </Card>
 
-              <Card className="flex min-h-[112px] flex-col justify-center py-4">
+              <Card className="flex min-h-[112px] flex-col justify-center">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
                     <Users size={14} /> 在线玩家

@@ -457,8 +457,8 @@ export default function GitHubIssueDetail({ owner, repo }: { owner: string; repo
               </div>
             </section>
           ) : (
-            <Card className="border-dashed py-16 text-center">
-              <CardContent>
+            <Card className="border-dashed text-center">
+              <CardContent className="py-16">
                 <MessageSquare className="mx-auto mb-4 h-16 w-16 text-muted-foreground/40" />
                 <h3 className="mb-2 text-lg font-semibold text-foreground">暂无评论</h3>
                 <p className="text-muted-foreground">成为第一个参与讨论的人</p>

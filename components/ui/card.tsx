@@ -2,6 +2,15 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * 卡片内边距约定：
+ * - 横向：CardHeader / CardContent / CardFooter 自带 px-6。
+ * - 纵向：Card 本身不设 py-*，由 CardHeader 补 pt、CardContent 补 pb
+ *   （默认值定义在 app/globals.css 的 @layer components，可被调用方的
+ *   p-4 / p-6 / py-16 等工具类覆盖）。
+ *   因此新增卡片时直接写 <Card><CardHeader/><CardContent/></Card> 即可有正确留白；
+ *   若卡片只有 CardHeader（无 CardContent），需自行补 pb-*。
+ */
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
