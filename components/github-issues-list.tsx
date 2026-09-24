@@ -13,13 +13,12 @@ import {
   ArrowLeft,
   ExternalLink,
   GitPullRequest,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-
+import { Pagination } from "@/components/ui/pagination";
+import { formatTimeAgo, getContrastColor } from "@/lib/format";
 
 interface GitHubIssue {
   id: number;
@@ -41,21 +40,6 @@ interface PaginationInfo {
   itemsPerPage: number;
 }
 
-const getTimeAgo = (d: string) => {
-  const days = Math.floor((Date.now() - new Date(d).getTime()) / 86_400_000);
-  if (days === 0) return "今天";
-  if (days === 1) return "昨天";
-  if (days < 7) return `${days} 天前`;
-  if (days < 30) return `${Math.floor(days / 7)} 周前`;
-  return `${Math.floor(days / 30)} 月前`;
-};
-
-const getContrastColor = (hex: string) => {
-  const h = hex.length === 6 ? hex : hex.repeat(2);
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.substr(i, 2), 16));
-  return (r * 299 + g * 587 + b * 114) / 1000 > 128 ? "#000" : "#fff";
-};
-
 const parseLinkHeader = (header: string | null) => {
   if (!header) return {};
   const links: Record<string, string> = {};
@@ -66,64 +50,42 @@ const parseLinkHeader = (header: string | null) => {
   return links;
 };
 
-const calcTotalPages = (link: string | null, _itemsPerPage?: number) => {
+const calcTotalPages = (link: string | null) => {
   if (!link) return 1;
   const last = parseLinkHeader(link).last;
   if (!last) return 1;
   const p = new URL(last).searchParams.get("page");
   return p ? parseInt(p, 10) : 1;
 };
-function StatsCard({
-  icon,
-  label,
-  value,
-}: {
-  icon: JSX.Element;
-  label: string;
-  value: number;
-}) {
+function StatsCard({ icon, label, value }: { icon: JSX.Element; label: string; value: number }) {
   return (
-    <Card className="bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl shadow-sm backdrop-blur-sm">
+    <Card className="rounded-xl border-slate-200 bg-white/80 shadow-sm backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/70">
       <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="p-3 bg-secondary rounded-xl text-foreground/60">
-            {icon}
-          </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            {value}
-          </div>
+        <div className="mb-4 flex items-center justify-between">
+          <div className="rounded-xl bg-secondary p-3 text-foreground/60">{icon}</div>
+          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{value}</div>
         </div>
-        <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-          {label}
-        </div>
+        <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">{label}</div>
       </CardContent>
     </Card>
   );
 }
-function IssueCard({
-  issue,
-  onClick,
-}: {
-  issue: GitHubIssue;
-  onClick: (url: string) => void;
-}) {
+function IssueCard({ issue, onClick }: { issue: GitHubIssue; onClick: (url: string) => void }) {
   const isPR = !!issue.pull_request;
   return (
     <Card
       onClick={() => onClick(issue.html_url)}
-      className="group bg-white/80 dark:bg-slate-900/70  border-slate-200 dark:border-slate-800 rounded-xl backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer"
+      className="group cursor-pointer rounded-xl border-slate-200 bg-white/80 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/70"
     >
       <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
+        <div className="mb-3 flex items-start justify-between">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
             {isPR ? (
-              <GitPullRequest className="w-4 h-4 text-foreground/60" />
+              <GitPullRequest className="h-4 w-4 text-foreground/60" />
             ) : (
-              <AlertCircle
-                className={`w-4 h-4 ${issue.state === "open" ? "text-foreground/60" : "text-foreground/60"}`}
-              />
+              <AlertCircle className="h-4 w-4 text-foreground/60" />
             )}
-            <h3 className="font-semibold text-foreground truncate group-hover:text-foreground/80 transition-colors">
+            <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-foreground/80">
               {issue.title}
             </h3>
           </div>
@@ -131,17 +93,17 @@ function IssueCard({
             {isPR ? "PR" : issue.state === "open" ? "开放" : "已关闭"}
           </Badge>
         </div>
-        <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400 mb-3">
+        <div className="mb-3 flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
           <span className="flex items-center gap-1">
-            <User className="w-4 h-4" />
+            <User className="h-4 w-4" />
             {issue.user.login}
           </span>
           <span className="flex items-center gap-1">
-            <Calendar className="w-4 h-4" />
-            {getTimeAgo(issue.updated_at)}
+            <Calendar className="h-4 w-4" />
+            {formatTimeAgo(issue.updated_at)}
           </span>
           <span className="flex items-center gap-1">
-            <MessageSquare className="w-4 h-4" />
+            <MessageSquare className="h-4 w-4" />
             {issue.comments}
           </span>
         </div>
@@ -167,54 +129,6 @@ function IssueCard({
     </Card>
   );
 }
-function Pagination({
-  pagination,
-  onChange,
-}: {
-  pagination: PaginationInfo;
-  onChange: (p: number) => void;
-}) {
-  const { currentPage, totalPages } = pagination;
-  if (totalPages <= 1) return null;
-  return (
-    <div className="flex items-center justify-center gap-2 mt-8">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => onChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        <ChevronLeft className="w-4 h-4" />
-      </Button>
-      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-        const p =
-          currentPage <= 3
-            ? i + 1
-            : currentPage >= totalPages - 2
-              ? totalPages - 4 + i
-              : currentPage - 2 + i;
-        return (
-          <Button
-            key={p}
-            variant={p === currentPage ? "default" : "outline"}
-            size="sm"
-            onClick={() => onChange(p)}
-          >
-            {p}
-          </Button>
-        );
-      })}
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => onChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        <ChevronRight className="w-4 h-4" />
-      </Button>
-    </div>
-  );
-}
 export default function GitHubIssuesList({
   owner,
   repo,
@@ -236,8 +150,7 @@ export default function GitHubIssuesList({
   });
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1", 10);
-    if (!isNaN(page) && page > 0)
-      setPagination((p) => ({ ...p, currentPage: page }));
+    if (!isNaN(page) && page > 0) setPagination((p) => ({ ...p, currentPage: page }));
   }, [searchParams]);
   useEffect(() => {
     const cacheKey = `gh:${owner}/${repo}/issues/page/${pagination.currentPage}/${pagination.itemsPerPage}`;
@@ -265,20 +178,17 @@ export default function GitHubIssuesList({
         const link = r.headers.get("Link");
         setPagination((p) => ({
           ...p,
-          totalPages: calcTotalPages(link, pagination.itemsPerPage),
+          totalPages: calcTotalPages(link),
         }));
         return r.json() as Promise<GitHubIssue[]>;
       })
       .then((data: GitHubIssue[]) => {
         setIssues(data);
-        sessionStorage.setItem(
-          cacheKey,
-          JSON.stringify({ _ts: Date.now(), data }),
-        );
+        sessionStorage.setItem(cacheKey, JSON.stringify({ _ts: Date.now(), data }));
         setLoading(false);
       })
-      .catch((e) => {
-        setError(e.message);
+      .catch((e: unknown) => {
+        setError(e instanceof Error ? e.message : String(e));
         setLoading(false);
       });
   }, [owner, repo, pagination.currentPage, pagination.itemsPerPage]);
@@ -292,28 +202,22 @@ export default function GitHubIssuesList({
     const num = url.split("/").pop();
     if (num) router.push(`${backHref}/issues/${num}`);
   };
-  const openCnt = issues.filter(
-    (i) => i.state === "open" && !i.pull_request,
-  ).length;
-  const closeCnt = issues.filter(
-    (i) => i.state === "closed" && !i.pull_request,
-  ).length;
-  const openPRCnt = issues.filter(
-    (i) => i.state === "open" && !!i.pull_request,
-  ).length;
+  const openCnt = issues.filter((i) => i.state === "open" && !i.pull_request).length;
+  const closeCnt = issues.filter((i) => i.state === "closed" && !i.pull_request).length;
+  const openPRCnt = issues.filter((i) => i.state === "open" && !!i.pull_request).length;
   const totalCmt = issues.reduce((a, i) => a + i.comments, 0);
   if (loading)
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-foreground/40" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-12 w-12 animate-spin text-foreground/40" />
       </div>
     );
   if (error && !issues.length)
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <Card>
-          <CardContent className="p-8 text-center space-y-4">
-            <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
+          <CardContent className="space-y-4 p-8 text-center">
+            <AlertCircle className="mx-auto h-10 w-10 text-red-500" />
             <p className="text-muted-foreground">{error}</p>
             <Button onClick={() => location.reload()}>重新加载</Button>
           </CardContent>
@@ -323,34 +227,22 @@ export default function GitHubIssuesList({
   return (
     <>
       <main className="min-h-screen bg-background p-6">
-        <div className="max-w-7xl mx-auto space-y-8">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="mx-auto max-w-7xl space-y-8">
+          <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  asChild
-                  className="flex items-center gap-2"
-                >
+                <Button variant="ghost" size="sm" asChild className="flex items-center gap-2">
                   <Link href={backHref}>
-                    <ArrowLeft className="w-4 h-4" />
+                    <ArrowLeft className="h-4 w-4" />
                     返回下载页
                   </Link>
                 </Button>
-                <Badge
-                  variant="secondary"
-                  className="bg-secondary text-foreground/70"
-                >
+                <Badge variant="secondary" className="bg-secondary text-foreground/70">
                   {owner}/{repo}
                 </Badge>
               </div>
-              <h1 className="text-3xl font-bold text-foreground">
-                问题与反馈
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                跟踪 Issues 与 Pull Requests
-              </p>
+              <h1 className="text-3xl font-bold text-foreground">问题与反馈</h1>
+              <p className="text-slate-600 dark:text-slate-400">跟踪 Issues 与 Pull Requests</p>
             </div>
             <div className="flex items-center gap-3">
               <Button
@@ -359,7 +251,7 @@ export default function GitHubIssuesList({
                 size="sm"
                 className="flex items-center gap-2"
               >
-                <Loader2 className="w-4 h-4" />
+                <Loader2 className="h-4 w-4" />
                 刷新
               </Button>
               <Button asChild size="sm">
@@ -369,57 +261,58 @@ export default function GitHubIssuesList({
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="h-4 w-4" />
                   新建 Issue
                 </a>
               </Button>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             <StatsCard
-              icon={<AlertCircle className="w-6 h-6" />}
+              icon={<AlertCircle className="h-6 w-6" />}
               label="开放问题"
               value={openCnt}
             />
             <StatsCard
-              icon={<CheckCircle className="w-6 h-6" />}
+              icon={<CheckCircle className="h-6 w-6" />}
               label="已关闭问题"
               value={closeCnt}
             />
             <StatsCard
-              icon={<GitPullRequest className="w-6 h-6" />}
+              icon={<GitPullRequest className="h-6 w-6" />}
               label="开放 PR"
               value={openPRCnt}
             />
             <StatsCard
-              icon={<MessageSquare className="w-6 h-6" />}
+              icon={<MessageSquare className="h-6 w-6" />}
               label="总评论"
               value={totalCmt}
             />
           </div>
-          <Pagination pagination={pagination} onChange={handlePage} />
+          <Pagination
+            total={pagination.totalPages}
+            current={pagination.currentPage}
+            onPage={handlePage}
+          />
           <section>
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-secondary rounded-lg">
-                  <MessageSquare className="w-5 h-5 text-foreground/60" />
+                <div className="rounded-lg bg-secondary p-2">
+                  <MessageSquare className="h-5 w-5 text-foreground/60" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-                    全部条目
-                  </h2>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">
-                    第 {pagination.currentPage} 页，共 {pagination.totalPages}{" "}
-                    页
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white">全部条目</h2>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    第 {pagination.currentPage} 页，共 {pagination.totalPages} 页
                   </p>
                 </div>
               </div>
             </div>
             {issues.length === 0 ? (
-              <Card className="text-center py-16 border-dashed">
+              <Card className="border-dashed py-16 text-center">
                 <CardContent>
-                  <CheckCircle className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                  <CheckCircle className="mx-auto mb-4 h-16 w-16 text-slate-300 dark:text-slate-600" />
+                  <h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">
                     暂无条目
                   </h3>
                   <p className="text-slate-600 dark:text-slate-400">
@@ -428,18 +321,18 @@ export default function GitHubIssuesList({
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {issues.map((issue) => (
-                  <IssueCard
-                    key={issue.id}
-                    issue={issue}
-                    onClick={handleIssueClick}
-                  />
+                  <IssueCard key={issue.id} issue={issue} onClick={handleIssueClick} />
                 ))}
               </div>
             )}
           </section>
-          <Pagination pagination={pagination} onChange={handlePage} />
+          <Pagination
+            total={pagination.totalPages}
+            current={pagination.currentPage}
+            onPage={handlePage}
+          />
         </div>
       </main>
     </>
