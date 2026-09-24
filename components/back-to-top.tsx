@@ -12,15 +12,28 @@ export function BackToTop() {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
+    // 用 rAF 节流：滚动事件可能每帧触发多次，合并为每帧最多一次重渲染
+    let rafId = 0;
+
+    const update = () => {
+      rafId = 0;
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.pageYOffset / totalHeight) * 100;
+      const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
       setScrollProgress(Math.min(progress, 100));
-      setIsVisible(window.pageYOffset > 300);
+      setIsVisible(window.scrollY > 300);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const scrollToTop = () => {

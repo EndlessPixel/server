@@ -9,6 +9,7 @@ import { AppearanceProvider } from "@/lib/appearance-context";
 import { AppearanceSettingsManager } from "@/components/appearance-settings-container";
 import Script from "next/script";
 import clsx from "clsx";
+import { MotionConfig } from "framer-motion";
 import "./globals.css";
 import FloatActions from "@/components/float-actions";
 import { MouseTrailWrapper } from "@/components/mouse-trail-wrapper";
@@ -241,24 +242,28 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         ))}
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <AppearanceProvider>
-            {/* 全局鼠标拖影特效，根据用户设置条件渲染 */}
-            <MouseTrailWrapper />
+          {/* reducedMotion="user"：系统开启「减弱动态效果」时，
+              framer-motion 自动停用位移/缩放类动画，仅保留透明度过渡 */}
+          <MotionConfig reducedMotion="user">
+            <AppearanceProvider>
+              {/* 全局鼠标拖影特效，根据用户设置条件渲染 */}
+              <MouseTrailWrapper />
 
-            {/* 全站统一外壳：导航栏 / 主内容 / 底部栏
-                各页面无需再各自引入 Navigation 与 Footer */}
-            <AppearanceSettingsManager>
-              <Navigation />
-              <ErrorBoundary>
-                {children}
-                <FloatActions />
-              </ErrorBoundary>
-              <Toaster />
-              <Footer />
-              <SpeedInsights />
-              <Analytics />
-            </AppearanceSettingsManager>
-          </AppearanceProvider>
+              {/* 全站统一外壳：导航栏 / 主内容 / 底部栏
+                  各页面无需再各自引入 Navigation 与 Footer */}
+              <AppearanceSettingsManager>
+                <Navigation />
+                <ErrorBoundary>
+                  {children}
+                  <FloatActions />
+                </ErrorBoundary>
+                <Toaster />
+                <Footer />
+                <SpeedInsights />
+                <Analytics />
+              </AppearanceSettingsManager>
+            </AppearanceProvider>
+          </MotionConfig>
         </ThemeProvider>
       </body>
     </html>
