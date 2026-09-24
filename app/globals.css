@@ -343,7 +343,13 @@ button,
   /* ============================================================
      卡片纵向留白兜底
      Card 自身不设纵向内边距（否则会与调用方的 p-4 / p-6 冲突），
-     改为给 CardHeader / CardContent 自带默认留白。
+     改为给 CardHeader / CardContent 自带默认留白：
+       · CardHeader  → padding-top
+       · CardContent → padding-top + padding-bottom
+     两种卡片组合都能自动拿到正确留白：
+       · <Card><CardHeader/><CardContent/></Card> → 表头补 pt，内容区 pt 被归零
+       · <Card><CardContent/></Card>              → 内容区自己补 pt
+     历史上第二种组合因「没人负责 pt」而反复出现内容贴顶，故改用结构选择器兜住。
 
      放在 components 层是关键：utilities 层优先级更高，
      因此任何显式 padding（p-4、p-6、py-16、pt-8、pb-2 …）都能原样覆盖，
@@ -353,7 +359,14 @@ button,
     padding-top: 1.5rem;
   }
   [data-slot="card-content"] {
+    padding-top: 1.5rem;
     padding-bottom: 1.5rem;
+  }
+  /* 有 CardHeader 时，顶部留白由表头负责，把内容区的顶部内边距归零，避免叠加。
+     这样「有表头」和「没表头」两种卡片都能自动拿到正确留白，
+     不必再靠写卡片的人记得手动补 pt-6（历史上漏过多次）。 */
+  [data-slot="card"]:has(> [data-slot="card-header"]) > [data-slot="card-content"] {
+    padding-top: 0;
   }
 
   .prose {

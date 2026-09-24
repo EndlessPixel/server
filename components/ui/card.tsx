@@ -5,11 +5,14 @@ import { cn } from "@/lib/utils";
 /**
  * 卡片内边距约定：
  * - 横向：CardHeader / CardContent / CardFooter 自带 px-6。
- * - 纵向：Card 本身不设 py-*，由 CardHeader 补 pt、CardContent 补 pb
+ * - 纵向：Card 本身不设 py-*。CardHeader 自带 pt，CardContent 自带 pt + pb
  *   （默认值定义在 app/globals.css 的 @layer components，可被调用方的
  *   p-4 / p-6 / py-16 等工具类覆盖）。
- *   因此新增卡片时直接写 <Card><CardHeader/><CardContent/></Card> 即可有正确留白；
- *   若卡片只有 CardHeader（无 CardContent），需自行补 pb-*。
+ *   CardContent 的 pt 在卡片「存在 CardHeader」时会被一条 :has() 规则自动归零，
+ *   所以下面两种写法都能拿到正确留白，不需要手动补 padding：
+ *     <Card><CardHeader/><CardContent/></Card>
+ *     <Card><CardContent/></Card>
+ * - 例外：只有 CardHeader、没有 CardContent / CardFooter 的卡片，仍需自行补 pb-*。
  */
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
