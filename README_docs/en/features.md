@@ -23,6 +23,7 @@ EndlessPixel's website is built around player services. The modules below are al
 /downloads/custom_downloads  Custom GitHub Releases download
 /status                    Service status index
 /status/mcserverstatus     MC server status detail
+/quiz                      Server quiz (20 random questions, score kept locally)
 /login                     Sign in (password / GitHub OAuth)
 /profile                   Profile (requires login)
 /ai_link                   Safe redirect page for AI-generated links

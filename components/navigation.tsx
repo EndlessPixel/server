@@ -15,6 +15,7 @@ import {
   Search,
   Settings,
   Bot,
+  GraduationCap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoginButton from "@/components/login";
@@ -239,6 +240,7 @@ export function Navigation() {
     { href: "/", label: "网站首页", icon: Home },
     { href: "/downloads", label: "资源下载", icon: Download },
     { href: "/status", label: "服务状态", icon: Activity },
+    { href: "/quiz", label: "服务器考试", icon: GraduationCap },
     { href: "/about", label: "关于我们", icon: Users },
     { href: "/ai", label: "AI客服", icon: Bot },
   ];
