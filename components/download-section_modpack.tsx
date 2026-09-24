@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Star, Shield } from "lucide-react";
 import {
   Pagination,
@@ -18,8 +18,14 @@ import {
   GitHubRelease,
   ParsedRelease,
 } from "@/components/download-base";
+import { githubProxyUrl, parseGitHubRelease } from "@/lib/github";
 
 type Branch = "main" | "real";
+
+const RELEASES_API = "https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases";
+/** GitHub 单页上限 100，per_page=500 会被截断，故按页拉取；最多 10 页 */
+const MAX_PAGES = 10;
+const PER_PAGE = 10;
 
 export function DownloadSectionModpack() {
   const { toast } = useToast();
@@ -30,75 +36,40 @@ export function DownloadSectionModpack() {
   const [sortBy, setSortBy] = useState<"semantic" | "releaseDate" | "downloadCount">("semantic");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
-  const PER_PAGE = 10;
 
-  useEffect(() => {
-    fetchReleases();
-  }, []);
-
-  const fetchReleases = async () => {
+  const fetchReleases = useCallback(async () => {
     try {
       setLoading(true);
       // 经 /api/gh_api 代理（带 GH_TOKEN 认证，避免限流），连续翻页拉全所有版本
-      // GitHub 单页上限 100，per_page=500 会被截断，故分页拉取
-      const base =
-        "https://api.github.com/repos/EndlessPixel/EndlessPixel-Modpack/releases";
-      const MAX_PAGES = 10;
       const all: GitHubRelease[] = [];
-      let page = 1;
-      let more = true;
-      while (more && page <= MAX_PAGES) {
-        const res = await fetch(
-          `/api/gh_api?url=${encodeURIComponent(`${base}?per_page=100&page=${page}`)}`,
-        );
+      for (let pageIndex = 1; pageIndex <= MAX_PAGES; pageIndex += 1) {
+        const res = await fetch(githubProxyUrl(`${RELEASES_API}?per_page=100&page=${pageIndex}`));
         if (!res.ok) throw new Error(String(res.status));
         const data: GitHubRelease[] = await res.json();
         all.push(...data);
-        if (data.length < 100) more = false;
-        else page += 1;
+        if (data.length < 100) break;
       }
-      const data = all;
 
-      const parsed: ParsedRelease[] = data.map((r) => {
-        const branch: Branch = /real/i.test(r.name + r.tag_name) ? "real" : "main";
-        const files = r.assets.map((a) => ({
-          name: a.name,
-          downloadUrl: a.browser_download_url,
-          downloadCount: a.download_count,
-        }));
-        return {
-          name: r.name || r.tag_name,
-          version: r.tag_name,
-          mcVersion: r.tag_name.match(/^(\d+\.\d+\.\d+)/)?.[1] ?? "Unknown",
-          releaseDate: new Date(r.published_at).toLocaleDateString("zh-CN"),
-          isPrerelease: r.prerelease,
-          isLatest: false,
-          downloadCount: files.reduce((s, f) => s + f.downloadCount, 0),
-          files,
-          changelog: r.body || "暂无更新日志。",
-          branch,
-        };
-      });
+      const parsed: ParsedRelease[] = all.map((r) => ({
+        ...parseGitHubRelease(r),
+        branch: /real/i.test(r.name + r.tag_name) ? "real" : "main",
+      }));
 
-      const groupedReleases: Record<string, Record<string, ParsedRelease[]>> = {};
+      // 同一分支 + 同一大版本（如 1.20）下标记最新稳定版
+      const grouped: Record<string, Record<string, ParsedRelease[]>> = {};
       parsed.forEach((r) => {
-        if (!groupedReleases[r.branch!]) groupedReleases[r.branch!] = {};
-        const mcMajorVersion = r.mcVersion.split(".").slice(0, 2).join(".");
-        if (!groupedReleases[r.branch!][mcMajorVersion]) groupedReleases[r.branch!][mcMajorVersion] = [];
-        groupedReleases[r.branch!][mcMajorVersion].push(r);
+        const branch = r.branch ?? "main";
+        const mcMajor = r.mcVersion.split(".").slice(0, 2).join(".");
+        grouped[branch] ??= {};
+        grouped[branch][mcMajor] ??= [];
+        grouped[branch][mcMajor].push(r);
       });
 
-      Object.keys(groupedReleases).forEach((branch) => {
-        Object.keys(groupedReleases[branch]).forEach((mcVersion) => {
-          const releases = groupedReleases[branch][mcVersion];
-          const stableReleases = releases.filter((r) => !r.isPrerelease);
-          if (stableReleases.length > 0) {
-            const latestStable = stableReleases.sort((a, b) => compareSemanticVersions(b.version, a.version))[0];
-            latestStable.isLatest = true;
-          } else if (releases.length > 0) {
-            const latest = releases.sort((a, b) => compareSemanticVersions(b.version, a.version))[0];
-            latest.isLatest = true;
-          }
+      Object.values(grouped).forEach((byMajor) => {
+        Object.values(byMajor).forEach((list) => {
+          const stable = list.filter((r) => !r.isPrerelease);
+          const anchor = stable.length > 0 ? stable : list;
+          anchor.sort((a, b) => compareSemanticVersions(b.version, a.version))[0].isLatest = true;
         });
       });
 
@@ -108,7 +79,11 @@ export function DownloadSectionModpack() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchReleases();
+  }, [fetchReleases]);
 
   const filtered = useReleaseFilter(releases, search, sortBy, sortOrder, activeBranch);
   const { total, paged } = usePagination(filtered, page, PER_PAGE);
@@ -117,12 +92,14 @@ export function DownloadSectionModpack() {
 
   return (
     <section className="space-y-6" aria-label="模组包下载区域">
-      <header className="text-center space-y-3">
+      <header className="space-y-3 text-center">
         <h2 className="text-3xl font-bold text-foreground">下载模组包</h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">选择适合你的分支版本，体验不同游戏乐趣</p>
+        <p className="mx-auto max-w-2xl text-muted-foreground">
+          选择适合你的分支版本，体验不同游戏乐趣
+        </p>
       </header>
 
-      <Card className="p-4 bg-card backdrop-blur-md">
+      <Card className="bg-card p-4 backdrop-blur-md">
         <Toolbar
           search={search}
           onSearchChange={setSearch}
@@ -134,34 +111,42 @@ export function DownloadSectionModpack() {
           loading={loading}
           placeholder="搜索版本号、名称、MC版本..."
         />
-        <div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t border-foreground/5">
+        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-foreground/5 pt-4">
           <span className="text-sm font-medium text-muted-foreground">分支：</span>
-          <Tabs defaultValue={activeBranch} onValueChange={(v) => { setActiveBranch(v as Branch); setPage(1); }}>
-            <TabsList className="grid grid-cols-2 h-10">
-              <TabsTrigger value="main" className="gap-2 data-[state=active]:bg-foreground data-[state=active]:text-background focus:outline-none">
-                <Star className="w-4 h-4" aria-hidden="true" /> Main 分支
+          <Tabs
+            value={activeBranch}
+            onValueChange={(v) => {
+              setActiveBranch(v as Branch);
+              setPage(1);
+            }}
+          >
+            <TabsList className="grid h-10 grid-cols-2">
+              <TabsTrigger
+                value="main"
+                className="gap-2 focus:outline-none data-[state=active]:bg-foreground data-[state=active]:text-background"
+              >
+                <Star className="h-4 w-4" aria-hidden="true" /> Main 分支
               </TabsTrigger>
-              <TabsTrigger value="real" className="gap-2 data-[state=active]:bg-foreground data-[state=active]:text-background focus:outline-none">
-                <Shield className="w-4 h-4" aria-hidden="true" /> Real 分支
-                <Badge variant="secondary" className="ml-1 text-xs">不再维护</Badge>
+              <TabsTrigger
+                value="real"
+                className="gap-2 focus:outline-none data-[state=active]:bg-foreground data-[state=active]:text-background"
+              >
+                <Shield className="h-4 w-4" aria-hidden="true" /> Real 分支
+                <Badge variant="secondary" className="ml-1 text-xs">
+                  不再维护
+                </Badge>
               </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
       </Card>
 
-      <Tabs defaultValue={activeBranch} onValueChange={(v) => { setActiveBranch(v as Branch); setPage(1); }}>
-        <TabsContent value="main" className="space-y-4 pt-4">
-          <Pagination total={total} current={page} onPage={setPage} />
-          <ReleaseGrid list={paged} showBranchBadge={true} />
-          <Pagination total={total} current={page} onPage={setPage} />
-        </TabsContent>
-        <TabsContent value="real" className="space-y-4 pt-4">
-          <Pagination total={total} current={page} onPage={setPage} />
-          <ReleaseGrid list={paged} showBranchBadge={true} />
-          <Pagination total={total} current={page} onPage={setPage} />
-        </TabsContent>
-      </Tabs>
+      <div className="space-y-4 pt-4">
+        <Pagination total={total} current={page} onPage={setPage} />
+        <ReleaseGrid list={paged} showBranchBadge />
+        <Pagination total={total} current={page} onPage={setPage} />
+      </div>
+
       <MirrorFooter />
     </section>
   );
