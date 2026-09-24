@@ -1,5 +1,5 @@
-const DISCORD_API = 'https://discord.com/api/v10';
-export const DISCORD_INVITE_CODE = 'k63hRWt3fF';
+const DISCORD_API = "https://discord.com/api/v10";
+export const DISCORD_INVITE_CODE = "k63hRWt3fF";
 
 export type DiscordInvite = {
   guildId: string;
@@ -14,16 +14,16 @@ export type DiscordInvite = {
 
 // guild.verification_level 枚举 -> 中文标签
 const VERIFICATION_LABELS: Record<number, string> = {
-  0: '无限制',
-  1: '低风险',
-  2: '中等',
-  3: '高',
-  4: '极高',
-  5: '最高',
+  0: "无限制",
+  1: "低风险",
+  2: "中等",
+  3: "高",
+  4: "极高",
+  5: "最高",
 };
 
-export function iconExtension(iconHash: string): 'gif' | 'png' {
-  return iconHash.startsWith('a_') ? 'gif' : 'png';
+export function iconExtension(iconHash: string): "gif" | "png" {
+  return iconHash.startsWith("a_") ? "gif" : "png";
 }
 
 export function iconCdnUrl(guildId: string, iconHash: string): string {
@@ -50,20 +50,20 @@ export async function getDiscordInvite(): Promise<{
     const res = await fetch(
       `${DISCORD_API}/invites/${encodeURIComponent(DISCORD_INVITE_CODE)}?with_counts=true`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'EndlessPixel-Web/1.0',
+          "Content-Type": "application/json",
+          "User-Agent": "EndlessPixel-Web/1.0",
         },
-        cache: 'no-store',
+        cache: "no-store",
       },
     );
 
     if (!res.ok) {
       const status = res.status;
-      let msg = '获取 Discord 邀请信息失败';
-      if (status === 404) msg = '邀请链接无效或已过期';
-      else if (status === 429) msg = '请求过于频繁，请稍后再试';
+      let msg = "获取 Discord 邀请信息失败";
+      if (status === 404) msg = "邀请链接无效或已过期";
+      else if (status === 429) msg = "请求过于频繁，请稍后再试";
       cache = { data: null, error: msg, expires: Date.now() + CACHE_TTL };
       return { data: null, error: msg };
     }
@@ -71,7 +71,7 @@ export async function getDiscordInvite(): Promise<{
     const data = await res.json();
     const guild = data.guild ?? {};
     if (!guild.id) {
-      const msg = '这不是服务器邀请链接';
+      const msg = "这不是服务器邀请链接";
       cache = { data: null, error: msg, expires: Date.now() + CACHE_TTL };
       return { data: null, error: msg };
     }
@@ -86,14 +86,14 @@ export async function getDiscordInvite(): Promise<{
       presenceCount: data.approximate_presence_count ?? 0,
       verificationLevel: {
         value: level,
-        label: VERIFICATION_LABELS[level] ?? '未知',
+        label: VERIFICATION_LABELS[level] ?? "未知",
       },
       joinUrl: `https://discord.gg/${DISCORD_INVITE_CODE}`,
     };
     cache = { data: result, error: null, expires: Date.now() + CACHE_TTL };
     return { data: result, error: null };
   } catch {
-    cache = { data: null, error: '请求失败', expires: Date.now() + CACHE_TTL };
-    return { data: null, error: '请求失败' };
+    cache = { data: null, error: "请求失败", expires: Date.now() + CACHE_TTL };
+    return { data: null, error: "请求失败" };
   }
 }

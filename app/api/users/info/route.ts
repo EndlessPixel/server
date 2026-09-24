@@ -1,86 +1,76 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { cookies } from 'next/headers';
-import { SESSION_COOKIE, verifySessionToken } from '@/lib/session';
+import { NextResponse, NextRequest } from "next/server";
+import { cookies } from "next/headers";
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
 const USER_INFO_API_URL = `http://156.239.230.98:8080/v1/api/users/info`;
 
 export async function GET(request: NextRequest) {
-    try {
-        // 鉴权只认服务端签名的会话 cookie；明文 mc_user 仅前端显示用，不可作为凭证
-        const token = request.cookies.get(SESSION_COOKIE)?.value;
-        const name = verifySessionToken(token);
+  try {
+    // 鉴权只认服务端签名的会话 cookie；明文 mc_user 仅前端显示用，不可作为凭证
+    const token = request.cookies.get(SESSION_COOKIE)?.value;
+    const name = verifySessionToken(token);
 
-        if (!name) {
-            // 清理异常会话 cookie：用户浏览器里若残留旧版/损坏/伪造的 ep_session
-            // （例如登录系统升级前的旧 cookie），虽然校验失败会返回 401，但残留的
-            // 坏 cookie 可能让旧用户一直卡在"未登录"的怪异状态。这里在检测到
-            // 存在却无效的 ep_session 时主动清除，使其回到干净的"未登录"态，
-            // 引导用户用新系统重新登录（旧签名机制不兼容，无法无损迁移，故做清理）。
-            if (token) {
-                try {
-                    const cookieStore = await cookies();
-                    cookieStore.delete(SESSION_COOKIE);
-                } catch {
-                    // 忽略 cookie 写入失败，不影响 401 返回
-                }
-            }
-            return NextResponse.json(
-                { error: '未登录或登录已失效' },
-                { status: 401 }
-            );
+    if (!name) {
+      // 清理异常会话 cookie：用户浏览器里若残留旧版/损坏/伪造的 ep_session
+      // （例如登录系统升级前的旧 cookie），虽然校验失败会返回 401，但残留的
+      // 坏 cookie 可能让旧用户一直卡在"未登录"的怪异状态。这里在检测到
+      // 存在却无效的 ep_session 时主动清除，使其回到干净的"未登录"态，
+      // 引导用户用新系统重新登录（旧签名机制不兼容，无法无损迁移，故做清理）。
+      if (token) {
+        try {
+          const cookieStore = await cookies();
+          cookieStore.delete(SESSION_COOKIE);
+        } catch {
+          // 忽略 cookie 写入失败，不影响 401 返回
         }
-
-        const url = new URL(USER_INFO_API_URL);
-        url.searchParams.append('name', name);
-
-        // IP 来源只信由本机反代写入的 x-real-ip（外部不可伪造）
-        const clientIp =
-            request.headers.get('x-real-ip') ||
-            request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-            '127.0.0.1';
-
-        const res = await fetch(url.toString(), {
-            headers: {
-                'X-Real-IP': clientIp,
-            },
-        });
-
-        // 修复：安全解析响应，防止非 JSON 崩溃
-        let data;
-        const contentType = res.headers.get('content-type');
-        if (contentType?.includes('application/json')) {
-            data = await res.json();
-        } else {
-            throw new Error('后端返回非 JSON 响应');
-        }
-
-        if (!res.ok) {
-            // 适配后端新增的限流：429 表示请求过于频繁
-            if (res.status === 429) {
-                const retryAfter = res.headers.get('retry-after');
-                return NextResponse.json(
-                    {
-                        error: 'rate_limited',
-                        retryAfter: retryAfter ? Number(retryAfter) : undefined,
-                        message: '请求过于频繁，请稍后再试',
-                    },
-                    { status: 429, headers: retryAfter ? { 'Retry-After': retryAfter } : {} }
-                );
-            }
-            // 修复：不直接透传后端错误，防止信息泄露
-            return NextResponse.json(
-                { error: '获取用户信息失败' }, 
-                { status: res.status }
-            );
-        }
-
-        return NextResponse.json(data);
-
-    } catch (error) {
-        console.error('用户信息代理失败:', error);
-        return NextResponse.json(
-            { error: '请求失败，请稍后重试' }, 
-            { status: 500 }
-        );
+      }
+      return NextResponse.json({ error: "未登录或登录已失效" }, { status: 401 });
     }
+
+    const url = new URL(USER_INFO_API_URL);
+    url.searchParams.append("name", name);
+
+    // IP 来源只信由本机反代写入的 x-real-ip（外部不可伪造）
+    const clientIp =
+      request.headers.get("x-real-ip") ||
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      "127.0.0.1";
+
+    const res = await fetch(url.toString(), {
+      headers: {
+        "X-Real-IP": clientIp,
+      },
+    });
+
+    // 修复：安全解析响应，防止非 JSON 崩溃
+    let data;
+    const contentType = res.headers.get("content-type");
+    if (contentType?.includes("application/json")) {
+      data = await res.json();
+    } else {
+      throw new Error("后端返回非 JSON 响应");
+    }
+
+    if (!res.ok) {
+      // 适配后端新增的限流：429 表示请求过于频繁
+      if (res.status === 429) {
+        const retryAfter = res.headers.get("retry-after");
+        return NextResponse.json(
+          {
+            error: "rate_limited",
+            retryAfter: retryAfter ? Number(retryAfter) : undefined,
+            message: "请求过于频繁，请稍后再试",
+          },
+          { status: 429, headers: retryAfter ? { "Retry-After": retryAfter } : {} },
+        );
+      }
+      // 修复：不直接透传后端错误，防止信息泄露
+      return NextResponse.json({ error: "获取用户信息失败" }, { status: res.status });
+    }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("用户信息代理失败:", error);
+    return NextResponse.json({ error: "请求失败，请稍后重试" }, { status: 500 });
+  }
 }

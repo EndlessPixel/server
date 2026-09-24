@@ -33,7 +33,4 @@ export const DEFAULT_MIRRORS: MirrorConfig[] = [
 ];
 
 // MirrorFooter 默认展示的镜像域名（仅用于说明文案）
-export const DEFAULT_MIRROR_DOMAINS: string[] = [
-  "gh-proxy.org",
-  "gh.xmly.dev",
-];
+export const DEFAULT_MIRROR_DOMAINS: string[] = ["gh-proxy.org", "gh.xmly.dev"];

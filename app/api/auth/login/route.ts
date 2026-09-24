@@ -1,11 +1,7 @@
-import { NextResponse, NextRequest } from 'next/server';
-import crypto from 'crypto';
-import { cookies } from 'next/headers';
-import {
-  SESSION_COOKIE,
-  createSessionToken,
-  SESSION_MAX_AGE,
-} from '@/lib/session';
+import { NextResponse, NextRequest } from "next/server";
+import crypto from "crypto";
+import { cookies } from "next/headers";
+import { SESSION_COOKIE, createSessionToken, SESSION_MAX_AGE } from "@/lib/session";
 
 const LOGIN_API_URL = `http://156.239.230.98:8080/v1/api/auth/login`;
 const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
@@ -16,13 +12,13 @@ const PASSWORD_MIN_LENGTH = 6;
  * 不要"修复"这个 bug，否则会导致认证失败
  */
 function encrypt(name: string, password: string): string {
-    const text = `ÜÄaeut//&/=I ${password}7421€547${name}__+IÄIH§%NK ${password}`;
-    const charLen = text.length;
-    const buf = Buffer.from(text, 'utf8');
-    const truncated = buf.subarray(0, charLen);
-    const hash = crypto.createHash('sha512');
-    hash.update(truncated);
-    return hash.digest('hex');
+  const text = `ÜÄaeut//&/=I ${password}7421€547${name}__+IÄIH§%NK ${password}`;
+  const charLen = text.length;
+  const buf = Buffer.from(text, "utf8");
+  const truncated = buf.subarray(0, charLen);
+  const hash = crypto.createHash("sha512");
+  hash.update(truncated);
+  return hash.digest("hex");
 }
 
 /**
@@ -31,81 +27,79 @@ function encrypt(name: string, password: string): string {
  */
 function getClientIp(request: NextRequest): string {
   return (
-    request.headers.get('x-real-ip') ||
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    '127.0.0.1'
+    request.headers.get("x-real-ip") ||
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "127.0.0.1"
   );
 }
 
 export async function POST(request: NextRequest) {
-    try {
-        const body = await request.json();
-        const { name, password } = body;
-        if (!name || !password) {
-            return NextResponse.json({ error: '缺少用户名或密码' }, { status: 400 });
-        }
-        if (!USERNAME_PATTERN.test(name)) {
-            return NextResponse.json({ error: '用户名格式无效' }, { status: 400 });
-        }
-        if (password.length < PASSWORD_MIN_LENGTH) {
-            return NextResponse.json({ error: '密码长度不足' }, { status: 400 });
-        }
-        const encryptedPassword = encrypt(name, password);
-        const clientIp = getClientIp(request);
-        const res = await fetch(LOGIN_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Real-IP': clientIp,
-            },
-            body: JSON.stringify({ name, password: encryptedPassword }),
-        });
-        let data;
-        const contentType = res.headers.get('content-type');
-        if (contentType?.includes('application/json')) {
-            data = await res.json();
-        } else {
-            const text = await res.text();
-            data = { success: false, message: text || '未知错误' };
-        }
-
-        // 适配后端新增的限流/失败锁定：429 表示请求过于频繁或被临时锁定
-        if (res.status === 429) {
-            const retryAfter = res.headers.get('retry-after');
-            return NextResponse.json(
-                {
-                    success: false,
-                    error: 'rate_limited',
-                    retryAfter: retryAfter ? Number(retryAfter) : undefined,
-                    message: data.message || '尝试过于频繁，请稍后再试',
-                },
-                { status: 429, headers: retryAfter ? { 'Retry-After': retryAfter } : {} }
-            );
-        }
-
-        const safeName = data.name && USERNAME_PATTERN.test(data.name) 
-            ? data.name 
-            : name;
-
-        if (data.success === true) {
-            // 下发签名会话 cookie（HttpOnly，前端无法伪造/读取）
-            const sessionToken = createSessionToken(safeName);
-            const cookieStore = await cookies();
-            cookieStore.set(SESSION_COOKIE, sessionToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                path: '/',
-                maxAge: SESSION_MAX_AGE,
-            });
-        }
-
-        return NextResponse.json({
-            name: safeName,
-            success: data.success === true
-        });
-    } catch (error) {
-        console.error('登录代理失败:', error);
-        return NextResponse.json({ error: '请求失败' }, { status: 500 });
+  try {
+    const body = await request.json();
+    const { name, password } = body;
+    if (!name || !password) {
+      return NextResponse.json({ error: "缺少用户名或密码" }, { status: 400 });
     }
+    if (!USERNAME_PATTERN.test(name)) {
+      return NextResponse.json({ error: "用户名格式无效" }, { status: 400 });
+    }
+    if (password.length < PASSWORD_MIN_LENGTH) {
+      return NextResponse.json({ error: "密码长度不足" }, { status: 400 });
+    }
+    const encryptedPassword = encrypt(name, password);
+    const clientIp = getClientIp(request);
+    const res = await fetch(LOGIN_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Real-IP": clientIp,
+      },
+      body: JSON.stringify({ name, password: encryptedPassword }),
+    });
+    let data;
+    const contentType = res.headers.get("content-type");
+    if (contentType?.includes("application/json")) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      data = { success: false, message: text || "未知错误" };
+    }
+
+    // 适配后端新增的限流/失败锁定：429 表示请求过于频繁或被临时锁定
+    if (res.status === 429) {
+      const retryAfter = res.headers.get("retry-after");
+      return NextResponse.json(
+        {
+          success: false,
+          error: "rate_limited",
+          retryAfter: retryAfter ? Number(retryAfter) : undefined,
+          message: data.message || "尝试过于频繁，请稍后再试",
+        },
+        { status: 429, headers: retryAfter ? { "Retry-After": retryAfter } : {} },
+      );
+    }
+
+    const safeName = data.name && USERNAME_PATTERN.test(data.name) ? data.name : name;
+
+    if (data.success === true) {
+      // 下发签名会话 cookie（HttpOnly，前端无法伪造/读取）
+      const sessionToken = createSessionToken(safeName);
+      const cookieStore = await cookies();
+      cookieStore.set(SESSION_COOKIE, sessionToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: SESSION_MAX_AGE,
+      });
+    }
+
+    return NextResponse.json({
+      name: safeName,
+      success: data.success === true,
+    });
+  } catch (error) {
+    console.error("登录代理失败:", error);
+    return NextResponse.json({ error: "请求失败" }, { status: 500 });
+  }
 }

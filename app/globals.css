@@ -12,8 +12,8 @@
 
 /* 黑糖话梅 Black Sugar Plum Candy */
 @font-face {
-  font-family: 'Black Sugar Plum Candy', '黑糖话梅';
-  src: url('/fonts/BlackSugarPlumCandy-Bold.ttf') format('truetype');
+  font-family: "Black Sugar Plum Candy", "黑糖话梅";
+  src: url("/fonts/BlackSugarPlumCandy-Bold.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -21,8 +21,8 @@
 
 /* 小赖字体 SC Xiaolai SC */
 @font-face {
-  font-family: 'Xiaolai SC', '小赖字体 SC';
-  src: url('/fonts/XiaolaiSC-Regular.ttf') format('truetype');
+  font-family: "Xiaolai SC", "小赖字体 SC";
+  src: url("/fonts/XiaolaiSC-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -55,7 +55,7 @@
   --secondary-foreground: oklch(0.13 0.025 150);
   --muted: oklch(0.94 0.02 145);
   --muted-foreground: oklch(0.5 0.04 100);
-  --accent: oklch(0.90 0.10 135);
+  --accent: oklch(0.9 0.1 135);
   --accent-foreground: oklch(0.13 0.025 150);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
@@ -102,24 +102,24 @@
   /* 纯黑中性暗色 — 去除绿相，按钮/强调仍保留苦力怕品牌绿 */
   --background: oklch(0 0 0);
   --foreground: oklch(0.95 0 0);
-  --card: oklch(0.10 0 0);
+  --card: oklch(0.1 0 0);
   --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.10 0 0);
+  --popover: oklch(0.1 0 0);
   --popover-foreground: oklch(0.95 0 0);
   --primary: oklch(0.68 0.13 145);
-  --primary-foreground: oklch(0.10 0 0);
+  --primary-foreground: oklch(0.1 0 0);
   --primary-hover: oklch(0.74 0.12 145);
   --secondary: oklch(0.14 0 0);
   --secondary-foreground: oklch(0.95 0 0);
   --muted: oklch(0.14 0 0);
-  --muted-foreground: oklch(0.70 0 0);
+  --muted-foreground: oklch(0.7 0 0);
   --accent: oklch(0.25 0.05 140);
   --accent-foreground: oklch(0.95 0 0);
   --destructive: oklch(0.57 0.2 27);
   --destructive-foreground: oklch(0.95 0 0);
   --input: oklch(0.18 0 0);
   --ring: oklch(0.68 0.13 145);
-  --border: oklch(0.20 0 0);
+  --border: oklch(0.2 0 0);
 
   --chart-1: oklch(0.55 0.13 145);
   --chart-2: oklch(0.68 0.13 145);
@@ -130,7 +130,7 @@
   --sidebar: oklch(0.06 0 0);
   --sidebar-foreground: oklch(0.95 0 0);
   --sidebar-primary: oklch(0.68 0.13 145);
-  --sidebar-primary-foreground: oklch(0.10 0 0);
+  --sidebar-primary-foreground: oklch(0.1 0 0);
   --sidebar-accent: oklch(0.14 0 0);
   --sidebar-accent-foreground: oklch(0.95 0 0);
   --sidebar-input: oklch(0.18 0 0);
@@ -178,8 +178,8 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-input: var(--sidebar-input);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "Helvetica Neue", sans-serif;
+  --font-sans:
+    "Noto Sans SC", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
   --font-mono: "SF Mono", "Monaco", "Cascadia Code", "Consolas", monospace;
 }
 
@@ -189,8 +189,13 @@
 
 /* 宽松舒适的行高，模仿 Apple 阅读体验 */
 body {
-  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont,
-    "SF Pro Display", "Helvetica Neue", sans-serif;
+  font-family:
+    "Noto Sans SC",
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
@@ -228,8 +233,7 @@ body {
   }
 
   /* 已由 gap / space-y-* 统一管理间距的容器，避免二次叠加 */
-  :is(.flex, .inline-flex, .grid, .inline-grid)
-    > :is(h1, h2, h3, h4, h5, h6, p),
+  :is(.flex, .inline-flex, .grid, .inline-grid) > :is(h1, h2, h3, h4, h5, h6, p),
   [class*="space-y-"] > :is(h1, h2, h3, h4, h5, h6, p) {
     margin-block: 0;
   }
@@ -251,9 +255,10 @@ body {
 }
 
 /* 避免所有元素都有 transform 过渡 */
-a, button, [role="button"] {
-  transition-property: background-color, border-color, opacity, transform,
-    box-shadow;
+a,
+button,
+[role="button"] {
+  transition-property: background-color, border-color, opacity, transform, box-shadow;
 }
 
 /* ============================================================
@@ -335,185 +340,203 @@ a, button, [role="button"] {
    放入 components 层：可覆盖 preflight，又可被工具类覆盖。
    ============================================================ */
 @layer components {
-.prose {
-  line-height: 1.65;
-}
-.prose p {
-  margin-top: 0.625em;
-  margin-bottom: 0.625em;
-}
-.prose h1,
-.prose h2,
-.prose h3,
-.prose h4,
-.prose h5,
-.prose h6 {
-  font-weight: 600;
-  line-height: 1.35;
-  margin-top: 1.25em;
-  margin-bottom: 0.5em;
-}
-.prose h1 { font-size: 1.5em; }
-.prose h2 { font-size: 1.3em; }
-.prose h3 { font-size: 1.15em; }
-.prose h4 { font-size: 1.05em; }
-.prose ul,
-.prose ol {
-  margin-top: 0.625em;
-  margin-bottom: 0.625em;
-  padding-left: 1.5em;
-}
-.prose ul { list-style-type: disc; }
-.prose ol { list-style-type: decimal; }
-.prose li {
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-}
-.prose li > ul,
-.prose li > ol {
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-}
-.prose blockquote {
-  margin-top: 0.75em;
-  margin-bottom: 0.75em;
-  padding-left: 1em;
-  border-left: 3px solid oklch(0 0 0 / 0.15);
-  color: var(--muted-foreground);
-}
-.dark .prose blockquote {
-  border-left-color: oklch(1 0 0 / 0.2);
-}
-.prose pre {
-  margin-top: 0.75em;
-  margin-bottom: 0.75em;
-  padding: 0.75em 1em;
-  border-radius: 0.5rem;
-  background: oklch(0 0 0 / 0.05);
-  overflow-x: auto;
-  font-size: 0.875em;
-}
-.dark .prose pre {
-  background: oklch(1 0 0 / 0.08);
-}
-.prose code {
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-  background: oklch(0 0 0 / 0.06);
-  padding: 0.125em 0.375em;
-  border-radius: 0.25rem;
-}
-.dark .prose code {
-  background: oklch(1 0 0 / 0.1);
-}
-.prose pre code {
-  background: transparent;
-  padding: 0;
-  font-size: inherit;
-}
-.prose table {
-  margin-top: 0.75em;
-  margin-bottom: 0.75em;
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9em;
-}
-.prose th,
-.prose td {
-  padding: 0.375em 0.75em;
-  border: 1px solid oklch(0 0 0 / 0.12);
-  text-align: left;
-}
-.dark .prose th,
-.dark .prose td {
-  border-color: oklch(1 0 0 / 0.15);
-}
-.prose th {
-  font-weight: 600;
-  background: oklch(0 0 0 / 0.04);
-}
-.dark .prose th {
-  background: oklch(1 0 0 / 0.06);
-}
-.prose hr {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  border: none;
-  border-top: 1px solid oklch(0 0 0 / 0.12);
-}
-.dark .prose hr {
-  border-top-color: oklch(1 0 0 / 0.15);
-}
-.prose img {
-  margin-top: 0.75em;
-  margin-bottom: 0.75em;
-  border-radius: 0.5rem;
-  max-width: 100%;
-}
-.prose a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.prose strong { font-weight: 600; }
+  .prose {
+    line-height: 1.65;
+  }
+  .prose p {
+    margin-top: 0.625em;
+    margin-bottom: 0.625em;
+  }
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    font-weight: 600;
+    line-height: 1.35;
+    margin-top: 1.25em;
+    margin-bottom: 0.5em;
+  }
+  .prose h1 {
+    font-size: 1.5em;
+  }
+  .prose h2 {
+    font-size: 1.3em;
+  }
+  .prose h3 {
+    font-size: 1.15em;
+  }
+  .prose h4 {
+    font-size: 1.05em;
+  }
+  .prose ul,
+  .prose ol {
+    margin-top: 0.625em;
+    margin-bottom: 0.625em;
+    padding-left: 1.5em;
+  }
+  .prose ul {
+    list-style-type: disc;
+  }
+  .prose ol {
+    list-style-type: decimal;
+  }
+  .prose li {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+  }
+  .prose li > ul,
+  .prose li > ol {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+  }
+  .prose blockquote {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    padding-left: 1em;
+    border-left: 3px solid oklch(0 0 0 / 0.15);
+    color: var(--muted-foreground);
+  }
+  .dark .prose blockquote {
+    border-left-color: oklch(1 0 0 / 0.2);
+  }
+  .prose pre {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    padding: 0.75em 1em;
+    border-radius: 0.5rem;
+    background: oklch(0 0 0 / 0.05);
+    overflow-x: auto;
+    font-size: 0.875em;
+  }
+  .dark .prose pre {
+    background: oklch(1 0 0 / 0.08);
+  }
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: oklch(0 0 0 / 0.06);
+    padding: 0.125em 0.375em;
+    border-radius: 0.25rem;
+  }
+  .dark .prose code {
+    background: oklch(1 0 0 / 0.1);
+  }
+  .prose pre code {
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+  }
+  .prose table {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+  }
+  .prose th,
+  .prose td {
+    padding: 0.375em 0.75em;
+    border: 1px solid oklch(0 0 0 / 0.12);
+    text-align: left;
+  }
+  .dark .prose th,
+  .dark .prose td {
+    border-color: oklch(1 0 0 / 0.15);
+  }
+  .prose th {
+    font-weight: 600;
+    background: oklch(0 0 0 / 0.04);
+  }
+  .dark .prose th {
+    background: oklch(1 0 0 / 0.06);
+  }
+  .prose hr {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border: none;
+    border-top: 1px solid oklch(0 0 0 / 0.12);
+  }
+  .dark .prose hr {
+    border-top-color: oklch(1 0 0 / 0.15);
+  }
+  .prose img {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    border-radius: 0.5rem;
+    max-width: 100%;
+  }
+  .prose a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose strong {
+    font-weight: 600;
+  }
 
-/* 容器内首尾元素不额外撑开内边距 */
-.prose > :first-child,
-.prose > div > :first-child {
-  margin-top: 0 !important;
-}
-.prose > :last-child,
-.prose > div > :last-child {
-  margin-bottom: 0 !important;
-}
+  /* 容器内首尾元素不额外撑开内边距 */
+  .prose > :first-child,
+  .prose > div > :first-child {
+    margin-top: 0 !important;
+  }
+  .prose > :last-child,
+  .prose > div > :last-child {
+    margin-bottom: 0 !important;
+  }
 
-/* 紧凑变体：聊天气泡等小尺寸场景 */
-.prose-sm {
-  font-size: 0.875rem;
-}
-.prose-sm p,
-.prose-sm ul,
-.prose-sm ol {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-.prose-sm h1,
-.prose-sm h2,
-.prose-sm h3,
-.prose-sm h4,
-.prose-sm h5,
-.prose-sm h6 {
-  margin-top: 1em;
-  margin-bottom: 0.375em;
-}
+  /* 紧凑变体：聊天气泡等小尺寸场景 */
+  .prose-sm {
+    font-size: 0.875rem;
+  }
+  .prose-sm p,
+  .prose-sm ul,
+  .prose-sm ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  .prose-sm h1,
+  .prose-sm h2,
+  .prose-sm h3,
+  .prose-sm h4,
+  .prose-sm h5,
+  .prose-sm h6 {
+    margin-top: 1em;
+    margin-bottom: 0.375em;
+  }
 
-/* not-prose 区域豁免：清掉 prose 强加的排版属性 */
-.prose :where(.not-prose, .not-prose *) {
-  margin-top: revert;
-  margin-bottom: revert;
-  padding-left: revert;
-  font-size: revert;
-  font-weight: revert;
-  line-height: revert;
-  background: revert;
-  border: revert;
-  border-radius: revert;
-  list-style-type: revert;
-  text-decoration: revert;
-}
+  /* not-prose 区域豁免：清掉 prose 强加的排版属性 */
+  .prose :where(.not-prose, .not-prose *) {
+    margin-top: revert;
+    margin-bottom: revert;
+    padding-left: revert;
+    font-size: revert;
+    font-weight: revert;
+    line-height: revert;
+    background: revert;
+    border: revert;
+    border-radius: revert;
+    list-style-type: revert;
+    text-decoration: revert;
+  }
 }
 
 /* 字体类 — 保留 */
 .font-noto-sans {
-  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-family:
+    "Noto Sans SC",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif !important;
 }
 .font-chill-reunion {
   font-family: "ChillReunion Round", "Noto Sans SC", sans-serif !important;
 }
 .font-fz-cuyuan {
-  font-family: 'Black Sugar Plum Candy', '黑糖话梅', sans-serif !important;
+  font-family: "Black Sugar Plum Candy", "黑糖话梅", sans-serif !important;
 }
 .font-hy-tangmeiren {
-  font-family: 'Xiaolai SC', '小赖字体 SC', sans-serif !important;
+  font-family: "Xiaolai SC", "小赖字体 SC", sans-serif !important;
 }
 
 /* ============================================================
@@ -529,13 +552,12 @@ a, button, [role="button"] {
 /* 亮色模式也加一道更隐约的绿调渐变（近白底 + 极淡绿） */
 body {
   background-color: var(--background);
-  background-image:
-    linear-gradient(
-      135deg,
-      color-mix(in oklch, var(--background) 96%, var(--primary) 4%) 0%,
-      var(--background) 55%,
-      color-mix(in oklch, var(--background) 97%, var(--accent) 3%) 100%
-    );
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--background) 96%, var(--primary) 4%) 0%,
+    var(--background) 55%,
+    color-mix(in oklch, var(--background) 97%, var(--accent) 3%) 100%
+  );
   background-attachment: fixed;
 }
 
@@ -561,15 +583,14 @@ body {
   content: "";
   position: absolute;
   inset: -50% -50%;
-  background:
-    repeating-linear-gradient(
-      115deg,
-      rgba(190, 110, 255, 0.0) 0%,
-      rgba(170, 90, 255, 0.55) 12%,
-      rgba(120, 40, 200, 0.15) 24%,
-      rgba(210, 130, 255, 0.55) 36%,
-      rgba(190, 110, 255, 0.0) 48%
-    );
+  background: repeating-linear-gradient(
+    115deg,
+    rgba(190, 110, 255, 0) 0%,
+    rgba(170, 90, 255, 0.55) 12%,
+    rgba(120, 40, 200, 0.15) 24%,
+    rgba(210, 130, 255, 0.55) 36%,
+    rgba(190, 110, 255, 0) 48%
+  );
   background-size: 200% 200%;
   animation: enchant-glint-move 2.4s linear infinite;
 }
@@ -582,19 +603,28 @@ body {
   background: radial-gradient(
     circle at 50% 50%,
     rgba(150, 70, 230, 0.35) 0%,
-    rgba(120, 40, 200, 0.0) 70%
+    rgba(120, 40, 200, 0) 70%
   );
   animation: enchant-glint-pulse 1.8s ease-in-out infinite;
 }
 
 @keyframes enchant-glint-move {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 200% 200%; }
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
 }
 
 @keyframes enchant-glint-pulse {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 0.9; }
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

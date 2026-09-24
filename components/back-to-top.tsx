@@ -13,8 +13,7 @@ export function BackToTop() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const totalHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = (window.pageYOffset / totalHeight) * 100;
       setScrollProgress(Math.min(progress, 100));
       setIsVisible(window.pageYOffset > 300);
@@ -45,18 +44,15 @@ export function BackToTop() {
             ref={buttonRef}
             className={cn(
               "relative h-14 w-14 rounded-full shadow-md transition-all duration-300",
-              "bg-foreground hover:bg-foreground/85 text-background",
-              "active:scale-95 focus-visible:ring-2 focus-visible:ring-ring/30",
+              "bg-foreground text-background hover:bg-foreground/85",
+              "focus-visible:ring-2 focus-visible:ring-ring/30 active:scale-95",
             )}
             onClick={scrollToTop}
             size="icon"
             aria-label="回到顶部"
           >
             {/* 进度环 */}
-            <svg
-              className="absolute inset-0 w-full h-full -rotate-90"
-              viewBox="0 0 100 100"
-            >
+            <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 100 100">
               <circle
                 cx="50"
                 cy="50"

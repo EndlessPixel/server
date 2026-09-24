@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 class TrailPoint {
   x: number;
@@ -44,7 +44,7 @@ class Triangle {
     ctx.translate(this.x, this.y);
     ctx.scale(this.scale, this.scale);
     ctx.globalAlpha = this.alpha;
-    ctx.fillStyle = '#cccccc';
+    ctx.fillStyle = "#cccccc";
     ctx.beginPath();
     ctx.moveTo(0, -this.size / 2);
     ctx.lineTo(-this.size / 2, this.size / 2);
@@ -105,7 +105,7 @@ const MouseTrailEffect = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let w = window.innerWidth;
@@ -123,7 +123,7 @@ const MouseTrailEffect = () => {
     const TRAIL_DURATION = 550;
     const MAX_TRAIL = 15;
     const CLICK_SPAWN = 24;
-    
+
     // 鼠标移动状态控制
     let isMoving = false;
     let moveTimeout: NodeJS.Timeout | null = null;
@@ -189,9 +189,9 @@ const MouseTrailEffect = () => {
       if (isMoving && trail.length > 1) {
         const now = Date.now();
         ctx.shadowBlur = 7;
-        ctx.shadowColor = '#00ccff';
+        ctx.shadowColor = "#00ccff";
         ctx.lineWidth = 1.5;
-        ctx.lineCap = 'round';
+        ctx.lineCap = "round";
 
         for (let i = 1; i < trail.length; i++) {
           const p = trail[i];
@@ -245,18 +245,18 @@ const MouseTrailEffect = () => {
       const y = e.clientY;
       mouseX = x;
       mouseY = y;
-      
+
       if (moveTimeout) clearTimeout(moveTimeout);
-      
+
       if (!isMoving) {
         clearAllEffects();
         isMoving = true;
         startTriangleGenerator();
       }
-      
+
       // 立即添加轨迹点，确保没有延迟残留
       addTrailPoint(x, y);
-      
+
       moveTimeout = setTimeout(() => {
         isMoving = false;
         stopTriangleGenerator();
@@ -265,21 +265,21 @@ const MouseTrailEffect = () => {
     };
 
     // 覆盖原有事件监听
-    window.addEventListener('mousemove', enhancedMouseMove);
-    window.addEventListener('mouseleave', handleWindowMouseLeave);
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('click', handleClick);
-    
+    window.addEventListener("mousemove", enhancedMouseMove);
+    window.addEventListener("mouseleave", handleWindowMouseLeave);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("click", handleClick);
+
     loop();
 
     return () => {
       cancelAnimationFrame(rafId);
       stopTriangleGenerator();
       if (moveTimeout) clearTimeout(moveTimeout);
-      window.removeEventListener('mousemove', enhancedMouseMove);
-      window.removeEventListener('mouseleave', handleWindowMouseLeave);
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('click', handleClick);
+      window.removeEventListener("mousemove", enhancedMouseMove);
+      window.removeEventListener("mouseleave", handleWindowMouseLeave);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("click", handleClick);
     };
   }, []);
 
@@ -287,11 +287,11 @@ const MouseTrailEffect = () => {
     <canvas
       ref={canvasRef}
       style={{
-        position: 'fixed',
+        position: "fixed",
         inset: 0,
-        pointerEvents: 'none',
+        pointerEvents: "none",
         zIndex: 9999,
-        background: 'transparent',
+        background: "transparent",
       }}
     />
   );

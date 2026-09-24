@@ -21,28 +21,17 @@ export default function ServerIpBox() {
         onClick={copy}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="
-          group
-          inline-flex items-center gap-4
-          px-6 py-3.5
-          bg-secondary
-          rounded-xl
-          transition-all duration-300
-          shadow-sm
-          hover:shadow-md
-        "
+        className="group inline-flex items-center gap-4 rounded-xl bg-secondary px-6 py-3.5 shadow-sm transition-all duration-300 hover:shadow-md"
       >
-        <Server className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors duration-300" />
+        <Server className="h-5 w-5 text-muted-foreground transition-colors duration-300 group-hover:text-foreground" />
 
-        <span className="text-base font-medium text-foreground">
-          加入地址：{SERVER_IP}
-        </span>
+        <span className="text-base font-medium text-foreground">加入地址：{SERVER_IP}</span>
 
-        <div className="ml-auto p-1.5 rounded-lg bg-secondary/80 group-hover:bg-foreground/10 transition-colors duration-200">
+        <div className="ml-auto rounded-lg bg-secondary/80 p-1.5 transition-colors duration-200 group-hover:bg-foreground/10">
           {copied ? (
-            <Check className="w-4 h-4 text-foreground" />
+            <Check className="h-4 w-4 text-foreground" />
           ) : (
-            <Copy className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+            <Copy className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
           )}
         </div>
       </motion.button>

@@ -5,19 +5,10 @@ export const metadata: Metadata = {
   title: "首页",
   description:
     "EndlessPixel - 免费纯净Minecraft Java服务器。支持1.7.2-26.2版本，用Purpur核心，不用正版也能玩，完全免费。",
-  keywords: [
-    "首页",
-    "EndlessPixel",
-    "Minecraft服务器",
-    "免费MC",
-    "Java服务器",
-    "公益服",
-    "Purpur",
-  ],
+  keywords: ["首页", "EndlessPixel", "Minecraft服务器", "免费MC", "Java服务器", "公益服", "Purpur"],
   openGraph: {
     title: "EndlessPixel - 免费纯净Minecraft Java服务器",
-    description:
-      "EndlessPixel 是玩家自发的 Minecraft 社区服务器，不用正版验证也能进服，全免费。",
+    description: "EndlessPixel 是玩家自发的 Minecraft 社区服务器，不用正版验证也能进服，全免费。",
     url: "https://www.endlesspixel.cn/",
     type: "website",
     images: [

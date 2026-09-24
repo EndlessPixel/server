@@ -31,9 +31,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
   };
 
   useEffect(() => {
-    setRedirectUrl(
-      encodeURIComponent(window.location.pathname + window.location.search),
-    );
+    setRedirectUrl(encodeURIComponent(window.location.pathname + window.location.search));
   }, []);
 
   useEffect(() => {
@@ -100,18 +98,10 @@ const LoginButton: React.FC<LoginButtonProps> = ({
       <div className={`flex items-center gap-2 ${className}`}>
         <Link
           href="/profile"
-          className={`
-          inline-flex items-center gap-2 rounded-xl
-          ${sizeClasses[size]}
-          bg-secondary
-          hover:bg-secondary/70
-          text-secondary-foreground
-          transition-colors duration-200
-          cursor-pointer
-        `}
+          className={`inline-flex items-center gap-2 rounded-xl ${sizeClasses[size]} cursor-pointer bg-secondary text-secondary-foreground transition-colors duration-200 hover:bg-secondary/70`}
           title="进入个人中心"
         >
-          <div className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center text-background text-xs font-semibold shrink-0">
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground text-xs font-semibold text-background">
             {username.charAt(0).toUpperCase()}
           </div>
           <span className="max-w-25 truncate">{username}</span>
@@ -123,7 +113,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
           aria-label="退出登录"
           type="button"
         >
-          <LogOutIcon className="w-4 h-4" />
+          <LogOutIcon className="h-4 w-4" />
           退出
         </button>
       </div>
@@ -136,7 +126,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
       className={`${loginBtnClasses} ${sizeClasses[size]} ${className}`}
       aria-label="前往登录页面"
     >
-      <LogInIcon className="w-4 h-4" />
+      <LogInIcon className="h-4 w-4" />
       {text}
     </Link>
   );

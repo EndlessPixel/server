@@ -12,7 +12,7 @@ export default function FloatActions() {
   }
 
   return (
-    <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-3 items-end">
+    <div className="fixed right-8 bottom-8 z-50 flex flex-col items-end gap-3">
       {settings.showAIChat && <FloatChatButton />}
       {settings.showBackToTop && <BackToTop />}
     </div>

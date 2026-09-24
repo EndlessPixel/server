@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 interface SkinViewerProps {
   /** Minecraft 玩家 UUID（32 位 hex，可带连字符） */
   uuid: string;
   /** 皮肤来源服务，默认 proxy（同源代理，规避 CORS） */
-  skinBase?: 'mc-heads' | 'crafatar' | 'proxy';
+  skinBase?: "mc-heads" | "crafatar" | "proxy";
   width?: number;
   height?: number;
 }
 
-function buildSkinUrl(uuid: string, base: 'mc-heads' | 'crafatar' | 'proxy') {
-  const clean = uuid.replace(/-/g, '');
+function buildSkinUrl(uuid: string, base: "mc-heads" | "crafatar" | "proxy") {
+  const clean = uuid.replace(/-/g, "");
   // 走同源代理 /api/skin，由服务端拉取第三方皮肤，规避浏览器 CORS 限制。
-  if (base === 'proxy') {
+  if (base === "proxy") {
     return `/api/skin?uuid=${clean}`;
   }
-  return base === 'mc-heads'
+  return base === "mc-heads"
     ? `https://mc-heads.net/skin/${clean}`
     : `https://crafatar.com/skins/${clean}`;
 }
 
 export default function SkinViewer({
   uuid,
-  skinBase = 'proxy',
+  skinBase = "proxy",
   width = 280,
   height = 360,
 }: SkinViewerProps) {
@@ -45,7 +45,7 @@ export default function SkinViewer({
 
     (async () => {
       try {
-        const skinview3d = await import('skinview3d');
+        const skinview3d = await import("skinview3d");
         if (disposed || !canvas) return;
 
         const viewer = new skinview3d.SkinViewer({
@@ -64,12 +64,12 @@ export default function SkinViewer({
         try {
           await viewer.loadSkin(skinUrl);
         } catch (skinErr) {
-          console.error('[SkinViewer] 皮肤加载失败:', skinErr);
+          console.error("[SkinViewer] 皮肤加载失败:", skinErr);
           if (!disposed) setFailed(true);
         }
         if (!disposed) setLoading(false);
       } catch (err) {
-        console.error('[SkinViewer] 初始化失败:', err);
+        console.error("[SkinViewer] 初始化失败:", err);
         if (!disposed) {
           setFailed(true);
           setLoading(false);
@@ -89,7 +89,7 @@ export default function SkinViewer({
   }, [uuid, skinBase, width, height]);
 
   return (
-    <div className="relative flex items-center justify-center rounded-xl overflow-hidden bg-gradient-to-b from-secondary/40 to-secondary/10">
+    <div className="relative flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-secondary/40 to-secondary/10">
       <canvas
         ref={canvasRef}
         style={{ width, height }}
@@ -98,7 +98,7 @@ export default function SkinViewer({
       />
       {loading && !failed && (
         <div className="absolute inset-0 flex items-center justify-center bg-secondary/30">
-          <Loader2 className="w-6 h-6 text-foreground/60 animate-spin" />
+          <Loader2 className="h-6 w-6 animate-spin text-foreground/60" />
         </div>
       )}
       {failed && (

@@ -34,10 +34,10 @@ const SocialLinks = ({ links }: { links: SocialLink[] }) => (
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 hover:scale-110"
+          className="rounded-lg bg-white/10 p-2 transition-all duration-200 hover:scale-110 hover:bg-white/20"
           title={social.label}
         >
-          <Icon className="w-5 h-5 text-white/60 hover:text-white" />
+          <Icon className="h-5 w-5 text-white/60 hover:text-white" />
         </a>
       );
     })}
@@ -55,24 +55,24 @@ const NavLinks = ({ links }: { links: NavLink[] }) => (
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between py-2 px-3 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors duration-200"
+              className="flex items-center justify-between rounded-lg px-3 py-2 text-white/50 transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
             >
               <div className="flex items-center gap-2">
-                <Icon className="w-4 h-4 text-white/30" />
+                <Icon className="h-4 w-4 text-white/30" />
                 <span>{link.label}</span>
               </div>
-              <ExternalLink className="w-3 h-3 text-white/20" />
+              <ExternalLink className="h-3 w-3 text-white/20" />
             </a>
           ) : (
             <Link
               href={link.href}
-              className="flex items-center justify-between py-2 px-3 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors duration-200 group"
+              className="group flex items-center justify-between rounded-lg px-3 py-2 text-white/50 transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
             >
               <div className="flex items-center gap-2">
-                <Icon className="w-4 h-4 text-white/30" />
+                <Icon className="h-4 w-4 text-white/30" />
                 <span>{link.label}</span>
               </div>
-              <ChevronRight className="w-3 h-3 text-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <ChevronRight className="h-3 w-3 text-white/20 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
             </Link>
           )}
         </li>
@@ -83,17 +83,9 @@ const NavLinks = ({ links }: { links: NavLink[] }) => (
 
 const BrandLogo = () => {
   return (
-    <div className="flex items-center gap-3 mb-6">
-      <Image
-        src="/favicon.ico"
-        alt="EndlessPixel"
-        width={48}
-        height={48}
-        className="rounded-xl"
-      />
-      <h2 className="font-bold text-3xl text-white tracking-tight">
-        EndlessPixel
-      </h2>
+    <div className="mb-6 flex items-center gap-3">
+      <Image src="/favicon.ico" alt="EndlessPixel" width={48} height={48} className="rounded-xl" />
+      <h2 className="text-3xl font-bold tracking-tight text-white">EndlessPixel</h2>
     </div>
   );
 };
@@ -101,7 +93,7 @@ const BrandLogo = () => {
 const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
   const currentYear = new Date().getFullYear();
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-white/30 text-sm pt-6 mt-6 border-t border-white/[0.06]">
+    <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-6 text-sm text-white/30 sm:flex-row">
       <span>
         &copy; {startYear}
         {currentYear > startYear ? `–${currentYear}` : ""} EndlessPixel Studio
@@ -111,7 +103,7 @@ const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
       </span>
       <div className="flex items-center gap-2">
         <span>Made with</span>
-        <Heart className="w-4 h-4 text-white/30" />
+        <Heart className="h-4 w-4 text-white/30" />
         <span>by community</span>
       </div>
     </div>
@@ -122,36 +114,21 @@ export function Footer() {
   const socialLinks: SocialLink[] = [
     {
       icon: () => (
-        <img
-          src="https://cdn.simpleicons.org/github/white"
-          width="18"
-          height="18"
-          alt="GitHub"
-        />
+        <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" />
       ),
       href: "https://github.com/EndlessPixel",
       label: "GitHub",
     },
     {
       icon: () => (
-        <img
-          src="https://cdn.simpleicons.org/qq/white"
-          width="18"
-          height="18"
-          alt="QQ群"
-        />
+        <img src="https://cdn.simpleicons.org/qq/white" width="18" height="18" alt="QQ群" />
       ),
       href: "https://qm.qq.com/q/sFrax2Ilxe",
       label: "QQ群",
     },
     {
       icon: () => (
-        <img
-          src="https://cdn.simpleicons.org/discord/white"
-          width="18"
-          height="18"
-          alt="Discord"
-        />
+        <img src="https://cdn.simpleicons.org/discord/white" width="18" height="18" alt="Discord" />
       ),
       href: "https://discord.gg/k63hRWt3fF",
       label: "Discord",
@@ -170,48 +147,26 @@ export function Footer() {
     },
     {
       icon: () => (
-        <img
-          src="https://cdn.simpleicons.org/kuaishou/white"
-          width="18"
-          height="18"
-          alt="快手"
-        />
+        <img src="https://cdn.simpleicons.org/kuaishou/white" width="18" height="18" alt="快手" />
       ),
       href: "https://kuaishou.cn/profile/3xth2cp4jf5ha6c",
       label: "快手",
     },
     {
       icon: () => (
-        <img
-          src="https://cdn.simpleicons.org/twitch/white"
-          width="18"
-          height="18"
-          alt="Twitch"
-        />
+        <img src="https://cdn.simpleicons.org/twitch/white" width="18" height="18" alt="Twitch" />
       ),
       href: "https://www.twitch.tv/system_mini",
       label: "Twitch",
     },
     {
-      icon: () => (
-        <img
-          src="https://cdn.simpleicons.org/x/white"
-          width="18"
-          height="18"
-          alt="X"
-        />
-      ),
+      icon: () => <img src="https://cdn.simpleicons.org/x/white" width="18" height="18" alt="X" />,
       href: "https://x.com/system_mini",
       label: "X",
     },
     {
       icon: () => (
-        <img
-          src="https://cdn.simpleicons.org/youtube/white"
-          width="18"
-          height="18"
-          alt="YouTube"
-        />
+        <img src="https://cdn.simpleicons.org/youtube/white" width="18" height="18" alt="YouTube" />
       ),
       href: "https://www.youtube.com/channel/UCMhwQrCnysEi0z0PTB655Eg",
       label: "YouTube",
@@ -246,14 +201,13 @@ export function Footer() {
 
   return (
     <footer className="bg-black text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           {/* 左侧品牌区 */}
           <div className="space-y-4">
             <BrandLogo />
-            <p className="text-white/40 text-sm leading-relaxed max-w-md">
-              EndlessPixel 是一群喜欢 Minecraft
-              的玩家凑在一起搭的服务器，不收费，想玩随时来。
+            <p className="max-w-md text-sm leading-relaxed text-white/40">
+              EndlessPixel 是一群喜欢 Minecraft 的玩家凑在一起搭的服务器，不收费，想玩随时来。
             </p>
             <SocialLinks links={socialLinks} />
             <p className="text-sm text-white/30">服务器创立至今：</p>
@@ -263,25 +217,23 @@ export function Footer() {
           {/* 右侧：2列导航 */}
           <div className="grid grid-cols-2 gap-8">
             <div>
-              <h3 className="font-semibold text-base mb-4 text-white/60 tracking-tight">
+              <h3 className="mb-4 text-base font-semibold tracking-tight text-white/60">
                 快速导航
               </h3>
               <NavLinks links={navLinks.slice(0, 4)} />
             </div>
             <div>
-              <h3 className="font-semibold text-base mb-4 text-white/60 tracking-tight">
-                &nbsp;
-              </h3>
+              <h3 className="mb-4 text-base font-semibold tracking-tight text-white/60">&nbsp;</h3>
               <NavLinks links={navLinks.slice(4)} />
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-x-6 gap-y-2 pt-6 mt-6 border-t border-white/[0.06] text-sm text-white/30">
-          <Link href="/terms" className="hover:text-white transition-colors duration-200">
+        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.06] pt-6 text-sm text-white/30">
+          <Link href="/terms" className="transition-colors duration-200 hover:text-white">
             用户协议
           </Link>
-          <Link href="/privacy" className="hover:text-white transition-colors duration-200">
+          <Link href="/privacy" className="transition-colors duration-200 hover:text-white">
             隐私政策
           </Link>
         </div>
