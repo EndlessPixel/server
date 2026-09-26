@@ -156,6 +156,8 @@ type Message = {
   timestamp: number;
   senderName: string;
   failed?: boolean;
+  /** 失败是否属于服务端问题；false（403/429 等请求侧问题）时不展示链路自检 */
+  serverSideFailed?: boolean;
 };
 
 interface Session {
@@ -323,6 +325,82 @@ const TypingIndicator = () => (
     ))}
   </div>
 );
+
+/** 链路自检的一层 */
+type HealthLayer = { id: string; label: string; ok: boolean };
+
+/** 自检结果短时缓存：同一次故障里多条失败消息不必重复探测 */
+const HEALTH_CACHE_TTL = 30_000;
+let healthCache: { at: number; layers: HealthLayer[] } | null = null;
+
+/**
+ * AI 链路自检指示器：在失败消息下方展示「断在哪一层」。
+ * 探测由 /api/ai/health 在服务端完成，这里只负责展示。
+ */
+const AiHealthBoard = () => {
+  const [layers, setLayers] = useState<HealthLayer[] | null>(null);
+  const [probeFailed, setProbeFailed] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    if (healthCache && Date.now() - healthCache.at < HEALTH_CACHE_TTL) {
+      setLayers(healthCache.layers);
+      return;
+    }
+    fetch("/api/ai/health")
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
+      .then((data: { layers?: HealthLayer[] }) => {
+        if (!Array.isArray(data.layers)) throw new Error("响应格式异常");
+        healthCache = { at: Date.now(), layers: data.layers };
+        if (alive) setLayers(data.layers);
+      })
+      .catch(() => {
+        if (alive) setProbeFailed(true);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // 第一个不通的层就是断点。前两层恒为 true，所以断点只可能落在
+  // nginx / 代理服务器 / 上游服务 上。
+  const broken = layers?.find((layer) => !layer.ok);
+  const summary = broken ? `断点在「${broken.label}」` : "";
+
+  return (
+    <div className="mt-1 flex flex-col gap-1 text-xs">
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="text-muted-foreground/60">链路自检</span>
+        {probeFailed ? (
+          <span className="text-muted-foreground/60">探测失败</span>
+        ) : !layers ? (
+          <span className="text-muted-foreground/60">探测中…</span>
+        ) : (
+          layers.map((layer) => (
+            <span
+              key={layer.id}
+              className={cn(
+                "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5",
+                layer.ok
+                  ? "bg-secondary text-muted-foreground"
+                  : "bg-destructive/10 font-medium text-destructive",
+              )}
+            >
+              {layer.label}
+              {layer.ok ? <Check className="h-3 w-3" /> : <XIcon className="h-3 w-3" />}
+            </span>
+          ))
+        )}
+      </div>
+      {summary && (
+        <span className="flex items-center gap-1 text-muted-foreground/60">
+          <AlertCircle className="h-3 w-3" />
+          {summary}
+        </span>
+      )}
+    </div>
+  );
+};
 
 export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -555,6 +633,9 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     abortControllerRef.current = controller;
     let reply = "";
     let receivedContent = false;
+    // 失败是否属于服务端问题：只有服务端问题才在消息下方展示链路自检。
+    // 默认按服务端问题处理，遇到 403/429 这类请求侧响应再改回 false。
+    let serverSideFailed = true;
     try {
       await fetchEventSource("/api/ai/chat", {
         method: "POST",
@@ -569,6 +650,10 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         signal: controller.signal,
         async onopen(response) {
           if (!response.ok) {
+            // 认证失败 / 被限流不是服务器的锅，别弹自检给玩家看
+            if (response.status === 403 || response.status === 429) {
+              serverSideFailed = false;
+            }
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }
         },
@@ -582,6 +667,8 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
               const fullErrorMsg = `错误：${errorMsg}`;
               reply = fullErrorMsg;
               receivedContent = true;
+              // 后端标记了 serverSide 就用它；缺字段时按服务端问题处理
+              serverSideFailed = j.serverSide !== false;
 
               setSessions((prev) =>
                 prev.map((s) => {
@@ -593,6 +680,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                       ...last,
                       content: fullErrorMsg,
                       failed: true,
+                      serverSideFailed,
                     };
                   }
                   return { ...s, messages: msgs };
@@ -606,6 +694,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                     ...last,
                     content: fullErrorMsg,
                     failed: true,
+                    serverSideFailed,
                   };
                 }
                 return newMsgs;
@@ -682,6 +771,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
           timestamp: Date.now(),
           senderName: "EPBot",
           failed: true,
+          serverSideFailed,
         };
         setSessions((prev) =>
           prev.map((s) => {
@@ -1399,6 +1489,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                         );
                       })()}
                     </div>
+                    {m.serverSideFailed && <AiHealthBoard />}
                   </div>
                 ),
               )

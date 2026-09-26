@@ -26,8 +26,9 @@ app/api/ai/chat/route.ts  (Node runtime, force-dynamic)
 |------|------|------|
 | `/api/ai/chat` | POST | SSE 流式对话 |
 | `/api/ai/models` | GET | 拉取可用模型列表 |
+| `/api/ai/health` | GET | 链路自检，返回各层连通状态 |
 
-两个路由均声明：
+三个路由均声明：
 
 ```ts
 export const runtime = 'nodejs';
@@ -48,9 +49,14 @@ export const dynamic = 'force-dynamic';
 
 - `{ "type": "text-delta", "delta": "..." }` —— 文本增量
 - `{ "type": "usage", "usage": { "promptTokens": N, "completionTokens": N, "totalTokens": N } }` —— 用量统计（流末发送一次）
-- `{ "type": "error", "errorText": "..." }` —— 错误（随后以 `[DONE]` 结束）
+- `{ "type": "error", "errorText": "...", "serverSide": true }` —— 错误（随后以 `[DONE]` 结束）
 
 流结束标记 `[DONE]`。
+
+`serverSide` 表示「这次失败是否属于服务端问题」。`false` 用于 403 / 429
+以及参数错误这类请求侧问题，客户端据此决定**不展示链路自检**——不是服务器的锅，
+就不该弹给玩家看。判定逻辑见 `isNonServerStatus()`：4xx 视为请求侧，但 408
+（上游响应超时）仍属服务侧。
 
 服务端读取上游 OpenAI 兼容接口的 `choices[0].delta.content` 增量，转换为上面的 `text-delta` 事件回传；上游返回的 `usage` 会转为 `usage` 事件下发。
 
@@ -201,3 +207,41 @@ href={`/ai_link?url=${encodeURIComponent(href)}`}
 - 超限返回 `请求过于频繁，请稍后再试`。
 
 > 该限流是**单进程内存态**，多实例部署时各实例独立计数，不共享。
+
+---
+
+## 链路自检
+
+AI 请求失败、且**属于服务端问题**时，失败消息下方会出现一条链路自检，标明断在哪一层：
+
+```
+链路自检  浏览器 ✔  网站后端 ✔  nginx ✔  代理服务器 ✔  上游服务 ❌
+断点在「上游服务」
+```
+
+### 各层判定方式（`/api/ai/health`）
+
+| 层 | 判定 |
+|------|------|
+| 浏览器 | 恒 ✔ —— 能把这条消息渲染出来就说明它在 |
+| 网站后端 | 恒 ✔ —— 能拿到自检接口的响应就说明它在 |
+| nginx | `GET ${AI_EDGE_BASE_URL}/ping-nginx`，非 2xx 即 ❌ |
+| 代理服务器 | `GET ${AI_EDGE_BASE_URL}/ping`，非 2xx 即 ❌ |
+| 上游服务 | **不单独探测**，恒 ❌（原因见下） |
+
+上游不探测的原因：走到自检这一步说明本次对话已经失败了 ——
+下面两层只要有一层不通，上游必然不可达；两层都通时，错误只可能出在上游。
+所以自检永远只标记一个断点，它之后的层连带 ❌。
+
+### 什么时候不展示
+
+`serverSide: false` 的失败（403 / 429 / 参数错误）不展示自检 —— 不是服务器的锅。
+判定见 `isNonServerStatus()`：4xx 视为请求侧，但 408（上游响应超时）仍算服务侧。
+
+### 实现要点
+
+- 探测在**服务端**完成，前端只负责展示，因此不受 CORS 限制，也不会因为浏览器拦截而误判 ❌。
+- 单次探测超时 3000 ms，两层并发探测。
+- 前端对自检结果有 **30 秒缓存**，同一次故障里的多条失败消息不会重复打接口。
+- 基础地址取环境变量 `AI_EDGE_BASE_URL` 的默认值（见 `.env.example`）。
+- 该接口只负责「探测并如实回报」，是否展示由客户端根据失败原因决定。

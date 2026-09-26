@@ -26,8 +26,9 @@ app/api/ai/chat/route.ts  (Node runtime, force-dynamic)
 |----------|--------|---------|
 | `/api/ai/chat` | POST | SSE streaming chat |
 | `/api/ai/models` | GET | List available models |
+| `/api/ai/health` | GET | Link self-check, returns connectivity per layer |
 
-Both declare:
+All three declare:
 
 ```ts
 export const runtime = 'nodejs';
@@ -48,9 +49,14 @@ The server emits the following SSE event shapes:
 
 - `{ "type": "text-delta", "delta": "..." }` — text delta
 - `{ "type": "usage", "usage": { "promptTokens": N, "completionTokens": N, "totalTokens": N } }` — token usage (sent once at stream end)
-- `{ "type": "error", "errorText": "..." }` — error (followed by `[DONE]`)
+- `{ "type": "error", "errorText": "...", "serverSide": true }` — error (followed by `[DONE]`)
 
 The stream ends with `[DONE]`.
+
+`serverSide` marks whether the failure is a **server-side** problem. It is `false`
+for request-side cases such as 403 / 429 and invalid parameters, and the client then
+skips the link self-check — a non-server fault should not be surfaced as one.
+See `isNonServerStatus()`: 4xx counts as request-side, except 408 (upstream timeout).
 
 The server reads the upstream OpenAI-compatible `choices[0].delta.content` deltas and converts them into the `text-delta` events above; the upstream `usage` is forwarded as a `usage` event.
 
@@ -204,3 +210,45 @@ In-process `Map<ip, number[]>`:
 - Over the limit: `请求过于频繁，请稍后再试`.
 
 > This limiter is **per-process in memory** — with multiple instances, each counts independently and they don't share state.
+
+---
+
+## Link Self-Check
+
+When an AI request fails **due to a server-side problem**, a link self-check appears
+below the failed message, showing which hop broke:
+
+```
+Self-check  Browser ✔  Backend ✔  nginx ✔  Proxy ✔  Upstream ❌
+Broken at "Upstream"
+```
+
+### How each layer is judged (`/api/ai/health`)
+
+| Layer | Rule |
+|-------|------|
+| Browser | always ✔ — rendering the message proves it is alive |
+| Backend | always ✔ — receiving this response proves it is alive |
+| nginx | `GET ${AI_EDGE_BASE_URL}/ping-nginx`, non-2xx → ❌ |
+| Proxy | `GET ${AI_EDGE_BASE_URL}/ping`, non-2xx → ❌ |
+| Upstream | **not probed**, always ❌ (see below) |
+
+Upstream is deliberately not probed: reaching the self-check means the chat has already
+failed. If either lower layer is down, the upstream is unreachable by definition; if both
+are up, the fault can only be upstream. So the check always marks exactly one break point
+and everything after it as ❌.
+
+### When it is hidden
+
+Failures with `serverSide: false` (403 / 429 / invalid parameters) do not show the
+self-check — those are not the server's fault. See `isNonServerStatus()`: 4xx counts as
+request-side, except 408 (upstream timeout).
+
+### Notes
+
+- Probing runs **server-side**; the client only renders, so CORS never applies and a
+  browser block can not be misread as ❌.
+- Per-probe timeout 3000 ms, both probes run concurrently.
+- The client caches the result for **30 seconds**, so multiple failed messages do not re-probe.
+- Base address comes from `AI_EDGE_BASE_URL` (see `.env.example`).
+- The endpoint only probes and reports; whether to display the result is decided by the client.

@@ -111,16 +111,34 @@ async function getPlayerContextBlock(req: NextRequest): Promise<string> {
     return "";
   }
 }
-function sseError(errorText: string): Response {
+/**
+ * 以 SSE 事件形式回报错误。
+ *
+ * serverSide 表示「这是否属于服务端问题」：403/429 这类认证或限流响应，
+ * 以及参数错误等请求侧问题传 false，客户端据此决定要不要展示链路自检 ——
+ * 不是服务器的锅就不该弹给玩家看。
+ */
+function sseError(errorText: string, serverSide = true): Response {
   const safeError = errorText
     .replace(/API_KEY.*/i, "配置错误")
     .replace(/read system\.txt/i, "服务初始化失败")
     .replace(/fetch failed/i, "网络连接失败");
-  const body = `data: {"type":"error","errorText":"${safeError}"}\n\ndata: [DONE]\n\n`;
+  const payload = JSON.stringify({ type: "error", errorText: safeError, serverSide });
+  const body = `data: ${payload}\n\ndata: [DONE]\n\n`;
   return new Response(body, {
     status: 200,
     headers: { "Content-Type": "text/event-stream" },
   });
+}
+
+/**
+ * 上游状态码是否「与服务端健康无关」。
+ * 4xx 属于请求侧或策略侧（参数、认证、限流），不该让玩家以为服务器挂了；
+ * 408 是上游响应超时，属于服务侧，所以单独排除在 4xx 之外。
+ */
+function isNonServerStatus(status: number): boolean {
+  if (status === 408) return false;
+  return status >= 400 && status < 500;
 }
 export async function POST(req: NextRequest) {
   const controller = new AbortController();
@@ -128,11 +146,11 @@ export async function POST(req: NextRequest) {
   try {
     const ip = getClientIP(req);
     if (isRateLimited(ip)) {
-      return sseError("请求过于频繁，请稍后再试");
+      return sseError("请求过于频繁，请稍后再试", false);
     }
     const body = await req.json().catch(() => null);
     if (!body || !Array.isArray(body.messages)) {
-      return sseError("请求格式错误");
+      return sseError("请求格式错误", false);
     }
     const { messages, model } = body;
     let systemPrompt: string;
@@ -150,7 +168,7 @@ export async function POST(req: NextRequest) {
     const selectedModel =
       model && typeof model === "string" && model.trim() ? model.trim() : defaultModel;
     if (selectedModel.length > 100 || !/^[a-zA-Z0-9_\-/\.]+$/.test(selectedModel)) {
-      return sseError("无效的模型参数");
+      return sseError("无效的模型参数", false);
     }
     const openaiBody = {
       model: selectedModel,
@@ -284,7 +302,7 @@ export async function POST(req: NextRequest) {
           }
       }
 
-      return sseError(errorMsg);
+      return sseError(errorMsg, !isNonServerStatus(upstream.status));
     }
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
