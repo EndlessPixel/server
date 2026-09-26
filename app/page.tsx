@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "首页",
   description:
-    "EndlessPixel - 免费纯净Minecraft Java服务器。支持1.7.2-26.2版本，用Purpur核心，不用正版也能玩，完全免费。",
+    "EndlessPixel - 免费纯净Minecraft Java服务器。支持1.7.2-26.3版本，用Purpur核心，不用正版也能玩，完全免费。",
   keywords: ["首页", "EndlessPixel", "Minecraft服务器", "免费MC", "Java服务器", "公益服", "Purpur"],
   openGraph: {
     title: "EndlessPixel - 免费纯净Minecraft Java服务器",
