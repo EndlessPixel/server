@@ -168,9 +168,9 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     id: "version-range",
     category: "版本",
     question: "本服兼容哪些 Java 版客户端版本？",
-    options: ["1.12.2 ~ 1.20.1", "1.7.2 ~ 26.2", "1.16 ~ 1.21", "仅支持 26.x"],
+    options: ["1.12.2 ~ 1.20.1", "1.7.2 ~ 26.3", "1.16 ~ 1.21", "仅支持 26.x"],
     answer: 1,
-    explanation: "正式服兼容 Java 版 1.7.2 ~ 26.2，中间的版本差异通过 ViaVersion 做跨版本兼容。",
+    explanation: "正式服兼容 Java 版 1.7.2 ~ 26.3，中间的版本差异通过 ViaVersion 做跨版本兼容。",
   },
   {
     id: "version-year-scheme",
