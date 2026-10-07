@@ -86,14 +86,14 @@ Written in `app/api/auth/login/route.ts` and `app/api/auth/github/callback/route
 
 | Field | Rule | Message |
 |-------|------|---------|
-| Username non-empty | `!username.trim()` | Please enter a username |
-| Username format | `/^[a-zA-Z0-9_]{3,16}$/` | Letters, digits and underscores only, 3–16 chars |
+| Username non-empty | `!username.trim()` | Please enter a username or email |
+| Username / email format | username `/^[a-zA-Z0-9_]{3,16}$/` or email `/^[^@\s]+@[^@\s]+\.[^@\s]+$/` | Username: letters, digits and underscores only, 3–16 chars; or a bound email address |
 | Password length | `password.length < 6` | Password must be at least 6 characters |
 | Terms checkbox | `!agreeTerms` | Please read and accept the terms and privacy policy |
 
 ### Sign-in Methods
 
-1. **Minecraft username + password**: handled by `app/api/auth/login/route.ts`, writes cookies after verification.
+1. **Minecraft username + password**: handled by `app/api/auth/login/route.ts`; **either the in-game username or the bound email works**. The session stores the username, never the email.
 2. **GitHub OAuth**: handled by `app/api/auth/github/*`, sets `ep_provider=github` after the callback.
 
 ### Fixed Pitfalls

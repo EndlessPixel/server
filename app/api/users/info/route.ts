@@ -38,7 +38,9 @@ export async function GET(request: NextRequest) {
 
     const res = await fetch(url.toString(), {
       headers: {
+        // 后端 _client_ip() 读 x-forwarded-for 的第一个值（限流 60 次/60 秒按它计数）
         "X-Real-IP": clientIp,
+        "X-Forwarded-For": clientIp,
       },
     });
 
@@ -52,19 +54,28 @@ export async function GET(request: NextRequest) {
     }
 
     if (!res.ok) {
-      // 适配后端新增的限流：429 表示请求过于频繁
+      // 后端是 FastAPI：HTTPException 的提示语在 detail 字段里
+      const detail = typeof data?.detail === "string" ? (data.detail as string) : "";
+      // 适配后端限流：429 表示请求过于频繁
       if (res.status === 429) {
         const retryAfter = res.headers.get("retry-after");
         return NextResponse.json(
           {
             error: "rate_limited",
             retryAfter: retryAfter ? Number(retryAfter) : undefined,
-            message: "请求过于频繁，请稍后再试",
+            message: detail || "请求过于频繁，请稍后再试",
           },
           { status: 429, headers: retryAfter ? { "Retry-After": retryAfter } : {} },
         );
       }
-      // 修复：不直接透传后端错误，防止信息泄露
+      // 404 = 登录态有效、但该玩家在游戏库里没有记录，前端要能把这种情况与「后端故障」区分开
+      if (res.status === 404) {
+        return NextResponse.json(
+          { error: "not_found", detail: detail || "未找到该玩家的数据" },
+          { status: 404 },
+        );
+      }
+      // 其余错误不直接透传，防止信息泄露
       return NextResponse.json({ error: "获取用户信息失败" }, { status: res.status });
     }
 
