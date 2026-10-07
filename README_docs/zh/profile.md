@@ -86,14 +86,14 @@ export function verifySessionToken(token: string | undefined): string | null {
 
 | 项 | 规则 | 提示 |
 |----|------|------|
-| 用户名非空 | `!username.trim()` | 请输入用户名 |
-| 用户名格式 | `/^[a-zA-Z0-9_]{3,16}$/` | 只能含字母、数字、下划线，长度 3-16 位 |
+| 用户名非空 | `!username.trim()` | 请输入用户名或邮箱 |
+| 用户名 / 邮箱格式 | 用户名 `/^[a-zA-Z0-9_]{3,16}$/` 或邮箱 `/^[^@\s]+@[^@\s]+\.[^@\s]+$/` | 用户名只能含字母、数字、下划线且长度 3-16 位；也可直接填绑定邮箱 |
 | 密码长度 | `password.length < 6` | 密码长度不能少于 6 位 |
 | 协议勾选 | `!agreeTerms` | 请阅读并同意用户协议与隐私政策 |
 
 ### 登录方式
 
-1. **Minecraft 账号密码**：走 `app/api/auth/login/route.ts`，校验后写 Cookie。
+1. **Minecraft 账号密码**：走 `app/api/auth/login/route.ts`，**可用游戏内用户名或绑定邮箱登录**；会话里存的是用户名，不会存邮箱。
 2. **GitHub OAuth**：走 `app/api/auth/github/*`，回调后写 `ep_provider=github`。
 
 ### 已修复的坑

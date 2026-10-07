@@ -15,6 +15,10 @@ export default function LoginContent() {
   const searchParams = useSearchParams();
 
   const validUsernamePattern = /^[a-zA-Z0-9_]{3,16}$/;
+  // 后端支持用邮箱登录（命中邮箱格式就按 email 列查）
+  const validEmailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const isValidLoginInput = (value: string) =>
+    validUsernamePattern.test(value) || validEmailPattern.test(value);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowForm(true), 300);
@@ -57,11 +61,11 @@ export default function LoginContent() {
     if (loading) return;
 
     if (!username.trim()) {
-      setError("请输入用户名");
+      setError("请输入用户名或邮箱");
       return;
     }
-    if (!validUsernamePattern.test(username)) {
-      setError("用户名只能包含字母、数字和下划线，长度 3-16 位");
+    if (!isValidLoginInput(username)) {
+      setError("请输入用户名（字母、数字、下划线，长度 3-16 位）或邮箱地址");
       return;
     }
     if (!password.trim() || password.length < 6) {
@@ -92,8 +96,15 @@ export default function LoginContent() {
       }
 
       if (res.ok && data.success === true) {
-        const userName = data.name && validUsernamePattern.test(data.name) ? data.name : username;
-        setCookie("mc_user", userName);
+        // 用邮箱登录时，后端返回的 name 是账号真实用户名；万一没返回，
+        // 也不要把邮箱当用户名写进 mc_user（它只是前端展示用的明文 cookie）。
+        const userName =
+          data.name && validUsernamePattern.test(data.name)
+            ? data.name
+            : validUsernamePattern.test(username)
+              ? username
+              : "";
+        if (userName) setCookie("mc_user", userName);
         const redirect = searchParams.get("redirect") || "/";
         router.push(redirect);
         router.refresh();
@@ -138,7 +149,9 @@ export default function LoginContent() {
               </svg>
             </div>
             <h1 className="mb-2 text-2xl font-bold text-foreground">欢迎回来</h1>
-            <p className="text-sm text-muted-foreground">请输入用户名和密码继续你的旅程</p>
+            <p className="text-sm text-muted-foreground">
+              请输入用户名（或邮箱）和密码继续你的旅程
+            </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4" noValidate>
@@ -153,7 +166,7 @@ export default function LoginContent() {
 
             <div className="space-y-2">
               <label htmlFor="username" className="block text-sm font-medium text-foreground">
-                用户名
+                用户名 / 邮箱
               </label>
               <input
                 type="text"
@@ -161,7 +174,7 @@ export default function LoginContent() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full rounded-lg bg-secondary px-4 py-2.5 text-foreground transition-all duration-200 placeholder:text-muted-foreground/50 focus:bg-background focus:ring-2 focus:ring-ring/30 focus:outline-none"
-                placeholder="输入你的用户名"
+                placeholder="输入用户名或邮箱"
                 autoComplete="username"
                 disabled={loading}
                 maxLength={16}

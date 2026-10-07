@@ -89,14 +89,23 @@ async function getPlayerContextBlock(req: NextRequest): Promise<string> {
       signal: AbortSignal.timeout(4000),
     });
     if (!upstream.ok) return "";
-    const data = await upstream.json();
-    if (!data || data.success !== true || !data.data) return "";
-    const u = data.data;
+    // 该接口返回的是**扁平**的玩家资料对象（name / uuid / ban / lastActive / ipLocation …），
+    // 不是 { success, data } 包裹体 —— 前端 /api/users/info 也是原样透传给 profile 页的。
+    // 这里曾按包裹体解包，等于永远取不到资料，AI 客服因此一直缺少玩家身份上下文（现已修正）。
+    const u = (await upstream.json()) as {
+      name?: unknown;
+      uuid?: unknown;
+      ban?: unknown;
+      lastActive?: unknown;
+      ipLocation?: unknown;
+    } | null;
+    if (!u || typeof u !== "object") return "";
     const banned = u.ban ? "已被封禁" : "正常";
+    const gameId = typeof u.name === "string" && USERNAME_PATTERN.test(u.name) ? u.name : name;
     const lines = [
       "【当前玩家身份（仅供回答玩家本人相关问题时参考，禁止对外泄露或用于越权操作）】",
-      `- 游戏 ID：${USERNAME_PATTERN.test(u.name) ? u.name : name}`,
-      `- UUID：${u.uuid ?? "未知"}`,
+      `- 游戏 ID：${gameId}`,
+      `- UUID：${String(u.uuid ?? "未知")}`,
       `- 账号状态：${banned}`,
     ];
     if (u.lastActive) {
