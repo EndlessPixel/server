@@ -1717,9 +1717,9 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     id: "dev-ai-default-model",
     category: "开发",
     question: "请求 AI 客服接口时不传 model，会使用哪个默认模型？",
-    options: ["grok-4.6", "gpt-4o", "claude-3.5", "deepseek-v3"],
+    options: ["grok-4.7", "gemini-3.7-flash", "glm-5.3", "deepseek-v4-flash"],
     answer: 0,
-    explanation: "默认模型是 grok-4.6；传入的模型名还会做校验，长度不得超过 100 字符。",
+    explanation: "默认模型是 grok-4.7；传入的模型名还会做校验，长度不得超过 100 字符。",
   },
   {
     id: "dev-ai-system-prompt",

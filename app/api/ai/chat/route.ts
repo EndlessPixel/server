@@ -164,7 +164,7 @@ export async function POST(req: NextRequest) {
       ? `${getNowLine()}\n\n${systemPrompt}\n\n${playerCtx}`
       : `${getNowLine()}\n\n${systemPrompt}`;
     const fullMessages = [{ role: "system", content: systemContent }, ...messages.slice(-20)];
-    const defaultModel = "grok-4.6";
+    const defaultModel = "grok-4.7";
     const selectedModel =
       model && typeof model === "string" && model.trim() ? model.trim() : defaultModel;
     if (selectedModel.length > 100 || !/^[a-zA-Z0-9_\-/\.]+$/.test(selectedModel)) {

@@ -174,7 +174,8 @@ interface Model {
   object?: string;
   created?: number;
   recommended?: boolean;
-  category?: "general" | "code" | "vision" | "embedding" | "safety" | "other";
+  /** 推荐优先级：>=0 时越小越优先，-1 表示不推荐 */
+  rank?: number;
   size?: string;
 }
 
@@ -183,34 +184,60 @@ const CURRENT_SESSION_KEY = "epbot_current_session_id";
 const SELECTED_MODEL_KEY = "epbot_selected_model";
 const MAX_STORAGE_PERCENT = 0.9;
 const MAX_CONTEXT_MESSAGES = 25;
-const DEFAULT_MODEL_ID = "grok-4.6";
-// 根据 futureppo 实际可用模型，按综合实力精选推荐（覆盖各厂商旗舰/主力聊天模型）。
-// 仅匹配明确强的大模型系列，排除 lite/codex/reasoning/translate/vision 等轻量或专项变体。
-const RECOMMENDED_PATTERNS = [
-  /grok-4\.6/i,
-  /grok-chat-(?:fast|expert)/i,
-  /gpt-5\.6/,
-  /gpt-5\.[2-9](?!-(?:codex|sol|terra|luna|chat))/i,
-  /gpt-5\.1/i,
-  /gpt-5-mini/i,
-  /gpt-4o/i, // GPT-4o 经典通用
+const DEFAULT_MODEL_ID = "grok-4.7";
+// 推荐模型：按「厂商 + 家族」匹配，版本号一律用 \d+ 通配，上游升级版本号后仍然有效。
+//
+// 历史教训（2026-10 排查）：这里原先写死了具体版号（grok-4.6 / glm-5.2 / gpt-5.6 …），
+// 而注释还留着「根据 futureppo 实际可用模型」—— 上游换成新供应商后整套白名单大面积失配，
+// grok-4.7 / glm-5.3 / kimi-k3 / gemini-3.1-pro 这些新旗舰全都不在推荐里。
+// 所以现在只按家族匹配，版本交给上游自己演进。
+//
+// 数组顺序 = 推荐优先级（越靠前越优先），同时决定「推荐优先」排序时的先后。
+const RECOMMENDED_PATTERNS: RegExp[] = [
+  /(?:^|\/)grok-4(?:\.\d+)?$/i, // xAI Grok 旗舰（4.x 全系列）
+  /(?:^|\/)gemini-\d+(?:\.\d+)?-(?:pro|flash)/i, // Google Gemini Pro / Flash 档
+  /gpt-5(?:\.\d+)?/i, // OpenAI GPT-5 系列
+  /(?:^|\/)glm-\d+(?:\.\d+)?$/i, // 智谱 GLM 旗舰
+  /kimi-k\d+(?:\.\d+)?$/i, // 月之暗面 Kimi K 系列
+  /deepseek-v4(?:\.\d+)?-(?:pro|flash)/i, // DeepSeek V4 主力
+  /nemotron-3(?:\.\d+)?-(?:ultra|super)/i, // NVIDIA Nemotron 大模型
   /gpt-oss-(?:20|120)b/i, // 开源 GPT-OSS
-  /gemini-2\.5-(?:pro|flash)$/i, // Gemini 2.5 双档（不含 lite）
-  /gemini-3\.[0-9]-flash$/i, // Gemini 3.x 闪速档（不含 lite/preview-tts）
-  /gemini-3-flash-preview/i,
-  /deepseek-v4-(?:pro|flash)/i, // DeepSeek V4 主力
+  /mistral-large/i, // Mistral Large
+  /yi-large/i, // 零一万物
   /qwen3-(?:30b-a3b|14b|3\.5-2b)/i, // 通义千问主力档
-  /glm-5\.2/i, // 智谱 GLM 旗舰
-  /zai-glm-4\.7/i,
   /llama-4-maverick/i, // Meta Llama 4 旗舰
-  /kimi-thinking/i, // 月之暗面
-  /minimax-m3/i, // MiniMax
-  /nemotron-3-(?:ultra|super-120b)/i, // Nemotron 大模型
+  /minimax-m\d+/i, // MiniMax
+  /grok-chat-(?:fast|expert)/i, // Grok 快速 / 专家档
 ];
+
+// 一票否决：命中即不推荐（轻量档、预览/实验档、专用分支）。
+// 注意 flash / fast 这类「快速档」仍算推荐，只排除 lite 及更弱的档位。
+const NOT_RECOMMENDED_PATTERNS: RegExp[] = [
+  /-lite\b/i,
+  /-nano\b/i,
+  /-tiny\b/i,
+  /preview/i,
+  /-codex\b/i,
+  /-sol\b/i,
+  /-terra\b/i,
+  /-luna\b/i,
+  /-base\b/i,
+];
+
 const extractModelSize = (id: string): string => {
-  const matches = id.match(/(\d+)b/i);
-  if (matches) return `${matches[1]}B`;
-  return "";
+  // 支持小数（如 deepseek-coder-6.7b）与 xN 形式（如 mixtral-8x22b 取 22B）；
+  // 末尾加 (?![a-z0-9]) 避免把版号当成参数量（如 granite-3.0-3b 应取 3B 而不是 3.0）。
+  const matches = id.match(/(\d+(?:\.\d+)?)\s*b(?![a-z0-9])/i);
+  return matches ? `${matches[1]}B` : "";
+};
+
+/**
+ * 返回推荐优先级：>= 0 表示推荐（越小越优先），-1 表示不推荐。
+ * 先看一票否决，再看家族白名单。
+ */
+const getModelRank = (modelId: string): number => {
+  if (NOT_RECOMMENDED_PATTERNS.some((re) => re.test(modelId))) return -1;
+  return RECOMMENDED_PATTERNS.findIndex((re) => re.test(modelId));
 };
 
 const getStorageUsagePercent = (): number => {
@@ -459,9 +486,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       if (mountedRef.current) setToast("");
     }, 2800);
   };
-  const isRecommendedModel = (modelId: string): boolean => {
-    return RECOMMENDED_PATTERNS.some((pattern) => pattern.test(modelId));
-  };
   const loadModels = async () => {
     if (modelsLoaded || loadingModels) return;
     setLoadingModels(true);
@@ -471,25 +495,35 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       const data = await response.json();
       const modelList = data.data || [];
       if (Array.isArray(modelList)) {
-        const processedModels: Model[] = modelList.map((model) => ({
-          id: model.id,
-          name: model.id.split("/").pop() || model.id,
-          owned_by: model.owned_by || "unknown",
-          object: model.object,
-          created: model.created,
-          recommended: isRecommendedModel(model.id),
-          size: extractModelSize(model.id),
-        }));
+        const processedModels: Model[] = modelList.map((model) => {
+          const rank = getModelRank(model.id);
+          return {
+            id: model.id,
+            name: model.id.split("/").pop() || model.id,
+            owned_by: model.owned_by || "unknown",
+            object: model.object,
+            created: model.created,
+            recommended: rank >= 0,
+            rank,
+            size: extractModelSize(model.id),
+          };
+        });
         setModels(processedModels);
         const savedModel = localStorage.getItem(SELECTED_MODEL_KEY);
         if (savedModel && processedModels.some((m) => m.id === savedModel)) {
           setSelectedModel(savedModel);
         } else {
-          // Prefer the configured DEFAULT_MODEL_ID, then any recommended
-          // model, then fall back to the first available model.
+          // 优先用配置的默认模型；没有则用优先级最高的推荐模型；
+          // 再没有则退到参数量最大的那个 —— 不要用 processedModels[0]，
+          // 那只是上游返回顺序里的第一个，可能是个小模型或无关模型。
           const defaultModel = processedModels.find((m) => m.id === DEFAULT_MODEL_ID);
-          const recommendedModel = processedModels.find((m) => m.recommended);
-          const fallback = defaultModel || recommendedModel || processedModels[0];
+          const topRecommended = processedModels
+            .filter((m) => m.recommended)
+            .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))[0];
+          const largest = [...processedModels].sort(
+            (a, b) => (parseFloat(b.size ?? "") || 0) - (parseFloat(a.size ?? "") || 0),
+          )[0];
+          const fallback = defaultModel || topRecommended || largest || processedModels[0];
           if (fallback) setSelectedModel(fallback.id);
         }
         setModelsLoaded(true);
@@ -517,19 +551,21 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       filtered = filtered.filter((model) => model.recommended);
     }
     if (modelSortBy === "recommended") {
+      // 推荐模型按家族优先级排（rank 越小越靠前）；同优先级再按参数量、名字。
+      const rankOf = (m: Model) => (m.recommended ? (m.rank ?? 0) : Number.MAX_SAFE_INTEGER);
       filtered.sort((a, b) => {
-        if (a.recommended && !b.recommended) return -1;
-        if (!a.recommended && b.recommended) return 1;
-        return a.name.localeCompare(b.name);
+        const diff = rankOf(a) - rankOf(b);
+        if (diff !== 0) return diff;
+        return (
+          (parseFloat(b.size ?? "") || 0) - (parseFloat(a.size ?? "") || 0) ||
+          a.name.localeCompare(b.name)
+        );
       });
     } else if (modelSortBy === "name") {
       filtered.sort((a, b) => a.name.localeCompare(b.name));
     } else if (modelSortBy === "size") {
-      filtered.sort((a, b) => {
-        const sizeA = a.size ? parseInt(a.size) || 0 : 0;
-        const sizeB = b.size ? parseInt(b.size) || 0 : 0;
-        return sizeB - sizeA;
-      });
+      // 用 parseFloat 而非 parseInt，否则 6.7B 会被截成 6 与 3B 混排。
+      filtered.sort((a, b) => (parseFloat(b.size ?? "") || 0) - (parseFloat(a.size ?? "") || 0));
     }
     setFilteredModels(filtered);
   }, [models, modelSearchQuery, showRecommendedOnly, modelSortBy]);
@@ -1147,7 +1183,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
         {/* 右侧主内容区 */}
         <div className="relative flex h-full min-w-0 flex-1 flex-col bg-background">
           <div className="shrink-0 bg-background px-4 py-3">
-            <div className="flex items-center justify-between gap-2">
+            <div className="relative flex items-center justify-between gap-2">
               <div className="flex min-w-0 items-center gap-2">
                 <button
                   onClick={() => setMobileNavOpen(true)}
@@ -1161,7 +1197,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                 </h3>
               </div>
               <div className="flex items-center gap-2">
-                <div className="relative">
+                <div>
                   <button
                     className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors duration-200 hover:bg-secondary"
                     onClick={() => {
@@ -1178,7 +1214,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                   {showModelPanel && (
                     <div
                       ref={modelPanelRef}
-                      className="absolute top-full right-0 z-20 mt-2 w-120 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl bg-popover/98 shadow-xl ring-1 ring-foreground/5 backdrop-blur-xl"
+                      className="absolute top-full right-0 z-20 mt-2 w-full overflow-hidden rounded-2xl bg-popover/98 shadow-xl ring-1 ring-foreground/5 backdrop-blur-xl md:w-120"
                     >
                       <div className="p-3">
                         <div className="mb-3 flex items-center justify-between">
