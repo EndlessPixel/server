@@ -5,7 +5,7 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const ipRequestMap = new Map<string, number[]>();
-const PLAYER_INFO_API_URL = `http://156.239.230.98:8080/v1/api/users/info`;
+const PLAYER_INFO_API_URL = `https://login-and-data.epmc.qzz.io/v1/api/users/info`;
 
 function isRateLimited(ip: string | null): boolean {
   if (!ip) return false;

@@ -1,25 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
-import crypto from "crypto";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE, createSessionToken, SESSION_MAX_AGE } from "@/lib/session";
 
-const LOGIN_API_URL = `http://156.239.230.98:8080/v1/api/auth/login`;
+// 后端已迁到独立域名（同时承载登录与用户数据），走 HTTPS 443；接口路径不变。
+const LOGIN_API_URL = `https://login-and-data.epmc.qzz.io/v1/api/auth/login`;
 const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
 const PASSWORD_MIN_LENGTH = 6;
-
-/**
- * ⚠️ 注意：此加密函数保留了原始 bug（用字符数截断 UTF-8 字节）
- * 不要"修复"这个 bug，否则会导致认证失败
- */
-function encrypt(name: string, password: string): string {
-  const text = `ÜÄaeut//&/=I ${password}7421€547${name}__+IÄIH§%NK ${password}`;
-  const charLen = text.length;
-  const buf = Buffer.from(text, "utf8");
-  const truncated = buf.subarray(0, charLen);
-  const hash = crypto.createHash("sha512");
-  hash.update(truncated);
-  return hash.digest("hex");
-}
 
 /**
  * 取可信客户端 IP：只信由本机反代写入的 x-real-ip（外部不可伪造），
@@ -46,7 +32,6 @@ export async function POST(request: NextRequest) {
     if (password.length < PASSWORD_MIN_LENGTH) {
       return NextResponse.json({ error: "密码长度不足" }, { status: 400 });
     }
-    const encryptedPassword = encrypt(name, password);
     const clientIp = getClientIp(request);
     const res = await fetch(LOGIN_API_URL, {
       method: "POST",
@@ -54,7 +39,9 @@ export async function POST(request: NextRequest) {
         "Content-Type": "application/json",
         "X-Real-IP": clientIp,
       },
-      body: JSON.stringify({ name, password: encryptedPassword }),
+      // 后端改为接收明文密码：全链路依赖 HTTPS 保障传输安全，
+      // 该字段切勿写进日志或错误上报。
+      body: JSON.stringify({ name, password }),
     });
     let data;
     const contentType = res.headers.get("content-type");
