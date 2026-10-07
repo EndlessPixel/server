@@ -40,7 +40,7 @@ export const dynamic = 'force-dynamic';
 请求体：
 
 ```json
-{ "messages": [{ "role": "user", "content": "怎么进服？" }], "model": "grok-4.6" }
+{ "messages": [{ "role": "user", "content": "怎么进服？" }], "model": "grok-4.7" }
 ```
 
 `messages` 必须是数组，否则返回 SSE error `请求格式错误`。
@@ -63,7 +63,7 @@ export const dynamic = 'force-dynamic';
 ### 上游与模型参数
 
 ```ts
-const defaultModel = "grok-4.6";
+const defaultModel = "grok-4.7";
 const openaiBody = {
   model: selectedModel,
   messages: fullMessages,      // system + 最近 20 条历史

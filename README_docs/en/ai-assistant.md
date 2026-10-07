@@ -40,7 +40,7 @@ export const dynamic = 'force-dynamic';
 Request body:
 
 ```json
-{ "messages": [{ "role": "user", "content": "How do I join?" }], "model": "grok-4.6" }
+{ "messages": [{ "role": "user", "content": "How do I join?" }], "model": "grok-4.7" }
 ```
 
 `messages` must be an array, otherwise an SSE error `请求格式错误` is returned.
@@ -63,7 +63,7 @@ The server reads the upstream OpenAI-compatible `choices[0].delta.content` delta
 ### Upstream & Model Parameters
 
 ```ts
-const defaultModel = "grok-4.6";
+const defaultModel = "grok-4.7";
 const openaiBody = {
   model: selectedModel,
   messages: fullMessages,      // system + last 20 history messages
