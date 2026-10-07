@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
-const USER_INFO_API_URL = `http://156.239.230.98:8080/v1/api/users/info`;
+const USER_INFO_API_URL = `https://login-and-data.epmc.qzz.io/v1/api/users/info`;
 
 export async function GET(request: NextRequest) {
   try {
