@@ -113,7 +113,7 @@ Now: 2026/8/29 10:30:00 (UTC+8, Saturday)
 Injected only when a valid session cookie is present:
 
 ```ts
-const PLAYER_INFO_API_URL = 'http://156.239.230.98:8080/v1/api/users/info';
+const PLAYER_INFO_API_URL = 'https://login-and-data.epmc.qzz.io/v1/api/users/info';
 const token = req.cookies.get('ep_session')?.value;
 const name = verifySessionToken(token);
 // with AbortSignal.timeout(4000), cache: 'no-store'

@@ -110,7 +110,7 @@ Now: 2026/8/29 10:30:00 (UTC+8, 星期六)
 仅当请求携带有效会话 Cookie 时注入：
 
 ```ts
-const PLAYER_INFO_API_URL = 'http://156.239.230.98:8080/v1/api/users/info';
+const PLAYER_INFO_API_URL = 'https://login-and-data.epmc.qzz.io/v1/api/users/info';
 const token = req.cookies.get('ep_session')?.value;
 const name = verifySessionToken(token);
 // 带 AbortSignal.timeout(4000)，cache: 'no-store'
