@@ -28,7 +28,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
-    "framer-motion": "^13.5.0",
+    "framer-motion": "^14.0.0",
     "geist": "^1.7.1",
     "highlight.js": "^11.12.0",
     "lucide-react": "^1.53.0",
