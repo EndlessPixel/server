@@ -695,3 +695,34 @@ body {
     animation: none;
   }
 }
+
+/* AI 对话：流式输出期间，跟在消息末尾的闪烁打字光标（打字指示器）。
+   挂在消息容器的 data-streaming 上，::after 落在最后一个块级子元素内部末尾，
+   所以光标会紧贴正在增长的那行文字，而不是单独占一行。 */
+[data-streaming="true"] > :last-child::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background-color: currentColor;
+  opacity: 0.6;
+  animation: epbot-caret-blink 1s step-end infinite;
+}
+
+@keyframes epbot-caret-blink {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-streaming="true"] > :last-child::after {
+    animation: none;
+  }
+}
