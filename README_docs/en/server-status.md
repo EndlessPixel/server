@@ -74,10 +74,12 @@ const [data, ping, ip] = await Promise.all([
 
 | Endpoint | File | Purpose |
 |----------|------|---------|
-| `/api/mcserver/epmc` | `app/api/mcserver/epmc/route.ts` | Proxies mcsrvstat.us for server status (online / players / version / MOTD / icon) |
-| `/api/ping/epmc` | `app/api/ping/epmc/route.ts` | Proxies the latency probe |
+| `/api/mcserver/epmc` | `app/api/[...proxy]/route.ts` | Proxies mcsrvstat.us for server status (online / players / version / MOTD / icon) |
+| `/api/ping/epmc` | `app/api/[...proxy]/route.ts` | Proxies the latency probe |
 | `/systemstatus/data` | `app/systemstatus/data/route.ts` | Host hardware metrics proxy (upstream `TARGET_API_URL`) |
-| `/api/webstatus` | `app/api/webstatus/route.ts` | Website reachability probe (**not used by any page today**) |
+| `/api/webstatus` | `app/api/[...proxy]/route.ts` | Website reachability probe (**not used by any page today**) |
+
+> The pure pass-through proxies (`/api/mcserver/epmc`, `/api/ping/epmc`, `/api/qq/groupinfo`, `/api/webstatus`, `/api/player/screenshot/list`) are now consolidated into `app/api/[...proxy]/route.ts`, with upstream URLs defined in `PROXY_TARGETS` in `lib/proxy.ts`. Public URLs are unchanged.
 
 When the server icon is missing, `public/default-server-icon.png` is used as a fallback.
 
