@@ -1492,7 +1492,15 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
-                    <div className="prose prose-sm max-w-[85%] rounded-2xl bg-secondary px-4 py-3 wrap-break-word text-foreground">
+                    <div
+                      className="prose prose-sm max-w-[85%] rounded-2xl bg-secondary px-4 py-3 wrap-break-word text-foreground"
+                      // 流式输出中（有内容时）：给气泡挂上打字光标（见 globals.css）
+                      data-streaming={
+                        loading && i === messages.length - 1 && m.content !== ""
+                          ? "true"
+                          : undefined
+                      }
+                    >
                       {(() => {
                         const isStreamingLast = loading && i === messages.length - 1;
                         if (m.content === "" && isStreamingLast) {

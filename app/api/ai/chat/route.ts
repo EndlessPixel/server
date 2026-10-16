@@ -320,7 +320,37 @@ export async function POST(req: NextRequest) {
     const reader = upstream.body!.getReader();
     let buffer = "";
     let hasSentUsage = false;
+    // 打字机节奏：上游返回的是大小不一的块，直接转发会「一会多一会少」。
+    // 这里把内容拆成单个字符放进队列，再由下面的「字符泵」按固定间隔逐字下发。
+    // 15ms ≈ 每秒 66 字；调小更快、调大更慢，但始终匀速。
+    const TYPE_INTERVAL_MS = 15;
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     (async () => {
+      const queue: string[] = [];
+      let upstreamDone = false;
+      let upstreamSawDone = false;
+      let usagePayload: unknown = null;
+
+      // 字符泵：每个 tick 只发一个字符；队列空且上游未结束则原地等待。
+      // 写失败（客户端断开等）直接退出，避免向外抛出未处理的 rejection。
+      const pump = (async () => {
+        while (true) {
+          if (queue.length > 0) {
+            const ch = queue.shift()!;
+            try {
+              await writer.write(
+                encoder.encode(`data: ${JSON.stringify({ type: "text-delta", delta: ch })}\n\n`),
+              );
+            } catch {
+              break;
+            }
+          } else if (upstreamDone) {
+            break;
+          }
+          await sleep(TYPE_INTERVAL_MS);
+        }
+      })();
+
       try {
         while (true) {
           const { done, value } = await reader.read();
@@ -334,14 +364,15 @@ export async function POST(req: NextRequest) {
 
             const dataStr = trimmedLine.slice(6);
             if (dataStr === "[DONE]") {
-              await writer.write(encoder.encode(`data: [DONE]\n\n`));
+              // 延迟到队列排空后再下发，否则前端会在字符还没显示完时收尾
+              upstreamSawDone = true;
               continue;
             }
             try {
               const chunk = JSON.parse(dataStr);
               if (chunk.usage && !hasSentUsage) {
                 hasSentUsage = true;
-                const usageData = {
+                usagePayload = {
                   type: "usage",
                   usage: {
                     promptTokens: chunk.usage.prompt_tokens,
@@ -349,26 +380,32 @@ export async function POST(req: NextRequest) {
                     totalTokens: chunk.usage.total_tokens,
                   },
                 };
-                await writer.write(encoder.encode(`data: ${JSON.stringify(usageData)}\n\n`));
               }
               const content = chunk.choices?.[0]?.delta?.content;
               if (content) {
-                const textDelta = {
-                  type: "text-delta",
-                  delta: content,
-                };
-                await writer.write(encoder.encode(`data: ${JSON.stringify(textDelta)}\n\n`));
+                // for...of 按 Unicode 码点遍历，emoji / 代理对不会被切坏
+                for (const ch of content) queue.push(ch);
               }
             } catch (e) {
               console.warn("Failed to parse SSE chunk:", e);
             }
           }
         }
-        if (!hasSentUsage) {
+
+        upstreamDone = true;
+        await pump; // 等队列里剩下的字符逐字发完
+
+        if (usagePayload) {
+          await writer.write(encoder.encode(`data: ${JSON.stringify(usagePayload)}\n\n`));
+        }
+        if (upstreamSawDone || !usagePayload) {
           await writer.write(encoder.encode(`data: [DONE]\n\n`));
         }
         await writer.close();
       } catch (err) {
+        // 让字符泵尽快退出
+        upstreamDone = true;
+        await pump;
         // A client disconnect aborts the reader; do not log it as a server error.
         if (err instanceof Error && err.name === "AbortError") {
           try {
