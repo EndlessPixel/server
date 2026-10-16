@@ -194,17 +194,6 @@ const repoList: Repo[] = [
     ],
   },
   {
-    name: "EndlessPixel-App",
-    url: `${GITHUB_REPO_PREFIX}EndlessPixel-App`,
-    prank_tags: [
-      "April Fools: It's just a teapot 🫖", // ✅ 已修复
-      "App icon: rotating teapot 🔄",
-      "Features: brew virtual tea ☕️",
-      'Crash report: "teapot overflow" 🫗',
-      "Update log: added more tea emojis 🫖✨",
-    ],
-  },
-  {
     name: "2048-AI-Game",
     url: `${GITHUB_REPO_PREFIX}2048-AI-Game`,
     prank_tags: [
@@ -249,17 +238,6 @@ const repoList: Repo[] = [
     ],
   },
   {
-    name: "EndlessPixel-ModpackAPP",
-    url: `${GITHUB_REPO_PREFIX}EndlessPixel-ModpackAPP`,
-    prank_tags: [
-      "April Fools: Crashes for fun 💥",
-      'Crash message: "teapot needs a break" 🫖',
-      "Auto-restart: after tea time ☕️",
-      'Bug reports: filed under "pranks" 🎭',
-      "App rating: 418/5 teacups 🫗",
-    ],
-  },
-  {
     name: "captcha",
     url: `${GITHUB_REPO_PREFIX}captcha`,
     prank_tags: [
@@ -279,17 +257,6 @@ const repoList: Repo[] = [
       "Connection speed: measured in tea pours ☕️",
       'Config error: "lid not found" 🫗',
       "Status: brewing secure connection 🍵🔐",
-    ],
-  },
-  {
-    name: "EndlessPixel-Website",
-    url: `${GITHUB_REPO_PREFIX}EndlessPixel-Website`,
-    prank_tags: [
-      "April Fools: Website is upside down 🥴",
-      "404 page: teapot lost in cyberspace 🫖",
-      "Loading animation: tea pouring ☕️",
-      "Dark mode: midnight tea theme 🌙🍵",
-      "Easter egg: click teapot 10 times 🥚",
     ],
   },
   {
@@ -623,17 +590,6 @@ const repoList: Repo[] = [
     ],
   },
   {
-    name: "EndlessPixel-Bug-Tracker",
-    url: `${GITHUB_REPO_PREFIX}EndlessPixel-Bug-Tracker`,
-    prank_tags: [
-      "April Fools: All bugs are teapot-related 🫖🐛",
-      'Issue template: "Teapot malfunction" 🫗',
-      'Priority: "steeping" vs "brewing" ☕️',
-      "Labels: green tea, black tea, oolong 🍵",
-      'Resolution: "fixed by adding sugar" 🍬',
-    ],
-  },
-  {
     name: "RGBFile",
     url: `${GITHUB_REPO_PREFIX}RGBFile`,
     prank_tags: [
@@ -664,6 +620,61 @@ const repoList: Repo[] = [
       'HMR: "hot tea reload" 🍵',
       'Template: "Teapot Starter" 🫖🚀',
       "Docs: written in tea stains 📜",
+    ],
+  },
+  {
+    name: "FileLink",
+    url: `${GITHUB_REPO_PREFIX}FileLink`,
+    prank_tags: [
+      "April Fools: Every short link leads to a teapot 🫖",
+      "HTTP Range: only serves the tea range 🍵",
+      "Bandwidth limit: measured in cups of tea ☕️",
+      "Admin console: hidden behind a teapot curtain 🫗",
+      "IP blacklist: blocks coffee drinkers only ☕️🚫",
+    ],
+  },
+  {
+    name: "ReCatSeedLogin",
+    url: `${GITHUB_REPO_PREFIX}ReCatSeedLogin`,
+    prank_tags: [
+      "April Fools: Login seed is one tea leaf 🌱🍵",
+      "Auth check: prove you're a teapot first 🫖",
+      "Seed generator: 100% cat-approved 🐈",
+      "Session expires once the tea goes cold ☕️",
+      "Captcha: select all teacups 🍵",
+    ],
+  },
+  {
+    name: "EPSILON-trading-simulator",
+    url: `${GITHUB_REPO_PREFIX}EPSILON-trading-simulator`,
+    prank_tags: [
+      "April Fools: Stocks are traded in tea leaves 🍵📈",
+      "Portfolio: 100% teapot futures 🫖",
+      "Market crash: caused by spilled tea 🫗",
+      "Profits measured in cups of tea ☕️",
+      "Trading bot: just drinks tea all day 😴",
+    ],
+  },
+  {
+    name: "git-city-zh-CN",
+    url: `${GITHUB_REPO_PREFIX}git-city-zh-CN`,
+    prank_tags: [
+      "April Fools: Your city is built from teapots 🫖🏙️",
+      "Buildings: pixel-art tea houses 🍵",
+      "Traffic: wandering teapots only 🫗",
+      "Population: 100% sentient teapots 🤖",
+      "Map: leads straight to the tea district 🗺️",
+    ],
+  },
+  {
+    name: "litematica",
+    url: `${GITHUB_REPO_PREFIX}litematica`,
+    prank_tags: [
+      "April Fools: The blueprint is a giant teapot 🫖📐",
+      "Schematic: every block is a tea block 🍵",
+      "Paste: spawns teapots instead of blocks 🫗",
+      "Render: ghost teapots everywhere 👻",
+      "Material list: 99% tea leaves 📋",
     ],
   },
 ];
