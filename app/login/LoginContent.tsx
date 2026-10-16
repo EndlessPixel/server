@@ -4,8 +4,18 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
+function parseGatewayError(html: string): string {
+  const rayId = html.match(/Cloudflare Ray ID:.*?<strong[^>]*>([^<]+)<\/strong>/s)?.[1]?.trim() ?? "";
+  console.error("[GatewayError]", rayId || "unknown", html.slice(0, 500));
+  return rayId
+    ? `服务暂时不可用，请稍后重试（错误码: ${rayId}）`
+    : "服务暂时不可用，请稍后重试（如持续出现请联系管理员）";
+}
+
 export default function LoginContent() {
+  const [loginMode, setLoginMode] = useState<"username" | "email">("username");
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -14,12 +24,6 @@ export default function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const validUsernamePattern = /^[a-zA-Z0-9_]{3,16}$/;
-  // 后端支持用邮箱登录（命中邮箱格式就按 email 列查）
-  const validEmailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-  const isValidLoginInput = (value: string) =>
-    validUsernamePattern.test(value) || validEmailPattern.test(value);
-
   useEffect(() => {
     const timer = setTimeout(() => setShowForm(true), 300);
     return () => clearTimeout(timer);
@@ -27,11 +31,6 @@ export default function LoginContent() {
 
   useEffect(() => {
     const redirect = searchParams.get("redirect");
-    // GitHub 登录用户以明文 ep_provider cookie 识别（可读），直接跳走。
-    // 注意：Minecraft 登录态依赖 HttpOnly 的 ep_session，前端读不到，
-    // 故不在此探测已登录态自动跳转（否则误判会直接把未登录用户弹走，
-    // 且每次打开登录页都会徒增一次 /api/users/info 请求并占用限流额度）。
-    // 登录成功后由登录逻辑本身负责跳转。
     const provider = document.cookie
       .split("; ")
       .find((c) => c.startsWith("ep_provider="))
@@ -60,14 +59,25 @@ export default function LoginContent() {
     e.preventDefault();
     if (loading) return;
 
-    if (!username.trim()) {
-      setError("请输入用户名或邮箱");
+    const loginId = loginMode === "email" ? email.trim() : username.trim();
+
+    if (!loginId) {
+      setError(loginMode === "email" ? "请输入邮箱地址" : "请输入用户名");
       return;
     }
-    if (!isValidLoginInput(username)) {
-      setError("请输入用户名（字母、数字、下划线，长度 3-16 位）或邮箱地址");
-      return;
+
+    if (loginMode === "username") {
+      if (!/^[a-zA-Z0-9_-]{3,16}$/.test(loginId)) {
+        setError("用户名应为字母、数字、下划线或连字符，长度 3-16 位");
+        return;
+      }
+    } else {
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(loginId)) {
+        setError("请输入有效的邮箱地址");
+        return;
+      }
     }
+
     if (!password.trim() || password.length < 6) {
       setError("密码长度不能少于 6 位");
       return;
@@ -84,37 +94,49 @@ export default function LoginContent() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: username.trim(), password }),
+        body: JSON.stringify({ name: loginId, password }),
       });
+
+      if (res.status >= 502 && res.status <= 504) {
+        const contentType = res.headers.get("content-type") || "";
+        if (contentType.includes("text/html")) {
+          const html = await res.text();
+          setError(parseGatewayError(html));
+        } else {
+          setError("服务暂时不可用，请稍后重试");
+        }
+        return;
+      }
+
+      if (res.status === 429) {
+        const retryAfter = res.headers.get("retry-after");
+        const waitText = retryAfter ? `请 ${retryAfter} 秒后再试` : "请稍后再试";
+        setError(`尝试过于频繁，账号已被临时锁定或限流，${waitText}`);
+        return;
+      }
 
       let data;
       const contentType = res.headers.get("content-type");
       if (contentType?.includes("application/json")) {
         data = await res.json();
       } else {
-        throw new Error("服务器返回格式错误");
+        setError("服务器返回格式异常，请稍后重试");
+        return;
       }
 
       if (res.ok && data.success === true) {
-        // 用邮箱登录时，后端返回的 name 是账号真实用户名；万一没返回，
-        // 也不要把邮箱当用户名写进 mc_user（它只是前端展示用的明文 cookie）。
         const userName =
-          data.name && validUsernamePattern.test(data.name)
+          data.name && /^[a-zA-Z0-9_-]{3,16}$/.test(data.name)
             ? data.name
-            : validUsernamePattern.test(username)
-              ? username
+            : loginMode === "username"
+              ? loginId
               : "";
         if (userName) setCookie("mc_user", userName);
         const redirect = searchParams.get("redirect") || "/";
         router.push(redirect);
         router.refresh();
-      } else if (res.status === 429 || data.error === "rate_limited") {
-        // 适配后端限流/失败锁定：提示稍后再试，并展示倒计时
-        const secs = data.retryAfter;
-        const waitText = secs ? `请 ${secs} 秒后再试` : "请稍后再试";
-        setError(`尝试过于频繁，账号已被临时锁定或限流，${waitText}`);
       } else {
-        setError(data.message || data.error || "登录失败，请检查用户名和密码");
+        setError(data.message || data.detail || "登录失败，请检查用户名和密码");
       }
     } catch (err) {
       console.error("登录错误:", err);
@@ -132,7 +154,7 @@ export default function LoginContent() {
             showForm ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
         >
-          <div className="mb-8 text-center">
+          <div className="mb-6 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
               <svg
                 className="h-8 w-8 text-foreground/60"
@@ -150,8 +172,41 @@ export default function LoginContent() {
             </div>
             <h1 className="mb-2 text-2xl font-bold text-foreground">欢迎回来</h1>
             <p className="text-sm text-muted-foreground">
-              请输入用户名（或邮箱）和密码继续你的旅程
+              {loginMode === "email" ? "使用邮箱登录你的账号" : "使用用户名登录你的账号"}
             </p>
+          </div>
+
+          <div className="mb-6 flex rounded-lg bg-secondary p-1">
+            <button
+              type="button"
+              onClick={() => {
+                setLoginMode("username");
+                setEmail("");
+                setError("");
+              }}
+              className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                loginMode === "username"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              用户名
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setLoginMode("email");
+                setUsername("");
+                setError("");
+              }}
+              className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                loginMode === "email"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              邮箱
+            </button>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4" noValidate>
@@ -164,23 +219,43 @@ export default function LoginContent() {
               </div>
             )}
 
-            <div className="space-y-2">
-              <label htmlFor="username" className="block text-sm font-medium text-foreground">
-                用户名 / 邮箱
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-lg bg-secondary px-4 py-2.5 text-foreground transition-all duration-200 placeholder:text-muted-foreground/50 focus:bg-background focus:ring-2 focus:ring-ring/30 focus:outline-none"
-                placeholder="输入用户名或邮箱"
-                autoComplete="username"
-                disabled={loading}
-                maxLength={16}
-                aria-invalid={error ? "true" : "false"}
-              />
-            </div>
+            {loginMode === "username" ? (
+              <div className="space-y-2">
+                <label htmlFor="username" className="block text-sm font-medium text-foreground">
+                  用户名
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full rounded-lg bg-secondary px-4 py-2.5 text-foreground transition-all duration-200 placeholder:text-muted-foreground/50 focus:bg-background focus:ring-2 focus:ring-ring/30 focus:outline-none"
+                  placeholder="输入用户名（3-16位）"
+                  autoComplete="username"
+                  disabled={loading}
+                  maxLength={16}
+                  aria-invalid={error ? "true" : "false"}
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <label htmlFor="email" className="block text-sm font-medium text-foreground">
+                  邮箱
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-lg bg-secondary px-4 py-2.5 text-foreground transition-all duration-200 placeholder:text-muted-foreground/50 focus:bg-background focus:ring-2 focus:ring-ring/30 focus:outline-none"
+                  placeholder="输入邮箱地址"
+                  autoComplete="email"
+                  disabled={loading}
+                  maxLength={254}
+                  aria-invalid={error ? "true" : "false"}
+                />
+              </div>
+            )}
 
             <div className="space-y-2">
               <label htmlFor="password" className="block text-sm font-medium text-foreground">
@@ -269,9 +344,7 @@ export default function LoginContent() {
             href="/api/auth/github"
             className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-secondary px-4 py-2.5 font-medium text-secondary-foreground transition-colors duration-200 hover:bg-secondary/70"
           >
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z" />
-            </svg>
+            <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" />
             使用 GitHub 登录
           </a>
 
