@@ -74,10 +74,12 @@ const [data, ping, ip] = await Promise.all([
 
 | 接口 | 文件 | 作用 |
 |------|------|------|
-| `/api/mcserver/epmc` | `app/api/mcserver/epmc/route.ts` | 代理 mcsrvstat.us 查询服务器状态（在线/人数/版本/MOTD/图标） |
-| `/api/ping/epmc` | `app/api/ping/epmc/route.ts` | 代理延迟探测 |
+| `/api/mcserver/epmc` | `app/api/[...proxy]/route.ts` | 代理 mcsrvstat.us 查询服务器状态（在线/人数/版本/MOTD/图标） |
+| `/api/ping/epmc` | `app/api/[...proxy]/route.ts` | 代理延迟探测 |
 | `/systemstatus/data` | `app/systemstatus/data/route.ts` | 宿主机硬件监控代理（上游 `TARGET_API_URL`） |
-| `/api/webstatus` | `app/api/webstatus/route.ts` | 官网可达性探测（**目前无页面调用**） |
+| `/api/webstatus` | `app/api/[...proxy]/route.ts` | 官网可达性探测（**目前无页面调用**） |
+
+> 纯转发代理（`/api/mcserver/epmc`、`/api/ping/epmc`、`/api/qq/groupinfo`、`/api/webstatus`、`/api/player/screenshot/list`）已统一收敛到 `app/api/[...proxy]/route.ts`，上游地址集中定义在 `lib/proxy.ts` 的 `PROXY_TARGETS`；对外 URL 保持不变。
 
 服务器图标缺失时使用 `public/default-server-icon.png` 兜底。
 
