@@ -4,6 +4,9 @@ import path from "path";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// 流式回复可能持续较久（逐字符输出会进一步拉长总时长），必须抬高函数执行上限：
+// 未声明时 Vercel 会用平台默认值（Hobby 10s / Pro 60s），长回复会在中途被直接切断。
+export const maxDuration = 300;
 const ipRequestMap = new Map<string, number[]>();
 const PLAYER_INFO_API_URL = `https://login-and-data.epmc.qzz.io/v1/api/users/info`;
 
@@ -86,7 +89,9 @@ async function getPlayerContextBlock(req: NextRequest): Promise<string> {
     if (!name) return "";
     const upstream = await fetch(`${PLAYER_INFO_API_URL}?name=${encodeURIComponent(name)}`, {
       cache: "no-store",
-      signal: AbortSignal.timeout(4000),
+      // 玩家资料只是增强上下文，拿不到就降级。超时压到 2s：
+      // 这个 await 在上游 AI 请求之前，慢一点会直接推迟首字节到达。
+      signal: AbortSignal.timeout(2000),
     });
     if (!upstream.ok) return "";
     // 该接口返回的是**扁平**的玩家资料对象（name / uuid / ban / lastActive / ipLocation …），
@@ -207,231 +212,264 @@ export async function POST(req: NextRequest) {
       "Sec-Fetch-Mode": "cors",
       "Sec-Fetch-Site": "cross-site",
     };
-    let upstream: Response;
-    try {
-      upstream = await fetch(upstreamUrl, {
-        method: "POST",
-        // Merge the 120s server timeout with the client request signal so that
-        // a client disconnect (req.signal abort) cancels the upstream fetch
-        // cleanly instead of leaking an unhandled AbortError to the console.
-        signal: AbortSignal.any([controller.signal, req.signal]),
-        headers: headers,
-        body: JSON.stringify(openaiBody),
-      });
-    } catch (fetchErr) {
-      // Client aborted (switched session / cancelled / unmounted): exit silently.
-      if (fetchErr instanceof Error && fetchErr.name === "AbortError") {
-        return new Response(null, { status: 499 });
-      }
-      const reason =
-        fetchErr instanceof Error && fetchErr.name === "TimeoutError"
-          ? `连接上游超时: ${upstreamUrl}`
-          : `连接上游失败: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`;
-      console.error(`[ai/chat] ${reason}`);
-      return sseError("上游连接失败，请稍后重试");
-    }
-
-    if (timeout) clearTimeout(timeout);
-    timeout = null;
-    if (!upstream.ok) {
-      let errorMsg = `上游服务暂时不可用 (${upstream.status})`;
-      const errorBody = await upstream.text().catch(() => "");
-      console.error(`上游错误 ${upstream.status}:`, errorBody.slice(0, 500));
-
-      // 尝试解析上游返回的具体错误信息
-      let upstreamMsg = "";
-      try {
-        const parsed = JSON.parse(errorBody);
-        upstreamMsg = parsed.error || parsed.message || parsed.detail || "";
-      } catch {}
-
-      switch (upstream.status) {
-        // ---- 客户端错误 ----
-        case 400:
-          errorMsg = upstreamMsg || "请求参数错误，请检查输入后重试";
-          break;
-        case 401:
-        case 403:
-          errorMsg = "认证失败，请联系管理员";
-          break;
-        case 404:
-          errorMsg = "请求的资源不存在，请确认接口地址是否正确";
-          break;
-        case 408:
-          errorMsg = "上游服务响应超时，请稍后重试";
-          break;
-        case 413:
-          errorMsg = "请求内容过大，请减少输入长度后重试";
-          break;
-        case 429:
-          errorMsg = "请求过于频繁，请稍后再试";
-          break;
-
-        // ---- Cloudflare 错误 ----
-        case 520:
-          errorMsg = "上游服务返回了异常响应，请稍后重试";
-          break;
-        case 521:
-          errorMsg = "AI 服务暂时离线，请稍后重试";
-          break;
-        case 522:
-          errorMsg = "连接AI 服务超时，请稍后重试";
-          break;
-        case 523:
-          errorMsg = "AI 服务不可达，请稍后重试";
-          break;
-        case 524:
-          errorMsg = "AI 服务处理超时，请稍后重试";
-          break;
-        case 525:
-        case 526:
-          errorMsg = "服务安全证书异常，请联系管理员";
-          break;
-        case 530:
-          errorMsg = "服务被拦截或 DNS 异常，请联系管理员";
-          break;
-
-        // ---- 源站 5xx ----
-        case 502:
-          errorMsg = "上游网关错误，服务可能正在重启，请稍后重试";
-          break;
-        case 503:
-          errorMsg = "上游服务暂时不可用，可能正在维护中";
-          break;
-        case 504:
-          errorMsg = "上游服务网关超时，请稍后重试";
-          break;
-
-        // ---- 兜底 ----
-        default:
-          if (upstream.status >= 500) {
-            errorMsg = "上游服务繁忙，请稍后再试";
-          } else if (upstream.status >= 400) {
-            errorMsg = "请求被拒绝，请检查后重试";
-          }
-      }
-
-      return sseError(errorMsg, !isNonServerStatus(upstream.status));
-    }
+    // ===== 先把响应流建好并立即"激活"，再去连上游 =====
+    // 参数校验一通过就把 priming 字节推给客户端，让浏览器/网关立刻知道连接已建立，
+    // 不必在模型思考的那几秒静默期里干等（前端也会马上显示"正在输入"）。
     const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
-    const reader = upstream.body!.getReader();
-    let buffer = "";
-    let hasSentUsage = false;
-    // 打字机节奏：上游返回的是大小不一的块，直接转发会「一会多一会少」。
-    // 这里把内容拆成单个字符放进队列，再由下面的「字符泵」按固定间隔逐字下发。
-    // 15ms ≈ 每秒 66 字；调小更快、调大更慢，但始终匀速。
-    const TYPE_INTERVAL_MS = 15;
-    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-    (async () => {
-      const queue: string[] = [];
-      let upstreamDone = false;
-      let upstreamSawDone = false;
-      let usagePayload: unknown = null;
 
-      // 字符泵：每个 tick 只发一个字符；队列空且上游未结束则原地等待。
-      // 写失败（客户端断开等）直接退出，避免向外抛出未处理的 rejection。
-      const pump = (async () => {
-        while (true) {
-          if (queue.length > 0) {
-            const ch = queue.shift()!;
-            try {
-              await writer.write(
-                encoder.encode(`data: ${JSON.stringify({ type: "text-delta", delta: ch })}\n\n`),
-              );
-            } catch {
+    /** 往流里写一条错误事件并收尾（替代早前的 return sseError） */
+    const failStream = async (errorText: string, serverSide = true) => {
+      const safeError = errorText
+        .replace(/API_KEY.*/i, "配置错误")
+        .replace(/read system\.txt/i, "服务初始化失败")
+        .replace(/fetch failed/i, "网络连接失败");
+      try {
+        await writer.write(
+          encoder.encode(
+            `data: ${JSON.stringify({ type: "error", errorText: safeError, serverSide })}\n\n`,
+          ),
+        );
+        await writer.write(encoder.encode(`data: [DONE]\n\n`));
+        await writer.close();
+      } catch {
+        /* 客户端已断开 */
+      }
+    };
+
+    // 预热：以 ":" 开头的 SSE 注释行（EventSource 会直接忽略）+ 2KB 填充，
+    // 逼着代理层立刻把响应刷到客户端。前端零改动。
+    // 注意：若前面还有自己的 nginx，仍需 `proxy_buffering off;`，padding 只是兜底。
+    void writer.write(encoder.encode(`:${" ".repeat(2048)}\n\n`)).catch(() => {});
+
+    (async () => {
+      let upstream: Response;
+      try {
+        upstream = await fetch(upstreamUrl, {
+          method: "POST",
+          // Merge the 120s server timeout with the client request signal so that
+          // a client disconnect (req.signal abort) cancels the upstream fetch
+          // cleanly instead of leaking an unhandled AbortError to the console.
+          signal: AbortSignal.any([controller.signal, req.signal]),
+          headers: headers,
+          body: JSON.stringify(openaiBody),
+        });
+      } catch (fetchErr) {
+        // Client aborted (switched session / cancelled / unmounted): exit silently.
+        if (fetchErr instanceof Error && fetchErr.name === "AbortError") {
+          return new Response(null, { status: 499 });
+        }
+        const reason =
+          fetchErr instanceof Error && fetchErr.name === "TimeoutError"
+            ? `连接上游超时: ${upstreamUrl}`
+            : `连接上游失败: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`;
+        console.error(`[ai/chat] ${reason}`);
+        if (timeout) clearTimeout(timeout);
+        await failStream("上游连接失败，请稍后重试");
+        return;
+      }
+
+      if (timeout) clearTimeout(timeout);
+      timeout = null;
+      if (!upstream.ok) {
+        let errorMsg = `上游服务暂时不可用 (${upstream.status})`;
+        const errorBody = await upstream.text().catch(() => "");
+        console.error(`上游错误 ${upstream.status}:`, errorBody.slice(0, 500));
+
+        // 尝试解析上游返回的具体错误信息
+        let upstreamMsg = "";
+        try {
+          const parsed = JSON.parse(errorBody);
+          upstreamMsg = parsed.error || parsed.message || parsed.detail || "";
+        } catch {}
+
+        switch (upstream.status) {
+          // ---- 客户端错误 ----
+          case 400:
+            errorMsg = upstreamMsg || "请求参数错误，请检查输入后重试";
+            break;
+          case 401:
+          case 403:
+            errorMsg = "认证失败，请联系管理员";
+            break;
+          case 404:
+            errorMsg = "请求的资源不存在，请确认接口地址是否正确";
+            break;
+          case 408:
+            errorMsg = "上游服务响应超时，请稍后重试";
+            break;
+          case 413:
+            errorMsg = "请求内容过大，请减少输入长度后重试";
+            break;
+          case 429:
+            errorMsg = "请求过于频繁，请稍后再试";
+            break;
+
+          // ---- Cloudflare 错误 ----
+          case 520:
+            errorMsg = "上游服务返回了异常响应，请稍后重试";
+            break;
+          case 521:
+            errorMsg = "AI 服务暂时离线，请稍后重试";
+            break;
+          case 522:
+            errorMsg = "连接AI 服务超时，请稍后重试";
+            break;
+          case 523:
+            errorMsg = "AI 服务不可达，请稍后重试";
+            break;
+          case 524:
+            errorMsg = "AI 服务处理超时，请稍后重试";
+            break;
+          case 525:
+          case 526:
+            errorMsg = "服务安全证书异常，请联系管理员";
+            break;
+          case 530:
+            errorMsg = "服务被拦截或 DNS 异常，请联系管理员";
+            break;
+
+          // ---- 源站 5xx ----
+          case 502:
+            errorMsg = "上游网关错误，服务可能正在重启，请稍后重试";
+            break;
+          case 503:
+            errorMsg = "上游服务暂时不可用，可能正在维护中";
+            break;
+          case 504:
+            errorMsg = "上游服务网关超时，请稍后重试";
+            break;
+
+          // ---- 兜底 ----
+          default:
+            if (upstream.status >= 500) {
+              errorMsg = "上游服务繁忙，请稍后再试";
+            } else if (upstream.status >= 400) {
+              errorMsg = "请求被拒绝，请检查后重试";
+            }
+        }
+
+        await failStream(errorMsg, !isNonServerStatus(upstream.status));
+        return;
+      }
+      const decoder = new TextDecoder();
+      const reader = upstream.body!.getReader();
+      let buffer = "";
+      let hasSentUsage = false;
+      // 打字机节奏：上游返回的是大小不一的块，直接转发会「一会多一会少」。
+      // 这里把内容拆成单个字符放进队列，再由下面的「字符泵」按固定间隔逐字下发。
+      // 15ms ≈ 每秒 66 字；调小更快、调大更慢，但始终匀速。
+      const TYPE_INTERVAL_MS = 15;
+      const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+      (async () => {
+        const queue: string[] = [];
+        let upstreamDone = false;
+        let upstreamSawDone = false;
+        let usagePayload: unknown = null;
+
+        // 字符泵：每个 tick 只发一个字符；队列空且上游未结束则原地等待。
+        // 写失败（客户端断开等）直接退出，避免向外抛出未处理的 rejection。
+        const pump = (async () => {
+          while (true) {
+            if (queue.length > 0) {
+              const ch = queue.shift()!;
+              try {
+                await writer.write(
+                  encoder.encode(`data: ${JSON.stringify({ type: "text-delta", delta: ch })}\n\n`),
+                );
+              } catch {
+                break;
+              }
+            } else if (upstreamDone) {
               break;
             }
-          } else if (upstreamDone) {
-            break;
+            await sleep(TYPE_INTERVAL_MS);
           }
-          await sleep(TYPE_INTERVAL_MS);
+        })();
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+            for (const line of lines) {
+              const trimmedLine = line.trim();
+              if (!trimmedLine || !trimmedLine.startsWith("data: ")) continue;
+
+              const dataStr = trimmedLine.slice(6);
+              if (dataStr === "[DONE]") {
+                // 延迟到队列排空后再下发，否则前端会在字符还没显示完时收尾
+                upstreamSawDone = true;
+                continue;
+              }
+              try {
+                const chunk = JSON.parse(dataStr);
+                if (chunk.usage && !hasSentUsage) {
+                  hasSentUsage = true;
+                  usagePayload = {
+                    type: "usage",
+                    usage: {
+                      promptTokens: chunk.usage.prompt_tokens,
+                      completionTokens: chunk.usage.completion_tokens,
+                      totalTokens: chunk.usage.total_tokens,
+                    },
+                  };
+                }
+                const content = chunk.choices?.[0]?.delta?.content;
+                if (content) {
+                  // for...of 按 Unicode 码点遍历，emoji / 代理对不会被切坏
+                  for (const ch of content) queue.push(ch);
+                }
+              } catch (e) {
+                console.warn("Failed to parse SSE chunk:", e);
+              }
+            }
+          }
+
+          upstreamDone = true;
+          await pump; // 等队列里剩下的字符逐字发完
+
+          if (usagePayload) {
+            await writer.write(encoder.encode(`data: ${JSON.stringify(usagePayload)}\n\n`));
+          }
+          if (upstreamSawDone || !usagePayload) {
+            await writer.write(encoder.encode(`data: [DONE]\n\n`));
+          }
+          await writer.close();
+        } catch (err) {
+          // 让字符泵尽快退出
+          upstreamDone = true;
+          await pump;
+          // A client disconnect aborts the reader; do not log it as a server error.
+          if (err instanceof Error && err.name === "AbortError") {
+            try {
+              await writer.abort(err);
+            } catch {
+              /* ignore */
+            }
+            return;
+          }
+          console.error("[ai/chat] Stream processing error:", err);
+          try {
+            await writer.write(
+              encoder.encode(
+                `data: ${JSON.stringify({ type: "error", errorText: "上游流式传输中断，请重试" })}\n\n`,
+              ),
+            );
+            await writer.write(encoder.encode(`data: [DONE]\n\n`));
+            await writer.close();
+          } catch {
+            try {
+              await writer.abort(err as Error);
+            } catch {
+              /* ignore */
+            }
+          }
         }
       })();
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() || "";
-          for (const line of lines) {
-            const trimmedLine = line.trim();
-            if (!trimmedLine || !trimmedLine.startsWith("data: ")) continue;
-
-            const dataStr = trimmedLine.slice(6);
-            if (dataStr === "[DONE]") {
-              // 延迟到队列排空后再下发，否则前端会在字符还没显示完时收尾
-              upstreamSawDone = true;
-              continue;
-            }
-            try {
-              const chunk = JSON.parse(dataStr);
-              if (chunk.usage && !hasSentUsage) {
-                hasSentUsage = true;
-                usagePayload = {
-                  type: "usage",
-                  usage: {
-                    promptTokens: chunk.usage.prompt_tokens,
-                    completionTokens: chunk.usage.completion_tokens,
-                    totalTokens: chunk.usage.total_tokens,
-                  },
-                };
-              }
-              const content = chunk.choices?.[0]?.delta?.content;
-              if (content) {
-                // for...of 按 Unicode 码点遍历，emoji / 代理对不会被切坏
-                for (const ch of content) queue.push(ch);
-              }
-            } catch (e) {
-              console.warn("Failed to parse SSE chunk:", e);
-            }
-          }
-        }
-
-        upstreamDone = true;
-        await pump; // 等队列里剩下的字符逐字发完
-
-        if (usagePayload) {
-          await writer.write(encoder.encode(`data: ${JSON.stringify(usagePayload)}\n\n`));
-        }
-        if (upstreamSawDone || !usagePayload) {
-          await writer.write(encoder.encode(`data: [DONE]\n\n`));
-        }
-        await writer.close();
-      } catch (err) {
-        // 让字符泵尽快退出
-        upstreamDone = true;
-        await pump;
-        // A client disconnect aborts the reader; do not log it as a server error.
-        if (err instanceof Error && err.name === "AbortError") {
-          try {
-            await writer.abort(err);
-          } catch {
-            /* ignore */
-          }
-          return;
-        }
-        console.error("[ai/chat] Stream processing error:", err);
-        try {
-          await writer.write(
-            encoder.encode(
-              `data: ${JSON.stringify({ type: "error", errorText: "上游流式传输中断，请重试" })}\n\n`,
-            ),
-          );
-          await writer.write(encoder.encode(`data: [DONE]\n\n`));
-          await writer.close();
-        } catch {
-          try {
-            await writer.abort(err as Error);
-          } catch {
-            /* ignore */
-          }
-        }
-      }
     })();
     return new Response(readable, {
       status: 200,

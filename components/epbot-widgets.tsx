@@ -261,6 +261,9 @@ export function WidgetBlock({ widget }: { widget: WidgetDescriptor }) {
       );
     case "discord":
       return <DiscordWidget />;
+    case "block":
+      // 空占位卡片：不渲染任何内容，只占一个卡片位（例如流式预热阶段）。
+      return null;
     default:
       return null;
   }
