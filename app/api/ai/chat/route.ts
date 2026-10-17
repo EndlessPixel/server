@@ -8,6 +8,9 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 const ipRequestMap = new Map<string, number[]>();
 const PLAYER_INFO_API_URL = `https://login-and-data.epmc.qzz.io/v1/api/users/info`;
+// 上游响应头超时。中转服务即使只是返回 401/502 也可能拖 20~40 秒（上游日志实测），
+// 不能让用户干等着。响应头一到立即取消计时，流式传输期间不再计时。
+const UPSTREAM_HEADER_TIMEOUT_MS = 25_000;
 
 function isRateLimited(ip: string | null): boolean {
   if (!ip) return false;
@@ -221,7 +224,7 @@ export async function POST(req: NextRequest) {
       console.error("[ai/chat] API_KEY not set");
       return sseError("服务配置错误");
     }
-    timeout = setTimeout(() => controller.abort(), 120000);
+    timeout = setTimeout(() => controller.abort(), UPSTREAM_HEADER_TIMEOUT_MS);
     // ===== 先把响应流建好并立即"激活"，再去连上游 =====
     // 参数校验一通过就把 priming 字节推给客户端，让浏览器/网关立刻知道连接已建立，
     // 不必在模型思考的那几秒静默期里干等（前端也会马上显示"正在输入"）。
@@ -262,17 +265,20 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify(openaiBody),
         });
       } catch (fetchErr) {
-        // Client aborted (switched session / cancelled / unmounted): exit silently.
-        if (fetchErr instanceof Error && fetchErr.name === "AbortError") {
+        // 客户端主动取消（切换会话 / 点停止 / 卸载）：静默退出，不当成错误上报
+        if (fetchErr instanceof Error && fetchErr.name === "AbortError" && req.signal.aborted) {
           return new Response(null, { status: 499 });
         }
+        // 其余 AbortError 来自我们自己的响应头超时；TimeoutError 来自连接阶段
         const reason =
           fetchErr instanceof Error && fetchErr.name === "TimeoutError"
             ? `连接上游超时: ${upstreamUrl}`
-            : `连接上游失败: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`;
+            : fetchErr instanceof Error && fetchErr.name === "AbortError"
+              ? `上游 ${UPSTREAM_HEADER_TIMEOUT_MS}ms 内未返回响应头: ${upstreamUrl}`
+              : `连接上游失败: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`;
         console.error(`[ai/chat] ${reason}`);
         if (timeout) clearTimeout(timeout);
-        await failStream("上游连接失败，请稍后重试");
+        await failStream("上游响应超时，请稍后重试");
         return;
       }
 
@@ -297,7 +303,7 @@ export async function POST(req: NextRequest) {
             break;
           case 401:
           case 403:
-            errorMsg = "认证失败，请联系管理员";
+            errorMsg = "AI 服务认证异常，请稍后重试";
             break;
           case 404:
             errorMsg = "请求的资源不存在，请确认接口地址是否正确";
@@ -356,7 +362,9 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        await failStream(errorMsg, !isNonServerStatus(upstream.status));
+        // 401/403 的密钥由服务端统一管理，属于服务端配置问题，必须展示链路自检
+        const authFailure = upstream.status === 401 || upstream.status === 403;
+        await failStream(errorMsg, authFailure || !isNonServerStatus(upstream.status));
         return;
       }
       const decoder = new TextDecoder();
