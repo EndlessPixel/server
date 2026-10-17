@@ -238,9 +238,16 @@ export async function POST(req: NextRequest) {
       }
     };
 
-    // 预热：以 ":" 开头的 SSE 注释行（EventSource 会直接忽略）+ 2KB 填充，
-    // 逼着代理层立刻把响应刷到客户端。前端零改动。
+    // 预热：先推一个空占位 widget（前端渲染为无内容卡片，纯占位），
+    // 让客户端立刻有东西可渲染；再补一段 SSE 注释填充，逼代理层把响应立即刷出去。
     // 注意：若前面还有自己的 nginx，仍需 `proxy_buffering off;`，padding 只是兜底。
+    void writer
+      .write(
+        encoder.encode(
+          `data: ${JSON.stringify({ type: "text-delta", delta: `<widget name="block" />\n` })}\n\n`,
+        ),
+      )
+      .catch(() => {});
     void writer.write(encoder.encode(`:${" ".repeat(2048)}\n\n`)).catch(() => {});
 
     (async () => {
