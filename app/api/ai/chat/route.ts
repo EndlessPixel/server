@@ -2,10 +2,9 @@ import { NextRequest } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+import { THINKING_PROMPT } from "@/lib/ai-thinking-prompt";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-// 流式回复可能持续较久（逐字符输出会进一步拉长总时长），必须抬高函数执行上限：
-// 未声明时 Vercel 会用平台默认值（Hobby 10s / Pro 60s），长回复会在中途被直接切断。
 export const maxDuration = 300;
 const ipRequestMap = new Map<string, number[]>();
 const PLAYER_INFO_API_URL = `https://login-and-data.epmc.qzz.io/v1/api/users/info`;
@@ -167,6 +166,26 @@ export async function POST(req: NextRequest) {
       return sseError("请求格式错误", false);
     }
     const { messages, model } = body;
+
+    // —— 对外开放的采样参数：缺省用默认值，越界/非数字按请求侧错误拒绝 ——
+    const readNumParam = (key: string, fallback: number, min: number, max: number): number => {
+      const raw = (body as Record<string, unknown>)[key];
+      if (raw === undefined || raw === null) return fallback;
+      const n = typeof raw === "number" ? raw : Number(raw);
+      return Number.isFinite(n) && n >= min && n <= max ? n : NaN;
+    };
+    const temperature = readNumParam("temperature", 0.2, 0, 2);
+    const topP = readNumParam("top_p", 0.7, 0, 1);
+    const presencePenalty = readNumParam("presence_penalty", 0.5, -2, 2);
+    const frequencyPenalty = readNumParam("frequency_penalty", 0.3, -2, 2);
+    if ([temperature, topP, presencePenalty, frequencyPenalty].some(Number.isNaN)) {
+      return sseError(
+        "无效的采样参数：temperature(0~2) / top_p(0~1) / presence_penalty(-2~2) / frequency_penalty(-2~2)",
+        false,
+      );
+    }
+    // 深度思考开关：默认开启；传 false 则不注入思考提示词
+    const deepThinking = body.deepThinking !== false;
     let systemPrompt: string;
     try {
       systemPrompt = await getSystemPrompt();
@@ -174,9 +193,11 @@ export async function POST(req: NextRequest) {
       return sseError("服务初始化失败，请联系管理员");
     }
     const playerCtx = await getPlayerContextBlock(req);
-    const systemContent = playerCtx
-      ? `${getNowLine()}\n\n${systemPrompt}\n\n${playerCtx}`
-      : `${getNowLine()}\n\n${systemPrompt}`;
+    // 深度思考提示词按需注入：关闭后模型不再输出 <thinking> 块
+    const systemParts = [getNowLine(), systemPrompt];
+    if (deepThinking) systemParts.push(THINKING_PROMPT);
+    if (playerCtx) systemParts.push(playerCtx);
+    const systemContent = systemParts.join("\n\n");
     const fullMessages = [{ role: "system", content: systemContent }, ...messages.slice(-20)];
     const defaultModel = "grok-4.7";
     const selectedModel =
@@ -188,11 +209,10 @@ export async function POST(req: NextRequest) {
       model: selectedModel,
       messages: fullMessages,
       stream: true,
-      temperature: 0.2,
-      top_p: 0.7,
-      presence_penalty: 0.5,
-      frequency_penalty: 0.3,
-      max_tokens: 4096,
+      temperature,
+      top_p: topP,
+      presence_penalty: presencePenalty,
+      frequency_penalty: frequencyPenalty,
     };
     const apiBaseUrl = process.env.API_BASE_URL || "https://xn--kiv260fv3i.cn";
     const upstreamUrl = `${apiBaseUrl}/v1/chat/completions`;
@@ -202,16 +222,6 @@ export async function POST(req: NextRequest) {
       return sseError("服务配置错误");
     }
     timeout = setTimeout(() => controller.abort(), 120000);
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0.0.0 Safari/537.36",
-      Accept: "text/event-stream",
-      Referer: apiBaseUrl,
-      Origin: apiBaseUrl,
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "cross-site",
-    };
     // ===== 先把响应流建好并立即"激活"，再去连上游 =====
     // 参数校验一通过就把 priming 字节推给客户端，让浏览器/网关立刻知道连接已建立，
     // 不必在模型思考的那几秒静默期里干等（前端也会马上显示"正在输入"）。
@@ -248,11 +258,7 @@ export async function POST(req: NextRequest) {
       try {
         upstream = await fetch(upstreamUrl, {
           method: "POST",
-          // Merge the 120s server timeout with the client request signal so that
-          // a client disconnect (req.signal abort) cancels the upstream fetch
-          // cleanly instead of leaking an unhandled AbortError to the console.
           signal: AbortSignal.any([controller.signal, req.signal]),
-          headers: headers,
           body: JSON.stringify(openaiBody),
         });
       } catch (fetchErr) {

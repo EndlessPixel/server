@@ -182,6 +182,7 @@ interface Model {
 const STORAGE_KEY = "epbot_sessions";
 const CURRENT_SESSION_KEY = "epbot_current_session_id";
 const SELECTED_MODEL_KEY = "epbot_selected_model";
+const DEEP_THINKING_KEY = "epbot_deep_thinking";
 const MAX_STORAGE_PERCENT = 0.9;
 const MAX_CONTEXT_MESSAGES = 25;
 const DEFAULT_MODEL_ID = "grok-4.7";
@@ -445,6 +446,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [models, setModels] = useState<Model[]>([]);
   const [filteredModels, setFilteredModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>("");
+  const [deepThinking, setDeepThinking] = useState(true);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [loadingModels, setLoadingModels] = useState(false);
   const [showModelPanel, setShowModelPanel] = useState(false);
@@ -682,6 +684,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
             msg.role === "assistant" ? { ...msg, content: stripThinking(msg.content) } : msg,
           ),
           model: selectedModel || undefined,
+          deepThinking,
         }),
         signal: controller.signal,
         async onopen(response) {
@@ -980,6 +983,8 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
 
     const savedModel = localStorage.getItem(SELECTED_MODEL_KEY);
     if (savedModel) setSelectedModel(savedModel);
+    const savedDeepThinking = localStorage.getItem(DEEP_THINKING_KEY);
+    if (savedDeepThinking !== null) setDeepThinking(savedDeepThinking === "true");
   }, []);
 
   // Cleanup on unmount: abort requests and clear timers
@@ -1235,6 +1240,25 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                             </div>
                           </div>
                         </div>
+
+                        <label className="mb-3 flex cursor-pointer items-center justify-between rounded-xl bg-muted p-2.5">
+                          <span className="flex items-center gap-2 text-sm text-foreground">
+                            <Brain className="h-4 w-4 text-muted-foreground" />
+                            深度思考
+                            <span className="text-xs text-muted-foreground">
+                              （回复前先推理，稍慢但更稳）
+                            </span>
+                          </span>
+                          <input
+                            type="checkbox"
+                            checked={deepThinking}
+                            onChange={(e) => {
+                              setDeepThinking(e.target.checked);
+                              localStorage.setItem(DEEP_THINKING_KEY, String(e.target.checked));
+                            }}
+                            className="h-4 w-4 cursor-pointer rounded"
+                          />
+                        </label>
 
                         <div className="space-y-2">
                           <div className="relative">
