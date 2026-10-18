@@ -362,9 +362,11 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        // 401/403 的密钥由服务端统一管理，属于服务端配置问题，必须展示链路自检
+        // 401/403 的密钥由服务端统一管理，属于服务端配置问题，必须展示链路自检。
+        // 带上模型名：上游多渠道时，失效的往往只是单个渠道的授权（KEY 本身有效）。
         const authFailure = upstream.status === 401 || upstream.status === 403;
-        await failStream(errorMsg, authFailure || !isNonServerStatus(upstream.status));
+        const finalErrorMsg = authFailure ? `${errorMsg}（模型 ${selectedModel}）` : errorMsg;
+        await failStream(finalErrorMsg, authFailure || !isNonServerStatus(upstream.status));
         return;
       }
       const decoder = new TextDecoder();
