@@ -450,6 +450,8 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [filteredModels, setFilteredModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>("");
   const [deepThinking, setDeepThinking] = useState(true);
+  // 上游 /v1/models 未列出、但确实可用的模型，允许手动指定 ID 使用
+  const [customModelId, setCustomModelId] = useState("");
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [loadingModels, setLoadingModels] = useState(false);
   const [showModelPanel, setShowModelPanel] = useState(false);
@@ -1367,6 +1369,43 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                             </div>
                           ))
                         )}
+
+                        {/* 上游未列出但可用的模型，手动指定 ID */}
+                        <div className="mt-3 border-t border-border/60 pt-3">
+                          <label
+                            className="mb-1.5 block text-xs text-muted-foreground"
+                            htmlFor="epbot-custom-model"
+                          >
+                            自定义模型 ID（上游未列出时手动指定）
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              id="epbot-custom-model"
+                              type="text"
+                              value={customModelId}
+                              onChange={(e) => setCustomModelId(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" && customModelId.trim()) {
+                                  handleModelChange(customModelId.trim());
+                                  setCustomModelId("");
+                                }
+                              }}
+                              placeholder="例如 epai-1.0"
+                              className="flex-1 rounded-lg bg-secondary px-3 py-1.5 text-sm transition-colors duration-200 placeholder:text-muted-foreground/50 focus:ring-2 focus:ring-ring/30 focus:outline-none"
+                            />
+                            <button
+                              onClick={() => {
+                                if (!customModelId.trim()) return;
+                                handleModelChange(customModelId.trim());
+                                setCustomModelId("");
+                              }}
+                              disabled={!customModelId.trim()}
+                              className="shrink-0 rounded-lg bg-foreground px-3 py-1.5 text-sm text-background transition-opacity duration-200 disabled:opacity-40"
+                            >
+                              使用
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
