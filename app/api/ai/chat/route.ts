@@ -225,6 +225,16 @@ export async function POST(req: NextRequest) {
       return sseError("服务配置错误");
     }
     timeout = setTimeout(() => controller.abort(), UPSTREAM_HEADER_TIMEOUT_MS);
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0.0.0 Safari/537.36",
+      Accept: "text/event-stream",
+      Referer: apiBaseUrl,
+      Origin: apiBaseUrl,
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Site": "cross-site",
+    };
     // ===== 先把响应流建好并立即"激活"，再去连上游 =====
     // 参数校验一通过就把 priming 字节推给客户端，让浏览器/网关立刻知道连接已建立，
     // 不必在模型思考的那几秒静默期里干等（前端也会马上显示"正在输入"）。
@@ -261,7 +271,11 @@ export async function POST(req: NextRequest) {
       try {
         upstream = await fetch(upstreamUrl, {
           method: "POST",
+          // Merge the server timeout with the client request signal so that
+          // a client disconnect (req.signal abort) cancels the upstream fetch
+          // cleanly instead of leaking an unhandled AbortError to the console.
           signal: AbortSignal.any([controller.signal, req.signal]),
+          headers,
           body: JSON.stringify(openaiBody),
         });
       } catch (fetchErr) {
@@ -287,7 +301,12 @@ export async function POST(req: NextRequest) {
       if (!upstream.ok) {
         let errorMsg = `上游服务暂时不可用 (${upstream.status})`;
         const errorBody = await upstream.text().catch(() => "");
-        console.error(`上游错误 ${upstream.status}:`, errorBody.slice(0, 500));
+        // 附带 key 指纹与模型名：401/403 时能直接对比环境变量里的 KEY 是否一致、是哪个渠道
+        console.error(
+          `上游错误 ${upstream.status}:`,
+          errorBody.slice(0, 500),
+          `[key=${apiKey.slice(0, 6)}...${apiKey.slice(-4)} model=${selectedModel}]`,
+        );
 
         // 尝试解析上游返回的具体错误信息
         let upstreamMsg = "";
