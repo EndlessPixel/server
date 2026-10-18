@@ -209,6 +209,7 @@ const RECOMMENDED_PATTERNS: RegExp[] = [
   /llama-4-maverick/i, // Meta Llama 4 旗舰
   /minimax-m\d+/i, // MiniMax
   /grok-chat-(?:fast|expert)/i, // Grok 快速 / 专家档
+  /(?:^|\/)epai-\d+(?:\.\d+)?$/i, // EndlessPixel 自研模型（epai-1.0 等）
 ];
 
 // 一票否决：命中即不推荐（轻量档、预览/实验档、专用分支）。
