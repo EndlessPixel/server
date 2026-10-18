@@ -10,6 +10,15 @@ export async function GET() {
     // 这里只按**能力类别**拉黑（根本没法对话的模型）；
     // 模型的强弱与新老（小模型、老模型、代码模型）交给前端「推荐」逻辑区分，不在这里删。
     // 按类别分组，新增供应商时对照分组补即可。
+    /**
+     * 上游 /v1/models 未列出、但已手动调用验证可用的模型。
+     * 补进列表，避免用户每次都要在模型面板里手动输入 ID。
+     * ⚠️ 只放「确实调用通过」的；上游正式放出后此处自动去重，可删掉对应条目。
+     */
+    const EXTRA_MODELS: { id: string; object: string; created: number; owned_by: string }[] = [
+      { id: "epai-1.0", object: "model", created: 0, owned_by: "endlesspixel" },
+    ];
+
     const filterRegex = [
       // —— 向量嵌入 / 检索 / 重排：没有对话能力
       /-embed/,
@@ -110,10 +119,22 @@ export async function GET() {
     }
 
     if (data && Array.isArray(data.data)) {
+      const seen = new Set<string>();
       data.data = data.data.filter((model) => {
         if (!model.id) return true;
+        // 顺手去重：上游偶尔会重复列出同一个 id
+        if (seen.has(model.id)) return false;
+        seen.add(model.id);
         return !filterRegex.some((re: RegExp) => re.test(model.id as string));
       });
+      // 上游 /v1/models 未列出、但已手动调用验证可用的模型，补进列表，
+      // 免得用户每次都要在面板里手动输入 ID。
+      for (const extra of EXTRA_MODELS) {
+        if (!seen.has(extra.id)) {
+          data.data.push(extra);
+          seen.add(extra.id);
+        }
+      }
     }
 
     return new Response(JSON.stringify(data), {
