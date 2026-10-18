@@ -263,45 +263,44 @@ const generateTitle = (messages: Message[]): string => {
   return firstUserMsg.slice(0, 20) + (firstUserMsg.length > 20 ? "…" : "") || "新对话";
 };
 
-// ---- <thinking> tag parsing -------------------------------------------
-// The model is instructed to optionally start its reply with a single
-// <thinking>...</thinking> block. We parse it out so the UI can render the
-// reasoning as a collapsible section, including the streaming middle state
-// where the closing tag has not arrived yet.
-const THINKING_OPEN = "<thinking>";
-const THINKING_CLOSE = "</thinking>";
+// ---- 思考块解析 -----------------------------------------------------------
+// 模型可能用两种格式输出推理过程：
+//   1. `<thinking>...</thinking>` —— 提示词要求的标准格式
+//   2. `<think>...</think>` —— 部分模型（DeepSeek-R1 / Qwen 等）的原生格式，不遵循提示词
+// 两种都解析成可折叠的「思考区」，并正确处理流式中间态（闭合标签还没到达）。
+const THINKING_TAGS: { open: string; close: string }[] = [
+  { open: "<thinking>", close: "</thinking>" },
+  { open: "\u003cthink\u003e", close: "\u003c/think\u003e" },
+];
 
 type ParsedThinking = {
   thinking: string;
   answer: string;
-  /** false while streaming inside an unclosed <thinking> block */
+  /** false while streaming inside an unclosed thinking block */
   thinkingDone: boolean;
 };
 
 const parseThinking = (content: string): ParsedThinking => {
   const trimmed = content.trimStart();
   const lower = trimmed.toLowerCase();
-  // Streaming edge case: we only received a partial opening tag (e.g. "<think").
-  // Hide it instead of flashing raw tag text.
-  if (
-    trimmed.length > 0 &&
-    trimmed.length < THINKING_OPEN.length &&
-    THINKING_OPEN.startsWith(lower)
-  ) {
-    return { thinking: "", answer: "", thinkingDone: false };
-  }
-  if (!lower.startsWith(THINKING_OPEN)) {
+  const tag = THINKING_TAGS.find((t) => lower.startsWith(t.open));
+  if (!tag) {
+    // Streaming edge case: we only received a partial opening tag (e.g. "<think"
+    // or "<thi"). Hide it instead of flashing raw tag text.
+    if (trimmed.length > 0 && THINKING_TAGS.some((t) => t.open.startsWith(lower))) {
+      return { thinking: "", answer: "", thinkingDone: false };
+    }
     return { thinking: "", answer: content, thinkingDone: true };
   }
-  const rest = trimmed.slice(THINKING_OPEN.length);
-  const closeIdx = rest.toLowerCase().indexOf(THINKING_CLOSE);
+  const rest = trimmed.slice(tag.open.length);
+  const closeIdx = rest.toLowerCase().indexOf(tag.close);
   if (closeIdx === -1) {
     // Opening tag seen, closing tag not yet streamed in.
     return { thinking: rest.trim(), answer: "", thinkingDone: false };
   }
   return {
     thinking: rest.slice(0, closeIdx).trim(),
-    answer: rest.slice(closeIdx + THINKING_CLOSE.length).replace(/^\s+/, ""),
+    answer: rest.slice(closeIdx + tag.close.length).replace(/^\s+/, ""),
     thinkingDone: true,
   };
 };
@@ -309,7 +308,10 @@ const parseThinking = (content: string): ParsedThinking => {
 // Remove thinking blocks before sending history back to the model, so the
 // context window is not wasted on old reasoning traces.
 const stripThinking = (content: string): string => {
-  const stripped = content.replace(/<thinking>[\s\S]*?<\/thinking>\s*/gi, "").trim();
+  const stripped = content
+    .replace(/<thinking>[\s\S]*?<\/thinking>\s*/gi, "")
+    .replace(/\u003cthink\u003e[\s\S]*?\u003c\/think\u003e\s*/gi, "")
+    .trim();
   return stripped || content;
 };
 
