@@ -68,13 +68,15 @@ export const metadata: Metadata = {
   description:
     "EndlessPixel 是免费纯净的 Minecraft Java 服务器，支持 1.7.2-26.3 版本，用 Purpur 核心运行，不收费、没广告。",
   keywords: [
+    "Minecraft"
     "Minecraft服务器",
     "免费MC服务器",
     "Java版服务器",
     "Purpur核心",
     "我的世界公益服",
     "EndlessPixel",
-    "1.21服务器",
+    "跨多版本服务器",
+    "26.2"，
     "无尽像素",
   ],
   authors: [{ name: BRAND_NAME }],
