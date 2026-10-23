@@ -241,7 +241,7 @@ export function ContactSection() {
                 animate={{ scale: [1, 1.05, 1], rotate: [0, 2, -2, 0] }}
                 transition={{ duration: 3, repeat: Infinity, repeatDelay: 5 }}
               >
-                我们一岁啦！
+                我们二岁啦！
               </motion.span>
             </CardTitle>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -258,10 +258,10 @@ export function ContactSection() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            EndlessPixel 运营至今已满1周年，
+            EndlessPixel 运营至今已满2周年，
             <span className="mt-2 block">感谢您一直以来的信任与支持。</span>
             <span className="mt-3 block items-center gap-2 font-semibold text-foreground">
-              <Heart className="inline h-5 w-5 text-foreground/60" /> 一年坚持，初心不改；
+              <Heart className="inline h-5 w-5 text-foreground/60" /> 两年坚持，初心不改；
             </span>
             <span className="mt-1 block items-center gap-2 font-semibold text-foreground">
               <Sparkles className="inline h-5 w-5 text-muted-foreground" /> 免费服务，始终无广。
