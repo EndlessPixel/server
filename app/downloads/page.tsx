@@ -1,4 +1,5 @@
 import { PageHeader, ContentContainer } from "@/components/page-primitives";
+import { BRAND_ASSETS } from "@/lib/brand";
 import { HelpSection } from "@/components/help-section";
 import type { Metadata } from "next";
 import { Grid, Link2, Package, Smartphone } from "lucide-react";
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: BRAND_ASSETS.faviconIco,
   },
 };
 

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
+import { BrandLogo } from "@/components/brand-logo";
 import {
   Server,
   Heart,
@@ -81,12 +81,11 @@ const NavLinks = ({ links }: { links: NavLink[] }) => (
   </ul>
 );
 
-const BrandLogo = () => {
+const BrandFooterIdentity = () => {
   return (
-    <div className="mb-6 flex items-center gap-3">
-      <Image src="/favicon.ico" alt="EndlessPixel" width={48} height={48} className="rounded-xl" />
+    <BrandLogo className="mb-6">
       <h2 className="text-3xl font-bold tracking-tight text-white">EndlessPixel</h2>
-    </div>
+    </BrandLogo>
   );
 };
 
@@ -205,7 +204,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           {/* 左侧品牌区 */}
           <div className="space-y-4">
-            <BrandLogo />
+            <BrandFooterIdentity />
             <p className="max-w-md text-sm leading-relaxed text-white/40">
               EndlessPixel 是一群喜欢 Minecraft 的玩家凑在一起搭的服务器，不收费，想玩随时来。
             </p>

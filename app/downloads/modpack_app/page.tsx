@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BRAND_ASSETS } from "@/lib/brand";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { DownloadSection } from "@/components/download-section-launcher";
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: BRAND_ASSETS.faviconIco,
   },
 };
 

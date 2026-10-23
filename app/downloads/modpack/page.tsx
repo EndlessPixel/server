@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BRAND_ASSETS } from "@/lib/brand";
 import type { Metadata } from "next";
 import { DownloadSection } from "@/components/download-section_modpack";
 import { BackButton, HelpSection } from "@/components/help-section";
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: BRAND_ASSETS.faviconIco,
   },
 };
 
