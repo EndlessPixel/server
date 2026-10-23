@@ -14,7 +14,6 @@ import {
   ChevronRight,
   Search,
   Settings,
-  Bot,
   GraduationCap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
