@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BRAND_ASSETS } from "@/lib/brand";
 import { QuizClient } from "@/components/quiz-client";
 
 export const metadata: Metadata = {
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: BRAND_ASSETS.faviconIco,
   },
 };
 

@@ -1,4 +1,5 @@
 import { HeroSection } from "@/components/hero-section";
+import { BRAND_ASSETS } from "@/lib/brand";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
     canonical: "https://www.endlesspixel.cn/",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: BRAND_ASSETS.faviconIco,
   },
 };
 
