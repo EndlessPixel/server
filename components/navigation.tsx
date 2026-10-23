@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import LoginButton from "@/components/login";
 import { useAppearance } from "@/lib/appearance-context";
 import { useAppearanceSettings } from "@/components/appearance-settings-container";
+import { BrandLogo } from "@/components/brand-logo";
 
 function useLockBody(lock: boolean) {
   useEffect(() => {
@@ -256,11 +257,7 @@ export function Navigation() {
               whileHover={{ scale: 1.03 }}
               aria-label="返回首页"
             >
-              <img
-                src="/EndlessPixel.png"
-                alt="EndlessPixel Logo"
-                className="h-8 w-64 object-contain"
-              />
+              <BrandLogo variant="wordmark" />
             </MotionLink>
 
             <div className="hidden items-center space-x-1 md:flex" role="menubar">
