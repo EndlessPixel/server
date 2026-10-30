@@ -1733,7 +1733,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     ],
     answer: 0,
     explanation:
-      "三层：当前真实时间块（UTC+8）、public/system.md 知识库（约 62 KB，模块级缓存）、登录玩家身份块（查上游玩家接口，4 秒超时，失败则静默降级）。",
+      "三层：当前真实时间块（UTC+8）、public/system.md 知识库（模块级缓存）、登录玩家身份块（查上游玩家接口，4 秒超时，失败则静默降级）。",
   },
   {
     id: "dev-ai-model-name-rule",
