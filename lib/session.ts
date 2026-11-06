@@ -15,7 +15,8 @@ export const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 天（秒）
 /** 登录来源标记 cookie：minecraft=原账号密码登录 / github=GitHub OAuth 登录 */
 export const PROVIDER_COOKIE = "ep_provider";
 
-function getSecret(): string {
+/** 供其它模块（如验证码）派生自己的密钥，避免再引入一个环境变量 */
+export function getSessionSecret(): string {
   const secret = process.env.SESSION_SECRET;
   if (secret && secret.length >= 16) return secret;
   // 开发环境兜底：生产环境务必通过环境变量配置 SESSION_SECRET（>=16 位）
@@ -28,7 +29,7 @@ function getSecret(): string {
 }
 
 function sign(payload: string): string {
-  const mac = createHmac("sha256", getSecret()).update(payload).digest("base64url");
+  const mac = createHmac("sha256", getSessionSecret()).update(payload).digest("base64url");
   return mac;
 }
 

@@ -89,12 +89,23 @@ Written in `app/api/auth/login/route.ts` and `app/api/auth/github/callback/route
 | Username non-empty | `!username.trim()` | Please enter a username or email |
 | Username / email format | username `/^[a-zA-Z0-9_]{3,16}$/` or email `/^[^@\s]+@[^@\s]+\.[^@\s]+$/` | Username: letters, digits and underscores only, 3–16 chars; or a bound email address |
 | Password length | `password.length < 6` | Password must be at least 6 characters |
+| Captcha | `captchaInput.trim().length !== 4` | Enter the 4 characters shown in the image |
 | Terms checkbox | `!agreeTerms` | Please read and accept the terms and privacy policy |
 
 ### Sign-in Methods
 
-1. **Minecraft username + password**: handled by `app/api/auth/login/route.ts`; **either the in-game username or the bound email works**. The session stores the username, never the email.
+1. **Minecraft username + password**: handled by `app/api/auth/login/route.ts`; **either the in-game username or the bound email works**. The session stores the username, never the email. A captcha is required on every attempt.
 2. **GitHub OAuth**: handled by `app/api/auth/github/*`, sets `ep_provider=github` after the callback.
+
+### SVG Captcha
+
+`GET /api/auth/captcha` returns an SVG and stores the answer **AES-256-GCM encrypted** in the HttpOnly cookie `ep_captcha`:
+
+- **Stateless**: the answer is never kept in server memory or a database, so it works across instances; the key is derived from `SESSION_SECRET` (see `lib/captcha.ts`)
+- **Cleared after use**: the login route clears the cookie right after a successful check, and the client fetches a fresh image after every attempt. ⚠️ This is **best-effort** — the token is stateless, so a script that keeps its own copy can resubmit it until it expires. Real brute-force protection comes from the backend's rate limiting (10/min) and failure lockout (5 tries → 5 min)
+- **TTL** 3 minutes; the alphabet excludes `I/O/0/1`; comparison is case-insensitive
+- **Failure**: a wrong captcha returns `400 { error: "captcha_invalid" }`, distinct from a wrong password
+- ⚠️ **Limitation**: SVG characters are `<text>` nodes, readable by any XML parser — it stops naive scripts, not targeted automation. A raster image or glyph outlines would be needed for that.
 
 ### Fixed Pitfalls
 

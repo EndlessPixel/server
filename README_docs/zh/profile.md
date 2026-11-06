@@ -89,12 +89,23 @@ export function verifySessionToken(token: string | undefined): string | null {
 | 用户名非空 | `!username.trim()` | 请输入用户名或邮箱 |
 | 用户名 / 邮箱格式 | 用户名 `/^[a-zA-Z0-9_]{3,16}$/` 或邮箱 `/^[^@\s]+@[^@\s]+\.[^@\s]+$/` | 用户名只能含字母、数字、下划线且长度 3-16 位；也可直接填绑定邮箱 |
 | 密码长度 | `password.length < 6` | 密码长度不能少于 6 位 |
+| 验证码 | `captchaInput.trim().length !== 4` | 请输入图中 4 位验证码 |
 | 协议勾选 | `!agreeTerms` | 请阅读并同意用户协议与隐私政策 |
 
 ### 登录方式
 
-1. **Minecraft 账号密码**：走 `app/api/auth/login/route.ts`，**可用游戏内用户名或绑定邮箱登录**；会话里存的是用户名，不会存邮箱。
+1. **Minecraft 账号密码**：走 `app/api/auth/login/route.ts`，**可用游戏内用户名或绑定邮箱登录**；会话里存的是用户名，不会存邮箱。提交前必须带验证码。
 2. **GitHub OAuth**：走 `app/api/auth/github/*`，回调后写 `ep_provider=github`。
+
+### 登录验证码（SVG）
+
+`GET /api/auth/captcha` 返回一张 SVG，同时把答案**用 AES-256-GCM 加密后写进 HttpOnly cookie `ep_captcha`**：
+
+- **无状态**：答案不存服务端内存/数据库，多实例部署也能校验；密钥由 `SESSION_SECRET` 派生（见 `lib/captcha.ts`）
+- **用后即清**：登录接口校验通过后立即清除 cookie，前端每次尝试后也会自动换一张。⚠️ 这是**尽力而为** —— 令牌本身无状态，脚本若自行保留旧 cookie，在有效期内仍可重复提交；真正的防爆破依赖后端限流（10 次/60 秒）与失败锁定（5 次 → 锁 5 分钟）
+- **时效**：3 分钟过期；字符集去掉了易混的 `I/O/0/1`；校验大小写不敏感
+- **失败表现**：验证码错误返回 `400 { error: "captcha_invalid" }`，与「密码错误」区分开，前端据此提示
+- ⚠️ **能力边界**：SVG 里的字符是 `<text>` 节点，解析 XML 就能读出，所以它挡得住无脑脚本，挡不住针对性自动化；要更强需改用位图或字形轮廓
 
 ### 已修复的坑
 

@@ -22,6 +22,13 @@ export default function LoginContent() {
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [captchaInput, setCaptchaInput] = useState("");
+  // 时间戳作查询参数，强制浏览器重新拉一张（同 URL 可能命中缓存）
+  const [captchaSeed, setCaptchaSeed] = useState(0);
+  const refreshCaptcha = () => {
+    setCaptchaSeed(Date.now());
+    setCaptchaInput("");
+  };
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -83,6 +90,10 @@ export default function LoginContent() {
       setError("密码长度不能少于 6 位");
       return;
     }
+    if (captchaInput.trim().length !== 4) {
+      setError("请输入图中 4 位验证码");
+      return;
+    }
     if (!agreeTerms) {
       setError("请阅读并同意用户协议与隐私政策");
       return;
@@ -90,12 +101,18 @@ export default function LoginContent() {
 
     setError("");
     setLoading(true);
+    // 验证码是一次性的：只要这次的登录没成功，结束后就换一张新的
+    let loggedIn = false;
 
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: loginId, password }),
+        body: JSON.stringify({
+          name: loginId,
+          password,
+          captcha: captchaInput.trim().toUpperCase(),
+        }),
       });
 
       if (res.status >= 502 && res.status <= 504) {
@@ -133,6 +150,7 @@ export default function LoginContent() {
               ? loginId
               : "";
         if (userName) setCookie("mc_user", userName);
+        loggedIn = true;
         const redirect = searchParams.get("redirect") || "/";
         router.push(redirect);
         router.refresh();
@@ -144,6 +162,7 @@ export default function LoginContent() {
       setError("网络请求失败，请稍后重试");
     } finally {
       setLoading(false);
+      if (!loggedIn) refreshCaptcha();
     }
   };
 
@@ -273,6 +292,37 @@ export default function LoginContent() {
                 disabled={loading}
                 minLength={6}
               />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="captcha" className="block text-sm font-medium text-foreground">
+                验证码
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="text"
+                  id="captcha"
+                  value={captchaInput}
+                  onChange={(e) => setCaptchaInput(e.target.value.toUpperCase())}
+                  className="w-full rounded-lg bg-secondary px-4 py-2.5 tracking-widest text-foreground uppercase transition-all duration-200 placeholder:tracking-normal placeholder:text-muted-foreground/50 focus:bg-background focus:ring-2 focus:ring-ring/30 focus:outline-none"
+                  placeholder="输入图中 4 位字符"
+                  autoComplete="off"
+                  autoCapitalize="characters"
+                  spellCheck={false}
+                  disabled={loading}
+                  maxLength={4}
+                  aria-invalid={error ? "true" : "false"}
+                />
+                <img
+                  src={`/api/auth/captcha?t=${captchaSeed}`}
+                  alt="验证码，点击可刷新"
+                  title="看不清？点击刷新"
+                  width={120}
+                  height={40}
+                  onClick={refreshCaptcha}
+                  className="h-10 w-30 shrink-0 cursor-pointer rounded-lg bg-secondary object-contain"
+                />
+              </div>
             </div>
 
             <div className="mt-2 flex items-start gap-2.5">

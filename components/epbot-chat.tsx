@@ -800,10 +800,14 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       // Connection/open errors are already surfaced via onerror.
       // Aborted (user-initiated) requests need no extra handling.
     } finally {
-      setLoading(false);
-      sendingRef.current = false;
+      // 只有「当前仍生效的请求」才能清理全局状态。
+      // 被取消的旧请求其 finally 会晚一步执行：若无条件 setLoading(false)，
+      // 会把刚发起的新请求（例如编辑后立刻重发）的加载态提前关掉，
+      // 导致停止按钮变回发送按钮、还能被重复提交。
       if (abortControllerRef.current === controller) {
         abortControllerRef.current = null;
+        setLoading(false);
+        sendingRef.current = false;
       }
       // Replace the empty assistant placeholder with a fallback message.
       // Skip when the request was aborted by the user (delete/edit/switch),
@@ -889,6 +893,13 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
       showToast("⚠️ 内容不能为空");
       setEditId(null);
       return;
+    }
+    // AI 还在回复时必须先取消这次请求。
+    // 否则下面的 sendMessage() 会被开头的 sendingRef 守卫静默 return，
+    // 而消息列表已经在上一步被截断 —— 结果是新消息没发出去、原来的也被删掉，
+    // 表现为「编辑并发送后消息丢失」。
+    if (loadingRef.current || sendingRef.current) {
+      cancelCurrentRequest();
     }
     const truncated = messages.slice(0, index);
     updateCurrentMessages(truncated);
