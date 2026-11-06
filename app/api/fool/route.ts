@@ -381,17 +381,6 @@ const repoList: Repo[] = [
     ],
   },
   {
-    name: "PotatoMC",
-    url: `${GITHUB_REPO_PREFIX}PotatoMC`,
-    prank_tags: [
-      "April Fools: Minecraft runs on potato + teapot power 🥔🫖",
-      "New mob: wandering teapot 🫖🚶",
-      "Crafting: teapot + potato = magic ☕️✨",
-      'Server lag: "teapot is thinking" 💭',
-      "Update: added tea plantation biome 🌿🍵",
-    ],
-  },
-  {
     name: "minecraft-version-list",
     url: `${GITHUB_REPO_PREFIX}minecraft-version-list`,
     prank_tags: [
@@ -444,28 +433,6 @@ const repoList: Repo[] = [
       'Chat message: "I\'m brewing... brb" ☕️', // ✅ 已修复
       'AFK status: "steeping in corner" 🍵',
       'Kick reason: "teapot overflow" 🫗🚫',
-    ],
-  },
-  {
-    name: "EFI-Boot-NotFound",
-    url: `${GITHUB_REPO_PREFIX}EFI-Boot-NotFound`,
-    prank_tags: [
-      "April Fools: Error screen shows teapot not found 🫖❌",
-      "Error code: 418 (obviously) ☕️",
-      'Troubleshoot: "have you tried more tea?" 🍵',
-      'Recovery: "brew new boot sector" 🫗🔄',
-      'Support: "blame the teapot" 🫖🤷',
-    ],
-  },
-  {
-    name: "CSS-Rotating-Button",
-    url: `${GITHUB_REPO_PREFIX}CSS-Rotating-Button`,
-    prank_tags: [
-      "April Fools: Button spins into a teapot 🫖🔄",
-      "Hover effect: tea steam animation ☁️🍵",
-      "Click sound: gentle pour 🫗🔊",
-      'Disabled state: "teapot is napping" 😴',
-      'Accessibility: "tea-scented ARIA" 👃♿',
     ],
   },
   {
@@ -612,17 +579,6 @@ const repoList: Repo[] = [
     ],
   },
   {
-    name: "easybot-react-vite-template",
-    url: `${GITHUB_REPO_PREFIX}easybot-react-vite-template`,
-    prank_tags: [
-      "April Fools: React components are all teapots 🫖⚛️",
-      'Vite build: "brew the app" ☕️',
-      'HMR: "hot tea reload" 🍵',
-      'Template: "Teapot Starter" 🫖🚀',
-      "Docs: written in tea stains 📜",
-    ],
-  },
-  {
     name: "FileLink",
     url: `${GITHUB_REPO_PREFIX}FileLink`,
     prank_tags: [
@@ -631,39 +587,6 @@ const repoList: Repo[] = [
       "Bandwidth limit: measured in cups of tea ☕️",
       "Admin console: hidden behind a teapot curtain 🫗",
       "IP blacklist: blocks coffee drinkers only ☕️🚫",
-    ],
-  },
-  {
-    name: "ReCatSeedLogin",
-    url: `${GITHUB_REPO_PREFIX}ReCatSeedLogin`,
-    prank_tags: [
-      "April Fools: Login seed is one tea leaf 🌱🍵",
-      "Auth check: prove you're a teapot first 🫖",
-      "Seed generator: 100% cat-approved 🐈",
-      "Session expires once the tea goes cold ☕️",
-      "Captcha: select all teacups 🍵",
-    ],
-  },
-  {
-    name: "EPSILON-trading-simulator",
-    url: `${GITHUB_REPO_PREFIX}EPSILON-trading-simulator`,
-    prank_tags: [
-      "April Fools: Stocks are traded in tea leaves 🍵📈",
-      "Portfolio: 100% teapot futures 🫖",
-      "Market crash: caused by spilled tea 🫗",
-      "Profits measured in cups of tea ☕️",
-      "Trading bot: just drinks tea all day 😴",
-    ],
-  },
-  {
-    name: "git-city-zh-CN",
-    url: `${GITHUB_REPO_PREFIX}git-city-zh-CN`,
-    prank_tags: [
-      "April Fools: Your city is built from teapots 🫖🏙️",
-      "Buildings: pixel-art tea houses 🍵",
-      "Traffic: wandering teapots only 🫗",
-      "Population: 100% sentient teapots 🤖",
-      "Map: leads straight to the tea district 🗺️",
     ],
   },
   {
