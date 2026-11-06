@@ -125,18 +125,12 @@ const TEAPOT_JOKES = {
     "Teapot stuck in infinite tea loop 🔁",
   ],
 };
-
-// 仓库类型 - ✅ 修改：prank_tags 改为数组
 interface Repo {
   name: string;
-  url: string; // 仓库路径，格式 owner/name（不再写完整 http URL）
-  prank_tags: string[]; // 🔄 多个玩笑标签
+  url: string;
+  prank_tags: string[];
 }
-
-// 统一维护仓库路径前缀（owner/name 形式，不再写完整 http URL）
 const GITHUB_REPO_PREFIX = "EndlessPixel/";
-
-// ✅ 每个仓库配置 3-5 个不同风格的玩笑标签
 const repoList: Repo[] = [
   {
     name: "Chat-Box",
