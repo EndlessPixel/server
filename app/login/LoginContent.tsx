@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 function parseGatewayError(html: string): string {
-  const rayId = html.match(/Cloudflare Ray ID:.*?<strong[^>]*>([^<]+)<\/strong>/s)?.[1]?.trim() ?? "";
+  const rayId =
+    html.match(/Cloudflare Ray ID:.*?<strong[^>]*>([^<]+)<\/strong>/s)?.[1]?.trim() ?? "";
   console.error("[GatewayError]", rayId || "unknown", html.slice(0, 500));
   return rayId
     ? `服务暂时不可用，请稍后重试（错误码: ${rayId}）`
@@ -340,11 +341,19 @@ export default function LoginContent() {
             <div className="h-px flex-1 bg-border/60" />
           </div>
 
+          {/* GitHub OAuth 入口是 API 重定向路由（不是页面），必须整页跳转；
+              用 next/link 的客户端导航反而会中断 OAuth 流程，这里保留原生 <a>。 */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/api/auth/github"
             className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-secondary px-4 py-2.5 font-medium text-secondary-foreground transition-colors duration-200 hover:bg-secondary/70"
           >
-            <img src="https://cdn.simpleicons.org/github/white" width="18" height="18" alt="GitHub" />
+            <img
+              src="https://cdn.simpleicons.org/github/white"
+              width="18"
+              height="18"
+              alt="GitHub"
+            />
             使用 GitHub 登录
           </a>
 
