@@ -13,9 +13,12 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const el: HTMLCanvasElement = canvas;
+    const ctx: CanvasRenderingContext2D = context;
 
     const PX = Math.max(2, Math.min(8, pixel));
     let W = 0;
@@ -39,7 +42,6 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
     let raf: number | null = null;
     let running = true;
 
-    // 横向：约 190°~198°，向左略上，像信号掠过
     const BASE_ANGLE = Math.PI * 1.06;
 
     function initStars() {
@@ -57,7 +59,7 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
     }
 
     function spawn(now: number) {
-      const count = 1 + Math.floor(Math.random() * 2); // 每波 1~2 颗
+      const count = 1 + Math.floor(Math.random() * 2);
       for (let i = 0; i < count; i++) {
         const angle = BASE_ANGLE + (Math.random() - 0.5) * 0.12;
         const speed = 0.05 + Math.random() * 0.04;
@@ -66,7 +68,7 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
           y: Math.random() * H,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          len: 8 + Math.floor(Math.random() * 9), // 短拖尾，适合矮底栏
+          len: 8 + Math.floor(Math.random() * 9),
           alpha: 0.5 + Math.random() * 0.35,
           startAt: now + i * 80,
         });
@@ -74,11 +76,11 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
     }
 
     function resize() {
-      const rect = canvas.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
       W = Math.max(1, Math.floor(rect.width / PX));
       H = Math.max(1, Math.floor(rect.height / PX));
-      canvas.width = W;
-      canvas.height = H;
+      el.width = W;
+      el.height = H;
       ctx.imageSmoothingEnabled = false;
       initStars();
       meteors = [];
@@ -95,7 +97,6 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
 
       ctx.clearRect(0, 0, W, H);
 
-      // 星星
       const t = now / 1000;
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
@@ -104,13 +105,11 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
         ctx.fillRect(s.x, s.y, 1, 1);
       }
 
-      // 波次
       if (now >= nextBurst) {
         spawn(now);
         nextBurst = now + 1800 + Math.random() * 2800;
       }
 
-      // 流星
       for (let i = meteors.length - 1; i >= 0; i--) {
         const m = meteors[i];
         if (now < m.startAt) continue;
