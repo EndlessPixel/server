@@ -15,6 +15,7 @@ import {
   Code,
 } from "lucide-react";
 import { RunningDuration } from "./running-duration";
+import { PixelFooterSky } from "@/components/pixel-footer-sky";
 
 type SocialLink = { icon: React.ElementType; href: string; label: string };
 type NavLink = {
@@ -34,7 +35,7 @@ const SocialLinks = ({ links }: { links: SocialLink[] }) => (
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-lg bg-white/10 p-2 transition-all duration-200 hover:scale-110 hover:bg-white/20"
+          className="relative z-10 rounded-lg bg-white/10 p-2 transition-all duration-200 hover:scale-110 hover:bg-white/20"
           title={social.label}
         >
           <Icon className="h-5 w-5 text-white/60 hover:text-white" />
@@ -93,14 +94,14 @@ const Copyright = ({ startYear = 2024 }: { startYear?: number }) => {
   const currentYear = new Date().getFullYear();
   return (
     <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-6 text-sm text-white/30 sm:flex-row">
-      <span>
+      <span className="drop-shadow-[0_1px_8px_rgba(0,0,0,0.95)]">
         &copy; {startYear}
         {currentYear > startYear ? `–${currentYear}` : ""} EndlessPixel Studio
-        <span className="text-[0px] text-white/30">
+        <span className="sr-only">
           本工作室与杭州无尽像素科技有限公司（成立时间：2025-08-26，统一社会信用代码：91330106MAEUDLLYXY）无任何隶属、投资或合作关系，请勿将本工作室与该公司混淆，仅因意外重名导致。
         </span>
       </span>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 drop-shadow-[0_1px_8px_rgba(0,0,0,0.95)]">
         <span>Made with</span>
         <Heart className="h-4 w-4 text-white/30" />
         <span>by community</span>
@@ -199,8 +200,18 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-black text-white">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <footer className="relative overflow-hidden bg-black text-white">
+      {/* 底栏像素流星背景 */}
+      <PixelFooterSky pixel={4} />
+
+      {/* 顶部渐隐：和主页面柔和衔接 */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 bg-gradient-to-b from-black to-transparent" />
+
+      {/* 底部暗角：版权/链接区压暗，保证可读 */}
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_50%_100%,transparent_35%,rgba(0,0,0,0.75)_100%)]" />
+
+      {/* 内容层，永远在背景与遮罩之上 */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           {/* 左侧品牌区 */}
           <div className="space-y-4">
@@ -229,10 +240,16 @@ export function Footer() {
         </div>
 
         <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.06] pt-6 text-sm text-white/30">
-          <Link href="/terms" className="transition-colors duration-200 hover:text-white">
+          <Link
+            href="/terms"
+            className="transition-colors duration-200 hover:text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]"
+          >
             用户协议
           </Link>
-          <Link href="/privacy" className="transition-colors duration-200 hover:text-white">
+          <Link
+            href="/privacy"
+            className="transition-colors duration-200 hover:text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]"
+          >
             隐私政策
           </Link>
         </div>
