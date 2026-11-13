@@ -160,9 +160,9 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     id: "version-main",
     category: "版本",
     question: "EndlessPixel 主服务器当前主推的正式版本是？",
-    options: ["1.20.1", "1.21.11", "26.2", "1.16.5"],
+    options: ["1.20.1", "1.21.11", "26.3", "1.16.5"],
     answer: 2,
-    explanation: "当前主推 Java 版 26.2，客户端需要升级到对应的 26.x 版本之后才能进入。",
+    explanation: "当前主推 Java 版 26.3，客户端需要升级到对应的 26.x 版本之后才能进入。",
   },
   {
     id: "version-range",
@@ -225,7 +225,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     options: ["洞穴与悬崖", "混沌立方", "棘巧试炼", "群骑纷争"],
     answer: 1,
     explanation:
-      "26.2「混沌立方」于 2026-06-16 发布，加入硫黄洞穴、硫黄、朱砂、硫方怪等内容，也是本服当前主推的版本。",
+      "26.2「混沌立方」于 2026-06-16 发布，加入硫黄洞穴、硫黄、朱砂、硫方怪等内容；本服当前主推的是 26.3「奔赴荒野」。",
   },
   {
     id: "version-snapshot-format",
@@ -245,10 +245,10 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     id: "version-protocol",
     category: "版本",
     question: "本服当前的服务器协议号是？",
-    options: ["763", "774", "776", "800"],
+    options: ["763", "774", "777", "800"],
     answer: 2,
     explanation:
-      "本服协议号为 776，这也是跨版本连接的核心参数。服务器已用插件自动完成协议转换，玩家不需要手动改客户端协议配置。",
+      "本服协议号为 777（对应 Java 版 26.3），这也是跨版本连接的核心参数。服务器已用插件自动完成协议转换，玩家不需要手动改客户端协议配置。",
   },
 
   /* ---------------- 玩法 ---------------- */
@@ -1378,7 +1378,7 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     options: ["26.2", "1.21.11", "1.20.1", "1.7.2"],
     answer: 0,
     explanation:
-      "当前提供的是 Minecraft 26.2 的方块翻译表，与本服主推版本一致。版本更新时这份数据也要跟着更新。",
+      "当前提供的是 Minecraft 26.2 的方块翻译表（翻译表数据本身仍基于 26.2）。版本更新时这份数据也要跟着更新。",
   },
   {
     id: "dev-api-oauth-file",

@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     "我的世界公益服",
     "EndlessPixel",
     "跨多版本服务器",
-    "26.2",
+    "26.3",
     "无尽像素",
   ],
   authors: [{ name: BRAND_NAME }],
