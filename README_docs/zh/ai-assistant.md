@@ -49,7 +49,7 @@ export const dynamic = 'force-dynamic';
 
 - `{ "type": "text-delta", "delta": "..." }` —— 文本增量
 - `{ "type": "usage", "usage": { "promptTokens": N, "completionTokens": N, "totalTokens": N } }` —— 用量统计（流末发送一次）
-- `{ "type": "error", "errorText": "...", "serverSide": true }` —— 错误（随后以 `[DONE]` 结束）
+- `{ "type": "error", "errorText": "...", "serverSide": true, "error": { "kind": "...", "message": "..." } }` —— 错误（随后以 `[DONE]` 结束）
 
 流结束标记 `[DONE]`。
 
@@ -57,6 +57,46 @@ export const dynamic = 'force-dynamic';
 以及参数错误这类请求侧问题，客户端据此决定**不展示链路自检**——不是服务器的锅，
 就不该弹给玩家看。判定逻辑见 `isNonServerStatus()`：4xx 视为请求侧，但 408
 （上游响应超时）仍属服务侧。
+
+### 错误事件的结构化字段
+
+错误信息**不做措辞包装**：上游返回了什么就报什么，便于直接定位问题。事件形如：
+
+```json
+{
+  "type": "error",
+  "errorText": "上游服务返回 521：Web server is returning an unknown error",
+  "serverSide": true,
+  "error": {
+    "kind": "upstream_status",
+    "message": "上游服务返回 521：Web server is returning an unknown error",
+    "status": 521,
+    "code": "upstream_error",
+    "detail": "{\"error\":{\"message\":\"Web server is returning an unknown error\"}}",
+    "model": "grok-4.7"
+  }
+}
+```
+
+`error.kind` 的取值：
+
+| kind | 含义 |
+|------|------|
+| `rate_limited` | 单 IP 请求超频 |
+| `bad_request` | 请求体格式错误（`messages` 缺失或不是数组） |
+| `invalid_params` | 采样参数越界 |
+| `invalid_model` | 模型 ID 非法 |
+| `config` | 服务端配置缺失（`API_KEY` 未设置、系统提示词读取失败） |
+| `upstream_unreachable` | 连不上上游 |
+| `upstream_timeout` | 上游响应头超时 |
+| `upstream_status` | 上游返回了非 2xx |
+| `upstream_stream` | 上游流式传输中途断开 |
+| `internal` | 服务端内部异常 |
+
+`error.status`、`error.code`、`error.detail`、`error.model` 只在对应场景出现。
+
+> **脱敏**：凭证类内容（`API_KEY`、`Bearer` token、`sk-` 开头的 key）会被替换成 `***`，
+> 其余内容原样保留——不再整条改写成「服务繁忙」之类的固定文案。
 
 服务端读取上游 OpenAI 兼容接口的 `choices[0].delta.content` 增量，转换为上面的 `text-delta` 事件回传；上游返回的 `usage` 会转为 `usage` 事件下发。
 
@@ -215,7 +255,7 @@ href={`/ai_link?url=${encodeURIComponent(href)}`}
 AI 请求失败、且**属于服务端问题**时，失败消息下方会出现一条链路自检，标明断在哪一层：
 
 ```
-链路自检  浏览器 ✔  网站后端 ✔  nginx ✔  代理服务器 ✔  上游服务 ❌
+链路自检  浏览器 ✔  网站后端 ✔  代理服务器 ✔  上游服务 ❌
 断点在「上游服务」
 ```
 
@@ -225,12 +265,11 @@ AI 请求失败、且**属于服务端问题**时，失败消息下方会出现�
 |------|------|
 | 浏览器 | 恒 ✔ —— 能把这条消息渲染出来就说明它在 |
 | 网站后端 | 恒 ✔ —— 能拿到自检接口的响应就说明它在 |
-| nginx | `GET ${AI_EDGE_BASE_URL}/ping-nginx`，非 2xx 即 ❌ |
 | 代理服务器 | `GET ${AI_EDGE_BASE_URL}/ping`，非 2xx 即 ❌ |
 | 上游服务 | **不单独探测**，恒 ❌（原因见下） |
 
 上游不探测的原因：走到自检这一步说明本次对话已经失败了 ——
-下面两层只要有一层不通，上游必然不可达；两层都通时，错误只可能出在上游。
+代理服务器不通，上游必然不可达；它通的时候，错误只可能出在上游。
 所以自检永远只标记一个断点，它之后的层连带 ❌。
 
 ### 什么时候不展示
@@ -241,7 +280,7 @@ AI 请求失败、且**属于服务端问题**时，失败消息下方会出现�
 ### 实现要点
 
 - 探测在**服务端**完成，前端只负责展示，因此不受 CORS 限制，也不会因为浏览器拦截而误判 ❌。
-- 单次探测超时 3000 ms，两层并发探测。
+- 单次探测超时 3000 ms。
 - 前端对自检结果有 **30 秒缓存**，同一次故障里的多条失败消息不会重复打接口。
 - 基础地址取环境变量 `AI_EDGE_BASE_URL` 的默认值（见 `.env.example`）。
 - 该接口只负责「探测并如实回报」，是否展示由客户端根据失败原因决定。

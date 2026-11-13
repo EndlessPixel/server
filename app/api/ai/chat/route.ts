@@ -127,20 +127,107 @@ async function getPlayerContextBlock(req: NextRequest): Promise<string> {
     return "";
   }
 }
+/** 错误类别：结构化上报用，前端与日志都能据此判断失败原因 */
+export type AiErrorKind =
+  | "rate_limited"
+  | "bad_request"
+  | "invalid_params"
+  | "invalid_model"
+  | "config"
+  | "upstream_unreachable"
+  | "upstream_timeout"
+  | "upstream_status"
+  | "upstream_stream"
+  | "internal";
+
+/** 结构化错误详情：直接承载上游返回的原始信息，不再改写成友好文案 */
+export type AiErrorDetail = {
+  /** 错误类别 */
+  kind: AiErrorKind;
+  /** 原始错误描述：上游给了什么就是什么 */
+  message: string;
+  /** 上游 HTTP 状态码 */
+  status?: number;
+  /** 上游返回体里的错误码 */
+  code?: string;
+  /** 上游原始响应体（截断 + 脱敏） */
+  detail?: string;
+  /** 相关模型 */
+  model?: string;
+};
+
+/** 错误事件载荷 */
+export type AiErrorPayload = {
+  type: "error";
+  /** 一句话直白描述（玩家看到的正文） */
+  errorText: string;
+  /** 是否属于服务端问题：客户端据此决定要不要展示链路自检 */
+  serverSide: boolean;
+  /** 结构化错误详情 */
+  error: AiErrorDetail;
+};
+
 /**
- * 以 SSE 事件形式回报错误。
+ * 脱敏：只把可能泄露的凭证打码，**不再整条改写**。
+ *
+ * 早前的做法是把含 API_KEY / fetch failed 的信息整条替换成「配置错误」之类的固定文案，
+ * 代价是原始原因全丢了 —— 排查时只能看到一句套话。现在保留原文，仅对凭证打码。
+ */
+function redactSecrets(text: string, secret?: string): string {
+  let out = text;
+  if (secret && secret.length >= 8) out = out.split(secret).join("***");
+  return out
+    .replace(/(bearer\s+)[A-Za-z0-9._~+/-]{8,}=*/gi, "$1***")
+    .replace(/(api[_ -]?key\s*[:=]\s*)("?)[^\s",}]+\2/gi, "$1***")
+    .replace(/sk-[A-Za-z0-9._-]{6,}/g, "sk-***");
+}
+
+/**
+ * 构造结构化错误载荷。
  *
  * serverSide 表示「这是否属于服务端问题」：403/429 这类认证或限流响应，
  * 以及参数错误等请求侧问题传 false，客户端据此决定要不要展示链路自检 ——
  * 不是服务器的锅就不该弹给玩家看。
  */
-function sseError(errorText: string, serverSide = true): Response {
-  const safeError = errorText
-    .replace(/API_KEY.*/i, "配置错误")
-    .replace(/read system\.txt/i, "服务初始化失败")
-    .replace(/fetch failed/i, "网络连接失败");
-  const payload = JSON.stringify({ type: "error", errorText: safeError, serverSide });
-  const body = `data: ${payload}\n\ndata: [DONE]\n\n`;
+function buildError(
+  kind: AiErrorKind,
+  message: string,
+  options: {
+    serverSide?: boolean;
+    status?: number;
+    code?: string;
+    detail?: string;
+    model?: string;
+    /** 需要额外打码的凭证（通常是 API_KEY） */
+    secret?: string;
+  } = {},
+): AiErrorPayload {
+  const serverSide = options.serverSide ?? true;
+  const error: AiErrorDetail = { kind, message: redactSecrets(message, options.secret) };
+  if (options.status !== undefined) error.status = options.status;
+  if (options.code) error.code = redactSecrets(options.code, options.secret);
+  if (options.detail) error.detail = redactSecrets(options.detail, options.secret);
+  if (options.model) error.model = options.model;
+  return { type: "error", errorText: error.message, serverSide, error };
+}
+
+/** 错误日志：统一打印成 JSON 结构化数据，便于机器解析与聚合 */
+function logError(scope: string, payload: AiErrorPayload): void {
+  console.error(
+    JSON.stringify({
+      scope,
+      at: new Date().toISOString(),
+      errorText: payload.errorText,
+      serverSide: payload.serverSide,
+      ...payload.error,
+    }),
+  );
+}
+
+/** 以 SSE 事件形式回报错误（响应流尚未建立时使用） */
+function sseError(payload: AiErrorPayload): Response {
+  logError("ai/chat", payload);
+  const body = `data: ${JSON.stringify(payload)}\n\ndata: [DONE]\n\n`;
   return new Response(body, {
     status: 200,
     headers: { "Content-Type": "text/event-stream" },
@@ -162,11 +249,11 @@ export async function POST(req: NextRequest) {
   try {
     const ip = getClientIP(req);
     if (isRateLimited(ip)) {
-      return sseError("请求过于频繁，请稍后再试", false);
+      return sseError(buildError("rate_limited", "请求过于频繁，请稍后再试", { serverSide: false }));
     }
     const body = await req.json().catch(() => null);
     if (!body || !Array.isArray(body.messages)) {
-      return sseError("请求格式错误", false);
+      return sseError(buildError("bad_request", "请求格式错误", { serverSide: false }));
     }
     const { messages, model } = body;
 
@@ -183,8 +270,11 @@ export async function POST(req: NextRequest) {
     const frequencyPenalty = readNumParam("frequency_penalty", 0.3, -2, 2);
     if ([temperature, topP, presencePenalty, frequencyPenalty].some(Number.isNaN)) {
       return sseError(
-        "无效的采样参数：temperature(0~2) / top_p(0~1) / presence_penalty(-2~2) / frequency_penalty(-2~2)",
-        false,
+        buildError(
+          "invalid_params",
+          "无效的采样参数：temperature(0~2) / top_p(0~1) / presence_penalty(-2~2) / frequency_penalty(-2~2)",
+          { serverSide: false },
+        ),
       );
     }
     // 深度思考开关：默认开启；传 false 则不注入思考提示词
@@ -192,8 +282,9 @@ export async function POST(req: NextRequest) {
     let systemPrompt: string;
     try {
       systemPrompt = await getSystemPrompt();
-    } catch {
-      return sseError("服务初始化失败，请联系管理员");
+    } catch (err) {
+      const reason = err instanceof Error ? err.message : String(err);
+      return sseError(buildError("config", `系统提示词加载失败：${reason}`));
     }
     const playerCtx = await getPlayerContextBlock(req);
     // 深度思考提示词按需注入：关闭后模型不再输出 <thinking> 块
@@ -206,7 +297,7 @@ export async function POST(req: NextRequest) {
     const selectedModel =
       model && typeof model === "string" && model.trim() ? model.trim() : defaultModel;
     if (selectedModel.length > 100 || !/^[a-zA-Z0-9_\-/\.]+$/.test(selectedModel)) {
-      return sseError("无效的模型参数", false);
+      return sseError(buildError("invalid_model", "无效的模型参数", { serverSide: false }));
     }
     const openaiBody = {
       model: selectedModel,
@@ -221,8 +312,7 @@ export async function POST(req: NextRequest) {
     const upstreamUrl = `${apiBaseUrl}/v1/chat/completions`;
     const apiKey = process.env.API_KEY;
     if (!apiKey) {
-      console.error("[ai/chat] API_KEY not set");
-      return sseError("服务配置错误");
+      return sseError(buildError("config", "服务配置错误：环境变量 API_KEY 未设置"));
     }
     timeout = setTimeout(() => controller.abort(), UPSTREAM_HEADER_TIMEOUT_MS);
     const headers = {
@@ -242,22 +332,21 @@ export async function POST(req: NextRequest) {
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
 
-    /** 往流里写一条错误事件并收尾（替代早前的 return sseError） */
-    const failStream = async (errorText: string, serverSide = true) => {
-      const safeError = errorText
-        .replace(/API_KEY.*/i, "配置错误")
-        .replace(/read system\.txt/i, "服务初始化失败")
-        .replace(/fetch failed/i, "网络连接失败");
+    /** 往流里写一条结构化错误事件并收尾（替代早前的 return sseError） */
+    const failStream = async (payload: AiErrorPayload) => {
+      logError("ai/chat", payload);
       try {
-        await writer.write(
-          encoder.encode(
-            `data: ${JSON.stringify({ type: "error", errorText: safeError, serverSide })}\n\n`,
-          ),
-        );
+        await writer.write(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
         await writer.write(encoder.encode(`data: [DONE]\n\n`));
-        await writer.close();
       } catch {
         /* 客户端已断开 */
+      } finally {
+        // 无论写入是否成功都要关闭：漏掉 close() 会让客户端一直挂着等响应结束。
+        try {
+          await writer.close();
+        } catch {
+          /* 流已关闭 */
+        }
       }
     };
 
@@ -284,108 +373,80 @@ export async function POST(req: NextRequest) {
           return new Response(null, { status: 499 });
         }
         // 其余 AbortError 来自我们自己的响应头超时；TimeoutError 来自连接阶段
+        const kind: AiErrorKind =
+          fetchErr instanceof Error &&
+          (fetchErr.name === "TimeoutError" || fetchErr.name === "AbortError")
+            ? "upstream_timeout"
+            : "upstream_unreachable";
         const reason =
           fetchErr instanceof Error && fetchErr.name === "TimeoutError"
             ? `连接上游超时: ${upstreamUrl}`
             : fetchErr instanceof Error && fetchErr.name === "AbortError"
               ? `上游 ${UPSTREAM_HEADER_TIMEOUT_MS}ms 内未返回响应头: ${upstreamUrl}`
               : `连接上游失败: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`;
-        console.error(`[ai/chat] ${reason}`);
         if (timeout) clearTimeout(timeout);
-        await failStream("上游响应超时，请稍后重试");
+        await failStream(
+          buildError(kind, reason, {
+            detail:
+              fetchErr instanceof Error
+                ? `${fetchErr.name}: ${fetchErr.message}`
+                : String(fetchErr),
+            model: selectedModel,
+            secret: apiKey,
+          }),
+        );
         return;
       }
 
       if (timeout) clearTimeout(timeout);
       timeout = null;
       if (!upstream.ok) {
-        let errorMsg = `上游服务暂时不可用 (${upstream.status})`;
         const errorBody = await upstream.text().catch(() => "");
         // 附带 key 指纹与模型名：401/403 时能直接对比环境变量里的 KEY 是否一致、是哪个渠道
         console.error(
-          `上游错误 ${upstream.status}:`,
-          errorBody.slice(0, 500),
-          `[key=${apiKey.slice(0, 6)}...${apiKey.slice(-4)} model=${selectedModel}]`,
+          JSON.stringify({
+            scope: "ai/chat",
+            at: new Date().toISOString(),
+            kind: "upstream_key_fingerprint",
+            status: upstream.status,
+            key: `${apiKey.slice(0, 6)}...${apiKey.slice(-4)}`,
+            model: selectedModel,
+          }),
         );
 
-        // 尝试解析上游返回的具体错误信息
+        // 解析上游返回的具体错误信息：原样取用，不再按状态码改写成固定文案
         let upstreamMsg = "";
+        let upstreamCode = "";
         try {
           const parsed = JSON.parse(errorBody);
-          upstreamMsg = parsed.error || parsed.message || parsed.detail || "";
+          const errObj = parsed?.error;
+          upstreamMsg =
+            (typeof errObj === "string" ? errObj : errObj?.message) ||
+            parsed?.message ||
+            parsed?.detail ||
+            "";
+          upstreamCode =
+            (typeof errObj === "object" && errObj ? errObj.code || errObj.type : "") ||
+            parsed?.code ||
+            "";
         } catch {}
-
-        switch (upstream.status) {
-          // ---- 客户端错误 ----
-          case 400:
-            errorMsg = upstreamMsg || "请求参数错误，请检查输入后重试";
-            break;
-          case 401:
-          case 403:
-            errorMsg = "AI 服务认证异常，请稍后重试";
-            break;
-          case 404:
-            errorMsg = "请求的资源不存在，请确认接口地址是否正确";
-            break;
-          case 408:
-            errorMsg = "上游服务响应超时，请稍后重试";
-            break;
-          case 413:
-            errorMsg = "请求内容过大，请减少输入长度后重试";
-            break;
-          case 429:
-            errorMsg = "请求过于频繁，请稍后再试";
-            break;
-
-          // ---- Cloudflare 错误 ----
-          case 520:
-            errorMsg = "上游服务返回了异常响应，请稍后重试";
-            break;
-          case 521:
-            errorMsg = "AI 服务暂时离线，请稍后重试";
-            break;
-          case 522:
-            errorMsg = "连接AI 服务超时，请稍后重试";
-            break;
-          case 523:
-            errorMsg = "AI 服务不可达，请稍后重试";
-            break;
-          case 524:
-            errorMsg = "AI 服务处理超时，请稍后重试";
-            break;
-          case 525:
-          case 526:
-            errorMsg = "服务安全证书异常，请联系管理员";
-            break;
-          case 530:
-            errorMsg = "服务被拦截或 DNS 异常，请联系管理员";
-            break;
-
-          // ---- 源站 5xx ----
-          case 502:
-            errorMsg = "上游网关错误，服务可能正在重启，请稍后重试";
-            break;
-          case 503:
-            errorMsg = "上游服务暂时不可用，可能正在维护中";
-            break;
-          case 504:
-            errorMsg = "上游服务网关超时，请稍后重试";
-            break;
-
-          // ---- 兜底 ----
-          default:
-            if (upstream.status >= 500) {
-              errorMsg = "上游服务繁忙，请稍后再试";
-            } else if (upstream.status >= 400) {
-              errorMsg = "请求被拒绝，请检查后重试";
-            }
-        }
 
         // 401/403 的密钥由服务端统一管理，属于服务端配置问题，必须展示链路自检。
         // 带上模型名：上游多渠道时，失效的往往只是单个渠道的授权（KEY 本身有效）。
         const authFailure = upstream.status === 401 || upstream.status === 403;
-        const finalErrorMsg = authFailure ? `${errorMsg}（模型 ${selectedModel}）` : errorMsg;
-        await failStream(finalErrorMsg, authFailure || !isNonServerStatus(upstream.status));
+        const message = upstreamMsg
+          ? `上游服务返回 ${upstream.status}：${upstreamMsg}`
+          : `上游服务返回 ${upstream.status}`;
+        await failStream(
+          buildError("upstream_status", message, {
+            status: upstream.status,
+            code: upstreamCode,
+            detail: errorBody.slice(0, 500),
+            model: selectedModel,
+            secret: apiKey,
+            serverSide: authFailure || !isNonServerStatus(upstream.status),
+          }),
+        );
         return;
       }
       const decoder = new TextDecoder();
@@ -487,13 +548,14 @@ export async function POST(req: NextRequest) {
             }
             return;
           }
-          console.error("[ai/chat] Stream processing error:", err);
+          const payload = buildError(
+            "upstream_stream",
+            `上游流式传输中断：${err instanceof Error ? err.message : String(err)}`,
+            { model: selectedModel, secret: apiKey },
+          );
+          logError("ai/chat", payload);
           try {
-            await writer.write(
-              encoder.encode(
-                `data: ${JSON.stringify({ type: "error", errorText: "上游流式传输中断，请重试" })}\n\n`,
-              ),
-            );
+            await writer.write(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
             await writer.write(encoder.encode(`data: [DONE]\n\n`));
             await writer.close();
           } catch {
@@ -521,13 +583,20 @@ export async function POST(req: NextRequest) {
     if (err instanceof Error && err.name === "AbortError") {
       return new Response(null, { status: 499 });
     }
-    console.error("API 内部错误:", err);
-    let errorText = "服务异常，请稍后再试";
-    if (err instanceof Error) {
-      if (err.message.includes("fetch failed")) {
-        errorText = "网络连接失败，请检查网络";
-      }
-    }
-    return sseError(errorText);
+    const payload = buildError(
+      "internal",
+      err instanceof Error ? `服务内部错误：${err.message}` : `服务内部错误：${String(err)}`,
+    );
+    // 堆栈只进日志，不随错误事件发给客户端
+    console.error(
+      JSON.stringify({
+        scope: "ai/chat",
+        at: new Date().toISOString(),
+        kind: "internal",
+        message: payload.error.message,
+        stack: err instanceof Error ? err.stack : undefined,
+      }),
+    );
+    return sseError(payload);
   }
 }

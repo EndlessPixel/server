@@ -394,7 +394,7 @@ const AiHealthBoard = () => {
   }, []);
 
   // 第一个不通的层就是断点。前两层恒为 true，所以断点只可能落在
-  // nginx / 代理服务器 / 上游服务 上。
+  // 代理服务器 / 上游服务 上。
   const broken = layers?.find((layer) => !layer.ok);
   const summary = broken ? `断点在「${broken.label}」` : "";
 
