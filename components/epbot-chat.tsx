@@ -27,7 +27,9 @@ import {
   Copy,
   Volume2,
   Square,
+  Trophy,
 } from "lucide-react";
+import { ModelIcon } from "@/components/model-icon";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { cn } from "@/lib/utils";
 import { speech, markdownToPlainText } from "@/lib/speech";
@@ -1255,6 +1257,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                       setShowModelPanel(!showModelPanel);
                     }}
                   >
+                    {selectedModel && <ModelIcon modelId={selectedModel} size={16} />}
                     <span className="hidden max-w-60 truncate sm:inline">
                       {currentModel?.name || selectedModel || "选择模型"}
                     </span>
@@ -1384,6 +1387,7 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                               <div className="flex items-start justify-between">
                                 <div className="min-w-0 flex-1">
                                   <div className="flex flex-wrap items-center gap-2">
+                                    <ModelIcon modelId={model.id} size={16} />
                                     <div className="truncate text-sm font-medium text-foreground">
                                       {model.name}
                                     </div>
@@ -1410,6 +1414,20 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                           ))
                         )}
                       </div>
+
+                      {/* 榜单放在独立页面：面板里已经塞了搜索/排序/推荐筛选，再挤一张表会很挤 */}
+                      <a
+                        href="/rankings"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 flex items-center justify-between rounded-xl border-t border-border/60 px-3 pt-3 pb-1 text-xs text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
+                          查看模型排行
+                        </span>
+                        <span aria-hidden="true">↗</span>
+                      </a>
                     </div>
                   )}
                 </div>
