@@ -152,7 +152,10 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
     resize();
     raf = requestAnimationFrame(frame);
 
-    const onResize = () => resize();
+    // 只用 ResizeObserver：页脚高度会随内容/字体加载变化，而 window.resize 不会触发，
+    // 那样画布位图会停留在旧尺寸，画面被拉伸。观察元素本身即可覆盖两种情况。
+    const ro = new ResizeObserver(() => resize());
+    ro.observe(el);
     const onVis = () => {
       if (document.hidden) {
         running = false;
@@ -164,13 +167,12 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
       }
     };
 
-    window.addEventListener("resize", onResize);
     document.addEventListener("visibilitychange", onVis);
 
     return () => {
       running = false;
       if (raf !== null) cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
+      ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);
     };
   }, [pixel]);

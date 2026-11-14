@@ -233,7 +233,13 @@ export function Footer() {
               <NavLinks links={navLinks.slice(0, 4)} />
             </div>
             <div>
-              <h3 className="mb-4 text-base font-semibold tracking-tight text-white/60">&nbsp;</h3>
+              {/* 纯占位，与左栏标题对齐用；aria-hidden 避免读屏播报「空标题」 */}
+              <h3
+                aria-hidden="true"
+                className="mb-4 text-base font-semibold tracking-tight text-white/60"
+              >
+                &nbsp;
+              </h3>
               <NavLinks links={navLinks.slice(4)} />
             </div>
           </div>
@@ -242,13 +248,13 @@ export function Footer() {
         <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.06] pt-6 text-sm text-white/30">
           <Link
             href="/terms"
-            className="transition-colors duration-200 hover:text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]"
+            className="drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)] transition-colors duration-200 hover:text-white"
           >
             用户协议
           </Link>
           <Link
             href="/privacy"
-            className="transition-colors duration-200 hover:text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]"
+            className="drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)] transition-colors duration-200 hover:text-white"
           >
             隐私政策
           </Link>

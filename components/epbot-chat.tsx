@@ -847,6 +847,8 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
           senderName: "EPBot",
           failed: true,
           serverSideFailed,
+          // 一个有效事件都没收到时，等待时长即整段请求耗时（否则这条会没有时长显示）
+          waitMs: firstResponseAt ? firstResponseAt - startedAt : Date.now() - startedAt,
         };
         setSessions((prev) =>
           prev.map((s) => {
