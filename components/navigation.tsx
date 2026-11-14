@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ElementType } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,6 +15,16 @@ import {
   Search,
   Settings,
   GraduationCap,
+  Trophy,
+  ChevronDown,
+  Package,
+  Rocket,
+  Radio,
+  Images,
+  MoreHorizontal,
+  FileText,
+  ShieldCheck,
+  FolderOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoginButton from "@/components/login";
@@ -230,19 +240,160 @@ function ExplorerBar() {
 
 export default ExplorerBar;
 
+type NavChild = { href: string; label: string; icon: ElementType };
+/** 有 href 就是单链接；有 children 则是下拉分组（联合类型让 TS 能区分两者） */
+type NavItem =
+  | { label: string; icon: ElementType; href: string; children?: undefined }
+  | { label: string; icon: ElementType; href?: undefined; children: NavChild[] };
+
+/**
+ * 导航分区。
+ *
+ * 站点页面已经有二十多个（下载的各个子站、状态、直播、图库、考试、排行…），
+ * 一级导航平铺开会长到放不下、看着也乱 —— 所以按「下载 / 服务 / 更多」分组，
+ * 一级只保留 5 项。
+ */
+const NAV_ITEMS: NavItem[] = [
+  { label: "首页", href: "/", icon: Home },
+  {
+    label: "下载",
+    icon: Download,
+    children: [
+      { href: "/downloads/modpack", label: "整合包", icon: Package },
+      { href: "/downloads/launcher", label: "启动器", icon: Rocket },
+      { href: "/downloads", label: "全部下载", icon: FolderOpen },
+    ],
+  },
+  {
+    label: "服务",
+    icon: Activity,
+    children: [
+      { href: "/status", label: "服务器状态", icon: Activity },
+      { href: "/live", label: "实时直播", icon: Radio },
+      { href: "/gallery", label: "皮肤图库", icon: Images },
+    ],
+  },
+  { label: "排行", href: "/rankings", icon: Trophy },
+  {
+    label: "更多",
+    icon: MoreHorizontal,
+    children: [
+      { href: "/quiz", label: "考试", icon: GraduationCap },
+      { href: "/about", label: "关于本站", icon: Users },
+      { href: "/privacy", label: "隐私政策", icon: ShieldCheck },
+      { href: "/terms", label: "服务条款", icon: FileText },
+    ],
+  },
+];
+
+/** 桌面端的下拉分组 */
+function NavGroupMenu({ item }: { item: NavItem & { children: NavChild[] } }) {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const ref = useRef<HTMLDivElement>(null);
+  const Icon = item.icon;
+
+  const isActive = item.children.some(
+    (c) => pathname === c.href || pathname.startsWith(`${c.href}/`),
+  );
+
+  // 点击外部或按 Esc 关闭
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={ref}
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="true"
+        aria-expanded={open}
+        className={cn(
+          "flex min-w-20 flex-col items-center space-y-1 rounded-xl px-4 py-3 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
+          isActive
+            ? "bg-secondary text-foreground"
+            : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+        )}
+      >
+        <Icon className={cn("h-5 w-5", isActive && "scale-110")} aria-hidden="true" />
+        <span className="flex items-center gap-0.5 text-sm font-medium">
+          {item.label}
+          <ChevronDown
+            className={cn("h-3 w-3 transition-transform duration-200", open && "rotate-180")}
+            aria-hidden="true"
+          />
+        </span>
+        {isActive && (
+          <motion.div
+            className="h-1 w-5 rounded-full bg-foreground/30 dark:bg-foreground/20"
+            layoutId="underline"
+            aria-hidden="true"
+          />
+        )}
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full left-1/2 z-50 mt-2 w-56 -translate-x-1/2 rounded-2xl bg-popover/98 p-2 shadow-xl ring-1 ring-foreground/5 backdrop-blur-xl"
+            role="menu"
+          >
+            {item.children.map((child) => {
+              const ChildIcon = child.icon;
+              const childActive = pathname === child.href;
+              return (
+                <Link
+                  key={child.href}
+                  href={child.href}
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors duration-200",
+                    childActive
+                      ? "bg-secondary text-foreground"
+                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+                  )}
+                >
+                  <ChildIcon className="h-4 w-4" aria-hidden="true" />
+                  {child.label}
+                </Link>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const { openSettings } = useAppearanceSettings();
   const { settings } = useAppearance();
   useLockBody(isMenuOpen);
-  const navItems = [
-    { href: "/", label: "首页", icon: Home },
-    { href: "/downloads", label: "下载", icon: Download },
-    { href: "/status", label: "状态", icon: Activity },
-    { href: "/quiz", label: "考试", icon: GraduationCap },
-    { href: "/about", label: "关于", icon: Users },
-  ];
 
   return (
     <>
@@ -259,7 +410,10 @@ export function Navigation() {
             </MotionLink>
 
             <div className="hidden items-center space-x-1 md:flex" role="menubar">
-              {navItems.map((item) => {
+              {NAV_ITEMS.map((item) => {
+                if (item.children) {
+                  return <NavGroupMenu key={item.label} item={item} />;
+                }
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
                 return (
@@ -354,7 +508,47 @@ export function Navigation() {
               aria-label="移动端导航菜单"
             >
               <div className="space-y-1 px-4 pt-20 pb-6">
-                {navItems.map((item, i) => {
+                {NAV_ITEMS.map((item, i) => {
+                  // 分组在移动端直接平铺（小标题 + 子项），空间够，不必再套一层下拉
+                  if (item.children) {
+                    const GroupIcon = item.icon;
+                    return (
+                      <motion.div
+                        key={item.label}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.05 * i }}
+                        className="pt-3"
+                      >
+                        <div className="flex items-center gap-2 px-4 pb-1 text-xs text-muted-foreground">
+                          <GroupIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                          {item.label}
+                        </div>
+                        {item.children.map((child) => {
+                          const ChildIcon = child.icon;
+                          const childActive = pathname === child.href;
+                          return (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              role="menuitem"
+                              aria-current={childActive ? "page" : undefined}
+                              onClick={() => setIsMenuOpen(false)}
+                              className={cn(
+                                "flex items-center gap-4 rounded-xl py-2.5 pr-4 pl-11 transition-colors duration-200",
+                                childActive
+                                  ? "bg-secondary text-foreground"
+                                  : "text-muted-foreground hover:bg-secondary/60",
+                              )}
+                            >
+                              <ChildIcon className="h-4 w-4" aria-hidden="true" />
+                              <span className="font-medium">{child.label}</span>
+                            </Link>
+                          );
+                        })}
+                      </motion.div>
+                    );
+                  }
                   const Icon = item.icon;
                   const isActive = pathname === item.href;
                   return (
