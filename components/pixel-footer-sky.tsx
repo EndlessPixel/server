@@ -42,7 +42,9 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
     let raf: number | null = null;
     let running = true;
 
-    const BASE_ANGLE = Math.PI * 1.06;
+    // 右→左匀速掠过，并微微下坠（canvas 的 y 轴向下为正，所以 vy 必须 > 0）。
+    // 注意别写成 1.06π —— 那样 vy < 0，流星会朝左上飞，看起来是倒着走。
+    const BASE_ANGLE = Math.PI * 0.94;
 
     function initStars() {
       stars = [];
@@ -61,7 +63,15 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
     function spawn(now: number) {
       const count = 1 + Math.floor(Math.random() * 2);
       for (let i = 0; i < count; i++) {
-        const angle = BASE_ANGLE + (Math.random() - 0.5) * 0.12;
+        // 每颗流星角度都不同：sin 给出平滑的主体散布，tan 偶尔叠一点更陡的倾角。
+        // 结果夹在 π 以下 —— 保证 vy > 0（向下），不会出现往上飞的那一颗。
+        const r = Math.random();
+        const angle = Math.min(
+          BASE_ANGLE +
+            Math.sin(r * Math.PI * 2) * 0.16 +
+            Math.tan((r - 0.5) * Math.PI * 0.5) * 0.05,
+          Math.PI - 0.02,
+        );
         const speed = 0.05 + Math.random() * 0.04;
         meteors.push({
           x: W + Math.random() * 30 + 5,
@@ -129,9 +139,7 @@ export function PixelFooterSky({ pixel = 4 }: { pixel?: number }) {
           const a = m.alpha * f * f;
           if (a <= 0.03) continue;
           ctx.fillStyle =
-            j < 2
-              ? `rgba(255,255,255,${a.toFixed(3)})`
-              : `rgba(150,195,255,${a.toFixed(3)})`;
+            j < 2 ? `rgba(255,255,255,${a.toFixed(3)})` : `rgba(150,195,255,${a.toFixed(3)})`;
           ctx.fillRect(px, py, 1, 1);
         }
         ctx.fillStyle = `rgba(255,255,255,${Math.min(1, m.alpha).toFixed(3)})`;
