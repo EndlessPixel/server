@@ -10,7 +10,7 @@ const ipRequestMap = new Map<string, number[]>();
 const PLAYER_INFO_API_URL = `https://login-and-data.epmc.qzz.io/v1/api/users/info`;
 // 上游响应头超时。中转服务即使只是返回 401/502 也可能拖 20~40 秒（上游日志实测），
 // 不能让用户干等着。响应头一到立即取消计时，流式传输期间不再计时。
-const UPSTREAM_HEADER_TIMEOUT_MS = 25_000;
+const UPSTREAM_HEADER_TIMEOUT_MS = 60_000;
 
 function isRateLimited(ip: string | null): boolean {
   if (!ip) return false;
@@ -249,7 +249,9 @@ export async function POST(req: NextRequest) {
   try {
     const ip = getClientIP(req);
     if (isRateLimited(ip)) {
-      return sseError(buildError("rate_limited", "请求过于频繁，请稍后再试", { serverSide: false }));
+      return sseError(
+        buildError("rate_limited", "请求过于频繁，请稍后再试", { serverSide: false }),
+      );
     }
     const body = await req.json().catch(() => null);
     if (!body || !Array.isArray(body.messages)) {
