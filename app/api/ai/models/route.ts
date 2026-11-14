@@ -64,6 +64,9 @@ export async function GET() {
       /translate/,
       // —— 视频生成
       /-veo|-sora|kling/i,
+      // 上游玩笑虚假模型
+      /^gemini-9-dragon$/i,
+      /^gpt-7-astra$/i,
     ];
 
     if (!apiKey) {
