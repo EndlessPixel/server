@@ -158,6 +158,8 @@ type Message = {
   failed?: boolean;
   /** 失败是否属于服务端问题；false（403/429 等请求侧问题）时不展示链路自检 */
   serverSideFailed?: boolean;
+  /** 等待 AI 处理的时长（毫秒）：从发起请求到收到第一段内容 */
+  waitMs?: number;
 };
 
 interface Session {
@@ -323,7 +325,7 @@ const ThinkingBlock = ({ thinking, streaming }: { thinking: string; streaming: b
     <div className="not-prose mb-2 overflow-hidden rounded-xl border border-border bg-background text-xs">
       <button
         onClick={() => setExpanded((v) => !v)}
-        className="flex w-full items-center gap-1.5 px-3 py-2 text-muted-foreground transition-colors duration-200 hover:text-foreground"
+        className="flex w-full items-center gap-1.5 px-3 py-2 text-foreground/70 transition-colors duration-200 hover:text-foreground"
       >
         <Brain className={cn("h-3.5 w-3.5 shrink-0", streaming && "animate-pulse")} />
         <span>{streaming ? "思考中…" : "已完成思考"}</span>
@@ -450,8 +452,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
   const [filteredModels, setFilteredModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>("");
   const [deepThinking, setDeepThinking] = useState(true);
-  // 上游 /v1/models 未列出、但确实可用的模型，允许手动指定 ID 使用
-  const [customModelId, setCustomModelId] = useState("");
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [loadingModels, setLoadingModels] = useState(false);
   const [showModelPanel, setShowModelPanel] = useState(false);
@@ -674,6 +674,9 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
     setLoading(true);
     const controller = new AbortController();
     abortControllerRef.current = controller;
+    // 等待时长：从发起请求到收到第一段内容（含错误事件）
+    const startedAt = Date.now();
+    let firstResponseAt: number | null = null;
     let reply = "";
     let receivedContent = false;
     // 失败是否属于服务端问题：只有服务端问题才在消息下方展示链路自检。
@@ -705,6 +708,30 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
           if (ev.data === "[DONE]") return;
           try {
             const j = JSON.parse(ev.data);
+
+            // 第一段响应（正文或错误）到达时记录等待时长，只写一次。
+            // 后续增量更新都基于 {...last} 展开，因此这个字段会被保留下来。
+            if (firstResponseAt === null) {
+              firstResponseAt = Date.now();
+              const waitMs = firstResponseAt - startedAt;
+              const stamp = (list: Message[]) => {
+                const last = list[list.length - 1];
+                if (last?.role === "assistant") list[list.length - 1] = { ...last, waitMs };
+              };
+              setMessages((prev) => {
+                const next = [...prev];
+                stamp(next);
+                return next;
+              });
+              setSessions((prev) =>
+                prev.map((s) => {
+                  if (s.id !== currentSessionIdRef.current) return s;
+                  const msgs = [...s.messages];
+                  stamp(msgs);
+                  return { ...s, messages: msgs };
+                }),
+              );
+            }
 
             if (j.type === "error") {
               const errorMsg = j.message || j.errorText || "未知错误";
@@ -1380,43 +1407,6 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                             </div>
                           ))
                         )}
-
-                        {/* 上游未列出但可用的模型，手动指定 ID */}
-                        <div className="mt-3 border-t border-border/60 pt-3">
-                          <label
-                            className="mb-1.5 block text-xs text-muted-foreground"
-                            htmlFor="epbot-custom-model"
-                          >
-                            自定义模型 ID（上游未列出时手动指定）
-                          </label>
-                          <div className="flex gap-2">
-                            <input
-                              id="epbot-custom-model"
-                              type="text"
-                              value={customModelId}
-                              onChange={(e) => setCustomModelId(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter" && customModelId.trim()) {
-                                  handleModelChange(customModelId.trim());
-                                  setCustomModelId("");
-                                }
-                              }}
-                              placeholder="例如 epai-1.0"
-                              className="flex-1 rounded-lg bg-secondary px-3 py-1.5 text-sm transition-colors duration-200 placeholder:text-muted-foreground/50 focus:ring-2 focus:ring-ring/30 focus:outline-none"
-                            />
-                            <button
-                              onClick={() => {
-                                if (!customModelId.trim()) return;
-                                handleModelChange(customModelId.trim());
-                                setCustomModelId("");
-                              }}
-                              disabled={!customModelId.trim()}
-                              className="shrink-0 rounded-lg bg-foreground px-3 py-1.5 text-sm text-background transition-opacity duration-200 disabled:opacity-40"
-                            >
-                              使用
-                            </button>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   )}
@@ -1495,6 +1485,14 @@ export const EPBotChat = ({ isOpen, onClose, className }: EPBotChatProps) => {
                     <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
                       <span>{m.senderName}</span>
                       <span>{formatTime(m.timestamp)}</span>
+                      {typeof m.waitMs === "number" && (
+                        <span
+                          className="text-muted-foreground/80"
+                          title="从发送消息到 AI 开始回复的等待时长"
+                        >
+                          等待 {(m.waitMs / 1000).toFixed(1)} 秒
+                        </span>
+                      )}
                       {m.failed && i === messages.length - 1 && (
                         <button
                           onClick={retryLast}
