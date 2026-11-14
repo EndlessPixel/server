@@ -16,8 +16,15 @@
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** 代理服务器所在的基础地址 */
-const EDGE_BASE_URL = process.env.AI_EDGE_BASE_URL || "http://156.239.230.98:8800";
+/**
+ * 代理服务器所在的基础地址。
+ *
+ * 现在的 `API_BASE_URL` 本身就是那台代理的公网出口（代理再转发到真正的上游），
+ * 所以自检默认复用它 —— 少一个需要同步维护的变量，也就少一处配错的机会。
+ * `AI_EDGE_BASE_URL` 仅在上游与代理分离部署时才需要单独指定。
+ */
+const EDGE_BASE_URL =
+  process.env.AI_EDGE_BASE_URL || process.env.API_BASE_URL || "http://156.239.230.98:8800";
 
 /** 单次探测超时：自检不该让玩家在失败提示上再等很久 */
 const PROBE_TIMEOUT_MS = 3000;

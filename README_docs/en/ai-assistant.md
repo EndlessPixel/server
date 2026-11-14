@@ -271,7 +271,7 @@ Broken at "Upstream"
 |-------|------|
 | Browser | always ✔ — rendering the message proves it is alive |
 | Backend | always ✔ — receiving this response proves it is alive |
-| Proxy | `GET ${AI_EDGE_BASE_URL}/ping`, non-2xx → ❌ |
+| Proxy | `GET ${EDGE_BASE_URL}/ping`, non-2xx → ❌ |
 | Upstream | **not probed**, always ❌ (see below) |
 
 Upstream is deliberately not probed: reaching the self-check means the chat has already
@@ -291,5 +291,8 @@ request-side, except 408 (upstream timeout).
   browser block can not be misread as ❌.
 - Per-probe timeout 3000 ms.
 - The client caches the result for **30 seconds**, so multiple failed messages do not re-probe.
-- Base address comes from `AI_EDGE_BASE_URL` (see `.env.example`).
+- `EDGE_BASE_URL` prefers `AI_EDGE_BASE_URL`, falling back to **`API_BASE_URL`** — the
+  upstream is now itself the proxy's public entry point, so both are the same address and
+  do not need to be configured twice. `AI_EDGE_BASE_URL` matters only when the proxy and
+  the upstream are deployed separately.
 - The endpoint only probes and reports; whether to display the result is decided by the client.
