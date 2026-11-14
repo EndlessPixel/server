@@ -21,10 +21,11 @@ import {
   Rocket,
   Radio,
   Images,
-  MoreHorizontal,
   FileText,
   ShieldCheck,
   FolderOpen,
+  Blocks,
+  GitBranch,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoginButton from "@/components/login";
@@ -249,8 +250,9 @@ type NavItem =
 /**
  * 导航分区。
  *
- * 站点页面已经有二十多个（下载的各个子站、状态、直播、图库、考试、排行…），
- * 一级导航平铺开会长到放不下、看着也乱 —— 所以按「下载 / 服务 / 更多」分组，
+ * 站点页面已经有二十多个，一级导航平铺开又长又乱 —— 所以按**功能域**分组：
+ * 下载（拿资源）、站点（看运行状况与数据）、玩家（玩家内容与互动）、关于（站点信息与条款）。
+ * 每组第一项是该域的总览页，避免总览页在导航里没有入口。
  * 一级只保留 5 项。
  */
 const NAV_ITEMS: NavItem[] = [
@@ -259,27 +261,35 @@ const NAV_ITEMS: NavItem[] = [
     label: "下载",
     icon: Download,
     children: [
+      { href: "/downloads", label: "资源下载", icon: FolderOpen },
       { href: "/downloads/modpack", label: "整合包", icon: Package },
       { href: "/downloads/launcher", label: "启动器", icon: Rocket },
-      { href: "/downloads", label: "全部下载", icon: FolderOpen },
+      { href: "/downloads/custom_downloads", label: "资源合集", icon: Blocks },
     ],
   },
   {
-    label: "服务",
+    label: "站点",
     icon: Activity,
     children: [
       { href: "/status", label: "服务器状态", icon: Activity },
-      { href: "/live", label: "实时直播", icon: Radio },
-      { href: "/gallery", label: "皮肤图库", icon: Images },
+      { href: "/rankings", label: "模型排行", icon: Trophy },
+      { href: "/live", label: "服务器实况", icon: Radio },
     ],
   },
-  { label: "排行", href: "/rankings", icon: Trophy },
   {
-    label: "更多",
-    icon: MoreHorizontal,
+    label: "玩家",
+    icon: Images,
     children: [
-      { href: "/quiz", label: "考试", icon: GraduationCap },
+      { href: "/gallery", label: "玩家截图图册", icon: Images },
+      { href: "/quiz", label: "服务器考试", icon: GraduationCap },
+    ],
+  },
+  {
+    label: "关于",
+    icon: Users,
+    children: [
       { href: "/about", label: "关于本站", icon: Users },
+      { href: "/about/repository", label: "仓库信息", icon: GitBranch },
       { href: "/privacy", label: "隐私政策", icon: ShieldCheck },
       { href: "/terms", label: "服务条款", icon: FileText },
     ],
