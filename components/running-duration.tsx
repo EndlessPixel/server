@@ -113,7 +113,9 @@ export function RunningDuration({
 
   if (!isClient) {
     return (
-      <p className={`font-bold text-foreground/60 ${sizeClasses[size]} ${className}`}>加载中...</p>
+      <p className={`font-bold text-inherit opacity-60 ${sizeClasses[size]} ${className}`}>
+        加载中...
+      </p>
     );
   }
 
@@ -134,7 +136,9 @@ export function RunningDuration({
           <polyline points="12 6 12 12 16 14" />
         </svg>
       )}
-      <p className={`font-bold text-foreground ${sizeClasses[size]}`}>{getFormattedDuration()}</p>
+      {/* 用 text-inherit 而不是 text-foreground：本组件同时用在浅色卡片和
+          bg-black 的页脚里，硬编码主题色会让页脚在浅色模式下变成黑字。 */}
+      <p className={`font-bold text-inherit ${sizeClasses[size]}`}>{getFormattedDuration()}</p>
     </div>
   );
 }
