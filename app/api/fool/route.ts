@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 
 /**
  * GET /api/fool —— 愚人节彩蛋接口（418 茶壶 + 随机仓库推荐）。
+ * POST /api/fool —— 同上，附带 POST 主题玩笑。
+ * PUT /api/fool —— PUT 专属彩蛋：从 40 条彩蛋池随机抽 1 条，
+ *                 另有 3 个专属字段，各自挂 40+ 条消息池并随机取 1 条。
+ * 三种请求均带 star_message（共享 24 条 ⭐️ 文案池，随机取 1 条）。
  * 属于刻意保留的对外趣味接口，不是遗留代码，勿按“未引用”删除。
  */
 
@@ -49,6 +53,8 @@ const TEAPOT_JOKES = {
     "The teapot has hidden a secret in this response 👀",
     "Your request was too serious — teapot refused service 😒",
     "Teapot prophecy: You will star a repo today 🔮",
+    "⭐️ Star level low: teapot has entered passive-aggressive mode 😤",
+    "A ⭐️ a day keeps the teapot from deleting your branch 🌿",
   ],
   teapot_mood: [
     "grumpy",
@@ -596,6 +602,35 @@ const repoList: Repo[] = [
   },
 ];
 
+// ⭐️ 共享 star 文案池：GET / POST / PUT 各随机取 1 条
+// 求 star 是本项目彩蛋的固定梗，三种请求都要覆盖到
+const STAR_MESSAGES: string[] = [
+  "⭐️ Star EndlessPixel's repos and the teapot might (not) behave!",
+  "This teapot runs on stars, not tea — feed it a ⭐️ 🫖",
+  "Star the repo, or the teapot will brew decaf 😱",
+  "1 ⭐️ = 418 imaginary performance points 📈",
+  "The teapot is watching... and waiting for your star 👀⭐️",
+  "Stars are the only currency accepted at the Teapot Café ☕️⭐️",
+  "No star? No tea. (April Fools' policy) 🫗",
+  "Star now, debug later — the teapot approves ✅⭐️",
+  "Your ⭐️ has been logged in the napkin audit trail 🍽️",
+  "Teapot tip: stars make the kettle whistle in tune 🎵⭐️",
+  "Star count: 418. Coincidence? The teapot says no 🫖",
+  "Give a ⭐️, get a random repo (terrible exchange rate) 📦",
+  "The teapot refuses to update until it gets 5 more stars ⭐️⏳",
+  "Star this API and it will pretend to be production-ready 🚀",
+  "⚠️ Low star level: please refill with ⭐️ immediately",
+  "Every ⭐️ makes the April Fools prank 1% stronger 🎭",
+  "Star the repos, blame the teapot — that's the workflow 🔁⭐️",
+  "Teapot's only KPI: stars per cup of tea 📊☕️",
+  "We accept ⭐️, 🍪 and tea. Mostly ⭐️. 🫖",
+  "A star a day keeps the 418 away (it doesn't) 😜",
+  "Star detected: teapot mood upgraded to 'delighted' 🥳⭐️",
+  "Please star responsibly — the teapot gets greedy 🤑",
+  "The repos are fake, but the ⭐️ would be real (April Fools) 🎪",
+  "Last chance: ⭐️ or the teapot sings the kettle song again 🎤",
+];
+
 // Fisher-Yates 完全随机打乱
 function shuffle<T>(arr: T[]): T[] {
   const newArr = [...arr];
@@ -691,6 +726,8 @@ function generatePrankAd() {
     "Star one repo per cup of tea ☕️",
     "Tell a friend this API is 100% real 😏",
     "Find all tea emojis in this response 👀",
+    "Star 2 repos and name one after a teapot 🫖⭐️",
+    "Trade one ⭐️ for a fake teapot achievement 🏆",
   ];
   return {
     slogan: takeRandom(prankSlogans, 1)[0],
@@ -789,6 +826,7 @@ export async function GET() {
     ad: generatePrankAd(),
     fake_request_id: `TEAPOT-${Math.floor(Math.random() * 999999)}-APRILFOOLS-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
     fake_load_time: `${(Math.random() * 5).toFixed(2)}s (fake) ⏱️`,
+    star_message: takeRandom(STAR_MESSAGES, 1)[0],
     temp_record: generateTempRecord(),
   });
 }
@@ -803,6 +841,8 @@ export async function POST() {
     "POST request translated to pirate language 🏴‍☠️",
     "Body formatted as a tea recipe 📜",
     "POST data brewed into premium tea 🍵",
+    "POST body auto-starred 3 random repos ⭐️",
+    "Payload converted into a star-shaped tea cookie 🍪⭐️",
   ];
   return NextResponse.json({
     ...getPrankResponse(),
@@ -831,6 +871,384 @@ export async function POST() {
     fake_post_processing: takeRandom(postProcessingResults, 1)[0],
     fake_data_saved: `Data saved to teapot storage (${Math.floor(Math.random() * 1000)}KB fake) 💾`,
     fake_response_delay: `${Math.floor(Math.random() * 20)}ms (we were making tea) ⏳`,
+    star_message: takeRandom(STAR_MESSAGES, 1)[0],
     temp_record: generateTempRecord(),
+  });
+}
+
+// ------------------------------
+// 🆕 PUT 彩蛋池：40 条，每条 2~4 个字段
+// 主题：更新 / 覆盖 / 幂等 / 假错误 —— 与 418 茶壶世界观保持一致
+// ------------------------------
+interface PutEasterEgg {
+  id: string;
+  title: string;
+  punchline?: string;
+  reward?: string;
+}
+
+const PUT_EASTER_EGGS: PutEasterEgg[] = [
+  {
+    id: "PUT-001",
+    title: "Update installed: Teapot OS v4.18 🫖",
+    punchline: "Nothing actually changed — it's April Fools 😜",
+    reward: "1 virtual biscuit 🍪",
+  },
+  {
+    id: "PUT-002",
+    title: "Your payload was overwritten with tea leaves 🍵",
+    punchline: "PUT means 'Please Update Teapot' (fake definition)",
+  },
+  {
+    id: "PUT-003",
+    title: "Idempotency check ✅",
+    punchline: "PUT is idempotent, but this teapot pranks you every single time 🔁",
+  },
+  {
+    id: "PUT-004",
+    title: "204 No Content (but 100% jokes) 🤣",
+  },
+  {
+    id: "PUT-005",
+    title: "ETag: \"teapot-418-april-fools\" 🏷️",
+    punchline: "If-Match header ignored — the teapot never matches anything",
+    reward: "A random EndlessPixel repo ⭐️",
+  },
+  {
+    id: "PUT-006",
+    title: "Data saved to the teacup database 🗄️",
+    punchline: "Durability: until the tea gets cold ☕️",
+  },
+  {
+    id: "PUT-007",
+    title: "Teapot firmware upgraded 🆙",
+    punchline: "New feature: louder kettle whistle 📢",
+    reward: "0 real features 🎁",
+  },
+  {
+    id: "PUT-008",
+    title: "409 Conflict: teapot refuses to share the tea 🫗",
+  },
+  {
+    id: "PUT-009",
+    title: "Resource replaced successfully 🔄",
+    punchline: "Your JSON is now a haiku about tea 📜",
+  },
+  {
+    id: "PUT-010",
+    title: "Fake migration 00418 applied 💾",
+    punchline: "All tables renamed to tbl_teapot_* 🫖",
+    reward: "Rollback available on April 1st only 🗓️",
+  },
+  {
+    id: "PUT-011",
+    title: "Teapot is now 3% more sarcastic 😏",
+    punchline: "Changelog: 'misc pranks' (as always)",
+  },
+  {
+    id: "PUT-012",
+    title: "418 I'm a teapot (still, after your PUT) 🫖",
+  },
+  {
+    id: "PUT-013",
+    title: "Request body brewed at 98°C 🌡️",
+    punchline: "Brew time: 4.18 seconds exactly ⏱️",
+    reward: "A cup of imaginary tea ☕️",
+  },
+  {
+    id: "PUT-014",
+    title: "Update rejected: payload too serious 🚨",
+    punchline: "Please add at least one 🫖 emoji and retry",
+  },
+  {
+    id: "PUT-015",
+    title: "Cache invalidated (all 0 entries) 🧹",
+    punchline: "The teapot doesn't believe in caching anyway",
+  },
+  {
+    id: "PUT-016",
+    title: "Teapot mood: UPDATED to 'chaotic' 🎭",
+  },
+  {
+    id: "PUT-017",
+    title: "Your PUT was routed to the joke service 🤖",
+    punchline: "SLA: 99% pranks, 1% accidental truth",
+    reward: "A fake uptime badge 🟢",
+  },
+  {
+    id: "PUT-018",
+    title: "Validation passed ✅ (we didn't validate) 🙃",
+  },
+  {
+    id: "PUT-019",
+    title: "Replace complete: old data → 7 random repos 📦",
+    punchline: "Star them before the teapot changes its mind ⭐️",
+  },
+  {
+    id: "PUT-020",
+    title: "Version bumped to AprilFools-2026.1 🎉",
+    punchline: "Breaking change: everything is a teapot now",
+    reward: "Free migration guide (it's one emoji) 🫖",
+  },
+  {
+    id: "PUT-021",
+    title: "Teapot wrote your change to a napkin 🍽️",
+    punchline: "Persistence layer: paper, slightly damp",
+  },
+  {
+    id: "PUT-022",
+    title: "202 Accepted (for pranking) 🕰️",
+    punchline: "Processing will finish... eventually... maybe",
+  },
+  {
+    id: "PUT-023",
+    title: "Secret unlock: 🫖 hidden dev console 🕹️",
+  },
+  {
+    id: "PUT-024",
+    title: "Update applied to 418 teapots simultaneously 🫖",
+    punchline: "None of them noticed",
+    reward: "A synchronized whistle 🎵",
+  },
+  {
+    id: "PUT-025",
+    title: "PUT /api/fool → PATCH /api/serious (404) 🔍",
+    punchline: "Serious endpoints are not served here 😜",
+  },
+  {
+    id: "PUT-026",
+    title: "Your change was approved by the Tea Council ☕️",
+    punchline: "Meeting minutes: 'more jokes, fewer bytes'",
+  },
+  {
+    id: "PUT-027",
+    title: "Rollback plan: pour the tea back into the kettle ⏪",
+  },
+  {
+    id: "PUT-028",
+    title: "Fake audit log: 'user updated the teapot at 04:01' 📝",
+    punchline: "Auditor: the teapot itself (no conflict of interest at all)",
+    reward: "A gold star ⭐️ (self-awarded)",
+  },
+  {
+    id: "PUT-029",
+    title: "Teapot storage: 418KB used of 418KB 💾",
+    punchline: "Please delete a joke to make room (don't)",
+  },
+  {
+    id: "PUT-030",
+    title: "Congrats, you're now a certified Teapot Maintainer 🧑‍🍳",
+  },
+  {
+    id: "PUT-031",
+    title: "Webhook fired: teapot.laughed 🤣",
+    punchline: "Payload: { \"joke\": \"your PUT\" }",
+    reward: "One free retry 🔁",
+  },
+  {
+    id: "PUT-032",
+    title: "Hot-swap complete: coffee module → tea module ☕️",
+    punchline: "Downtime: 0ms (it was never up)",
+  },
+  {
+    id: "PUT-033",
+    title: "Warning: this PUT created a parallel timeline 🌀",
+    punchline: "In the other one, your code works perfectly ✨",
+  },
+  {
+    id: "PUT-034",
+    title: "Update queued behind 418 other PUTs 📥",
+  },
+  {
+    id: "PUT-035",
+    title: "Teapot diff: +1 🫖 / -0 seriousness 📊",
+    punchline: "Reviewer approved without reading (classic)",
+    reward: "A fake green checkmark ✅",
+  },
+  {
+    id: "PUT-036",
+    title: "Your If-Match header was matched with a joke 🃏",
+    punchline: "Optimistic concurrency: the teapot is always optimistic",
+  },
+  {
+    id: "PUT-037",
+    title: "Backup created: teapot_backup_AprilFools.sql 🗃️",
+    punchline: "Restore tested: 0 times (trusted blindly)",
+  },
+  {
+    id: "PUT-038",
+    title: "Achievement unlocked: PUT the teapot 🏆",
+  },
+  {
+    id: "PUT-039",
+    title: "Teapot config updated: prank_level = MAX 🚨",
+    punchline: "Warning: cannot be lowered until April 2nd",
+    reward: "Unlimited random repos 🎁",
+  },
+  {
+    id: "PUT-040",
+    title: "Nothing to see here... or is there? 👀",
+    punchline: "Refresh the PUT 4 times for the real egg 🥚",
+  },
+];
+
+// ------------------------------
+// 🆕 PUT 专属消息池：3 个字段 × 各 42 条，每次请求各随机取 1 条
+// ------------------------------
+
+// 字段 1：PUT 主题玩笑消息（更新 / 覆盖 / 幂等 / 假状态）
+const PUT_PRANK_MESSAGES: string[] = [
+  "PUT accepted — the teapot replaced your payload with 418 tiny teapots 🫖",
+  "Update complete: your resource is now 100% April Fools compliant 🎭",
+  "Overwrite successful: old data → fresh tea leaves 🍵",
+  "Idempotency note: same PUT, different prank every time 🔁",
+  "Teapot says: 'I applied your update, then drank it' 🥴",
+  "Your PUT was intercepted by the April Fools middleware 🚨",
+  "Resource updated in the teacup database (durability: 4 minutes) ☕️",
+  "PUT /api/fool → 418 I'm a teapot (still not a valid target) 🫖",
+  "Change applied to 0 rows, 42 jokes inserted 📊",
+  "Your payload is now a tea recipe. No refunds 📜",
+  "Update rejected: body lacks a teapot emoji 🫖❌",
+  "Teapot firmware accepted your change, then forgot it 🤖",
+  "Full replace done — seriousness reduced by 99% 📉",
+  "Congrats! Your PUT triggered the secret kettle whistle 📢",
+  "ETag matched: \"april-fools-418-v2\" 🏷️",
+  "Your update was queued behind 418 other PUTs 📥",
+  "Applied successfully to a parallel universe only 🌀",
+  "Teapot diff: +🍵 +🎭 -📄 -😤",
+  "PUT processed, but the response was brewed for 4.18s ⏱️",
+  "Warning: this update voids your seriousness warranty ⚠️",
+  "Your JSON is now a haiku: 'tea / kettle / April Fools' 📝",
+  "Overwrite confirmed... of our sense of responsibility 😜",
+  "Teapot OS applied your patch as a sticker 🩹",
+  "Update logged in the napkin audit trail 🍽️",
+  "PUT succeeded, POST is jealous, GET is confused 😵",
+  "Your change was approved by 418 teapots, unanimously 🗳️",
+  "Resource replaced with a random EndlessPixel repo ⭐️",
+  "Hot-reload complete: coffee module → tea module ☕️",
+  "Teapot says 'no conflicts' — it never reads the diff 🙃",
+  "Your If-Match header was ignored with great respect 🃏",
+  "Update installed: 3% more sarcasm, 0% more features 📈",
+  "PUT body encrypted with tea-based encryption 🔐",
+  "Change saved... to /dev/null/teapot 💾",
+  "Rollback available (but only on April 1st) ⏪",
+  "Your PUT created a fake migration 00418 🗃️",
+  "Success! Nothing was updated, as planned all along ✅",
+  "Teapot scale-up: 1 → 418 instances, all equally useless 🫖",
+  "Request body translated to pirate, then to tea 🏴‍☠️",
+  "Your update passed all 0 tests 🧪",
+  "Cache purged: the teapot doesn't cache, it just jokes 🧹",
+  "PUT accepted with 202 vibes and 418 reality 🕰️",
+  "Final note: the teapot read your payload and laughed 🤣",
+  "Update applied: your resource now has 1 more ⭐️ (imaginary) ✨",
+  "PUT complete — remember to star the repos you just overwrote ⭐️",
+];
+
+// 字段 2：假修复建议
+const PUT_FAKE_FIXES: string[] = [
+  "Fix: add 🫖 to the request body and retry",
+  "Fix: star 5 EndlessPixel repos before the teapot calms down ⭐️",
+  "Fix: pour tea on your server (jk, it's April Fools 😉)",
+  "Fix: replace Content-Type with application/tea 🍵",
+  "Fix: lower your expectations, keep the PUT",
+  "Fix: drink a cup of tea, then PUT again ☕️",
+  "Fix: rename your field 'data' to 'teapot'",
+  "Fix: refresh exactly 4.18 times 🔄",
+  "Fix: blame the teapot in your incident report 🎭",
+  "Fix: add an If-Match header containing a joke 🃏",
+  "Fix: run PUT during a full moon 🌕",
+  "Fix: ask the Tea Council for approval ☕️",
+  "Fix: replace your payload with a biscuit 🍪",
+  "Fix: set prank_level=MAX in the config 🚨",
+  "Fix: use PATCH instead (404, but worth a try) 🔍",
+  "Fix: whisper 'I'm a teapot' to your terminal 🫖",
+  "Fix: increase brew time to 418ms ⏱️",
+  "Fix: delete the seriousness column from your schema 📊",
+  "Fix: add a teapot emoji to your README 📝",
+  "Fix: send the same PUT again — pranks are not idempotent 🔁",
+  "Fix: reboot the kettle, not the server 🔌",
+  "Fix: change HTTP 418 to 200 in your hopes only 💭",
+  "Fix: store your data in a teacup, not a database 🗄️",
+  "Fix: consult the official teapot docs (they don't exist) 📚",
+  "Fix: buy the teapot a biscuit and apologize 🍪",
+  "Fix: swap PUT for BREW (unofficial method) 🫗",
+  "Fix: add X-April-Fools: true header ✅",
+  "Fix: wait until April 2nd (or don't) 🗓️",
+  "Fix: rotate your API key 418 times 🔑",
+  "Fix: rewrite the payload as a limerick 📜",
+  "Fix: disable the 'serious' feature flag 🚩",
+  "Fix: ask GitHub Copilot — it will also say 418 🤖",
+  "Fix: add 0 retries and 100% optimism 😌",
+  "Fix: move the endpoint to /api/teapot 🫖",
+  "Fix: invalidate the cache that never existed 🧹",
+  "Fix: sign the request with a tea-stained napkin 🍽️",
+  "Fix: increment version to AprilFools-2026.1 🎉",
+  "Fix: sing the kettle song while waiting 🎵",
+  "Fix: accept that the data was always jokes 🤣",
+  "Fix: PUT again tomorrow, same result, new joke 🔁",
+  "Fix: replace your linter with a teapot 🫖",
+  "Fix: no fix needed — it's a feature (April Fools) ✨",
+];
+
+// 字段 3：假处理状态 / 假元数据
+const PUT_FAKE_STATUSES: string[] = [
+  "status: BREWING_UPDATE (estimated 4.18s) ⏳",
+  "status: 99% tea, 1% applied changes 🫖",
+  "status: UPDATED_IN_A_DREAM 💤",
+  "status: prank_engine=ONLINE, db=OFFLINE 🤖",
+  "status: teapot load average: 418.00 🚨",
+  "status: all 418 replicas agreed to disagree 🫖",
+  "status: pending Tea Council approval ☕️",
+  "status: rollback armed, safety off ⏪",
+  "status: durability window: until tea gets cold 🥶",
+  "status: applied to /dev/teapot only 💾",
+  "status: 0 rows affected, 42 jokes generated 📊",
+  "status: running Teapot OS v4.18 🎭",
+  "status: connection: tea-powered WiFi 📶",
+  "status: queue depth 418, patience 0 📥",
+  "status: checksum: 0xAPR1LF00LS 🔐",
+  "status: ETag teapot-418-april-fools (stale since 2026) 🏷️",
+  "status: migration 00418 applied (fake) 🗃️",
+  "status: seriousness: DEPRECATED 📉",
+  "status: kettle temperature 98°C, logic 0°C 🌡️",
+  "status: audit log written on a napkin 🍽️",
+  "status: idempotency: disabled for pranks only 🔁",
+  "status: uptime 99.418% (rounded up) 🟢",
+  "status: response delay 418ms (we were pouring) ⏱️",
+  "status: backup created, restore never tested 🗄️",
+  "status: prank_level=MAX, cannot be lowered 🚨",
+  "status: 418 teapots voting... result: more jokes 🗳️",
+  "status: payload replaced with confetti 🎉",
+  "status: cache MISS (there is no cache) 🧹",
+  "status: SLA 99% pranks / 1% accidental truth 📈",
+  "status: webhook teapot.laughed delivered 🤣",
+  "status: timeline diverged, your code works there 🌀",
+  "status: reviewer approved without reading (classic) ✅",
+  "status: tea level CRITICAL — refill required ☕️",
+  "status: fake_error suppressed for April Fools 🛡️",
+  "status: 202 Accepted, 418 Delivered 🕰️",
+  "status: hot-swap coffee→tea complete ☕️",
+  "status: achievements unlocked: PUT the teapot 🏆",
+  "status: joke counter +1 (total: ∞) ♾️",
+  "status: parallel universe sync: 100% 🌀",
+  "status: config drift: 0 (nothing was configured) ⚖️",
+  "status: teapot is napping, update queued 😴",
+  "status: ALL SYSTEMS JOKE 🎪",
+];
+
+/**
+ * PUT /api/fool —— PUT 专属彩蛋（不出现在 GET / POST）。
+ * - put_easter_egg：从 40 条彩蛋池里随机抽 1 条；
+ * - 其余 3 个专属字段：各自从 42 条消息池里随机取 1 条。
+ * 刻意不复用 GET/POST 的通用响应，保证字段均为 PUT 专属。
+ */
+export async function PUT() {
+  return NextResponse.json({
+    code: TEAPOT_JOKES.code,
+    put_easter_egg: takeRandom(PUT_EASTER_EGGS, 1)[0],
+    put_message: takeRandom(PUT_PRANK_MESSAGES, 1)[0],
+    put_fake_fix: takeRandom(PUT_FAKE_FIXES, 1)[0],
+    put_fake_status: takeRandom(PUT_FAKE_STATUSES, 1)[0],
+    star_message: takeRandom(STAR_MESSAGES, 1)[0],
   });
 }
