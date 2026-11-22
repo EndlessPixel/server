@@ -51,6 +51,38 @@ type UpstreamMover = {
 };
 
 /**
+ * 单次拉取的等待上限。
+ *
+ * 上游偶尔会长时间不响应，而 `/rankings` 是部署时就要预渲染的页面 ——
+ * 没有这个上限，一次慢请求会把整个构建拖到 60 秒超时，连续重试三次后构建直接失败。
+ */
+const FETCH_TIMEOUT_MS = 10_000;
+
+/**
+ * 带超时的 fetch。
+ *
+ * 这里**故意不用 `AbortSignal`**：Next 会给带 signal 的请求打上动态标记，
+ * 导致 `revalidate` 缓存失效，每次访问都要重新打上游。改用 `Promise.race`
+ * 只是让调用方不再等，原请求该走的缓存逻辑不受影响。
+ */
+async function fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      fetch(url, init),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(
+          () => reject(new Error(`上游 ${FETCH_TIMEOUT_MS}ms 内未响应`)),
+          FETCH_TIMEOUT_MS,
+        );
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+/**
  * 拉取某个周期的榜单。
  *
  * 失败时抛出异常，由调用方决定怎么展示 —— 排行榜是锦上添花的功能，
@@ -63,7 +95,7 @@ type UpstreamMover = {
  */
 export async function fetchRankings(period: RankingPeriod): Promise<PeriodRanking> {
   const baseUrl = upstreamBaseUrl();
-  const res = await fetch(`${baseUrl}/api/rankings?period=${period}`, {
+  const res = await fetchWithTimeout(`${baseUrl}/api/rankings?period=${period}`, {
     next: { revalidate: 300 },
     headers: { Accept: "application/json" },
   });

@@ -29,8 +29,14 @@ export type ServiceProbe = {
 /** 单次探测上限：状态页不能因为某个服务卡住而一直转圈 */
 const PROBE_TIMEOUT_MS = 5000;
 
-/** 与页面 revalidate 保持一致：30 秒内的访问复用同一批结果 */
-const REVALIDATE_SECONDS = 30;
+/**
+ * 与页面 `revalidate` 保持一致。
+ *
+ * ⚠️ Next 会把页面内**所有 fetch 里最小的 revalidate** 当成页面有效期，
+ * 所以这里写 30 会让整页被压到 30 秒重算（页面自己写 300 也没用）。
+ * 改这里之前先确认页面的 `export const revalidate`。
+ */
+const REVALIDATE_SECONDS = 300;
 
 type FetchInit = RequestInit & { next?: { revalidate: number } };
 
