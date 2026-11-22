@@ -4,14 +4,17 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-function parseGatewayError(html: string): string {
-  const rayId =
-    html.match(/Cloudflare Ray ID:.*?<strong[^>]*>([^<]+)<\/strong>/s)?.[1]?.trim() ?? "";
-  console.error("[GatewayError]", rayId || "unknown", html.slice(0, 500));
-  return rayId
-    ? `服务暂时不可用，请稍后重试（错误码: ${rayId}）`
-    : "服务暂时不可用，请稍后重试（如持续出现请联系管理员）";
-}
+/**
+ * 登录后端的直接入口（浏览器直连）。
+ *
+ * 不走本站代理的原因：服务端发出的请求不带浏览器特征，
+ * 会被后端前面的 Cloudflare 当成机器人拦掉（返回挑战页），而且拦不拦是概率性的。
+ * 浏览器直连没有这个问题。
+ *
+ * 前提（缺一不可）：后端已开放 CORS、接口路径与 `main.py` 一致。
+ */
+const AUTH_API_BASE =
+  process.env.NEXT_PUBLIC_AUTH_API_BASE_URL || "https://login-and-data.epmc.qzz.io";
 
 export default function LoginContent() {
   const [loginMode, setLoginMode] = useState<"username" | "email">("username");
@@ -105,58 +108,68 @@ export default function LoginContent() {
     let loggedIn = false;
 
     try {
-      const res = await fetch("/api/auth/login", {
+      // ① 直连后端校验密码。
+      // 用浏览器直连而不是本站服务端转发：服务端请求不带浏览器特征，
+      // 会被后端前面的 Cloudflare 当成机器人拦掉（返回挑战页）。
+      const authRes = await fetch(`${AUTH_API_BASE}/v1/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: loginId,
-          password,
-          captcha: captchaInput.trim().toUpperCase(),
-        }),
+        body: JSON.stringify({ name: loginId, password }),
       });
 
-      if (res.status >= 502 && res.status <= 504) {
-        const contentType = res.headers.get("content-type") || "";
-        if (contentType.includes("text/html")) {
-          const html = await res.text();
-          setError(parseGatewayError(html));
-        } else {
-          setError("服务暂时不可用，请稍后重试");
-        }
-        return;
-      }
-
-      if (res.status === 429) {
-        const retryAfter = res.headers.get("retry-after");
-        const waitText = retryAfter ? `请 ${retryAfter} 秒后再试` : "请稍后再试";
+      if (authRes.status === 429) {
+        const retryAfter = authRes.headers.get("retry-after");
+        const waitText = retryAfter ? `请 ${retryAfter} 秒后再试` : `请稍后再试`;
         setError(`尝试过于频繁，账号已被临时锁定或限流，${waitText}`);
         return;
       }
 
-      let data;
-      const contentType = res.headers.get("content-type");
-      if (contentType?.includes("application/json")) {
-        data = await res.json();
-      } else {
-        setError("服务器返回格式异常，请稍后重试");
+      if (!authRes.ok) {
+        const contentType = authRes.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+          const d = await authRes.json().catch(() => null);
+          setError(d?.message || d?.detail || "登录失败，请稍后重试");
+        } else {
+          // Cloudflare 挑战页 / 网关错误页：不把原文丢给用户
+          setError("登录服务暂时不可用，请稍后重试");
+        }
         return;
       }
 
-      if (res.ok && data.success === true) {
-        const userName =
-          data.name && /^[a-zA-Z0-9_-]{3,16}$/.test(data.name)
-            ? data.name
-            : loginMode === "username"
-              ? loginId
-              : "";
-        if (userName) setCookie("mc_user", userName);
-        loggedIn = true;
-        const redirect = searchParams.get("redirect") || "/";
-        router.push(redirect);
-        router.refresh();
-      } else {
-        setError(data.message || data.detail || "登录失败，请检查用户名和密码");
+      const authData = await authRes.json().catch(() => null);
+      if (!authData || authData.success !== true) {
+        setError(authData?.message || authData?.detail || "用户名或密码错误");
+        return;
       }
+
+      // ② 用后端签发的短期 token + 验证码换取正式会话。
+      // ep_session 是 HttpOnly + 服务端签名，只能由本站接口下发，浏览器伪造不了。
+      const sessionRes = await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: authData.token,
+          captcha: captchaInput.trim().toUpperCase(),
+        }),
+      });
+      const sessionData = await sessionRes.json().catch(() => null);
+
+      if (!sessionRes.ok || sessionData?.success !== true) {
+        setError(sessionData?.message || "登录失败，请重试");
+        return;
+      }
+
+      const userName =
+        sessionData.name && /^[a-zA-Z0-9_-]{3,16}$/.test(sessionData.name)
+          ? sessionData.name
+          : loginMode === "username"
+            ? loginId
+            : "";
+      if (userName) setCookie("mc_user", userName);
+      loggedIn = true;
+      const redirect = searchParams.get("redirect") || "/";
+      router.push(redirect);
+      router.refresh();
     } catch (err) {
       console.error("登录错误:", err);
       setError("网络请求失败，请稍后重试");
