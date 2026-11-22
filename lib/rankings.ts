@@ -1,7 +1,8 @@
 /**
  * 模型用量排行榜 —— 服务端数据层。
  *
- * 数据由外部服务提供（`RANKINGS_API_BASE_URL`，默认走上游代理的公网出口），
+ * 数据与 AI 对话来自**同一台**代理服务器，只是路径不同（`/api/rankings`），
+ * 所以地址直接复用 `API_BASE_URL`（见 `lib/upstream.ts`），不单独配变量。
  * 在**服务端**拉取并裁剪字段：
  *   - 上游一次返回 40KB 左右，其中还带时间序列（models_history / vendor_share_history），
  *     页面只用得到前 20 名，所以这里只保留展示需要的字段；
@@ -17,6 +18,7 @@ import {
   type RankedMover,
   type RankingPeriod,
 } from "@/lib/ranking-types";
+import { upstreamBaseUrl } from "@/lib/upstream";
 
 export {
   RANKING_PERIODS,
@@ -55,13 +57,12 @@ type UpstreamMover = {
  * 上游挂了不该把整页拖垮。
  * `revalidate: 300` 让 Next 在 5 分钟内复用结果，避免每次访问都打到上游。
  *
- * ⚠️ 默认地址是**代理的公网出口**（即 `API_BASE_URL` 指向的那台），
- * 不是真实上游域名 —— 直连上游会被 Cloudflare 拦（403 咨询页）。
+ * ⚠️ 地址取自 `API_BASE_URL`，即**代理的公网出口**，不是真实上游域名 ——
+ * 直连上游会被 Cloudflare 拦（403 咨询页）。
  * 代理的白名单里必须放行 `/api/rankings`，否则会拿到 403 Forbidden。
  */
 export async function fetchRankings(period: RankingPeriod): Promise<PeriodRanking> {
-  const baseUrl =
-    process.env.RANKINGS_API_BASE_URL || process.env.API_BASE_URL || "http://156.239.230.98:8800";
+  const baseUrl = upstreamBaseUrl();
   const res = await fetch(`${baseUrl}/api/rankings?period=${period}`, {
     next: { revalidate: 300 },
     headers: { Accept: "application/json" },

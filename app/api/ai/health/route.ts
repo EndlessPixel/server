@@ -13,25 +13,24 @@
  * 注意：本接口只负责「探测并如实回报」，不判断该不该展示给玩家 ——
  * 是否展示由客户端根据失败原因是否属于服务端问题决定（403/429 等不展示）。
  */
+import { upstreamBaseUrl } from "@/lib/upstream";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-/**
- * 代理服务器所在的基础地址。
- *
- * 现在的 `API_BASE_URL` 本身就是那台代理的公网出口（代理再转发到真正的上游），
- * 所以自检默认复用它 —— 少一个需要同步维护的变量，也就少一处配错的机会。
- * `AI_EDGE_BASE_URL` 仅在上游与代理分离部署时才需要单独指定。
- */
-const EDGE_BASE_URL =
-  process.env.AI_EDGE_BASE_URL || process.env.API_BASE_URL || "http://156.239.230.98:8800";
 
 /** 单次探测超时：自检不该让玩家在失败提示上再等很久 */
 const PROBE_TIMEOUT_MS = 3000;
 
+/**
+ * 探测代理服务器。
+ *
+ * 地址复用 `API_BASE_URL` —— 对话、模型列表、排行榜都指向同一台代理，
+ * 没必要为自检单开一个变量（见 `lib/upstream.ts`）。
+ * 读不到地址时探测结果直接判为 false，不在这里抛异常。
+ */
 async function probe(path: string): Promise<boolean> {
   try {
-    const res = await fetch(`${EDGE_BASE_URL}${path}`, {
+    const res = await fetch(`${upstreamBaseUrl()}${path}`, {
       cache: "no-store",
       signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
     });

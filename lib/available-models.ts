@@ -9,6 +9,8 @@
  * 两边必须走同一个函数，否则两处口径会漂移。
  */
 
+import { upstreamBaseUrl } from "@/lib/upstream";
+
 export type AvailableModel = {
   id: string;
   object?: string;
@@ -158,12 +160,12 @@ const UNAVAILABLE_MODELS = new Set([
 export async function fetchAvailableModels(
   options: { revalidate?: number } = {},
 ): Promise<AvailableModel[]> {
-  const apiBaseUrl = process.env.API_BASE_URL || "https://xn--kiv260fv3i.cn";
   const apiKey = process.env.API_KEY;
-
   if (!apiKey) {
     throw new ModelsError("API_KEY 未配置", 500);
   }
+
+  const apiBaseUrl = upstreamBaseUrl();
 
   const modelsUrl = `${apiBaseUrl}/v1/models`;
   const init: RequestInit & { next?: { revalidate: number } } = {

@@ -3,6 +3,7 @@ import fs from "fs/promises";
 import path from "path";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 import { THINKING_PROMPT } from "@/lib/ai-thinking-prompt";
+import { upstreamBaseUrl } from "@/lib/upstream";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -310,7 +311,7 @@ export async function POST(req: NextRequest) {
       presence_penalty: presencePenalty,
       frequency_penalty: frequencyPenalty,
     };
-    const apiBaseUrl = process.env.API_BASE_URL || "https://xn--kiv260fv3i.cn";
+    const apiBaseUrl = upstreamBaseUrl();
     const upstreamUrl = `${apiBaseUrl}/v1/chat/completions`;
     const apiKey = process.env.API_KEY;
     if (!apiKey) {

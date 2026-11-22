@@ -48,12 +48,14 @@ EndlessPixel 官网围绕「玩家服务」设计，以下模块均已上线。�
 | 变量 | 用途 |
 |------|------|
 | `API_KEY` | AI 上游接口的 Bearer Token |
-| `API_BASE_URL` | AI 上游地址，默认 `https://xn--kiv260fv3i.cn` |
+| `API_BASE_URL` | 上游**代理**地址，**必填**（未配置会直接报错）。对话 / 模型列表 / 链路自检 / 模型排行共用这一个地址 |
 | `SESSION_SECRET` | HMAC 会话签名密钥，**要求 ≥ 16 位** |
-| `TARGET_API_URL` | 宿主机硬件监控（`/systemstatus/data`）的上游地址 |
+| `TARGET_API_URL` | 宿主机硬件监控（`/systemstatus/data`）的上游地址，与 AI 代理无关 |
 | `GH_TOKEN` | GitHub API 访问令牌（提升 Releases / Issue 请求限额） |
 | `GH_CLIENT_ID` / `GH_CLIENT_SECRETS` | GitHub OAuth 登录 |
 | `NEXT_PUBLIC_SITE_URL` | 站点公开地址（用于 canonical 等） |
+| `NEXT_PUBLIC_AUTH_API_BASE_URL` | 登录后端直连地址（浏览器直接请求） |
+| `AUTH_TOKEN_SECRET` | 登录凭据签名密钥，需与源站 `AuthLoginAPI` 保持一致 |
 
 > ⚠️ `SESSION_SECRET` 未设置或长度不足 16 位时，会回退到源码中的硬编码兜底串，生产环境会打印警告。**部署时务必配置。**
 

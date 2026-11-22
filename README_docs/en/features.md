@@ -48,12 +48,14 @@ EndlessPixel's website is built around player services. The modules below are al
 | Variable | Purpose |
 |----------|---------|
 | `API_KEY` | Bearer token for the AI upstream API |
-| `API_BASE_URL` | AI upstream base, defaults to `https://xn--kiv260fv3i.cn` |
+| `API_BASE_URL` | Upstream **proxy** base, **required** (the app errors out if missing). Shared by chat / model list / health check / rankings |
 | `SESSION_SECRET` | HMAC session signing key, **must be ≥ 16 chars** |
-| `TARGET_API_URL` | Upstream for host metrics (`/systemstatus/data`) |
+| `TARGET_API_URL` | Upstream for host metrics (`/systemstatus/data`), unrelated to the AI proxy |
 | `GH_TOKEN` | GitHub API token (raises Releases / Issue rate limits) |
 | `GH_CLIENT_ID` / `GH_CLIENT_SECRETS` | GitHub OAuth sign-in |
 | `NEXT_PUBLIC_SITE_URL` | Public site URL (canonical links, etc.) |
+| `NEXT_PUBLIC_AUTH_API_BASE_URL` | Login backend base (requested directly by the browser) |
+| `AUTH_TOKEN_SECRET` | Login credential signing key, must match the `AuthLoginAPI` origin |
 
 > ⚠️ If `SESSION_SECRET` is unset or shorter than 16 chars, the app falls back to a hardcoded string from the source and logs a warning in production. **Always configure it when deploying.**
 
