@@ -24,8 +24,8 @@ export const DOMAINS: DomainEntry[] = [
     name: "endlesspixel.cn",
     registrar: "雨云",
     cost: "36￥/月",
-    since: "2026-02-20T16:53:00+08:00",
-    until: "2027-02-20T16:53:00+08:00",
+    since: "2026-02-20T16:53:33+08:00",
+    until: "2027-02-20T16:53:33+08:00",
   },
   {
     name: "epmc.top",
