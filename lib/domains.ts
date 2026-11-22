@@ -28,6 +28,13 @@ export const DOMAINS: DomainEntry[] = [
     until: "2027-02-20T16:53:00+08:00",
   },
   {
+    name: "epmc.top",
+    registrar: "腾讯云",
+    cost: "xx￥/月",
+    since: "2026-08-30T18:16:18+08:00",
+    until: "2027-08-30T18:16:18+08:00",
+  },
+  {
     name: "epmc.cc.cd",
     registrar: "DNSHE",
     cost: "免费",
