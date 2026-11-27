@@ -292,9 +292,21 @@ const getDisplayItemName = (item: InventoryItem): string => {
 const stripEnchantedPrefix = (id: string): string =>
   id.startsWith("enchanted_") ? id.slice("enchanted_".length) : id;
 
+/**
+ * 物品图标统一走渲染 API —— 它会按游戏模型渲染出 3D 图标，
+ * 方块物品也有（原版资源包里 item/stone.png 这类文件根本不存在，
+ * 要靠 block/ 下各面贴图拼装，而每种方块的拼法都不一样）。
+ * 用现成渲染服务省掉整套适配器，也顺带覆盖 26.2/26.3 的新方块。
+ */
 const getDefaultItemImageUrl = (itemId: string): string => {
   const id = stripEnchantedPrefix(itemId.replace("minecraft:", ""));
-  return `https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/${id}.png`;
+  return `https://api.minecraftitems.xyz/api/item/${encodeURIComponent(id)}`;
+};
+
+/** 渲染 API 失败时的兜底：26.3 原版贴图（普通物品可用，方块会 404） */
+const getLegacyItemImageUrl = (itemId: string): string => {
+  const id = stripEnchantedPrefix(itemId.replace("minecraft:", ""));
+  return `https://assets.mcasset.cloud/26.3/assets/minecraft/textures/item/${id}.png`;
 };
 
 const getPlayerHeadTextureUrl = (item: InventoryItem): string | undefined => {
@@ -425,21 +437,21 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
   ]);
 
   const getUnknownItemUrl = (): string =>
-    "https://assets.mcasset.cloud/26.2/assets/minecraft/textures/item/barrier.png";
+    "https://assets.mcasset.cloud/26.3/assets/minecraft/textures/item/barrier.png";
 
   const handleImageError = () => {
     const baseId = stripEnchantedPrefix(item.id.replace("minecraft:", ""));
-    // stage 0 -> 1：首次失败，先重试一次基础贴图（防偶发网络抖动误判）
+    // stage 0 -> 1：渲染 API 失败，退回 26.3 原版贴图（普通物品大概率能命中）
     if (imgStageRef.current === 0) {
       imgStageRef.current = 1;
-      setImgSrc(getDefaultItemImageUrl(item.id));
+      setImgSrc(getLegacyItemImageUrl(item.id));
       return;
     }
     // stage 1 -> 2：仅对已知多帧物品尝试 _00 方向帧
     if (imgStageRef.current === 1) {
       imgStageRef.current = 2;
       if (MULTI_FRAME_ITEMS.has(baseId)) {
-        setImgSrc(getDefaultItemImageUrl(item.id).replace(".png", "_00.png"));
+        setImgSrc(getLegacyItemImageUrl(item.id).replace(".png", "_00.png"));
         return;
       }
     }
@@ -474,6 +486,14 @@ const ItemSlot = ({ item }: { item?: InventoryItem }) => {
         <div className="mb-1.5 font-bold text-foreground">
           {displayName}
           {count > 1 && <span className="ml-1 font-normal text-muted-foreground">×{count}</span>}
+        </div>
+
+        {/* 注册名（游戏内 ID），便于查物品/找资源包贴图 */}
+        <div
+          className="mb-1.5 font-mono text-[10px] leading-tight break-all text-muted-foreground"
+          title={item.id}
+        >
+          {item.id}
         </div>
 
         {/* 附魔 */}
@@ -1200,12 +1220,12 @@ export default function ProfilePage() {
               </div>
 
               {/* 选项卡导航 */}
-              <div className="mt-6 flex flex-wrap gap-2 border-t border-foreground/5 pt-4">
+              <div className="mt-6 grid grid-cols-3 gap-2 border-t border-foreground/5 pt-4 sm:grid-cols-5">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                    className={`w-full rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                       activeTab === tab.id
                         ? "bg-foreground text-background"
                         : "bg-secondary text-foreground/70 hover:bg-secondary/70"
