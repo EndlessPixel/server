@@ -1268,7 +1268,7 @@ export default function ProfilePage() {
 
                   {/* 右栏：3D 皮肤预览（电脑端在右侧，手机端自动落到底部） */}
                   <div className="flex justify-center md:sticky md:top-6 md:justify-start">
-                    <div className="rounded-xl border border-foreground/8 bg-gradient-to-b from-secondary/30 to-transparent p-4">
+                    <div className="rounded-xl border border-foreground/8 bg-linear-to-b from-secondary/30 to-transparent p-4">
                       <SkinViewer
                         uuid={skinSource === "auto" ? userInfo.uuid : undefined}
                         name={skinSource === "littleskin" ? littleSkinName || undefined : undefined}

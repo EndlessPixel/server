@@ -111,7 +111,7 @@ export default function SkinViewer({
   }, [uuid, name, source, width, height]);
 
   return (
-    <div className="relative flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-secondary/40 to-secondary/10">
+    <div className="relative flex items-center justify-center overflow-hidden rounded-xl bg-linear-to-b from-secondary/40 to-secondary/10">
       <canvas
         ref={canvasRef}
         style={{ width, height }}
