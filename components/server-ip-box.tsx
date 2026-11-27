@@ -16,7 +16,13 @@ export default function ServerIpBox() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <motion.div
+      className="flex flex-col items-center gap-3"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.6, duration: 0.6 }}
+    >
       <motion.button
         onClick={copy}
         whileHover={{ scale: 1.02 }}
@@ -35,6 +41,6 @@ export default function ServerIpBox() {
           )}
         </div>
       </motion.button>
-    </div>
+    </motion.div>
   );
 }

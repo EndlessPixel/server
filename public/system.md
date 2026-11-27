@@ -601,7 +601,7 @@
 | `/dev/api_docs/api` | 基础API接口。提供服务器状态、在线玩家、群组等核心查询接口的端点、参数、返回示例与通用错误码。 |
 | `/dev/api_docs/ai_customer_service` | AI客服接口。说明对话请求、模型列表、Token 消耗等端点结构与调用方式，支撑本 EPBot 服务。 |
 | `/dev/api_docs/hardware_information` | 服务器硬件信息接口。返回磁盘、CPU、内存等运行环境指标，含正常与错误响应示例。 |
-| `/dev/api_docs/fool` | 愚人节整蛊接口。提供 GET/POST 端点与特定响应字段，用于节日彩蛋式交互，固定返回 418。 |
+| `/dev/api_docs/fool` | 愚人节整蛊接口。提供 GET/POST/PUT 三个端点与各自的整蛊字段，用于节日彩蛋式交互，固定返回 418。 |
 | `/dev/api_docs/auth_app` | OAuth第三方身份验证（已废弃）。历史上用于第三方应用授权的 OAuth 流程文档，现已弃用，仅作归档保留。 |
 | `/dev/api_docs/mclang` | Minecraft 语言文件接口。提供方块、物品、实体、附魔的语言文件键名到中文名映射，数据基于 Minecraft 26.3 官方 zh_cn.json。 |
 | `/dev/image_upload` | 上传图片到玩家图册。说明将截图等图片上传至服务器玩家图册的接口与用法，便于分享游戏画面。 |
@@ -1152,6 +1152,7 @@ https://raw.githubusercontent.com/EndlessPixel/EndlessPixel-PCL2-Homepage/refs/h
 
 ## 知识库版本信息
 - **知识库最新更新日期**：2026 年 11 月 27 日
+- 2026-11-27 维护记录（七）：Wiki「官方下载区」修正整合包定位（服务器玩法由插件提供，整合包只做客户端优化）；「愚人节整蛊接口」补上 PUT 端点说明；知识库路径表中 fool 接口同步为 GET/POST/PUT。
 - 2026-11-27 维护记录（六）：官方 Wiki 新增「官网指南」三篇（`/website/overview`、`/website/downloads`、`/website/tools`），已补入上方路径对照表；同时补上此前遗漏的 `/dev/api_docs/mclang` 条目。
 - 2026-11-27 维护记录（五）：在「官方版本事实速查表」补入 `26.4-pre-1`（2026-11-24，26.4 首个预发布版：冰类方块破坏音效音量下调、物品使用冷却扩展到与实体交互、服务端拒绝执行控制台命令、`tooltip_display` 新增 `split_lines`、`upscale` 采样顺序改为 X/Z/Y、数据包 `128.1`、73 项修复）；同步把 26.4 标题由「已发布 10 个快照」更新为「10 个快照 + 第 1 个预发布版，已进入预发布阶段」。
 - 2026-11-20 维护记录（四）：在「官方版本事实速查表」补入 `26.4-snapshot-9`（2026-11-17，发射器行为数据化 + `dispense_behavior` 注册表 + 2D 局部坐标 + Vulkan 转为默认后端 + 数据包 `128.0` / 资源包 `104.0` + 65 项修复）与 `26.4-snapshot-10`（2026-11-17，仅修复 1 个多人界面滑动崩溃）两条事实；同步把 26.4 标题的"已发布快照数"由 8 更正为 10。

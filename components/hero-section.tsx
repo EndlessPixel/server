@@ -295,7 +295,12 @@ export function HeroSection() {
           </motion.div>
 
           {/* 硬件信息 */}
-          <p className="mt-2 mb-12 text-xs text-muted-foreground/60">
+          <motion.p
+            className="mt-2 mb-12 text-xs text-muted-foreground/60"
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+          >
             硬件详情：AMD Ryzen 9 9950X + 12GB 真实占用 + 磁盘 / 网络 / 负载全公开。
             <Link
               href="http://sys.epmc.qzz.io"
@@ -304,7 +309,7 @@ export function HeroSection() {
             >
               查看监控 →
             </Link>
-          </p>
+          </motion.p>
 
           {/* 核心特性 */}
           <motion.div
@@ -420,7 +425,7 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
         >
-          <div className="mx-auto max-w-4xl rounded-[2rem] bg-card p-6 shadow-sm md:p-12">
+          <div className="mx-auto max-w-4xl rounded-4xl bg-card p-6 shadow-sm md:p-12">
             <Award className="mx-auto mb-4 h-12 w-12 text-muted-foreground md:h-16 md:w-16" />
             <h3 className="mb-4 text-2xl font-bold text-foreground md:text-3xl">来试试看吧</h3>
             <p className="mb-6 text-base leading-relaxed text-muted-foreground md:text-xl">
