@@ -4,7 +4,7 @@ import customEnchantmentsData from "../../../../lib/mclang/custom-enchants.json"
 
 /**
  * GET /api/mclang/enchants
- * 返回 Minecraft 26.2 附魔中文翻译表。
+ * 返回 Minecraft 26.3 附魔中文翻译表。
  * 默认合并返回：官方附魔（enchantment.minecraft.<id>）+ 服务器自定义附魔（enchantments:<id>）。
  *  ?scope=official  仅官方附魔
  *  ?scope=custom   仅服务器自定义附魔

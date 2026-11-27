@@ -3,7 +3,7 @@ import blocksData from "../../../../lib/mclang/blocks.json";
 
 /**
  * GET /api/mclang/blocks
- * 返回 Minecraft 26.2 方块中文翻译表（block.minecraft.<id> -> 中文名）。
+ * 返回 Minecraft 26.3 方块中文翻译表（block.minecraft.<id> -> 中文名）。
  * 可选 ?id=block.minecraft.xxx 查询单条。
  *
  * 对外公共接口（供第三方项目查询），不是页面内部调用，勿按“未引用”删除。

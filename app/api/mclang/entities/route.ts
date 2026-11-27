@@ -3,7 +3,7 @@ import entitiesData from "../../../../lib/mclang/entities.json";
 
 /**
  * GET /api/mclang/entities
- * 返回 Minecraft 26.2 实体中文翻译表（entity.minecraft.<id> -> 中文名）。
+ * 返回 Minecraft 26.3 实体中文翻译表（entity.minecraft.<id> -> 中文名）。
  * 可选 ?id=entity.minecraft.xxx 查询单条。
  *
  * 对外公共接口（供第三方项目查询），不是页面内部调用，勿按“未引用”删除。

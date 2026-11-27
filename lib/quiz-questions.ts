@@ -1375,10 +1375,10 @@ export const QUIZ_QUESTIONS: readonly QuizQuestion[] = [
     id: "dev-api-mclang-version",
     category: "开发",
     question: "/api/mclang/blocks 目前提供的是哪个版本的方块翻译表？",
-    options: ["26.2", "1.21.11", "1.20.1", "1.7.2"],
+    options: ["26.3", "1.21.11", "1.20.1", "1.7.2"],
     answer: 0,
     explanation:
-      "当前提供的是 Minecraft 26.2 的方块翻译表（翻译表数据本身仍基于 26.2）。版本更新时这份数据也要跟着更新。",
+      "当前提供的是 Minecraft 26.3 的方块翻译表，数据提取自 Mojang 官方资源包索引 34 的 zh_cn.json。版本更新时这份数据也要跟着更新。",
   },
   {
     id: "dev-api-oauth-file",
