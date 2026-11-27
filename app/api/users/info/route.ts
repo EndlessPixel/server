@@ -44,14 +44,20 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // 修复：安全解析响应，防止非 JSON 崩溃
-    let data;
+    // 安全解析响应，防止非 JSON 崩溃。
+    // 上游（FastAPI）故障时会直接吐 `text/plain` 的 "Internal Server Error"，
+    // 这里要把它与「本站自身出错」区分开：返回 502 而不是 500，
+    // 前端才能给出「数据服务暂时不可用」这类准确提示。
     const contentType = res.headers.get("content-type");
-    if (contentType?.includes("application/json")) {
-      data = await res.json();
-    } else {
-      throw new Error("后端返回非 JSON 响应");
+    if (!contentType?.includes("application/json")) {
+      console.error("[users/info] 上游返回非 JSON 响应:", res.status, contentType);
+      return NextResponse.json(
+        { error: "upstream_unavailable", message: "玩家数据服务暂时不可用，请稍后重试" },
+        { status: 502 },
+      );
     }
+
+    const data = await res.json();
 
     if (!res.ok) {
       // 后端是 FastAPI：HTTPException 的提示语在 detail 字段里

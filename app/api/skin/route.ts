@@ -93,6 +93,12 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // 严格模式：查不到就返回 404，让调用方能区分「没这个角色」与「拿到了默认皮肤」。
+  // 预览工具页用它，避免角色名打错时静默显示 Steve 而后误以为查询成功。
+  if (params.get("strict") === "1") {
+    return new Response("Skin not found", { status: 404 });
+  }
+
   // 3. 默认皮肤
   const fallback = await imageOrNull(`https://crafatar.com/skins/${DEFAULT_SKIN_UUID}`);
   if (fallback) return pngResponse(fallback, "default");
