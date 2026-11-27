@@ -108,10 +108,17 @@ export default function LoginContent() {
     let loggedIn = false;
 
     try {
-      // ① 直连后端校验密码。
-      // 用浏览器直连而不是本站服务端转发：服务端请求不带浏览器特征，
-      // 会被后端前面的 Cloudflare 当成机器人拦掉（返回挑战页）。
-      const authRes = await fetch(`${AUTH_API_BASE}/v1/api/auth/login`, {
+      // ① 校验密码。
+      // 生产由浏览器直连后端：后端 CORS 白名单只放行官网域名，且直连能避开
+      // 服务端出网 IP 的风控问题。
+      // 本地开发的 origin 是 localhost，对不上白名单，预检会被拒成
+      // `Failed to fetch`，所以改走本站转发（见 app/api/auth/login/route.ts）。
+      const loginEndpoint =
+        process.env.NODE_ENV === "development"
+          ? "/api/auth/login"
+          : `${AUTH_API_BASE}/v1/api/auth/login`;
+
+      const authRes = await fetch(loginEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: loginId, password }),
