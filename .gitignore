@@ -12,3 +12,4 @@ next-env.d.ts
 tmp*
 .directory
 .codebuddy/
+.playwright-cli/
