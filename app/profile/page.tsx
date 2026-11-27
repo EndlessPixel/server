@@ -6,6 +6,12 @@ import { UserIcon, ShieldIcon, LogOutIcon, Loader2Icon, BanIcon, PackageIcon } f
 import { getEnchantmentDisplayName } from "@/lib/enchantments";
 import { getItemDisplayName, getEntityDisplayName } from "@/lib/items";
 import SkinViewer from "@/components/skin-viewer";
+import {
+  ACHIEVEMENT_TRANSLATION_CREDITS,
+  loadAchievementTranslations,
+  translateAchievement,
+  type TranslationSource,
+} from "@/lib/achievement-translations";
 
 /* ---------- 类型定义 ---------- */
 interface InventoryItem {
@@ -948,8 +954,29 @@ export default function ProfilePage() {
 
   /* ---------- 成就 / 进度（advancements） ---------- */
   const AchievementsPanel = () => {
+    const [translations, setTranslations] = useState<Record<
+      string,
+      [string, TranslationSource]
+    > | null>(null);
+
+    useEffect(() => {
+      let alive = true;
+      loadAchievementTranslations().then((data) => {
+        if (alive) setTranslations(data);
+      });
+      return () => {
+        alive = false;
+      };
+    }, []);
+
     const advs = userInfo?.advancements ?? {};
-    const allEntries = Object.entries(advs);
+    // 只展示原版与本服安装的两个数据包；其他模组带来的进度条目不显示，
+    // 否则列表会被玩家自行安装的 mod 成就淹没，且我们也没有它们的中文译名。
+    const allowedPrefixes = ["minecraft:", "blazeandcave:", "bacaped:"];
+    const allEntries = Object.entries(advs).filter(([id]) =>
+      allowedPrefixes.some((prefix) => id.startsWith(prefix)),
+    );
+    const hiddenCount = Object.keys(advs).length - allEntries.length;
     const doneCount = allEntries.filter(([, v]) => v?.done).length;
     const total = allEntries.length;
 
@@ -984,6 +1011,9 @@ export default function ProfilePage() {
             </label>
             <span className="text-sm text-muted-foreground">
               已完成 {doneCount} / {total}
+              {hiddenCount > 0 && (
+                <span className="ml-2 text-xs">（已隐藏 {hiddenCount} 项其他进度）</span>
+              )}
             </span>
           </div>
         </div>
@@ -1009,8 +1039,18 @@ export default function ProfilePage() {
                       v?.done ? "bg-green-500" : "bg-muted-foreground/30"
                     }`}
                   />
-                  <span className="truncate text-sm text-foreground/80" title={id}>
-                    {shortId(id)}
+                  <span className="min-w-0 flex-1">
+                    <span
+                      className="block truncate text-sm text-foreground/80"
+                      title={translateAchievement(translations, id)?.zh ?? id}
+                    >
+                      {translateAchievement(translations, id)?.zh ?? shortId(id)}
+                    </span>
+                    {translations && translateAchievement(translations, id) && (
+                      <span className="block truncate text-[10px] text-muted-foreground" title={id}>
+                        {shortId(id)}
+                      </span>
+                    )}
                   </span>
                 </div>
               ))}
@@ -1037,6 +1077,17 @@ export default function ProfilePage() {
             </div>
           </>
         )}
+
+        <details className="mt-6 border-t border-border/60 pt-3 text-xs text-muted-foreground">
+          <summary className="cursor-pointer select-none">中文翻译署名</summary>
+          <ul className="mt-2 space-y-1">
+            {ACHIEVEMENT_TRANSLATION_CREDITS.map((credit) => (
+              <li key={credit.pack}>
+                {credit.pack} — {credit.authors}
+              </li>
+            ))}
+          </ul>
+        </details>
       </div>
     );
   };
