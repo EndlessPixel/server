@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, MousePointerClick } from "lucide-react";
 import { SkinClickInteraction, type PatchableViewer } from "@/lib/skin-click-interaction";
+import { InteractAnimation } from "@/lib/interact-animation";
 
 interface SkinViewerProps {
   /** Minecraft 玩家 UUID（32 位 hex，可带连字符） */
@@ -134,7 +135,7 @@ export default function SkinViewer({
         viewerRef.current = viewer;
         interactionRef.current = new SkinClickInteraction(viewer, {
           idle: () => new skinview3d.IdleAnimation(),
-          hit: () => new skinview3d.HitAnimation(),
+          hit: () => new InteractAnimation(),
         });
 
         // `model: "auto-detect"` 会读皮肤纹理判断粗臂（Steve）/ 细臂（Alex），
