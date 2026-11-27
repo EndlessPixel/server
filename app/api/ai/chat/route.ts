@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+import { CONSENT_COOKIE, isAiDataAllowed } from "@/lib/ai-data-consent";
 import { THINKING_PROMPT } from "@/lib/ai-thinking-prompt";
 import { upstreamBaseUrl } from "@/lib/upstream";
 import { formatWikiContext, searchWiki } from "@/lib/wiki-knowledge";
@@ -91,6 +92,12 @@ async function getPlayerContextBlock(req: NextRequest): Promise<string> {
     const token = req.cookies.get(SESSION_COOKIE)?.value;
     const name = verifySessionToken(token);
     if (!name) return "";
+
+    // 用户没授权 AI 读自己的数据时，连基础身份都不给 —— 默认关闭。
+    // 授权 cookie 用 SESSION_SECRET 签名，且必须绑定当前会话账号。
+    const allowed = isAiDataAllowed(req.cookies.get(CONSENT_COOKIE)?.value, name);
+    if (!allowed) return "";
+
     const upstream = await fetch(`${PLAYER_INFO_API_URL}?name=${encodeURIComponent(name)}`, {
       cache: "no-store",
       // 玩家资料只是增强上下文，拿不到就降级。超时压到 2s：
@@ -98,21 +105,15 @@ async function getPlayerContextBlock(req: NextRequest): Promise<string> {
       signal: AbortSignal.timeout(2000),
     });
     if (!upstream.ok) return "";
-    // 该接口返回的是**扁平**的玩家资料对象（name / uuid / ban / lastActive / ipLocation …），
+    // 该接口返回的是**扁平**的玩家资料对象（name / uuid / ban / lastActive / nbt …），
     // 不是 { success, data } 包裹体 —— 前端 /api/users/info 也是原样透传给 profile 页的。
-    // 这里曾按包裹体解包，等于永远取不到资料，AI 客服因此一直缺少玩家身份上下文（现已修正）。
-    const u = (await upstream.json()) as {
-      name?: unknown;
-      uuid?: unknown;
-      ban?: unknown;
-      lastActive?: unknown;
-      ipLocation?: unknown;
-    } | null;
+    const u = (await upstream.json()) as Record<string, unknown> | null;
     if (!u || typeof u !== "object") return "";
+
     const banned = u.ban ? "已被封禁" : "正常";
     const gameId = typeof u.name === "string" && USERNAME_PATTERN.test(u.name) ? u.name : name;
     const lines = [
-      "【当前玩家身份（仅供回答玩家本人相关问题时参考，禁止对外泄露或用于越权操作）】",
+      "【当前玩家数据（用户已授权 AI 读取，仅供回答本人相关问题，禁止对外泄露）】",
       `- 游戏 ID：${gameId}`,
       `- UUID：${String(u.uuid ?? "未知")}`,
       `- 账号状态：${banned}`,
@@ -123,7 +124,49 @@ async function getPlayerContextBlock(req: NextRequest): Promise<string> {
     if (u.ipLocation) {
       lines.push(`- 登录属地：${String(u.ipLocation)}`);
     }
-    lines.push("【结束玩家身份块】");
+
+    // 背包 / 末影箱 / 统计 / 成就。完整 NBT 体积很大，做上限裁剪，
+    // 避免把 prompt 撑到几十 KB 拖慢首字节、也避免无关数据干扰回答。
+    const nbt = u.nbt && typeof u.nbt === "object" ? (u.nbt as Record<string, unknown>) : {};
+    const MAX_ITEMS = 20;
+
+    const describeItems = (label: string, raw: unknown): void => {
+      if (!Array.isArray(raw) || raw.length === 0) return;
+      const items = raw.slice(0, MAX_ITEMS).map((item: Record<string, unknown>) => {
+        const id = String(item?.id ?? "未知");
+        const count = Number(item?.count ?? item?.Count ?? 1);
+        return count > 1 ? `${id} ×${count}` : id;
+      });
+      lines.push(
+        `- ${label}（${raw.length} 件，仅列前 ${Math.min(raw.length, MAX_ITEMS)} 件）：${items.join("、")}`,
+      );
+    };
+
+    describeItems("背包", nbt.Inventory);
+    describeItems("末影箱", nbt.EnderItems);
+
+    if (Array.isArray(nbt.equipment)) {
+      lines.push(
+        `- 已穿戴装备：${nbt.equipment.map((e) => String((e as Record<string, unknown>)?.id ?? "未知")).join("、")}`,
+      );
+    }
+
+    if (u.stats && typeof u.stats === "object") {
+      const stats = u.stats as { stats?: Record<string, Record<string, unknown>> };
+      const categories = Object.keys(stats.stats ?? {});
+      if (categories.length > 0) {
+        lines.push(`- 统计信息分类：${categories.slice(0, 12).join("、")}`);
+      }
+    }
+
+    if (u.advancements && typeof u.advancements === "object") {
+      const advs = u.advancements as Record<string, { done?: boolean }>;
+      const entries = Object.entries(advs);
+      const done = entries.filter(([, v]) => v?.done).length;
+      lines.push(`- 成就 / 进度：已完成 ${done} / ${entries.length}`);
+    }
+
+    lines.push("【结束玩家数据块】");
     return lines.join("\n");
   } catch {
     return "";

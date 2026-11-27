@@ -6,6 +6,7 @@ import { UserIcon, ShieldIcon, LogOutIcon, Loader2Icon, BanIcon, PackageIcon } f
 import { getEnchantmentDisplayName } from "@/lib/enchantments";
 import { getItemDisplayName, getEntityDisplayName } from "@/lib/items";
 import SkinViewer from "@/components/skin-viewer";
+import { AiDataConsent } from "@/components/ai-data-consent";
 import {
   ACHIEVEMENT_TRANSLATION_CREDITS,
   loadAchievementTranslations,
@@ -1404,6 +1405,8 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
+
+                <AiDataConsent />
               </div>
             )}
 
