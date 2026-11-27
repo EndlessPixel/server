@@ -13,3 +13,4 @@ tmp*
 .directory
 .codebuddy/
 .playwright-cli/
+.wiki-tmp/

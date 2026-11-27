@@ -1,0 +1,49 @@
+name: Sync Wiki Knowledge
+
+# Wiki 更新后同步 AI 对话用的知识块。
+# Wiki 是公开仓库，直接克隆即可，无需跨仓库 token。
+# 每天自动跑一次；Wiki 刚改完想立即生效，可在 Actions 页面手动触发。
+on:
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wiki-knowledge
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout server
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clone Wiki
+        run: git clone --depth 1 https://github.com/EndlessPixel/EndlessPixel-Wiki.git .wiki-tmp
+
+      - name: Generate knowledge chunks
+        run: node scripts/generate-wiki-knowledge.mjs .wiki-tmp/wiki
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/wiki-knowledge.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "知识块无变化，跳过提交"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git commit -m "data(ai): 从 Wiki 同步 AI 知识块"
+          fi
+
+      - name: Push
+        if: steps.commit.outputs.changed == 'true'
+        run: git push

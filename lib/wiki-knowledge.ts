@@ -18,6 +18,7 @@ type WikiKnowledge = {
   version: number;
   source: string;
   baseUrl: string;
+  generatedAt?: string;
   chunks: WikiChunk[];
 };
 
