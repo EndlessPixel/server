@@ -10,14 +10,22 @@ interface SkinViewerProps {
   name?: string;
   /** 皮肤来源。auto 会按 Mojang → LittleSkin 依次尝试 */
   source?: "auto" | "mojang" | "littleskin";
+  /** 严格模式：查不到就报未找到，不退回默认皮肤（预览工具用） */
+  strict?: boolean;
   width?: number;
   height?: number;
 }
 
 /** 拼同源代理地址：浏览器不直连上游，CORS 与混合内容问题一并规避 */
-function buildSkinUrl(uuid?: string, name?: string, source?: SkinViewerProps["source"]) {
+function buildSkinUrl(
+  uuid?: string,
+  name?: string,
+  source?: SkinViewerProps["source"],
+  strict?: boolean,
+) {
   const params = new URLSearchParams();
   if (source) params.set("source", source);
+  if (strict) params.set("strict", "1");
 
   const cleanUuid = uuid?.replace(/-/g, "").toLowerCase();
   if (cleanUuid) {
@@ -35,6 +43,7 @@ export default function SkinViewer({
   uuid,
   name,
   source = "auto",
+  strict = false,
   width = 280,
   height = 360,
 }: SkinViewerProps) {
@@ -108,7 +117,7 @@ export default function SkinViewer({
       }
       viewerRef.current = null;
     };
-  }, [uuid, name, source, width, height]);
+  }, [uuid, name, source, strict, width, height]);
 
   return (
     <div className="relative flex items-center justify-center overflow-hidden rounded-xl bg-linear-to-b from-secondary/40 to-secondary/10">

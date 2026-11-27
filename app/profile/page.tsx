@@ -1269,9 +1269,11 @@ export default function ProfilePage() {
                   {/* 右栏：3D 皮肤预览（电脑端在右侧，手机端自动落到底部） */}
                   <div className="flex justify-center md:sticky md:top-6 md:justify-start">
                     <div className="rounded-xl border border-foreground/8 bg-linear-to-b from-secondary/30 to-transparent p-4">
+                      {/* 用角色名查而不是 UUID：离线认证模式（LittleSkin 之类）的 UUID
+                          是按名字哈希生成的，在各家皮肤站上都不存在，拿它去查必然空手而归。
+                          角色名在正版与 LittleSkin 两边都能用。 */}
                       <SkinViewer
-                        uuid={skinSource === "auto" ? userInfo.uuid : undefined}
-                        name={skinSource === "littleskin" ? littleSkinName || undefined : undefined}
+                        name={skinSource === "auto" ? userInfo.name : littleSkinName || undefined}
                         source={skinSource}
                         width={280}
                         height={360}
