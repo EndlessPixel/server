@@ -30,7 +30,7 @@ export const DOMAINS: DomainEntry[] = [
   {
     name: "epmc.top",
     registrar: "腾讯云",
-    cost: "xx￥/月",
+    cost: "38￥/月",
     since: "2026-08-30T18:16:18+08:00",
     until: "2027-08-30T18:16:18+08:00",
   },
