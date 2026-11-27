@@ -4,6 +4,7 @@ import path from "path";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 import { THINKING_PROMPT } from "@/lib/ai-thinking-prompt";
 import { upstreamBaseUrl } from "@/lib/upstream";
+import { formatWikiContext, searchWiki } from "@/lib/wiki-knowledge";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -292,6 +293,23 @@ export async function POST(req: NextRequest) {
     const playerCtx = await getPlayerContextBlock(req);
     // 深度思考提示词按需注入：关闭后模型不再输出 <thinking> 块
     const systemParts = [getNowLine(), systemPrompt];
+
+    // 轻量 RAG：从 Wiki 检索与本次提问相关的章节，只注入命中的块。
+    // 无命中时不注入任何内容，避免拿错资料误导模型。
+    const lastUserText = [...messages]
+      .reverse()
+      .find((m: { role?: string; content?: unknown }) => m?.role === "user")?.content;
+    if (typeof lastUserText === "string" && lastUserText.trim()) {
+      try {
+        const hits = await searchWiki(lastUserText.slice(0, 500));
+        const wikiContext = formatWikiContext(hits);
+        if (wikiContext) systemParts.push(wikiContext);
+      } catch (err) {
+        // 检索失败不应阻断对话，退回原有知识库即可
+        console.error("[wiki-knowledge] 检索失败:", err);
+      }
+    }
+
     if (deepThinking) systemParts.push(THINKING_PROMPT);
     if (playerCtx) systemParts.push(playerCtx);
     const systemContent = systemParts.join("\n\n");
