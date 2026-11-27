@@ -509,6 +509,10 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<
     "info" | "inventory" | "ender" | "stats" | "achievements"
   >("info");
+  // 皮肤预览来源：官服（正版 UUID）或 LittleSkin（按角色名查）
+  const [skinSource, setSkinSource] = useState<"auto" | "littleskin">("auto");
+  const [littleSkinInput, setLittleSkinInput] = useState("");
+  const [littleSkinName, setLittleSkinName] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -1265,10 +1269,65 @@ export default function ProfilePage() {
                   {/* 右栏：3D 皮肤预览（电脑端在右侧，手机端自动落到底部） */}
                   <div className="flex justify-center md:sticky md:top-6 md:justify-start">
                     <div className="rounded-xl border border-foreground/8 bg-gradient-to-b from-secondary/30 to-transparent p-4">
-                      <SkinViewer uuid={userInfo.uuid} skinBase="proxy" width={280} height={360} />
+                      <SkinViewer
+                        uuid={skinSource === "auto" ? userInfo.uuid : undefined}
+                        name={skinSource === "littleskin" ? littleSkinName || undefined : undefined}
+                        source={skinSource}
+                        width={280}
+                        height={360}
+                      />
                       <p className="mt-3 text-center text-xs text-muted-foreground">
-                        你的 Minecraft 皮肤（3D 立体预览）
+                        {skinSource === "auto"
+                          ? "你的 Minecraft 皮肤（3D 立体预览）"
+                          : "LittleSkin 角色皮肤（3D 立体预览）"}
                       </p>
+
+                      {/* 皮肤来源切换：官服用登录账号的 UUID，LittleSkin 需要角色名 */}
+                      <div className="mt-3 flex items-center justify-center gap-1 rounded-lg bg-secondary/60 p-1 text-xs">
+                        {(
+                          [
+                            { key: "auto", label: "官服" },
+                            { key: "littleskin", label: "LittleSkin" },
+                          ] as const
+                        ).map((option) => (
+                          <button
+                            key={option.key}
+                            type="button"
+                            onClick={() => setSkinSource(option.key)}
+                            className={`flex-1 rounded-md px-2 py-1.5 font-medium transition-colors ${
+                              skinSource === option.key
+                                ? "bg-card text-foreground shadow-sm"
+                                : "text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      {skinSource === "littleskin" && (
+                        <div className="mt-2 flex gap-1.5">
+                          <input
+                            value={littleSkinInput}
+                            onChange={(event) => setLittleSkinInput(event.target.value)}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter") {
+                                setLittleSkinName(littleSkinInput.trim());
+                              }
+                            }}
+                            placeholder="LittleSkin 角色名"
+                            aria-label="LittleSkin 角色名"
+                            className="min-w-0 flex-1 rounded-md border border-foreground/10 bg-background px-2 py-1 text-xs text-foreground placeholder:text-muted-foreground focus:border-foreground/20 focus:outline-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setLittleSkinName(littleSkinInput.trim())}
+                            className="shrink-0 rounded-md bg-foreground px-2.5 py-1 text-xs font-medium text-background transition-opacity hover:opacity-85"
+                          >
+                            查看
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
