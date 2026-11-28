@@ -13,9 +13,6 @@ import Link from "next/link";
  *
  * 前提（缺一不可）：后端已开放 CORS、接口路径与 `main.py` 一致。
  */
-const AUTH_API_BASE =
-  process.env.NEXT_PUBLIC_AUTH_API_BASE_URL || "https://login-and-data.epmc.qzz.io";
-
 export default function LoginContent() {
   const [loginMode, setLoginMode] = useState<"username" | "email">("username");
   const [username, setUsername] = useState("");
@@ -108,15 +105,11 @@ export default function LoginContent() {
     let loggedIn = false;
 
     try {
-      // ① 校验密码。
-      // 生产由浏览器直连后端：后端 CORS 白名单只放行官网域名，且直连能避开
-      // 服务端出网 IP 的风控问题。
-      // 本地开发的 origin 是 localhost，对不上白名单，预检会被拒成
-      // `Failed to fetch`，所以改走本站转发（见 app/api/auth/login/route.ts）。
-      const loginEndpoint =
-        process.env.NODE_ENV === "development"
-          ? "/api/auth/login"
-          : `${AUTH_API_BASE}/v1/api/auth/login`;
+      // ① 校验密码，统一走本站转发。
+      // 浏览器直连后端偶尔会撞上 Cloudflare 风控，返回 404 HTML 挑战页
+      // （实测 5 次里有 1 次），表现为登录随机失败。本站转发会剥离
+      // Origin / Referer / UA 等浏览器特征，后端不会触发该风控。
+      const loginEndpoint = "/api/auth/login";
 
       const authRes = await fetch(loginEndpoint, {
         method: "POST",
